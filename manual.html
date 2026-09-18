@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Manual do Usuário - Plano GOINFRA 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/manual.css" />
+</head>
+<body>
+  <article class="manual">
+    <section class="page cover" id="capa">
+      <figure class="cover-figure">
+        <img src="data/MAPA.jpg" alt="Imagem de rodovia usada como capa do Plano GOINFRA 2026" />
+      </figure>
+      <div class="cover-green"></div>
+      <div class="cover-title">
+        <p class="kicker">Manual do Usuário Final</p>
+        <div class="cover-year">2026</div>
+        <h1>Plano<br />GOINFRA</h1>
+        <p class="subtitle">Guia técnico de acesso, pesquisa, filtros, consulta, anotações, medição, exportação e impressão do mapa interativo.</p>
+      </div>
+      <footer class="cover-footer">
+        <strong>Versão 2.1</strong>
+        <span>https://ricardomarques2025.github.io/pop2/</span>
+      </footer>
+    </section>
+
+    <section class="page toc" id="indice">
+      <header class="page-header">
+        <span>Plano GOINFRA 2026 - Manual do Usuário</span>
+        <a href="#capa">Capa</a>
+      </header>
+      <h2>Índice</h2>
+      <nav aria-label="Índice do manual">
+        <a href="#acesso"><span>1.</span> Acesso ao sistema</a>
+        <a href="#interface"><span>2.</span> Interface do mapa</a>
+        <a href="#pesquisa"><span>3.</span> Pesquisa e filtros</a>
+        <a href="#tipos-filtro"><span>4.</span> Tipos de filtros</a>
+        <a href="#consulta"><span>5.</span> Consulta de obras e detalhes</a>
+        <a href="#malhas"><span>6.</span> Malhas, base cartográfica e legenda</a>
+        <a href="#anotacoes"><span>7.</span> Anotações técnicas</a>
+        <a href="#medicao"><span>8.</span> Medição de linhas, áreas e formas</a>
+        <a href="#km"><span>9.</span> Localizar km em rodovia</a>
+        <a href="#exportacao"><span>10.</span> Exportação de dados</a>
+        <a href="#impressao"><span>11.</span> Impressão e PDF do mapa</a>
+        <a href="#boas-praticas"><span>12.</span> Boas práticas e solução de problemas</a>
+      </nav>
+      <div class="note">
+        Este manual foi pensado para o usuário final técnico. Os links do índice são internos e os links operacionais apontam para o site publicado.
+      </div>
+    </section>
+
+    <section class="page" id="acesso">
+      <header class="page-header">
+        <span>1. Acesso</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Acesso ao Sistema</h2>
+      <p>O sistema é acessado pelo endereço publicado abaixo. A página inicial apresenta atalhos por categoria e abre o mapa com filtros iniciais já aplicados.</p>
+      <p class="site-link"><a href="https://ricardomarques2025.github.io/pop2/">https://ricardomarques2025.github.io/pop2/</a></p>
+      <figure class="shot wide">
+        <img src="manual_assets/inicio_wide.png" alt="Tela inicial do Plano GOINFRA com acessos por categoria" />
+        <figcaption>Tela inicial com atalhos para FUNDEINFRA, Obras Rodoviárias, Manutenção, Projetos, Planejamento, Obras Civis, Geral e Mapa Rodoviário.</figcaption>
+      </figure>
+      <h3>Atalhos principais</h3>
+      <div class="menu-map">
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?origem=FUNDEINFRA&sidebar=fechada">FUNDEINFRA</a>
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?origem=DOR&sidebar=fechada">Obras Rodoviárias</a>
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?origem=DMA&sidebar=fechada">Manutenção</a>
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?origem=DPJ&sidebar=fechada">Projetos</a>
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?origem=DPL&sidebar=fechada">Planejamento</a>
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?origem=DOC&sidebar=fechada">Obras Civis</a>
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?perfil=geral">Geral</a>
+        <a href="https://ricardomarques2025.github.io/pop2/mapa.html?perfil=rodoviario&sidebar=fechada">Mapa Rodoviário</a>
+      </div>
+      <div class="callout">
+        <strong>Uso recomendado:</strong> comece pelo atalho mais próximo da sua consulta. Use "Geral" para visualizar todas as origens ou "Mapa Rodoviário" para consultar a malha sem iniciar pelas obras.
+      </div>
+    </section>
+
+    <section class="page" id="interface">
+      <header class="page-header">
+        <span>2. Interface</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Interface do Mapa</h2>
+      <p>A tela do mapa é dividida em barra superior, painel esquerdo, área central do mapa, painel direito de legenda e painel inferior de detalhes.</p>
+      <figure class="shot wide">
+        <img src="manual_assets/mapa_geral.png" alt="Mapa geral com painéis laterais e painel inferior" />
+        <figcaption>Mapa geral com painel de filtros à esquerda, legenda à direita e painel de detalhes recolhido na parte inferior.</figcaption>
+      </figure>
+      <div class="tool-grid">
+        <div><strong>Barra superior</strong><span>Mostra o título do sistema, a área/recorte consultado e o botão Home.</span></div>
+        <div><strong>Painel esquerdo</strong><span>Reúne origem, filtros, malhas, anotações, impressão e exportação.</span></div>
+        <div><strong>Mapa</strong><span>Área de navegação, seleção de obras, zoom, régua e camadas.</span></div>
+        <div><strong>Painel direito</strong><span>Exibe a legenda dinâmica conforme o que está visível.</span></div>
+        <div><strong>Painel inferior</strong><span>Mostra detalhes tabulares da obra, ponto, aeródromo ou seleção clicada.</span></div>
+      </div>
+      <h3>Controles de tela</h3>
+      <ul>
+        <li>Use as setas laterais para recolher ou abrir os painéis.</li>
+        <li>Clique no cabeçalho "Detalhes da seleção" para abrir ou fechar o painel inferior.</li>
+        <li>Arraste a borda superior do painel inferior para ajustar a altura.</li>
+        <li>Use o botão Home para retornar à página inicial.</li>
+      </ul>
+    </section>
+
+    <section class="page" id="pesquisa">
+      <header class="page-header">
+        <span>3. Pesquisa</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Pesquisa e Filtros</h2>
+      <p>O painel esquerdo é o centro de pesquisa do sistema. Os filtros são encadeados: quando um filtro é aplicado, os demais tendem a mostrar apenas opções compatíveis com a seleção atual.</p>
+      <h3>Fluxo recomendado de pesquisa</h3>
+      <ol>
+        <li>Escolha a <strong>Origem</strong> da informação: FUNDEINFRA, DOR, DMA, DPL, DPJ ou DOC.</li>
+        <li>Abra o grupo <strong>Filtros</strong>.</li>
+        <li>Selecione um <strong>Serviço</strong>, se quiser restringir por tipo de intervenção.</li>
+        <li>Use <strong>Proposta FUNDEINFRA</strong> quando a consulta for por proposta.</li>
+        <li>Use <strong>Rodovia</strong> e depois <strong>SRE</strong> para refinar por trecho rodoviário.</li>
+        <li>Use <strong>Município</strong> ou <strong>Região de Planejamento</strong> para recorte espacial.</li>
+        <li>Clique na obra exibida no mapa para abrir o popup e atualizar o painel inferior.</li>
+      </ol>
+      <table>
+        <thead>
+          <tr><th>Filtro</th><th>Finalidade</th><th>Observação técnica</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Origem</td><td>Liga ou desliga grupos de obras.</td><td>Controla também legenda, exportação, rotulagem e impressão.</td></tr>
+          <tr><td>Serviço</td><td>Filtra pelo tipo de obra ou intervenção.</td><td>A lista depende das origens ativas.</td></tr>
+          <tr><td>Proposta FUNDEINFRA</td><td>Localiza obras por proposta.</td><td>Ao selecionar, o mapa aproxima automaticamente o trecho relacionado.</td></tr>
+          <tr><td>Rodovia</td><td>Filtra pela sigla da rodovia.</td><td>Serve também como base para localizar km.</td></tr>
+          <tr><td>SRE</td><td>Refina por segmento rodoviário.</td><td>Depende da rodovia e dos filtros já aplicados.</td></tr>
+          <tr><td>Localidade</td><td>Busca por nome de localidade.</td><td>Digite parte do nome e selecione uma sugestão.</td></tr>
+          <tr><td>Município</td><td>Recorte por município.</td><td>Destaca o município e aplica máscara no entorno.</td></tr>
+          <tr><td>Região de Planejamento</td><td>Recorte regional.</td><td>Municípios da região ficam destacados em conjunto.</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        Se a pesquisa parecer restrita demais, use <strong>Ligar Tudo / Limpar</strong> para restaurar a visualização geral.
+      </div>
+    </section>
+
+    <section class="page" id="tipos-filtro">
+      <header class="page-header">
+        <span>4. Tipos de filtros</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Tipos de Filtros</h2>
+      <p>Os filtros podem ser entendidos em quatro grupos: temáticos, tabulares, espaciais e de apoio cartográfico.</p>
+      <div class="tool-grid">
+        <div><strong>Filtros temáticos</strong><span>Origem e Serviço. Definem quais programas, áreas e tipos de intervenção entram na consulta.</span></div>
+        <div><strong>Filtros tabulares</strong><span>Proposta FUNDEINFRA, Item, etapa e dados vinculados nas tabelas de obras.</span></div>
+        <div><strong>Filtros rodoviários</strong><span>Rodovia e SRE. Úteis para localizar trechos e apoiar medição ou marcação de km.</span></div>
+        <div><strong>Filtros espaciais</strong><span>Município, Região de Planejamento e Localidade. Usados para recorte territorial.</span></div>
+        <div><strong>Camadas de apoio</strong><span>Municípios, Malha Estadual, Malha Federal, Localidades, Aeródromos e Áreas Urbanas.</span></div>
+      </div>
+      <h3>Botões globais</h3>
+      <ul>
+        <li><strong>Desligar Tudo:</strong> remove temporariamente obras e camadas para iniciar uma nova leitura do mapa.</li>
+        <li><strong>Ligar Tudo / Limpar:</strong> limpa filtros, religa as origens e retorna ao comportamento padrão.</li>
+      </ul>
+    </section>
+
+    <section class="page" id="consulta">
+      <header class="page-header">
+        <span>5. Consulta</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Consulta de Obras e Detalhes</h2>
+      <p>As obras e elementos do mapa respondem ao clique. A consulta abre um popup no mapa e atualiza o painel inferior com informações detalhadas.</p>
+      <h3>Como consultar</h3>
+      <ol>
+        <li>Aplique os filtros desejados.</li>
+        <li>Clique em uma linha, ponto, ícone de obra, aeródromo ou aeroporto.</li>
+        <li>Leia o resumo no popup.</li>
+        <li>Abra o painel <strong>Detalhes da seleção</strong> para ver a tabela completa.</li>
+      </ol>
+      <table>
+        <thead>
+          <tr><th>Elemento clicado</th><th>Resultado esperado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Obra linear</td><td>Popup e tabela com dados da origem ativa, proposta/item, serviço, etapa e extensão.</td></tr>
+          <tr><td>Obra pontual</td><td>Popup do primeiro registro e painel inferior com todos os itens vinculados ao ponto.</td></tr>
+          <tr><td>Aeródromo/aeroporto</td><td>Informações do equipamento e, quando houver, obras vinculadas por origem.</td></tr>
+          <tr><td>Marcador agrupado</td><td>Representa múltiplos pontos próximos; aproxime o zoom ou clique para detalhar.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Conferência técnica:</strong> quando houver mais de uma obra no mesmo ponto, use o painel inferior. O popup é um resumo; a tabela inferior é a referência completa da seleção.
+      </div>
+    </section>
+
+    <section class="page" id="malhas">
+      <header class="page-header">
+        <span>6. Malhas e legenda</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Malhas, Base Cartográfica e Legenda</h2>
+      <p>As malhas de base são camadas auxiliares para interpretar a posição das obras. Elas podem ser ligadas ou desligadas sem alterar os dados das obras.</p>
+      <figure class="shot wide">
+        <img src="manual_assets/mapa_rodoviario.png" alt="Perfil de mapa rodoviário com malhas em destaque" />
+        <figcaption>Perfil Mapa Rodoviário: adequado para leitura de malha estadual, federal, localidades e aeródromos.</figcaption>
+      </figure>
+      <table>
+        <thead>
+          <tr><th>Camada</th><th>Uso</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Municípios</td><td>Apoio territorial e destaque em consultas espaciais.</td></tr>
+          <tr><td>Malha Estadual</td><td>Leitura da rede estadual e segmentos SRE.</td></tr>
+          <tr><td>Malha Federal</td><td>Referência da rede federal.</td></tr>
+          <tr><td>Localidades</td><td>Identificação de localidades e apoio ao zoom.</td></tr>
+          <tr><td>Aeródromos</td><td>Exibe aeródromos/aeroportos e obras vinculadas quando existentes.</td></tr>
+          <tr><td>Áreas urbanas</td><td>Complemento de leitura urbana.</td></tr>
+        </tbody>
+      </table>
+      <h3>Legenda dinâmica</h3>
+      <p>A legenda à direita muda conforme as camadas visíveis. Se uma origem ou malha estiver desligada, seus itens podem desaparecer da legenda.</p>
+    </section>
+
+    <section class="page" id="anotacoes">
+      <header class="page-header">
+        <span>7. Anotações</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Anotações Técnicas</h2>
+      <p>As ferramentas de anotação permitem produzir marcações temporárias ou persistentes sobre o mapa, úteis para análise, reunião técnica, conferência de trecho e preparação de impressão.</p>
+      <table>
+        <thead>
+          <tr><th>Ferramenta</th><th>Aplicação prática</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Linha</td><td>Traçar eixo, alternativa, conexão ou observação linear.</td></tr>
+          <tr><td>Polígono</td><td>Delimitar área de interesse, perímetro urbano ou área de estudo.</td></tr>
+          <tr><td>Retângulo / Círculo</td><td>Destacar uma região rapidamente.</td></tr>
+          <tr><td>Ponto</td><td>Marcar local específico com formato e cor configuráveis.</td></tr>
+          <tr><td>Texto</td><td>Inserir observações diretamente no mapa.</td></tr>
+          <tr><td>Legenda das anotações</td><td>Mostra os itens desenhados em bloco próprio na legenda.</td></tr>
+        </tbody>
+      </table>
+      <h3>Estilo das anotações</h3>
+      <ul>
+        <li>Defina cor, espessura e opacidade antes ou durante o uso das ferramentas.</li>
+        <li>Para pontos, escolha formato e tamanho.</li>
+        <li>Para textos, ajuste cor e tamanho da fonte.</li>
+        <li>As anotações ficam salvas no navegador e podem ser exportadas/importadas em GeoJSON.</li>
+      </ul>
+      <div class="note">
+        Para finalizar linhas, polígonos e medições, use o fluxo indicado na mensagem de status da ferramenta. Em geral, duplo clique ou botão direito finaliza o desenho.
+      </div>
+    </section>
+
+    <section class="page" id="medicao">
+      <header class="page-header">
+        <span>8. Medição</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Medição de Linhas, Áreas e Formas</h2>
+      <p>O sistema possui duas formas de medição: a régua rápida do mapa e a medição integrada às anotações.</p>
+      <h3>Régua rápida do mapa</h3>
+      <ol>
+        <li>Clique no controle <strong>Régua</strong> sobre o mapa.</li>
+        <li>Clique no ponto inicial.</li>
+        <li>Mova o mouse para visualizar a distância em prévia.</li>
+        <li>Clique no ponto final para concluir a medição.</li>
+      </ol>
+      <h3>Medição por anotação</h3>
+      <ol>
+        <li>Abra <strong>Anotações</strong>.</li>
+        <li>Escolha uma forma, por exemplo <strong>Linha</strong> ou <strong>Polígono</strong>.</li>
+        <li>Clique em <strong>Medição</strong>.</li>
+        <li>Desenhe a linha ou área no mapa.</li>
+        <li>A linha passa a exibir medidas por segmento; no polígono, o sistema também calcula área.</li>
+      </ol>
+      <div class="callout">
+        <strong>Exemplo solicitado:</strong> ao clicar em <strong>Linha</strong> e depois em <strong>Medição</strong>, a linha desenhada aparece com medidas. Esse modo é útil para registrar extensão estimada de trecho, ligação, contorno ou alternativa.
+      </div>
+      <table>
+        <thead>
+          <tr><th>Objeto</th><th>Informação exibida</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Linha com medição</td><td>Distâncias nos segmentos desenhados.</td></tr>
+          <tr><td>Polígono com medição</td><td>Distâncias dos lados e área aproximada.</td></tr>
+          <tr><td>Retângulo/círculo em modo medição</td><td>Dimensões aproximadas conforme a forma.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="page" id="km">
+      <header class="page-header">
+        <span>9. KM de rodovia</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Localizar km em Rodovia</h2>
+      <p>A ferramenta <strong>Localizar km da rodovia</strong> interpola um ponto sobre a geometria da malha estadual a partir da rodovia selecionada e do quilômetro informado.</p>
+      <ol>
+        <li>Selecione uma <strong>Rodovia</strong> no filtro.</li>
+        <li>Digite o km desejado no campo da seção Anotações.</li>
+        <li>Clique em <strong>Marcar km</strong>.</li>
+        <li>O sistema cria um marcador com rodovia, km, latitude e longitude.</li>
+      </ol>
+      <div class="note">
+        Se o km não for encontrado, confira se a rodovia está selecionada corretamente e se o km informado está dentro do intervalo disponível na base SRE.
+      </div>
+    </section>
+
+    <section class="page" id="exportacao">
+      <header class="page-header">
+        <span>10. Exportação</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Exportação de Dados</h2>
+      <p>A exportação gera um CSV com os dados compatíveis com os filtros ativos no momento.</p>
+      <ol>
+        <li>Aplique os filtros necessários.</li>
+        <li>Abra o grupo <strong>Exportação</strong>.</li>
+        <li>Clique em <strong>Exportar tabela filtrada</strong>.</li>
+        <li>Abra o arquivo CSV em Excel, LibreOffice ou outro editor tabular.</li>
+      </ol>
+      <h3>O que pode sair no CSV</h3>
+      <ul>
+        <li>Obras lineares visíveis.</li>
+        <li>Obras pontuais visíveis.</li>
+        <li>Obras vinculadas a aeródromos/aeroportos.</li>
+        <li>Origem, tipo, proposta/item, serviço, etapa, rodovia, município e extensão quando disponíveis.</li>
+      </ul>
+    </section>
+
+    <section class="page" id="impressao">
+      <header class="page-header">
+        <span>11. Impressão</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Impressão e PDF do Mapa</h2>
+      <p>A seção <strong>Impressão / PDF</strong> prepara o mapa atual para saída em PDF pelo navegador.</p>
+      <table>
+        <thead>
+          <tr><th>Campo</th><th>Uso recomendado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Formato</td><td>A4 para consultas rápidas; A3 a A0 para mapas técnicos maiores.</td></tr>
+          <tr><td>Orientação</td><td>Paisagem para trechos horizontais; retrato para recortes verticais.</td></tr>
+          <tr><td>Margem</td><td>Ajusta a borda do mapa no papel.</td></tr>
+          <tr><td>Enquadramento</td><td>"Ajustar tela" usa a visão atual; escala personalizada usa denominador informado.</td></tr>
+          <tr><td>Título do mapa</td><td>Permite inserir título específico para reunião, relatório ou proposta.</td></tr>
+          <tr><td>Rótulos e localidades</td><td>Controla densidade de rótulos no mapa impresso.</td></tr>
+          <tr><td>Rótulos das obras</td><td>Ativa identificação das obras no produto impresso.</td></tr>
+        </tbody>
+      </table>
+      <h3>Gerar PDF</h3>
+      <ol>
+        <li>Organize filtros, zoom, mapa base e camadas.</li>
+        <li>Escolha formato, orientação e margem.</li>
+        <li>Defina o título se necessário.</li>
+        <li>Clique em <strong>Salvar mapa em PDF</strong>.</li>
+        <li>No navegador, selecione <strong>Salvar como PDF</strong>.</li>
+      </ol>
+    </section>
+
+    <section class="page" id="boas-praticas">
+      <header class="page-header">
+        <span>12. Boas práticas</span>
+        <a href="#indice">Voltar ao índice</a>
+      </header>
+      <h2>Boas Práticas e Solução de Problemas</h2>
+      <h3>Boas práticas de uso</h3>
+      <ul>
+        <li>Use poucos filtros por vez para entender o comportamento da seleção.</li>
+        <li>Depois de consultar uma origem específica, use <strong>Ligar Tudo / Limpar</strong> antes de iniciar outra análise.</li>
+        <li>Para conferência técnica, clique na obra e leia o painel inferior, não apenas o popup.</li>
+        <li>Antes de imprimir, confira legenda, camadas visíveis e rótulos.</li>
+        <li>Exporte anotações em GeoJSON quando precisar levar marcações para outro computador.</li>
+      </ul>
+      <table>
+        <thead>
+          <tr><th>Situação</th><th>Ação recomendada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Mapa não carregou.</td><td>Verifique a conexão com a internet e recarregue a página.</td></tr>
+          <tr><td>Filtro parece sem opções.</td><td>Limpe filtros anteriores ou religue as origens.</td></tr>
+          <tr><td>Obra esperada não aparece.</td><td>Confira origem, serviço, município/região, rodovia e SRE ativos.</td></tr>
+          <tr><td>PDF saiu com enquadramento ruim.</td><td>Ajuste o zoom na tela e gere novamente usando "Ajustar tela".</td></tr>
+          <tr><td>Anotação sumiu em outro navegador.</td><td>Importe o GeoJSON exportado anteriormente.</td></tr>
+        </tbody>
+      </table>
+      <footer class="final-footer">
+        Manual técnico do usuário final - Plano GOINFRA 2026 - Versão 2.1.
+      </footer>
+    </section>
+  </article>
+</body>
+</html>

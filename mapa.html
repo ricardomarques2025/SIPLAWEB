@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>PLANO GOINFRA 2026 - 2030</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="css/style.css?v=supabase-20260918" />
+ </head>
+<body>
+<header id="topbar">
+  <div class="topbar-left">
+    <strong>PLANO GOINFRA</strong>
+    <span>2026 – 2030</span>
+  </div>
+
+  <div class="topbar-right">
+    <span>Sistema de Monitoramento</span>
+    <button id="btnAtualizarSite" type="button" class="topbar-home-btn topbar-icon-btn" title="Atualizar site (busca a versão mais recente do mapa e dos dados)" aria-label="Atualizar site">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 12a8 8 0 0 1 14.2-5" />
+        <polyline points="18.5 3 18.5 7.5 14 7.5" />
+        <path d="M20 12a8 8 0 0 1-14.2 5" />
+        <polyline points="5.5 21 5.5 16.5 10 16.5" />
+      </svg>
+    </button>
+    <a class="topbar-home-btn" href="index.html" title="Voltar à página inicial" aria-label="Voltar à página inicial">⌂</a>
+    <a class="topbar-help-btn" href="manual.html" target="_blank" rel="noopener" title="Abrir manual do usuário" aria-label="Abrir manual do usuário">?</a>
+  </div>
+</header>
+  <div id="app" class="com-topbar">
+  <aside id="sidebar-left">
+    <div id="sidebar-left-header" class="sidebar-header">
+      <button id="toggleSidebarLeft" type="button" class="sidebar-toggle-btn">«</button>
+    </div>
+    <div class="sidebar-collapsed-label" aria-hidden="true">Origem</div>
+    <div class="scroll-inner" id="sidebar-left-content">
+   
+    <details class="painel-colapsavel">
+      <summary class="subtitulo subtitulo-painel">ORIGEM</summary>
+      <div class="conteudo-colapsavel">
+      <div class="grid-servicos" id="servicosLinearesBotoes">
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="FUNDEINFRA" type="button">FUNDEINFRA</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOR" type="button">DOR</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DMA" type="button">DMA</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DPJ" type="button">DPJ</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DPL" type="button">DPL</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOC" type="button">DOC</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="DSV" type="button">DSV</button>
+      </div>
+      </div>
+    </details>
+
+    <details class="painel-colapsavel">
+      <summary class="subtitulo subtitulo-painel">Filtros</summary>
+      <div class="conteudo-colapsavel">
+        <label for="servicoSelect">Intervenção</label>
+        <select id="servicoSelect">
+          <option value="">Todos</option>
+        </select>
+
+        <label for="propostaSelect">Proposta FUNDEINFRA</label>
+        <select id="propostaSelect">
+          <option value="">Todas</option>
+        </select>
+
+        <label for="rodoviaSelect">Rodovia</label>
+        <select id="rodoviaSelect">
+          <option value="">Todas</option>
+        </select>
+
+        <label for="sreSelect">SRE</label>
+        <select id="sreSelect">
+          <option value="">Todos</option>
+        </select>
+
+        <label for="bufferSelect">Área de Influência</label>
+        <select id="bufferSelect">
+          <option value="">Todos</option>
+        </select>
+
+        <label for="ferroviaSelect">Ferrovia</label>
+        <select id="ferroviaSelect">
+          <option value="">Todas</option>
+        </select>
+
+        <label for="localidadeBusca">Localidade</label>
+        <div class="autocomplete-wrap">
+          <input
+            type="text"
+            id="localidadeBusca"
+            placeholder="Digite o nome da localidade..."
+            autocomplete="off"
+          />
+          <div id="localidadeSugestoes" class="autocomplete-list"></div>
+        </div>
+
+        <select id="localidadeSelect">
+          <option value="">Todas</option>
+        </select>
+
+        <label for="municipioBusca">Município</label>
+
+        <div class="autocomplete-wrap">
+          <input 
+            type="text" 
+            id="municipioBusca" 
+            placeholder="Digite o nome do município..."
+            autocomplete="off"
+          />
+          <div id="municipioSugestoes" class="autocomplete-list"></div>
+        </div>
+
+        <select id="municipioSelect">
+          <option value="">Todos</option>
+        </select>
+
+        <label for="alteracaoJurisdicaoSelect">Alterações de Jurisdição</label>
+        <select id="alteracaoJurisdicaoSelect">
+          <option value="">Todos</option>
+          <option value="Estadualização">Estadualização</option>
+          <option value="Federalização">Federalização</option>
+          <option value="Municipalização">Municipalização</option>
+        </select>
+
+        <details class="filtro-regional">
+          <summary>Regiões de Manutenção</summary>
+          <select id="rgManSelect" multiple hidden aria-label="Regiões de Manutenção"></select>
+          <div id="rgManSelectLista" class="lista-regional"></div>
+          <button id="rgManSelectLimpar" type="button">Limpar seleção</button>
+        </details>
+        <details class="filtro-regional">
+          <summary>Regiões de Planejamento</summary>
+          <select id="rgPlanSelect" multiple hidden aria-label="Regiões de Planejamento"></select>
+          <div id="rgPlanSelectLista" class="lista-regional"></div>
+          <button id="rgPlanSelectLimpar" type="button">Limpar seleção</button>
+        </details>
+        <details class="filtro-regional">
+          <summary>Área de Estudo</summary>
+          <select id="areaInfluenciaSelect" hidden aria-label="Área de Estudo"></select>
+          <div id="areaInfluenciaSelectLista" class="lista-regional"></div>
+          <button id="areaInfluenciaSelectLimpar" type="button">Limpar seleção</button>
+        </details>
+      </div>
+    </details>
+
+    <details class="painel-colapsavel">
+      <summary class="subtitulo subtitulo-painel">CAMADAS DE REFERÊNCIA</summary>
+      <div class="conteudo-colapsavel">
+        <div class="grid-botoes">
+          <button class="filtro-btn base-btn" id="toggleRegioesManutencao" type="button" aria-pressed="false">Regiões de Manutenção</button>
+          <button class="filtro-btn base-btn" id="toggleRegioesPlanejamento" type="button" aria-pressed="false">Regiões de Planejamento</button>
+          <button class="filtro-btn base-btn" id="toggleMunicipiosBase" type="button">Municípios</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleSREBase" type="button">Malha Estadual</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleSNV" type="button">Malha Federal</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleLocalidades" type="button">Localidades</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleAero" type="button">Aeródromos</button>
+          <button class="filtro-btn base-btn" id="toggleAreasAmbientais" type="button">Áreas ambientais</button>
+          <button class="filtro-btn base-btn" id="toggleAreasUrbanas" type="button">Áreas urbanas</button>
+          <button class="filtro-btn base-btn" id="toggleAreaInfluencia" type="button" aria-pressed="false">Área de Estudo</button>
+          <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de Influência</button>
+          <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
+          <button class="filtro-btn base-btn ativo-filtro" id="toggleAlteracoesJurisdicao" type="button" aria-pressed="true">Alterações de Jurisdição</button>
+        </div>
+      </div>
+    </details>
+
+      <button id="desligarTudo" type="button">Desligar Tudo</button>
+      <button id="limparFiltro" type="button">Ligar Tudo / Limpar</button>
+
+      <details class="painel-colapsavel">
+        <summary class="subtitulo subtitulo-painel">Anotações</summary>
+        <div class="conteudo-colapsavel">
+          <div class="anotacao-grupo-titulo">Desenho</div>
+          <div class="grid-anotacoes">
+            <button class="filtro-btn anotacao-btn" id="drawLinha" type="button">Linha</button>
+            <button class="filtro-btn anotacao-btn" id="drawPoligono" type="button">Polígono</button>
+            <button class="filtro-btn anotacao-btn" id="drawRetangulo" type="button">Retângulo</button>
+            <button class="filtro-btn anotacao-btn" id="drawCirculo" type="button">Círculo</button>
+            <button class="filtro-btn anotacao-btn" id="drawPonto" type="button">Ponto</button>
+            <button class="filtro-btn anotacao-btn" id="drawTexto" type="button">Texto</button>
+          </div>
+          <div class="anotacao-grupo-titulo">Ferramenta</div>
+          <div class="grid-anotacoes">
+            <button class="filtro-btn anotacao-btn" id="drawMedicao" type="button">Medição</button>
+            <button class="filtro-btn anotacao-btn" id="drawLimpar" type="button">Limpar</button>
+            <button class="filtro-btn anotacao-btn" id="drawExportar" type="button">Exportar</button>
+            <button class="filtro-btn anotacao-btn" id="drawImportar" type="button">Importar</button>
+          </div>
+          <div class="anotacao-grupo-titulo">Localizar km da rodovia</div>
+          <div class="anotacao-km-form">
+            <input id="drawKmRodovia" type="text" inputmode="decimal" placeholder="Ex.: 21,1" />
+            <button class="filtro-btn anotacao-btn" id="drawLocalizarKm" type="button">Marcar km</button>
+          </div>
+          <button class="filtro-btn anotacao-btn" id="toggleLegendaAnotacoes" type="button">Legenda das anotações</button>
+          <div class="anotacao-opcoes">
+            <label for="drawCorLinha">Cor das linhas/formas</label>
+            <input id="drawCorLinha" type="color" value="#e11d48" />
+
+            <label for="drawEspessuraLinha">Espessura: <span id="drawEspessuraValor">4 px</span></label>
+            <input id="drawEspessuraLinha" type="range" min="1" max="12" step="1" value="4" />
+
+            <label for="drawOpacidadePreenchimento">Opacidade do preenchimento: <span id="drawOpacidadeValor">14%</span></label>
+            <input id="drawOpacidadePreenchimento" type="range" min="0" max="100" step="1" value="14" />
+
+            <label for="drawFormatoPonto">Formato do ponto</label>
+            <select id="drawFormatoPonto">
+              <option value="circulo">Círculo</option>
+              <option value="quadrado">Quadrado</option>
+              <option value="losango">Losango</option>
+              <option value="triangulo">Triângulo</option>
+            </select>
+
+            <label for="drawTamanhoPonto">Tamanho do ponto: <span id="drawTamanhoPontoValor">14 px</span></label>
+            <input id="drawTamanhoPonto" type="range" min="6" max="34" step="1" value="14" />
+
+            <label for="drawCorTexto">Cor do texto</label>
+            <input id="drawCorTexto" type="color" value="#111827" />
+
+            <label for="drawTamanhoTexto">Tamanho do texto: <span id="drawTamanhoTextoValor">13 px</span></label>
+            <input id="drawTamanhoTexto" type="range" min="8" max="36" step="1" value="13" />
+          </div>
+          <input id="drawImportArquivo" type="file" accept=".geojson,.json,application/geo+json,application/json" hidden />
+          <div id="drawStatus" class="anotacao-status">Sem ferramenta ativa</div>
+        </div>
+      </details>
+
+      <details class="painel-colapsavel">
+        <summary class="subtitulo subtitulo-painel">Impressão / PDF</summary>
+        <div class="conteudo-colapsavel">
+          <label for="printFormato">Formato</label>
+          <select id="printFormato">
+            <option value="A4">A4</option>
+            <option value="A3">A3</option>
+            <option value="A2">A2</option>
+            <option value="A1">A1</option>
+            <option value="A0">A0</option>
+            <option value="personalizado">Personalizado</option>
+          </select>
+
+          <div id="printPapelPersonalizadoCampos" class="print-papel-personalizado">
+            <label for="printLarguraPersonalizada">Largura do papel (mm)</label>
+            <input id="printLarguraPersonalizada" type="number" min="50" max="3000" step="0.1" value="1000" />
+
+            <label for="printAlturaPersonalizada">Altura do papel (mm)</label>
+            <input id="printAlturaPersonalizada" type="number" min="50" max="3000" step="0.1" value="700" />
+          </div>
+
+          <label for="printOrientacao">Orientação</label>
+          <select id="printOrientacao">
+            <option value="landscape">Paisagem</option>
+            <option value="portrait">Retrato</option>
+          </select>
+
+          <label for="printMargem">Margem do mapa (mm)</label>
+          <input id="printMargem" type="number" min="5" max="40" step="1" value="12" />
+
+          <label for="printEscala">Enquadramento</label>
+          <select id="printEscala">
+            <option value="tela">Ajustar tela</option>
+            <option value="personalizada">Escala Personalizada</option>
+          </select>
+
+          <label for="printTituloCustom">Título do mapa</label>
+          <input id="printTituloCustom" type="text" placeholder="Deixe vazio para usar o título automático" />
+
+          <label id="printEscalaPersonalizadaLabel" for="printEscalaPersonalizada">Escala 1:</label>
+          <input id="printEscalaPersonalizada" type="text" inputmode="numeric" value="1000000" placeholder="Ex.: 1.000.000" />
+
+          <label for="rotulosDensidade">Rótulos e localidades: <span id="rotulosDensidadeValor">Automático</span></label>
+          <input id="rotulosDensidade" type="range" min="0" max="4" step="1" value="0" />
+
+          <button class="filtro-btn" id="toggleRotulosObrasPrint" type="button">Rótulos das obras</button>
+
+          <button id="printMapa" type="button">Salvar mapa em PDF</button>
+        </div>
+      </details>
+
+      <details class="painel-colapsavel">
+        <summary class="subtitulo subtitulo-painel">Exportação</summary>
+        <div class="conteudo-colapsavel">
+          <button id="exportarTabelaFiltrada" type="button">Exportar tabela filtrada</button>
+        </div>
+      </details>
+
+      <div class="contador" hidden>
+        <span id="countMunicipios">0</span>
+        <span id="countLinhas">0</span>
+        <span id="countOAE">0</span>
+        <span id="countObrasPontos">0</span>
+        <span id="countDor">0</span>
+        <span id="countDma">0</span>
+        <span id="countDpl">0</span>
+        <span id="countDpj">0</span>
+        <span id="countDsv">0</span>
+      </div>
+
+      <div class="rodape-versao">
+        GOINFRA / PL-GEREF / RPM / VER. 2.4
+      </div>
+    </div>
+  </aside>
+
+ <div id="centro-mapa">
+  <main id="map-wrap">
+    <div id="map"></div>
+  </main>
+
+  <section id="painelTabela" class="painel-fechado">
+    <div id="painelTabelaResize" aria-hidden="true"></div>
+    <div id="painelTabelaHeader" role="button" tabindex="0" aria-expanded="false">
+      <strong class="painel-tabela-titulo">Detalhes da seleção</strong>
+    </div>
+
+    <div id="painelTabelaConteudo">
+      <b>Nenhum trecho selecionado</b>
+    </div>
+  </section>
+</div>
+
+
+  <aside id="sidebar-right">
+    <div id="sidebar-right-header" class="sidebar-header">
+      <button id="toggleSidebarRight" type="button" class="sidebar-toggle-btn">»</button>
+    </div>
+    <div class="sidebar-collapsed-label" aria-hidden="true">Legenda</div>
+    <div class="scroll-inner" id="sidebar-right-content">
+      <div class="bloco legenda-titulo-geral" id="blocoLegendaTitulo">
+        <div class="subtitulo">LEGENDA</div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">FUNDEINFRA</div>
+        <div id="legendaIntervencaos"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DOR</div>
+        <div id="legendaDor"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DMA</div>
+        <div id="legendaDma"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DPJ</div>
+        <div id="legendaDpj"></div>
+      </div>
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DPL</div>
+        <div id="legendaDpl"></div>
+      </div>
+
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DOC</div>
+        <div id="legendaDoc"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">DSV</div>
+        <div id="legendaDsv"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaAlteracoes" style="display: none;">
+        <div class="subtitulo">ALTERA&Ccedil;&Otilde;ES DE JURISDI&Ccedil;&Atilde;O</div>
+        <div id="legendaAlteracoes"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaRegioesManutencao" style="display: none;">
+        <div class="subtitulo">Regiões de Manutenção</div>
+        <div id="legendaRegioesManutencao"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaRegioesPlanejamento" style="display: none;">
+        <div class="subtitulo">Regiões de Planejamento</div>
+        <div id="legendaRegioesPlanejamento"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaAreaInfluencia" style="display: none;">
+        <div class="subtitulo">Área de Estudo</div>
+        <div id="legendaAreaInfluencia"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaRodEst">
+        <div class="subtitulo">Rodovia Estadual</div>
+        <div id="legendaRodEst"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaRodFed">
+        <div class="subtitulo">Rodovia Federal</div>
+        <div id="legendaRodFed"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaBuffer" style="display: none;">
+        <div class="subtitulo">Área de Influência</div>
+        <div class="legenda-item">
+          <svg width="48" height="18" viewBox="0 0 48 18" aria-hidden="true"><path data-area-estudo="sre_base" d="M0 9H48" /></svg>
+          <span>Rodovias</span>
+        </div>
+        <div class="legenda-item">
+          <svg width="48" height="18" viewBox="0 0 48 18" aria-hidden="true"><path data-area-estudo="ferrovias" d="M0 9H48" /></svg>
+          <span>Ferrovias</span>
+        </div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaFerrovias" style="display: none;">
+        <div class="subtitulo">Ferrovias</div>
+        <div class="legenda-item">
+          <svg width="48" height="16" viewBox="0 0 48 16" aria-hidden="true">
+            <path d="M0 8H48" fill="none" stroke="#555555" stroke-width="1.2" opacity="0.9" />
+            <path d="M0 8H48" fill="none" stroke="#555555" stroke-width="6" stroke-dasharray="1.2 12" stroke-linecap="butt" opacity="0.9" />
+          </svg>
+          <span>Ferrovia</span>
+        </div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaAero" style="display: none;">
+        <div class="subtitulo">Aeródromos e Aeroportos</div>
+        <div id="legendaAero"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaAnotacoes" style="display: none;">
+        <div class="subtitulo">Anotações</div>
+        <div id="legendaAnotacoes"></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="js/estilos.js?v=supabase-20260918"></script>
+<script src="js/regioes.js?v=supabase-20260918"></script>
+<script src="js/mapa.js?v=supabase-20260918"></script>
+<script src="js/impressao.js?v=supabase-20260918"></script>
+<script src="js/paineis.js?v=supabase-20260918"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

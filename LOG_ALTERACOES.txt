@@ -1,0 +1,403 @@
+LOG DE ALTERACOES - MAPA POP2
+================================
+
+Este arquivo e um controle interno de atualizacoes do projeto.
+Ele nao e referenciado pelo index.html nem pela interface do site.
+
+Observacao:
+Se a pasta inteira for publicada como site estatico, este arquivo pode ser
+acessado por URL direta caso alguem saiba o nome do arquivo. Para impedir
+acesso publico de verdade, publique apenas os arquivos do site em uma pasta
+separada, como /docs, e deixe este log fora dela.
+
+Convencao de versionamento:
+A numeracao da versao deve mudar somente quando mudar o dia da alteracao.
+Mudancas feitas no mesmo dia devem ser registradas dentro da mesma versao.
+
+
+VERSAO 1.0 - 27/05/2026
+------------------------
+
+Organizacao inicial dos arquivos do projeto:
+- Mantida a estrutura principal com index.html, css/style.css, js/mapa.js e js/estilos.js.
+- Criado o arquivo js/impressao.js para separar a logica de impressao/PDF do mapa principal.
+- Atualizado o index.html para carregar js/impressao.js depois de js/mapa.js.
+- Centralizadas configuracoes editaveis em js/estilos.js:
+  - ordem/z-index das panes do Leaflet;
+  - mapas base;
+  - estilos padrao das anotacoes;
+  - formatos de impressao;
+  - regras de estilo das linhas e legendas.
+- Adicionado bloco :root no css/style.css com variaveis de layout, cores e medidas gerais.
+- Corrigida regra solta de tabela no css/style.css, movendo border-collapse para .tabela-servico.
+- Mantido js/mapa.js como arquivo principal de mapa, carregamento de dados, filtros, camadas e logica geral.
+- Testado carregamento local por servidor offline em http://localhost:8000/index.html.
+
+
+VERSAO 1.1 - 27/05/2026
+------------------------
+
+Inclusao de obras pontuais:
+- Adicionada leitura da camada data/obras_pontos.geojson.
+- Adicionada leitura da tabela vinculada data/OBRAS_PONTOS.json.
+- Criado vinculo dos pontos com a tabela pelo campo LINK.
+- Adicionada simbologia diferente para pontos em etapa Projeto e Obra.
+- Adicionada legenda "Obras Pontuais" no painel de legenda.
+- Adicionado contador "Obras Pontuais" no painel lateral.
+- Adicionado popup dos pontos com atributos da camada e atributos da tabela vinculada.
+- Adicionada tabela inferior com os dados do ponto e da tabela vinculada ao clicar no marcador.
+- Ajustado filtro de proposta para respeitar a origem ativa FUNDEINFRA/DOR.
+- Ajustado zoom automatico ao selecionar proposta, incluindo obras pontuais quando aplicavel.
+- Ajustados popup e tabela inferior das linhas para mostrarem apenas dados compativeis com os filtros ativos.
+- Ajustada formatacao do popup e tabela das obras pontuais para seguir o padrao das obras lineares.
+- Centralizado o alinhamento do texto nas tabelas apresentadas no mapa.
+- Movida a legenda das obras pontuais para dentro da legenda da origem FUNDEINFRA.
+- Ajustada legenda das obras pontuais para "Projeto" e "Obra", sem negrito.
+- Ajustada simbologia das obras pontuais: projeto como circulo branco com contorno marrom claro e obra como losango marrom claro com borda branca.
+- Ajustada prioridade visual para rotulos de rodovias e localidades ficarem acima dos simbolos das obras pontuais.
+- Ajustada prioridade visual para o ponto da localidade tambem ficar acima dos simbolos das obras pontuais.
+- Alterada simbologia de projeto das obras pontuais de circulo para quadrado.
+- Corrigida prioridade dos rotulos base para ficarem abaixo dos baloes de informacao.
+
+
+VERSAO 1.2 - 28/05/2026
+------------------------
+
+Ajustes de impressao, anotacoes e rotulos:
+- Adicionado suporte ao formato A0 nas configuracoes de impressao.
+- Ajustada a composicao de impressao para incluir caixa de titulo, legenda, escala, tabela de servico e carimbo no layout A0.
+- Adicionada exibicao do carimbo grafico Carimbo_POP2.png na impressao em A0.
+- Ajustado posicionamento e tamanho do carimbo, da tabela de servico e dos elementos fixos no modo de impressao.
+- Adicionada opcao para ativar rotulos das obras no modo de impressao.
+- Criados rotulos numerados das obras com chamada visual, evitando conflito com rotulos de base quando possivel.
+- Ajustada prioridade visual dos rotulos de obras, anotacoes, medicoes e textos no mapa.
+- Adicionada ferramenta de desenho de poligono nas anotacoes.
+- Adicionada medicao de area para poligonos, incluindo pre-visualizacao durante o desenho.
+- Ajustada importacao de anotacoes para acrescentar os itens importados ao mapa.
+- Ajustadas mensagens de status das ferramentas de anotacao e medicao.
+- Ajustado comportamento das ferramentas de desenho para desativar arrasto e duplo clique do mapa durante a edicao.
+- Ajustados controles visuais de campos, botoes, seta norte, logo no mapa e elementos do painel lateral.
+- Ajustadas regras de legenda para linhas tracejadas de obras em duplicacao/pavimentacao.
+- Registrada a convencao de manter este LOG_ALTERACOES.txt atualizado nas proximas alteracoes do projeto.
+
+
+VERSAO 1.3 - 28/05/2026
+------------------------
+
+Localizacao de km em rodovia:
+- Adicionado campo "Localizar km da rodovia" no painel de anotacoes.
+- Adicionado botao "Marcar km" para localizar o km informado na rodovia selecionada no filtro existente.
+- Implementada busca na camada data/sre_base.geojson usando os campos rodovia, km_ini e km_fim.
+- Implementada interpolacao do ponto sobre a geometria do SRE correspondente ao km informado.
+- Criado marcador personalizado de km com ponto e rotulo no formato "GO-010, km 21,1".
+- O marcador de km usa cor, formato e tamanho do ponto definidos nas opcoes de anotacao.
+- O rotulo do km usa cor e tamanho do texto definidos nas opcoes de anotacao.
+- Marcadores de km passam a ser salvos, carregados e exportados junto com as demais anotacoes.
+- Adicionada exibicao da latitude e longitude em duas linhas abaixo do rotulo do km.
+
+
+VERSAO 1.4 - 02/06/2026
+------------------------
+
+Inclusao da origem DMA e ajustes de filtros:
+- Adicionada origem DMA aos botoes de origem, contador, legenda, popup, painel inferior, rotulos e impressao.
+- Adicionada leitura da tabela data/OBRAS_LINHAS_DMA.json e vinculo pelo campo LINK_DMA.
+- Ajustada DOR e DMA para usarem o campo ITEM no lugar de proposta.
+- Renomeado o filtro de proposta para "Proposta FUNDEINFRA".
+- Ajustado o filtro "Proposta FUNDEINFRA" para filtrar e aproximar somente servicos FUNDEINFRA, mantendo o zoom automatico no trecho selecionado.
+- Ajustado o filtro de servico para listar somente servicos das origens ativas: FUNDEINFRA, DOR e DMA.
+- Corrigida a legenda para DOR e DMA nao misturarem servicos entre si.
+- Corrigida a interferencia da origem DOR sobre a origem DMA quando ambas compartilham a mesma geometria.
+- Mantida DMA independente da DOR no desenho, nos rotulos, nos contadores e na legenda.
+- Ajustada simbologia de Revitalizacao para a cor #7db0b4.
+- Ajustada simbologia de Revitalizacao - Planejamento para linha #7db0b4 com linha branca central.
+- Ajustada simbologia de Servicos de Terraplenagem para a cor #91522d.
+- Validados os arquivos principais por servidor local e validada a estrutura JSON da tabela DMA.
+
+
+VERSAO 1.5 - 03/06/2026
+------------------------
+
+Ajuste de rotulos DMA:
+- Corrigida a sigla exibida nos rotulos das obras DMA, alterando de "Dma"/"Dm" para "Ma".
+
+
+VERSAO 1.6 - 03/06/2026
+------------------------
+
+Ajuste da tabela inferior para DOR:
+- Adicionado agrupamento dos dados de SRE por ITEM das obras DOR, seguindo o comportamento ja usado por proposta FUNDEINFRA.
+- Mantido o somatorio de extensao na tabela de SRE para todos os trechos agrupados pelo item DOR selecionado.
+
+
+VERSAO 1.7 - 03/06/2026
+------------------------
+
+Ajuste da tabela inferior para DMA:
+- Adicionado agrupamento dos dados de SRE por ITEM das obras DMA, usando a tabela data/OBRAS_LINHAS_DMA.json.
+- Mantido o somatorio de extensao na tabela de SRE para todos os trechos agrupados pelo item DMA selecionado.
+
+
+VERSAO 1.8 - 03/06/2026
+------------------------
+
+Inclusao da origem DPL:
+- Adicionada origem DPL aos botoes de origem, contador, legenda, popup, painel inferior, rotulos e impressao.
+- Adicionada leitura da tabela data/OBRAS_LINHAS_DPL.json e vinculo pelo campo LINK_DPL.
+- Adicionado agrupamento dos dados de SRE por ITEM das obras DPL, mantendo o somatorio de extensao.
+- Mantida DPL independente das demais origens no desenho, nos rotulos, nos contadores e na legenda.
+- Ajustada a simbologia das obras DPL em etapa Planejamento para linha com miolo branco tracejado.
+-- Reordenados os filtros para Origem, Servico, Proposta FUNDEINFRA, Rodovia, SRE, Localidade, Municipio e Regiao de Planejamento.
+-- Ajustada a cascata dos filtros principais para Rodovia e SRE obedecerem Origem, Servico e Proposta FUNDEINFRA apenas quando esses filtros pais estiverem ativos ou selecionados.
+-- Corrigida a cascata para evitar dependencias circulares entre Proposta, Rodovia, SRE, Municipio e Regiao de Planejamento ao aplicar filtros em sequencia.
+-- Ajustado o comportamento de zoom ao alterar Origem depois de selecionar Proposta, Rodovia ou SRE, evitando manter o enquadramento de um filtro ja limpo.
+-- Adicionada exportacao em CSV dos dados tabulares filtrados no mapa, incluindo obras lineares e pontuais visiveis conforme os filtros atuais.
+-- Movido o botao de exportacao para menu colapsavel proprio apos Impressao / PDF, com ordenacao por Origem e Proposta/Item e EXT_KM em formato decimal brasileiro.
+-- Corrigida a conversao decimal da coluna EXT_KM na exportacao CSV para trocar ponto por virgula sem interpretar ponto como separador de milhar.
+-- Organizados os filtros de Servico ate Regiao de Planejamento e as Malhas de base em menus colapsaveis, mantendo Origem sempre visivel.
+-- Corrigido fechamento extra de div na lateral esquerda que tirava o mapa e a legenda do grid principal apos a reorganizacao dos menus.
+-- Substituido o somatorio visivel no fim do painel esquerdo por rodape discreto com identificacao GOINFRA / PL-GEREF / RPM / VER. 1.8, mantendo os contadores ocultos para uso interno.
+-- Ajustadas cores dos botoes de origem ativos para o verde do titulo e do botao Ligar Tudo / Limpar para o mesmo padrao do Desligar Tudo.
+-- Adicionado redimensionamento manual da tabela inferior do mapa pela divisa superior, com altura salva no navegador.
+
+
+VERSAO 1.9 - 08/06/2026
+------------------------
+
+Ajustes visuais dos filtros espaciais:
+-- Ajustada a paleta de preenchimento dos municipios nao selecionados para tons pastel baseados em HSL, aproximando a simbologia aleatoria usada no QGIS.
+-- Mantido o comportamento de municipio selecionado vazado/transparente, com os demais municipios preenchidos em cores pastel.
+-- Aplicado o mesmo comportamento visual ao filtro de Regiao de Planejamento: municipios da regiao selecionada ficam vazados e os demais ficam coloridos.
+-- Ajustada a mascara do Brasil para ficar com opacidade 100% quando houver filtro de Municipio ou Regiao de Planejamento selecionado.
+-- Mantida a opacidade padrao da mascara do Brasil em 25% quando nao houver filtro espacial selecionado.
+
+
+VERSAO 1.10 - 08/06/2026
+-------------------------
+
+Inclusao da origem DPJ:
+-- Adicionada origem DPJ aos botoes de origem, contador oculto, legenda, popup, painel inferior, rotulos, exportacao CSV e impressao.
+-- Adicionada leitura da tabela data/OBRAS_LINHAS_DPJ.json e vinculo com data/obras_linhas.geojson pelo campo LINK_DPJ.
+-- Mantida DPJ independente das demais origens no desenho, nos filtros, nos rotulos, nos contadores e na legenda.
+-- Aplicada a mesma simbologia e comportamento de espacializacao usados para DMA e DPL.
+-- Ajustada a simbologia DPJ em etapa Projeto para linha com miolo branco, diferenciando projeto de obra.
+-- Atualizado o rodape da interface para VER. 1.10.
+
+
+VERSAO 1.11 - 08/06/2026
+--------------------------
+
+Inclusao inicial da origem DOC:
+-- Incluida a origem DOC nas obras pontuais a partir de OBRAS_PONTOS.json e obras_pontos.geojson.
+-- Ajustado o desenho das obras pontuais para aceitar multiplas linhas da tabela por LINK, exibindo todas no popup e no painel inferior.
+-- Incluidos os campos Item, Etapa, Status, SEI, Conclusao e Servico para as anotacoes DOC, com legenda de ponto como Projeto ou Obra conforme ETAPA.
+-- Adicionado botao de origem DOC e legenda propria para os simbolos pontuais DOC.
+-- Atualizado o rodape da interface para VER. 1.11.
+
+
+VERSAO 1.12 - 09/06/2026
+---------------------------
+
+Ajustes de obras pontuais, DOC e agrupamento:
+-- Substituidos os simbolos DOC por icones SVG especificos: data/placaobra.svg para Obra e data/placaprojeto.svg para Projeto.
+-- Ajustado o posicionamento dos icones DOC para deslocamento acima e a esquerda do ponto real da localidade.
+-- Ajustado o tamanho dos simbolos das obras pontuais para obedecer ao iconSize definido em js/mapa.js.
+-- Adicionado agrupamento automatico das obras pontuais por proximidade usando Leaflet.markercluster.
+-- Personalizado o visual dos icones aglutinadores, com tamanho reduzido, fundo cinza e contagem central.
+-- Ajustada a contagem dos icones aglutinadores para somar os itens das tabelas vinculadas, e nao apenas a quantidade de pontos no mapa.
+-- Ajustado o popup das obras pontuais para exibir somente o primeiro item quando houver varios registros no mesmo ponto.
+-- Adicionada mensagem no popup indicando quantas obras adicionais existem no mesmo ponto e orientando consulta no painel inferior.
+-- Adicionado contador textual acima do icone da obra pontual quando houver mais de um item vinculado ao mesmo ponto.
+-- Mantido o painel inferior com a lista completa dos itens vinculados ao ponto selecionado.
+-- Atualizado o rodape da interface para VER. 1.12.
+
+
+VERSAO 1.13 - 10/06/2026
+----------------------------
+
+Inclusao da camada de aerodromos e aeroportos:
+--- Adicionada leitura opcional da camada data/AERO.geojson.
+--- Adicionado botao "Aerodromos" nas Malhas de base para ligar e desligar a camada.
+--- Separada a simbologia pelo campo TIPO da camada, usando data/aerodromo.svg para Aerodromo e data/aeroporto.svg para Aeroporto.
+--- Organizadas as configuracoes da camada AERO no bloco CONFIG_AERO em js/mapa.js, com tamanho dos icones, caminho dos SVGs e zoom minimo.
+--- Configurada exibicao dos icones somente a partir do zoom 8.
+--- Adicionado popup com tipo, codigo, nome, municipio, altitude, comprimento, largura e revestimento.
+--- Adicionada legenda propria para Aerodromos e Aeroportos no painel de legenda.
+--- Criado pane especifico aeroPane para controlar a prioridade visual dos icones.
+--- Atualizado o rodape da interface para VER. 1.13.
+
+
+VERSAO 1.14 - 12/06/2026
+----------------------------
+
+Ajustes de obras pontuais, origens e icones:
+--- Ajustada a leitura das obras pontuais para considerar a coluna ORIGEM de OBRAS_PONTOS.json nas origens FUNDEINFRA, DOR, DMA, DPL, DPJ e DOC.
+--- Corrigida a exibicao das obras pontuais DPL, incluindo normalizacao de espacos e quebras de linha no campo LINK.
+--- Ajustado o filtro de Servico para usar o campo TIPO nas obras pontuais, mantendo SERVICO como descricao quando aplicavel.
+--- Incluido o campo TIPO no popup e na tabela inferior das obras pontuais.
+--- Incluidos os icones SVG especificos data/placaoaeobra.svg e data/placaoaeprojeto.svg para pontos com TIPO OAE em etapa Obra ou Projeto.
+--- Incluido o icone SVG especifico data/placaoaeplanejamento.svg para pontos com TIPO OAE em etapa Planejamento.
+--- Mantidas as placas gerais data/placaobra.svg, data/placaprojeto.svg e data/placaplanejamento.svg para as demais obras pontuais conforme o campo ETAPA.
+--- Corrigida a legenda das obras pontuais para separar os itens por origem e evitar mistura entre FUNDEINFRA, DOR, DMA, DPL, DPJ e DOC.
+--- Corrigida duplicidade de itens nas legendas DMA e DPJ.
+--- Ajustada a legenda FUNDEINFRA para usar os mesmos SVGs exibidos no mapa, evitando simbolos ou cores divergentes.
+--- Ajustado o desenho dos pontos para usar o SVG da placa sempre que o estilo possuir icone configurado, evitando o simbolo interno roxo para Planejamento.
+--- Ajustada a prioridade do icone principal quando houver multiplos registros vinculados ao mesmo ponto.
+--- Atualizado o rodape da interface para VER. 1.14.
+
+
+VERSAO 1.15 - 15/06/2026
+-----------------------------
+
+Atualizacao das camadas e tabelas de obras:
+-- Atualizada a leitura das obras de aerodromos para usar a tabela unificada data/OBRAS_AERO.json.
+-- Substituido o uso das tabelas antigas data/OBRAS_AERO_DMA.json e data/OBRAS_AERO_DPJ.json pelo filtro do campo ORIGEM.
+-- Incluida a origem DOR nas obras de aerodromos, com leitura do campo LINK_DOR e separacao propria na legenda DOR.
+-- Ajustados os contadores e a exportacao para incluir as obras DOR vinculadas a aerodromos/aeroportos.
+-- Atualizadas as camadas data/obras_pontos.geojson e data/OBRAS_PONTOS.json com obras pontuais de origem DOR.
+-- Conferida a consistencia dos links DOR das obras pontuais e mantido DOR_PT_0001 apenas nas camadas/tabelas de aerodromos.
+-- Atualizado o rodape da interface para VER. 1.15.
+-- Adicionados rotulos cinza "Origem" e "Legenda" nas laterais quando os paineis estao fechados.
+-- Mantidas as setas das laterais nas posicoes originais de abertura e fechamento.
+-- Removido o botao textual "Mostrar tabela" do painel inferior.
+-- Alterado o cabecalho do painel inferior para "Detalhes da selecao".
+-- Ajustado o painel inferior para abrir e fechar pelo proprio cabecalho, com suporte a clique e teclado.
+-- Movida a seta do painel inferior para a esquerda do titulo.
+-- Padronizada a cor cinza e o tamanho da fonte do titulo inferior com os rotulos das laterais fechadas.
+-- Criada pagina inicial em index.html para acesso por categorias do Plano GOINFRA 2026.
+-- Movido o mapa principal para mapa.html, preservando a interface e os scripts existentes.
+-- Adicionados links da pagina inicial para abrir o mapa com filtros por origem FUNDEINFRA, DOR, DMA, DPL, DPJ e DOC.
+-- Adicionado acesso Geral mantendo o comportamento padrao do mapa.
+-- Adicionado acesso Mapa Rodoviario com origens desligadas, malhas ligadas, rotulos/localidades em densidade 1 e mapa base Padrao.
+-- Adicionadas imagens de fundo por categoria na pasta data, com troca no hover dos titulos da pagina inicial.
+-- Criado css/inicio.css para controlar layout, faixas verdes, area central de imagem, responsividade e textos da pagina inicial.
+-- Criado js/inicio.js para alternar a imagem de fundo da pagina inicial conforme o titulo em foco/hover.
+-- Criadas versoes derivadas do SVG de capa em data/INICIO.svg, data/INICIO_VETOR.svg e data/INICIO_DIREITA.svg para preservar o vetor da marca 2026/PLANO GOINFRA.
+-- Ajustada a capa para usar faixas retangulares: verde a esquerda ate 40%, imagem de 40% a 90% e verde a direita de 90% a 100%.
+-- Adicionado botao Home na barra superior do mapa para retorno a pagina inicial.
+-- Removido o botao customizado de tela cheia da pagina inicial, mantendo o uso do F11 nativo do navegador.
+-- Alterada a cor principal do titulo, botoes ativos e textos verdes para #1e9538ff.
+
+
+VERSAO 2.0 - 16/06/2026
+------------------------
+
+Marco de publicacao da versao 2.0:
+-- Atualizado o rodape da interface para VER. 2.0.
+-- Registrada a consolidacao das alteracoes recentes da pagina inicial, do mapa principal em mapa.html e dos acessos por categoria do Plano GOINFRA 2026.
+-- Mantido o log interno atualizado para acompanhar a versao publicada do projeto.
+-- Criado manual.html como manual de acesso e operacao do site, com capa, indice interativo, secoes de uso e layout A4 para exportacao em PDF.
+-- Criado css/manual.css com estilos de pagina, capa, indice clicavel, tabelas, diagramas, figuras e regras de impressao A4.
+-- Criada pasta manual_assets com screenshots reais da pagina inicial, mapa geral e perfil Mapa Rodoviario para ilustrar o manual.
+-- Corrigida a acentuacao do manual.html em UTF-8 e gerado o PDF Manual_POP2_v2.0_acentuado.pdf.
+-- Convertidas imagens fotograficas de fundo da pagina inicial de PNG para JPG e atualizadas as referencias em index.html, css/inicio.css e manual.html.
+-- Revisado o manual para foco em usuario final tecnico, com link publicado do site, capa no padrao visual do Plano GOINFRA, maior detalhamento de pesquisa, filtros, consultas, anotacoes, medicao, km de rodovia, exportacao e impressao.
+-- Gerado o PDF Manual_POP2_v2.0_usuario_final.pdf a partir do manual revisado.
+-- Ajustada a formatacao A4 do manual, compactando espacamentos, imagens, tabelas e blocos para evitar quebras inadequadas na exportacao em PDF.
+-- Gerado o PDF Manual_POP2_v2.0_usuario_final_A4.pdf com a formatacao A4 revisada.
+-- Adicionado botao de ajuda na barra superior do mapa, ao lado do botao Home, abrindo manual.html em nova aba.
+
+VERSAO 2.1 - 30/06/2026
+-------------------------
+
+Ajuste de identificacao das obras pontuais FUNDEINFRA:
+--- Ajustado o popup das obras pontuais para exibir Proposta no lugar de Item quando a origem for FUNDEINFRA.
+--- Ajustada a tabela inferior das obras pontuais para usar Proposta nos registros FUNDEINFRA e manter Item para as demais origens.
+--- Ajustado o cabecalho da coluna para Proposta, Item ou Proposta/Item conforme as origens exibidas.
+--- Atualizado o rodape da interface e o manual do site para VER. 2.1.
+
+Exportacao dos dados filtrados:
+--- Ampliada a exportacao CSV para incluir, em uma unica tabela, os campos do shape filtrado (prefixo GEO_) e os campos da tabela vinculada (prefixo TAB_).
+--- Ajustada a coleta da exportacao para incluir todas as origens ativas vinculadas ao mesmo shape, sem limitar a saida aos registros priorizados no desenho do mapa.
+--- Ajustada a exportacao para respeitar tambem os filtros atuais de regiao de planejamento e municipio.
+
+VERSAO 2.2 - 14/07/2026
+-------------------------
+
+Ajustes em obras pontuais:
+--- Corrigida a associacao entre data/obras_pontos.geojson e data/OBRAS_PONTOS.json para aceitar variacao de maiusculas/minusculas nos nomes dos campos, como Link/LINK.
+--- Ajustado o popup e a tabela inferior das obras pontuais para ler SRE, rodovia, trecho, extensao e link diretamente da camada data/obras_pontos.geojson.
+--- Mantida a tabela data/OBRAS_PONTOS.json como fonte dos dados vinculados das obras pontuais pelo campo LINK.
+--- Incluidos os campos MODALIDADE, EMPRESA, CONTRATO e PROCESSO_SEI_CONTRATACAO no popup das obras pontuais.
+--- Incluidos os campos Modalidade, Empresa, Contrato e Processo SEI Contratacao na tabela inferior "Dados das obras pontuais".
+--- Validada a consistencia dos vinculos entre data/obras_pontos.geojson e data/OBRAS_PONTOS.json, com 250 pontos vinculados e nenhum ponto sem registro associado.
+VERSAO 2.3 - 15/07/2026
+-------------------------
+
+Ajustes na malha estadual SRE base:
+--- Ajustado o agrupamento dos rotulos da camada data/sre_base.geojson para evitar escudos duplicados em geometrias coincidentes.
+--- Mantida a formatacao visual existente dos rotulos, exibindo a rodovia de menor valor quando houver sobreposicao entre rodovias.
+--- Ajustado o popup da malha estadual para listar, junto ao SRE clicado, os SREs coincidentes/sobrepostos da mesma geometria.
+--- Validada a nova base com 231 grupos de geometrias coincidentes, incluindo casos como GO-020 sobre GO-139.
+--- Otimizada a chave interna de comparacao das geometrias coincidentes para evitar travamento no carregamento inicial da pagina.
+--- Ajustado o popup da malha estadual para montar as informacoes somente ao clicar no trecho, evitando processamento pesado na abertura do mapa.
+--- Ajustado o popup sem filtro de Rodovia/SRE para exibir como principal a rodovia de menor valor nos trechos coincidentes e listar apenas os codigos dos SREs coincidentes.
+--- Ajustada a leitura de trecho e extensao das obras lineares para aceitar os campos da nova data/obras_linhas.geojson, incluindo trecho em minusculo no popup, painel inferior, exportacao e impressao.
+--- Incluidos os campos Modalidade, Empresa, Contrato e Processo SEI Contratacao da tabela data/OBRAS_LINHAS_FUNDEINFRA.json no popup, painel inferior e tabela de impressao das obras lineares FUNDEINFRA.
+--- Corrigido o titulo da aba do mapa e atualizado o rodape da interface para VER. 2.3.
+VERSAO 2.4 - 24/07/2026
+-------------------------
+
+Atualizacao da camada de areas ambientais:
+--- Ajustado o popup da camada data/parques_go.geojson para a nova estrutura de atributos da base unidades_conservacao_go.
+--- Incluidos no popup ambiental os campos Nome, Categoria, Grupo, Jurisdicao, UF, Municipios, Gestor, Criacao, Ato de criacao, Area (ha) e Area (km2), quando disponiveis.
+--- Mantida compatibilidade com campos antigos da camada ambiental, como UNIDADE, REGISTRO, PARQUE e AREA_KM2.
+--- Mantida a prioridade baixa da camada ambiental por meio do pane areasAmbientaisPane abaixo de areasUrbanasPane.
+--- Atualizado o rodape da interface para VER. 2.4.
+VERSAO 2.5 - 03/08/2026
+-------------------------
+
+Migracao progressiva das obras pontuais para tabela por coordenadas:
+--- Adicionada leitura da nova tabela data/DADOS.json como fonte de obras pontuais por coordenadas LATITUDE e LONGITUDE.
+--- Adicionada a origem DSV como Seguranca Viaria na pagina inicial, com imagem data/DSV.jpg e filtro dedicado no mapa.
+--- Ajustada a origem DOC para usar os pontos gerados pela tabela data/DADOS.json, sem depender inicialmente do shape antigo de pontos.
+--- Definido o campo IDCOD como chave agregadora dos novos dados por coordenada.
+--- Ajustado o agrupamento dos marcadores de DADOS.json para gerar um ponto por IDCOD e vincular todos os registros correspondentes no popup e na tabela inferior.
+--- Mantida compatibilidade temporaria com o fluxo antigo por LINK para as bases legadas ainda nao migradas.
+--- Removida a exibicao dos campos LATITUDE, LONGITUDE e LINK no popup e na tabela inferior das obras pontuais, mantendo latitude e longitude apenas para posicionamento dos marcadores.
+--- Corrigida a acentuacao dos textos do site apos a inclusao da nova base de dados.
+
+
+VERSAO 2.6 - 07/08/2026
+-------------------------
+
+Unificacao das bases de obras no arquivo DADOS.json:
+--- Consolidada a leitura dos dados do site a partir de data/DADOS.json, usando o campo TIPO para separar obras de Ponto e Linha.
+--- Ajustada a leitura de data/obras_linhas.geojson para usar os novos vinculos por unidade: IDCOD_FUND, IDCOD_DOR, IDCOD_DMA, IDCOD_DPL e IDCOD_DPJ, referenciando DADOS.IDCOD.
+--- Mantida a exibicao somente de campos preenchidos em popups e tabelas do painel inferior.
+--- Renomeado o filtro visual de Servico para Intervencao e ajustada a populacao do filtro exclusivamente pelo campo INTERVENCAO.
+--- Ajustada a filtragem das obras pontuais e lineares para comparar somente com INTERVENCAO, sem fallback para SERVICO ou DESCRICAO.
+--- Incluido o campo PROPOSTA nos registros FUNDEINFRA, inclusive nas obras pontuais.
+--- Incluido o campo ATUALIZACAO somente nas tabelas do painel inferior do site, sem exibicao nos popups.
+--- Ajustada a classificacao visual de OAE para considerar qualquer valor de INTERVENCAO que contenha a palavra OAE, como Implantacao de OAE, Recuperacao de OAE e Restauracao de OAE.
+--- Padronizada a exibicao do campo IDCOD em todas as tabelas e popups vinculados aos dados de obras.
+--- Substituido o rotulo Item por IDCOD nas tabelas e popups das unidades DOR, DMA, DPL e DPJ.
+--- Ajustada a tabela de impressao para incluir IDCOD e remover duplicidades de identificador nas unidades vinculadas.
+--- Adicionada a nova funcao Alteracoes de Jurisdicao na pagina inicial, com imagem data/ALTERACAO.jpg e entrada dedicada para abrir o mapa somente com esta camada ativa.
+--- Adicionado bloco lateral independente para Alteracoes de Jurisdicao, com botoes Estadualizacao, Federalizacao e Municipalizacao.
+--- Adicionada leitura de data/alteracoes_linhas.geojson e data/ALTERACOES.json, vinculadas pelo campo ID.
+--- Implementada simbologia das alteracoes: Estadualizacao em verde, Federalizacao em azul e Municipalizacao em vermelho.
+--- Adicionado popup das alteracoes com Tipo, Processo, Municipios e Situacao atual, ocultando campos vazios.
+--- Adicionada tabela inferior das alteracoes com todos os campos preenchidos da tabela ALTERACOES.json para o trecho selecionado.
+--- Ajustado o index.html para exibir Alteracoes de Jurisdicao como menu proprio no bloco de acessos gerais da tela inicial, usando data/ALTERACAO.jpg no hover.
+--- Ajustado o menu lateral de Alteracoes de Jurisdicao para ficar colapsavel, com botoes em uma coluna, e adicionada legenda propria no painel direito.
+--- Adicionado recurso no painel inferior para mostrar os registros filtrados de obras lineares, obras pontuais e alteracoes de jurisdicao, com botao de zoom em cada linha da tabela.
+--- Ajustada a planilha de registros: botao renomeado para Mostrar todos registros, incluido Voltar, busca interna, exibicao de todos os campos preenchidos e destaque verde na linha selecionada pelo zoom.
+--- Adicionada rolagem horizontal e vertical na planilha completa do painel inferior para facilitar a visualizacao de muitas colunas.
+
+
+VERSAO 2.7 - 09/09/2026
+-------------------------
+
+Camadas de base, ferrovias e interacao com o mapa:
+--- Incluida area de influencia em azul claro semitransparente, com contorno azul, acima dos poligonos e abaixo das linhas; controle em Malhas de base, desativado por padrao.
+--- Adicionado contorno branco abaixo das divisas tracejadas dos municipios e ajustada a opacidade do preenchimento.
+--- Adicionado popup ao clicar no poligono municipal, com titulo "Municipio de", codigo IBGE e regiao de planejamento, com acentuacao correta na interface.
+--- Mantidos os municipios sem rotulos permanentes, usando o popup para identificar cada poligono.
+--- Ampliada a area de clique das linhas para pelo menos 18 pixels, sem alterar sua espessura visual e preservando os paineis vinculados.
+--- Incluida data/ferrovias.geojson em Malhas de base, desativada por padrao, com popup, linha continua e tracos perpendiculares.
+--- Adicionada legenda das ferrovias, exibida somente quando a camada esta ativa.
+--- Adicionada lista de ferrovias abaixo de SRE nos filtros, com nomes unicos e opcao Todas; a selecao ativa e filtra a camada sem alterar o zoom.
+--- Preservados zoom e posicao do mapa ao alternar as malhas de base.
+--- Ativada a camada Municipios por padrao na entrada Alteracoes de Jurisdicao do menu inicial.
+--- Validada a sintaxe JavaScript e realizadas verificacoes isoladas de cliques, filtros ferroviarios e legenda; sem validacao automatizada em navegador.
