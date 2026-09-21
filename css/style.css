@@ -533,6 +533,32 @@
   display: block;
 }
 
+.pedagio-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-marker-icon.pedagio-icon:hover,
+.pedagio-icon:hover {
+  z-index: 2147483647 !important;
+}
+
+.pedagio-simbolo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.35));
+  transform-origin: center center;
+  transition: transform 0.14s ease, filter 0.14s ease;
+}
+
+.pedagio-icon:hover .pedagio-simbolo {
+  filter: drop-shadow(0 4px 9px rgba(0,0,0,0.42));
+  transform: scale(2);
+}
+
 .obra-ponto-badge {
   position: absolute;
   z-index: 2;

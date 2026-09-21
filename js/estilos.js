@@ -17,6 +17,7 @@ const MAPA_PANES = {
   localidadesPane: 550,
   oaePane: 600,
   aeroPane: 620,
+  pedagiosPane: 625,
   rotulosBasePane: 650,
   anotacoesPane: 850,
   medicaoPane: 875,

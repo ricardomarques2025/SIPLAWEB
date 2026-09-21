@@ -98,6 +98,12 @@ var CONFIG_AERO = {
   }
 };
 
+// CONFIGURACAO DO ICONE DAS PRACAS DE PEDAGIO.
+var CONFIG_PEDAGIO = {
+  tamanho: 28,
+  icone: 'data/placapedagio.svg'
+};
+
 function criarPanesMapa() {
   Object.keys(MAPA_PANES).forEach(function(nomePane) {
     map.createPane(nomePane);
@@ -504,6 +510,7 @@ map.addControl(new LogoMapaControl());
   var obrasPontosCoordenadasData = null;
   var aeroData = null;
   var aeroObrasData = null;
+  var pedagiosData = null;
   var oaeData = null;
   var estadosData = null;
   var snvData = null;
@@ -524,6 +531,8 @@ map.addControl(new LogoMapaControl());
   var aeroLayer = null;
   var aeroObrasIconLayer = null;
   var aeroObrasClusterRefs = [];
+  var pedagiosLayer = null;
+  var pedagiosFiltroAtivo = true;
   var oaeLayer = null;
   var snvLayer = null;
   var obrasLabelLayer = null;
@@ -2507,6 +2516,10 @@ map.addControl(new LogoMapaControl());
     if (btnAero) {
       btnAero.classList.toggle('ativo-filtro', aeroFiltroAtivo);
     }
+    var btnPedagios = document.getElementById('togglePedagios');
+    if (btnPedagios) {
+      btnPedagios.classList.toggle('ativo-filtro', pedagiosFiltroAtivo);
+    }
     var btnMunicipios = document.getElementById('toggleMunicipiosBase');
     if (btnMunicipios) {
       btnMunicipios.classList.toggle('ativo-filtro', municipioBaseFiltroAtivo);
@@ -3871,6 +3884,63 @@ map.addControl(new LogoMapaControl());
       html += '<br><b>' + escaparHtml(linhas[i][0]) + ':</b> ' + escaparHtml(linhas[i][1]);
     }
     return html;
+  }
+
+  function criarIconePedagio() {
+    var tamanho = CONFIG_PEDAGIO.tamanho;
+    return L.divIcon({
+      className: 'pedagio-icon',
+      html: '<img class="pedagio-simbolo" src="' + CONFIG_PEDAGIO.icone + '" alt="" aria-hidden="true" style="width:' + tamanho + 'px;height:' + tamanho + 'px;" />',
+      iconSize: [tamanho, tamanho],
+      iconAnchor: [tamanho / 2, tamanho / 2],
+      popupAnchor: [0, -tamanho / 2]
+    });
+  }
+
+  function construirPopupPedagio(feature) {
+    var p = feature.properties || {};
+    var linhas = [
+      ['Concessão', p.CONCESSAO],
+      ['Rodovia', p.RODOVIA],
+      ['UF', p.UF],
+      ['Km', p.KM_M],
+      ['Município', p.MUNICIPIO],
+      ['Tipo', p.TIPO_PI],
+      ['Sentido', p.SENTIDO]
+    ];
+    var html = '<b>' + escaparHtml(p.PRACA_DE || 'Praça de pedágio') + '</b>';
+    for (var i = 0; i < linhas.length; i++) {
+      if (linhas[i][1] === null || linhas[i][1] === undefined || linhas[i][1] === '') continue;
+      html += '<br><b>' + escaparHtml(linhas[i][0]) + ':</b> ' + escaparHtml(linhas[i][1]);
+    }
+    return html;
+  }
+
+  function desenharPedagios() {
+    if (pedagiosLayer) {
+      map.removeLayer(pedagiosLayer);
+      pedagiosLayer = null;
+    }
+
+    if (!pedagiosFiltroAtivo || !pedagiosData || !pedagiosData.features) return;
+
+    pedagiosLayer = L.layerGroup();
+
+    pedagiosData.features.forEach(function(feature) {
+      var coords = feature.geometry && feature.geometry.coordinates;
+      if (!coords || coords.length < 2) return;
+
+      var marker = L.marker([coords[1], coords[0]], {
+        pane: 'pedagiosPane',
+        icon: criarIconePedagio(),
+        title: valorSeguro(feature, 'PRACA_DE') || ''
+      });
+
+      marker.bindPopup(construirPopupPedagio(feature));
+      pedagiosLayer.addLayer(marker);
+    });
+
+    if (pedagiosLayer.getLayers().length) pedagiosLayer.addTo(map);
   }
 
   function desenharAero() {
@@ -7792,6 +7862,7 @@ map.addControl(new LogoMapaControl());
     desenharBuffer();
     desenharLocalidades();
     desenharAero();
+    desenharPedagios();
     desenharLinhasEPontos(feats);
     atualizarIndicadoresProgramaMunicipio(municipioSelecionado);
     atualizarIndicadoresIntervencaoEOAE(municipioSelecionado);
@@ -7867,6 +7938,9 @@ map.addControl(new LogoMapaControl());
     aeroFiltroAtivo = false;
     var btnAeroOff = document.getElementById('toggleAero');
     if (btnAeroOff) btnAeroOff.classList.remove('ativo-filtro');
+    pedagiosFiltroAtivo = false;
+    var btnPedagiosOff = document.getElementById('togglePedagios');
+    if (btnPedagiosOff) btnPedagiosOff.classList.remove('ativo-filtro');
     municipioBaseFiltroAtivo = false;
     regioesBaseAtivas.manutencao = false;
     regioesBaseAtivas.planejamento = false;
@@ -7888,6 +7962,7 @@ map.addControl(new LogoMapaControl());
     if (areasAmbientaisLayer) { map.removeLayer(areasAmbientaisLayer); areasAmbientaisLayer = null; }
     if (areasUrbanasLayer) { map.removeLayer(areasUrbanasLayer); areasUrbanasLayer = null; }
     if (aeroLayer) { map.removeLayer(aeroLayer); aeroLayer = null; }
+    if (pedagiosLayer) { map.removeLayer(pedagiosLayer); pedagiosLayer = null; }
     if (oaeLayer) { map.removeLayer(oaeLayer); oaeLayer = null; }
     limparCamadasRegras();
 
@@ -7978,6 +8053,9 @@ map.addControl(new LogoMapaControl());
     aeroFiltroAtivo = true;
     var btnAeroOn = document.getElementById('toggleAero');
     if (btnAeroOn) btnAeroOn.classList.add('ativo-filtro');
+    pedagiosFiltroAtivo = true;
+    var btnPedagiosOn = document.getElementById('togglePedagios');
+    if (btnPedagiosOn) btnPedagiosOn.classList.add('ativo-filtro');
     // Municípios começam desligados
     municipioBaseFiltroAtivo = false;
     var btnMunicipiosOn = document.getElementById('toggleMunicipiosBase');
@@ -8110,6 +8188,7 @@ map.addControl(new LogoMapaControl());
       snvFiltroAtivo = true;
       localidadeFiltroAtivo = true;
       aeroFiltroAtivo = true;
+      pedagiosFiltroAtivo = true;
       municipioBaseFiltroAtivo = true;
       areasAmbientaisFiltroAtivo = true;
       areasUrbanasFiltroAtivo = true;
@@ -8545,6 +8624,15 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  var btnTogglePedagios = document.getElementById('togglePedagios');
+  if (btnTogglePedagios) {
+    btnTogglePedagios.addEventListener('click', function() {
+      pedagiosFiltroAtivo = !pedagiosFiltroAtivo;
+      atualizarBotoesBase();
+      desenharPedagios();
+    });
+  }
+
   var btnToggleMunicipios = document.getElementById('toggleMunicipiosBase');
   if (btnToggleMunicipios) {
     btnToggleMunicipios.addEventListener('click', function() {
@@ -8976,6 +9064,7 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/aero.geojson', false),
     fetchGeoJSON('data/geo_pol_base.geojson', false),
     fetchGeoJSON('data/ferrovias.geojson', false),
+    fetchGeoJSON('data/pracas_pedagio_goias.geojson', false),
     carregarDadosUnificados(),
     fetchGeoJSON('data/regioes.geojson', true),
     fetchGeoJSON('data/extra_base.geojson', false),
@@ -8999,12 +9088,13 @@ map.addControl(new LogoMapaControl());
     var geoPolBaseData = resultado[9];
     ferroviasData = resultado[10];
     preencherFerrovias();
+    pedagiosData = resultado[11];
 
-    regioesData = resultado[12];
-    extraBaseData = resultado[13];
+    regioesData = resultado[13];
+    extraBaseData = resultado[14];
 
-    var registros = resultado[11];
-    var links = resultado[14];
+    var registros = resultado[12];
+    var links = resultado[15];
     var registrosPorIdcod = indexarRegistrosPorIdcod(registros);
     var baseIndices = {
       sre_base: indexarPorGeocod(sreBaseData),
