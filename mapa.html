@@ -125,6 +125,20 @@
           <option value="Municipalização">Municipalização</option>
         </select>
 
+        <label for="pedagioTipoSelect">Pedágios - Tipo</label>
+        <select id="pedagioTipoSelect">
+          <option value="">Todos</option>
+          <option value="Praça física">Praça física</option>
+          <option value="Free Flow">Free Flow</option>
+        </select>
+
+        <label for="pedagioContratoSelect">Pedágios - Contrato</label>
+        <select id="pedagioContratoSelect">
+          <option value="">Todos</option>
+          <option value="ATIVO">Ativo</option>
+          <option value="DESATIVADO">Desativado</option>
+        </select>
+
         <details class="filtro-regional">
           <summary>Regiões de Manutenção</summary>
           <select id="rgManSelect" multiple hidden aria-label="Regiões de Manutenção"></select>
@@ -423,6 +437,11 @@
       <div class="bloco legenda-categoria" id="blocoLegendaAero" style="display: none;">
         <div class="subtitulo">Aeródromos e Aeroportos</div>
         <div id="legendaAero"></div>
+      </div>
+
+      <div class="bloco legenda-categoria" id="blocoLegendaPedagios" style="display: none;">
+        <div class="subtitulo">Pedágios</div>
+        <div id="legendaPedagios"></div>
       </div>
 
       <div class="bloco legenda-categoria" id="blocoLegendaAnotacoes" style="display: none;">

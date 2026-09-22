@@ -101,7 +101,7 @@ var CONFIG_AERO = {
 // CONFIGURACAO DO ICONE DAS PRACAS DE PEDAGIO.
 var CONFIG_PEDAGIO = {
   tamanho: 28,
-  icone: 'data/placapedagio.svg'
+  icone: 'data/placapedagio_roxo.svg'
 };
 
 function criarPanesMapa() {
@@ -533,6 +533,8 @@ map.addControl(new LogoMapaControl());
   var aeroObrasClusterRefs = [];
   var pedagiosLayer = null;
   var pedagiosFiltroAtivo = true;
+  var pedagioTipoFiltro = '';
+  var pedagioContratoFiltro = '';
   var oaeLayer = null;
   var snvLayer = null;
   var obrasLabelLayer = null;
@@ -3900,20 +3902,28 @@ map.addControl(new LogoMapaControl());
   function construirPopupPedagio(feature) {
     var p = feature.properties || {};
     var linhas = [
-      ['Concessão', p.CONCESSAO],
+      ['Operador', p.OPERADOR],
       ['Rodovia', p.RODOVIA],
-      ['UF', p.UF],
-      ['Km', p.KM_M],
+      ['Km', p.KM],
       ['Município', p.MUNICIPIO],
-      ['Tipo', p.TIPO_PI],
-      ['Sentido', p.SENTIDO]
+      ['Jurisdição', p.JURISDICAO],
+      ['Tipo', p.TIPO],
+      ['Contrato', p.CONTRATO],
+      ['Observação', p.OBS]
     ];
-    var html = '<b>' + escaparHtml(p.PRACA_DE || 'Praça de pedágio') + '</b>';
+    var html = '<b>' + escaparHtml(p.NOME || 'Praça de pedágio') + '</b>';
     for (var i = 0; i < linhas.length; i++) {
       if (linhas[i][1] === null || linhas[i][1] === undefined || linhas[i][1] === '') continue;
       html += '<br><b>' + escaparHtml(linhas[i][0]) + ':</b> ' + escaparHtml(linhas[i][1]);
     }
     return html;
+  }
+
+  function pedagioPassaFiltro(feature) {
+    var p = feature.properties || {};
+    if (pedagioTipoFiltro && p.TIPO !== pedagioTipoFiltro) return false;
+    if (pedagioContratoFiltro && p.CONTRATO !== pedagioContratoFiltro) return false;
+    return true;
   }
 
   function desenharPedagios() {
@@ -3927,13 +3937,15 @@ map.addControl(new LogoMapaControl());
     pedagiosLayer = L.layerGroup();
 
     pedagiosData.features.forEach(function(feature) {
+      if (!pedagioPassaFiltro(feature)) return;
+
       var coords = feature.geometry && feature.geometry.coordinates;
       if (!coords || coords.length < 2) return;
 
       var marker = L.marker([coords[1], coords[0]], {
         pane: 'pedagiosPane',
         icon: criarIconePedagio(),
-        title: valorSeguro(feature, 'PRACA_DE') || ''
+        title: valorSeguro(feature, 'NOME') || ''
       });
 
       marker.bindPopup(construirPopupPedagio(feature));
@@ -3941,6 +3953,29 @@ map.addControl(new LogoMapaControl());
     });
 
     if (pedagiosLayer.getLayers().length) pedagiosLayer.addTo(map);
+    renderizarLegendaPedagios();
+  }
+
+  function renderizarLegendaPedagios() {
+    var bloco = document.getElementById('blocoLegendaPedagios');
+    var alvo = document.getElementById('legendaPedagios');
+    if (!bloco || !alvo) return;
+
+    alvo.innerHTML = '';
+    if (!pedagiosLayer || !pedagiosLayer.getLayers().length) {
+      bloco.style.display = 'none';
+      return;
+    }
+
+    var div = document.createElement('div');
+    div.className = 'legenda-item';
+    div.innerHTML =
+      '<span class="legenda-aero-simbolo"><img class="aero-simbolo" src="' +
+      CONFIG_PEDAGIO.icone +
+      '" alt="" aria-hidden="true" /></span><div class="legenda-texto">Praça de pedágio</div>';
+    alvo.appendChild(div);
+
+    bloco.style.display = '';
   }
 
   function desenharAero() {
@@ -7978,6 +8013,7 @@ map.addControl(new LogoMapaControl());
     var bDsv = document.getElementById('legendaDsv') ? document.getElementById('legendaDsv').closest('.bloco') : null;
     var bAlteracoes = document.getElementById('blocoLegendaAlteracoes');
     var bAero = document.getElementById('blocoLegendaAero');
+    var bPedagios = document.getElementById('blocoLegendaPedagios');
     if (b1) b1.style.display = 'none';
     if (b2) b2.style.display = 'none';
     if (b3) b3.style.display = 'none';
@@ -7990,6 +8026,7 @@ map.addControl(new LogoMapaControl());
     if (bDsv) bDsv.style.display = 'none';
     if (bAlteracoes) bAlteracoes.style.display = 'none';
     if (bAero) bAero.style.display = 'none';
+    if (bPedagios) bPedagios.style.display = 'none';
 
     desenharEstados();
     desenharMunicipiosBase(municipiosFiltrados());
@@ -8056,6 +8093,12 @@ map.addControl(new LogoMapaControl());
     pedagiosFiltroAtivo = true;
     var btnPedagiosOn = document.getElementById('togglePedagios');
     if (btnPedagiosOn) btnPedagiosOn.classList.add('ativo-filtro');
+    pedagioTipoFiltro = '';
+    pedagioContratoFiltro = '';
+    var selectPedagioTipoOn = document.getElementById('pedagioTipoSelect');
+    if (selectPedagioTipoOn) selectPedagioTipoOn.value = '';
+    var selectPedagioContratoOn = document.getElementById('pedagioContratoSelect');
+    if (selectPedagioContratoOn) selectPedagioContratoOn.value = '';
     // Municípios começam desligados
     municipioBaseFiltroAtivo = false;
     var btnMunicipiosOn = document.getElementById('toggleMunicipiosBase');
@@ -8633,6 +8676,22 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  var selectPedagioTipo = document.getElementById('pedagioTipoSelect');
+  if (selectPedagioTipo) {
+    selectPedagioTipo.addEventListener('change', function() {
+      pedagioTipoFiltro = this.value;
+      desenharPedagios();
+    });
+  }
+
+  var selectPedagioContrato = document.getElementById('pedagioContratoSelect');
+  if (selectPedagioContrato) {
+    selectPedagioContrato.addEventListener('change', function() {
+      pedagioContratoFiltro = this.value;
+      desenharPedagios();
+    });
+  }
+
   var btnToggleMunicipios = document.getElementById('toggleMunicipiosBase');
   if (btnToggleMunicipios) {
     btnToggleMunicipios.addEventListener('click', function() {
@@ -9064,7 +9123,7 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/aero.geojson', false),
     fetchGeoJSON('data/geo_pol_base.geojson', false),
     fetchGeoJSON('data/ferrovias.geojson', false),
-    fetchGeoJSON('data/pracas_pedagio_goias.geojson', false),
+    fetchGeoJSON('data/pedagios.geojson', false),
     carregarDadosUnificados(),
     fetchGeoJSON('data/regioes.geojson', true),
     fetchGeoJSON('data/extra_base.geojson', false),
