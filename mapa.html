@@ -76,10 +76,18 @@
           <option value="">Todos</option>
         </select>
 
-        <label for="bufferSelect">Área de Influência</label>
-        <select id="bufferSelect">
-          <option value="">Todos</option>
-        </select>
+        <details class="filtro-regional">
+          <summary>SRE - Situação</summary>
+          <select id="sreSituacaoSelect" multiple hidden aria-label="SRE - Situação"></select>
+          <div id="sreSituacaoSelectLista" class="lista-regional"></div>
+          <button id="sreSituacaoSelectLimpar" type="button">Marcar todos</button>
+        </details>
+        <details class="filtro-regional">
+          <summary>SRE - Jurisdição</summary>
+          <select id="sreJurisdicaoSelect" multiple hidden aria-label="SRE - Jurisdição"></select>
+          <div id="sreJurisdicaoSelectLista" class="lista-regional"></div>
+          <button id="sreJurisdicaoSelectLimpar" type="button">Marcar todos</button>
+        </details>
 
         <label for="ferroviaSelect">Ferrovia</label>
         <select id="ferroviaSelect">
@@ -114,6 +122,11 @@
         </div>
 
         <select id="municipioSelect">
+          <option value="">Todos</option>
+        </select>
+
+        <label for="bufferSelect">Área de Influência</label>
+        <select id="bufferSelect">
           <option value="">Todos</option>
         </select>
 
@@ -177,7 +190,7 @@
           <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de Influência</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleAlteracoesJurisdicao" type="button" aria-pressed="true">Alterações de Jurisdição</button>
-          <button class="filtro-btn base-btn ativo-filtro" id="togglePedagios" type="button" aria-pressed="true">Pedágios</button>
+          <button class="filtro-btn base-btn" id="togglePedagios" type="button" aria-pressed="false">Pedágios</button>
         </div>
       </div>
     </details>

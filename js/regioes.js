@@ -37,8 +37,47 @@ function poligonosManutencaoSelecionados() {
   return regioesData ? regioesData.features.filter(function(f) { return ids.includes(String(valorSeguro(f, 'REG'))); }) : [];
 }
 
+// Filtros de atributos da camada sre_base (seleção múltipla, como as regiões).
+var FILTROS_SRE_BASE = { sreSituacaoSelect: 'situacao', sreJurisdicaoSelect: 'jurisdicao' };
+var ROTULOS_SITUACAO_SRE = {
+  DUP: 'Duplicada', EOD: 'Em obras de duplicação', PAV: 'Pavimentada', EOP: 'Em obras de pavimentação',
+  IMP: 'Implantada', LEN: 'Leito natural', PLA: 'Planejada'
+};
+
+function prepararFiltrosSREBase() {
+  Object.keys(FILTROS_SRE_BASE).forEach(function(id) {
+    var campo = FILTROS_SRE_BASE[id];
+    var select = document.getElementById(id);
+    var valores = new Set();
+    (sreBaseData ? sreBaseData.features : []).forEach(function(f) {
+      var valor = String(valorSeguro(f, campo));
+      if (valor) valores.add(valor);
+    });
+    select.replaceChildren();
+    Array.from(valores).sort().forEach(function(valor) {
+      var rotulo = campo === 'situacao' && ROTULOS_SITUACAO_SRE[valor] ? valor + ' - ' + ROTULOS_SITUACAO_SRE[valor] : valor;
+      select.add(new Option(rotulo, valor, true, true));
+    });
+    criarListaRegional(id);
+  });
+}
+
+// Por padrão todos os itens ficam marcados; desmarcar um item oculta esses trechos.
+function selecionarTodosFiltrosSREBase() {
+  Object.keys(FILTROS_SRE_BASE).forEach(function(id) {
+    Array.from(document.getElementById(id).options).forEach(function(o) { o.selected = true; });
+  });
+  sincronizarListasRegionais();
+}
+
+function featureAtendeFiltrosSREBase(feature) {
+  return Object.keys(FILTROS_SRE_BASE).every(function(id) {
+    return regioesSelecionadas(id).includes(String(valorSeguro(feature, FILTROS_SRE_BASE[id])));
+  });
+}
+
 function sincronizarListasRegionais() {
-  ['rgPlanSelect', 'rgManSelect'].forEach(function(id) {
+  ['rgPlanSelect', 'rgManSelect'].concat(Object.keys(FILTROS_SRE_BASE)).forEach(function(id) {
     var valores = regioesSelecionadas(id);
     document.querySelectorAll('#' + id + 'Lista input').forEach(function(input) {
       input.checked = valores.includes(input.value);
@@ -55,6 +94,7 @@ function criarListaRegional(id) {
     var input = document.createElement('input');
     input.type = 'checkbox';
     input.value = opcao.value;
+    input.checked = opcao.selected;
     input.addEventListener('change', function() {
       opcao.selected = input.checked;
       select.dispatchEvent(new Event('change'));
@@ -91,6 +131,7 @@ function prepararRegioes() {
   });
   criarListaRegional('rgPlanSelect');
   criarListaRegional('rgManSelect');
+  prepararFiltrosSREBase();
 }
 
 function prepararFiltroAreaInfluencia() {
@@ -373,6 +414,16 @@ function configurarControlesRegionais() {
     });
     document.getElementById(id + 'Limpar').addEventListener('click', function() {
       document.getElementById(id).value = '';
+      document.getElementById(id).dispatchEvent(new Event('change'));
+    });
+  });
+  Object.keys(FILTROS_SRE_BASE).forEach(function(id) {
+    document.getElementById(id).addEventListener('change', function() {
+      aplicarFiltros({ preservarZoom: true });
+    });
+    document.getElementById(id + 'Limpar').addEventListener('click', function() {
+      Array.from(document.getElementById(id).options).forEach(function(o) { o.selected = true; });
+      sincronizarListasRegionais();
       document.getElementById(id).dispatchEvent(new Event('change'));
     });
   });
