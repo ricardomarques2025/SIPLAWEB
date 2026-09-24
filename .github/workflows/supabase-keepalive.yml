@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Chamar registrar_acesso() no Supabase
         env:
-          # Chave "anon" pública do projeto banco-gis — a mesma já embutida
-          # em js/mapa.js para o site funcionar no navegador de qualquer
-          # visitante. Não é um segredo (protegida por RLS no banco), por
-          # isso fica direto aqui em vez de exigir configurar um secret.
+          # Chave "anon" pública do projeto banco-gis (a mesma usada pelo
+          # site quando ele lia os dados do Supabase). Não é um segredo
+          # (protegida por RLS no banco), por isso fica direto aqui em vez
+          # de exigir configurar um secret.
           SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0dWthYW5lbGNzZXZkbW9xbHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNDE0NTIsImV4cCI6MjEwMjcxNzQ1Mn0.WgEoQ4FEGTOuTrWtDN07eGc6huKWP5QD7Bt44GPeq4o"
         run: |
           curl -sf -X POST "https://ctukaanelcsevdmoqlys.supabase.co/rest/v1/rpc/registrar_acesso" \

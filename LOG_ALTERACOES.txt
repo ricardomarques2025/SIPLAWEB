@@ -410,5 +410,5 @@ Retorno das tabelas de negocio para arquivos locais (sem Supabase):
 --- Exportadas as tabelas dados (603 registros) e obras_links (1480 registros) do Supabase para data/DADOS.json e data/OBRAS_LINKS.json.
 --- O mapa volta a ler data/DADOS.json e data/OBRAS_LINKS.json diretamente da pasta data, sem conexao com o banco.
 --- Removidos de js/mapa.js a chave de acesso, a leitura paginada via REST e o registro de acessos no Supabase.
---- Removido o workflow .github/workflows/supabase-keepalive.yml, que existia apenas para impedir a pausa do projeto no plano gratuito.
+--- Mantido o workflow .github/workflows/supabase-keepalive.yml para impedir a pausa do projeto no plano gratuito, prevendo o retorno futuro ao banco de dados.
 --- Atualizado o parametro de versao dos scripts e estilos em mapa.html para forcar o navegador a carregar a nova versao.
