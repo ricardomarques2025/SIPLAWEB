@@ -6191,11 +6191,25 @@ map.addControl(new LogoMapaControl());
   function coletarAlteracoesFiltradasParaTabela() {
     var registros = [];
     if (!alteracoesData || !alteracoesData.features || !algumaAlteracaoAtiva()) return registros;
+    // Cada alteração (ID) pode abranger vários trechos/SREs, cada um com sua
+    // própria feature. Agrupamos por ID para exibir uma única linha na tabela,
+    // guardando todas as features para o Zoom abranger a alteração inteira.
+    var gruposPorId = {};
+    var ordemIds = [];
     for (var i = 0; i < alteracoesData.features.length; i++) {
       var feature = alteracoesData.features[i];
       var dados = dadosAlteracaoDaFeature(feature);
       if (!dados || !alteracoesAtivas[dados.TIPO]) continue;
-      registros.push(prepararRegistroListaCompleta(dados, dados.TIPO, feature, 'alteracao'));
+      var id = String(valorSeguro(feature, 'ID')).trim();
+      if (!gruposPorId[id]) {
+        gruposPorId[id] = { dados: dados, features: [] };
+        ordemIds.push(id);
+      }
+      gruposPorId[id].features.push(feature);
+    }
+    for (var g = 0; g < ordemIds.length; g++) {
+      var grupo = gruposPorId[ordemIds[g]];
+      registros.push(prepararRegistroListaCompleta(grupo.dados, grupo.dados.TIPO, grupo.features, 'alteracao'));
     }
     return registros;
   }
