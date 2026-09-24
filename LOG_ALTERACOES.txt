@@ -401,3 +401,14 @@ Camadas de base, ferrovias e interacao com o mapa:
 --- Preservados zoom e posicao do mapa ao alternar as malhas de base.
 --- Ativada a camada Municipios por padrao na entrada Alteracoes de Jurisdicao do menu inicial.
 --- Validada a sintaxe JavaScript e realizadas verificacoes isoladas de cliques, filtros ferroviarios e legenda; sem validacao automatizada em navegador.
+
+
+VERSAO 2.8 - 23/09/2026
+-------------------------
+
+Retorno das tabelas de negocio para arquivos locais (sem Supabase):
+--- Exportadas as tabelas dados (603 registros) e obras_links (1480 registros) do Supabase para data/DADOS.json e data/OBRAS_LINKS.json.
+--- O mapa volta a ler data/DADOS.json e data/OBRAS_LINKS.json diretamente da pasta data, sem conexao com o banco.
+--- Removidos de js/mapa.js a chave de acesso, a leitura paginada via REST e o registro de acessos no Supabase.
+--- Removido o workflow .github/workflows/supabase-keepalive.yml, que existia apenas para impedir a pausa do projeto no plano gratuito.
+--- Atualizado o parametro de versao dos scripts e estilos em mapa.html para forcar o navegador a carregar a nova versao.

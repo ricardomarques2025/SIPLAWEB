@@ -1,0 +1,7082 @@
+[
+  {
+    "GEOCOD": "309EGO0185",
+    "BASE": "sre_base",
+    "IDCOD": 20260700075
+  },
+  {
+    "GEOCOD": "309EGO0190",
+    "BASE": "sre_base",
+    "IDCOD": 20260700075
+  },
+  {
+    "GEOCOD": "309EGO0195",
+    "BASE": "sre_base",
+    "IDCOD": 20260700075
+  },
+  {
+    "GEOCOD": "080EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700077
+  },
+  {
+    "GEOCOD": "080EGO0252",
+    "BASE": "sre_base",
+    "IDCOD": 20260700077
+  },
+  {
+    "GEOCOD": "080EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700077
+  },
+  {
+    "GEOCOD": "080EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700077
+  },
+  {
+    "GEOCOD": "080EGO0265",
+    "BASE": "sre_base",
+    "IDCOD": 20260700077
+  },
+  {
+    "GEOCOD": "080EGO0280",
+    "BASE": "sre_base",
+    "IDCOD": 20260700077
+  },
+  {
+    "GEOCOD": "080EGO0290",
+    "BASE": "sre_base",
+    "IDCOD": 20260700077
+  },
+  {
+    "GEOCOD": "220EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700081
+  },
+  {
+    "GEOCOD": "220EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700081
+  },
+  {
+    "GEOCOD": "194EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700082
+  },
+  {
+    "GEOCOD": "194EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700082
+  },
+  {
+    "GEOCOD": "461EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700083
+  },
+  {
+    "GEOCOD": "461EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700083
+  },
+  {
+    "GEOCOD": "050EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700084
+  },
+  {
+    "GEOCOD": "050EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700084
+  },
+  {
+    "GEOCOD": "221EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700087
+  },
+  {
+    "GEOCOD": "306EGO0101",
+    "BASE": "sre_base",
+    "IDCOD": 20260700088
+  },
+  {
+    "GEOCOD": "306EGO0103",
+    "BASE": "sre_base",
+    "IDCOD": 20260700088
+  },
+  {
+    "GEOCOD": "306EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700088
+  },
+  {
+    "GEOCOD": "050EGO0400",
+    "BASE": "sre_base",
+    "IDCOD": 20260700089
+  },
+  {
+    "GEOCOD": "050EGO0410",
+    "BASE": "sre_base",
+    "IDCOD": 20260700089
+  },
+  {
+    "GEOCOD": "178EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700091
+  },
+  {
+    "GEOCOD": "178EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700091
+  },
+  {
+    "GEOCOD": "178EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700091
+  },
+  {
+    "GEOCOD": "178EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700092
+  },
+  {
+    "GEOCOD": "180EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700093
+  },
+  {
+    "GEOCOD": "206EGO0310",
+    "BASE": "sre_base",
+    "IDCOD": 20260700093
+  },
+  {
+    "GEOCOD": "206EGO0350",
+    "BASE": "sre_base",
+    "IDCOD": 20260700093
+  },
+  {
+    "GEOCOD": "194EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700094
+  },
+  {
+    "GEOCOD": "156EGO0360",
+    "BASE": "sre_base",
+    "IDCOD": 20260700096
+  },
+  {
+    "GEOCOD": "156EGO0370",
+    "BASE": "sre_base",
+    "IDCOD": 20260700096
+  },
+  {
+    "GEOCOD": "139EGO0145",
+    "BASE": "sre_base",
+    "IDCOD": 20260700097
+  },
+  {
+    "GEOCOD": "425EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700098
+  },
+  {
+    "GEOCOD": "425EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700098
+  },
+  {
+    "GEOCOD": "425EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700098
+  },
+  {
+    "GEOCOD": "435EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700099
+  },
+  {
+    "GEOCOD": "460EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700100
+  },
+  {
+    "GEOCOD": "460EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700100
+  },
+  {
+    "GEOCOD": "460EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700100
+  },
+  {
+    "GEOCOD": "460EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700100
+  },
+  {
+    "GEOCOD": "110EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700101
+  },
+  {
+    "GEOCOD": "110EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700101
+  },
+  {
+    "GEOCOD": "110EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700101
+  },
+  {
+    "GEOCOD": "110EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700101
+  },
+  {
+    "GEOCOD": "110EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700101
+  },
+  {
+    "GEOCOD": "110EGO0077",
+    "BASE": "sre_base",
+    "IDCOD": 20260700101
+  },
+  {
+    "GEOCOD": "433EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700102
+  },
+  {
+    "GEOCOD": "433EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700102
+  },
+  {
+    "GEOCOD": "154EGO0503",
+    "BASE": "sre_base",
+    "IDCOD": 20260700103
+  },
+  {
+    "GEOCOD": "154EGO0505",
+    "BASE": "sre_base",
+    "IDCOD": 20260700103
+  },
+  {
+    "GEOCOD": "154EGO0510",
+    "BASE": "sre_base",
+    "IDCOD": 20260700103
+  },
+  {
+    "GEOCOD": "219EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0042",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0043",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0044",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0046",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0047",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0048",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "219EGO0049",
+    "BASE": "sre_base",
+    "IDCOD": 20260700104
+  },
+  {
+    "GEOCOD": "455EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700105
+  },
+  {
+    "GEOCOD": "440EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700106
+  },
+  {
+    "GEOCOD": "440EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700106
+  },
+  {
+    "GEOCOD": "508EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700106
+  },
+  {
+    "GEOCOD": "206EGO0440",
+    "BASE": "sre_base",
+    "IDCOD": 20260700107
+  },
+  {
+    "GEOCOD": "219EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700109
+  },
+  {
+    "GEOCOD": "219EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700109
+  },
+  {
+    "GEOCOD": "219EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700110
+  },
+  {
+    "GEOCOD": "589EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700111
+  },
+  {
+    "GEOCOD": "589EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700111
+  },
+  {
+    "GEOCOD": "589EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700111
+  },
+  {
+    "GEOCOD": "230EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700112
+  },
+  {
+    "GEOCOD": "236EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700113
+  },
+  {
+    "GEOCOD": "236EGO0042",
+    "BASE": "sre_base",
+    "IDCOD": 20260700113
+  },
+  {
+    "GEOCOD": "470EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700115
+  },
+  {
+    "GEOCOD": "470EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700115
+  },
+  {
+    "GEOCOD": "439EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700116
+  },
+  {
+    "GEOCOD": "466EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700117
+  },
+  {
+    "GEOCOD": "466EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700117
+  },
+  {
+    "GEOCOD": "050EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700119
+  },
+  {
+    "GEOCOD": "050EGO0395",
+    "BASE": "sre_base",
+    "IDCOD": 20260700120
+  },
+  {
+    "GEOCOD": "139EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700121
+  },
+  {
+    "GEOCOD": "139EGO0083",
+    "BASE": "sre_base",
+    "IDCOD": 20260700121
+  },
+  {
+    "GEOCOD": "139EGO0085",
+    "BASE": "sre_base",
+    "IDCOD": 20260700121
+  },
+  {
+    "GEOCOD": "139EGO0087",
+    "BASE": "sre_base",
+    "IDCOD": 20260700121
+  },
+  {
+    "GEOCOD": "139EGO0088",
+    "BASE": "sre_base",
+    "IDCOD": 20260700121
+  },
+  {
+    "GEOCOD": "139EGO0089",
+    "BASE": "sre_base",
+    "IDCOD": 20260700121
+  },
+  {
+    "GEOCOD": "139EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700121
+  },
+  {
+    "GEOCOD": "180EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700122
+  },
+  {
+    "GEOCOD": "180EGO0007",
+    "BASE": "sre_base",
+    "IDCOD": 20260700122
+  },
+  {
+    "GEOCOD": "180EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700122
+  },
+  {
+    "GEOCOD": "184EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700122
+  },
+  {
+    "GEOCOD": "184EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700122
+  },
+  {
+    "GEOCOD": "302EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700122
+  },
+  {
+    "GEOCOD": "222EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700123
+  },
+  {
+    "GEOCOD": "222EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700123
+  },
+  {
+    "GEOCOD": "180EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700124
+  },
+  {
+    "GEOCOD": "180EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700124
+  },
+  {
+    "GEOCOD": "147EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700125
+  },
+  {
+    "GEOCOD": "147EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700125
+  },
+  {
+    "GEOCOD": "164EGO0550",
+    "BASE": "sre_base",
+    "IDCOD": 20260700126
+  },
+  {
+    "GEOCOD": "164EGO0555",
+    "BASE": "sre_base",
+    "IDCOD": 20260700126
+  },
+  {
+    "GEOCOD": "164EGO0570",
+    "BASE": "sre_base",
+    "IDCOD": 20260700126
+  },
+  {
+    "GEOCOD": "164EGO0580",
+    "BASE": "sre_base",
+    "IDCOD": 20260700126
+  },
+  {
+    "GEOCOD": "164EGO0590",
+    "BASE": "sre_base",
+    "IDCOD": 20260700126
+  },
+  {
+    "GEOCOD": "164EGO0595",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0600",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0610",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0630",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0640",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0650",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0660",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0670",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0680",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0690",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0710",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0720",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0730",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0750",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0770",
+    "BASE": "sre_base",
+    "IDCOD": 20260700128
+  },
+  {
+    "GEOCOD": "164EGO0790",
+    "BASE": "sre_base",
+    "IDCOD": 20260700129
+  },
+  {
+    "GEOCOD": "164EGO0810",
+    "BASE": "sre_base",
+    "IDCOD": 20260700129
+  },
+  {
+    "GEOCOD": "164EGO0830",
+    "BASE": "sre_base",
+    "IDCOD": 20260700129
+  },
+  {
+    "GEOCOD": "164EGO0850",
+    "BASE": "sre_base",
+    "IDCOD": 20260700129
+  },
+  {
+    "GEOCOD": "324EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700133
+  },
+  {
+    "GEOCOD": "324EGO0122",
+    "BASE": "sre_base",
+    "IDCOD": 20260700133
+  },
+  {
+    "GEOCOD": "324EGO0123",
+    "BASE": "sre_base",
+    "IDCOD": 20260700133
+  },
+  {
+    "GEOCOD": "307EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700134
+  },
+  {
+    "GEOCOD": "237EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700135
+  },
+  {
+    "GEOCOD": "237EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700135
+  },
+  {
+    "GEOCOD": "454EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700136
+  },
+  {
+    "GEOCOD": "020EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700137
+  },
+  {
+    "GEOCOD": "188EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700138
+  },
+  {
+    "GEOCOD": "080EGO0220",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0225",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0235",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0237",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0252",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "080EGO0265",
+    "BASE": "sre_base",
+    "IDCOD": 20260700140
+  },
+  {
+    "GEOCOD": "050EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700141
+  },
+  {
+    "GEOCOD": "164EGO0550",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0555",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0570",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0580",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0590",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0595",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0600",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0610",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0630",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0640",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0650",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0660",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0670",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0680",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0690",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0710",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0720",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0730",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0750",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0770",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0775",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0790",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0810",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0830",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "164EGO0850",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "217EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700145
+  },
+  {
+    "GEOCOD": "217EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700145
+  },
+  {
+    "GEOCOD": "217EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700145
+  },
+  {
+    "GEOCOD": "217EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700145
+  },
+  {
+    "GEOCOD": "217EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700145
+  },
+  {
+    "GEOCOD": "217EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700145
+  },
+  {
+    "GEOCOD": "217EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700145
+  },
+  {
+    "GEOCOD": "222EGO0011",
+    "BASE": "sre_base",
+    "IDCOD": 20260700146
+  },
+  {
+    "GEOCOD": "222EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700146
+  },
+  {
+    "GEOCOD": "222EGO0013",
+    "BASE": "sre_base",
+    "IDCOD": 20260700146
+  },
+  {
+    "GEOCOD": "222EGO0014",
+    "BASE": "sre_base",
+    "IDCOD": 20260700146
+  },
+  {
+    "GEOCOD": "239EGO0097",
+    "BASE": "sre_base",
+    "IDCOD": 20260700147
+  },
+  {
+    "GEOCOD": "239EGO0099",
+    "BASE": "sre_base",
+    "IDCOD": 20260700147
+  },
+  {
+    "GEOCOD": "239EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700147
+  },
+  {
+    "GEOCOD": "330EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700148
+  },
+  {
+    "GEOCOD": "330EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700148
+  },
+  {
+    "GEOCOD": "330EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700148
+  },
+  {
+    "GEOCOD": "330EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700148
+  },
+  {
+    "GEOCOD": "330EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700148
+  },
+  {
+    "GEOCOD": "507EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700149
+  },
+  {
+    "GEOCOD": "507EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700149
+  },
+  {
+    "GEOCOD": "507EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700149
+  },
+  {
+    "GEOCOD": "507EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700149
+  },
+  {
+    "GEOCOD": "020EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700152
+  },
+  {
+    "GEOCOD": "108EGO0047",
+    "BASE": "sre_base",
+    "IDCOD": 20260700153
+  },
+  {
+    "GEOCOD": "108EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700153
+  },
+  {
+    "GEOCOD": "108EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700153
+  },
+  {
+    "GEOCOD": "108EGO0057",
+    "BASE": "sre_base",
+    "IDCOD": 20260700153
+  },
+  {
+    "GEOCOD": "108EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700153
+  },
+  {
+    "GEOCOD": "108EGO0097",
+    "BASE": "sre_base",
+    "IDCOD": 20260700154
+  },
+  {
+    "GEOCOD": "108EGO0098",
+    "BASE": "sre_base",
+    "IDCOD": 20260700154
+  },
+  {
+    "GEOCOD": "108EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700154
+  },
+  {
+    "GEOCOD": "112EGO0065",
+    "BASE": "sre_base",
+    "IDCOD": 20260700155
+  },
+  {
+    "GEOCOD": "112EGO0067",
+    "BASE": "sre_base",
+    "IDCOD": 20260700155
+  },
+  {
+    "GEOCOD": "151EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700156
+  },
+  {
+    "GEOCOD": "154EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700157
+  },
+  {
+    "GEOCOD": "154EGO0037",
+    "BASE": "sre_base",
+    "IDCOD": 20260700157
+  },
+  {
+    "GEOCOD": "154EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700158
+  },
+  {
+    "GEOCOD": "154EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700158
+  },
+  {
+    "GEOCOD": "156EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700159
+  },
+  {
+    "GEOCOD": "156EGO0117",
+    "BASE": "sre_base",
+    "IDCOD": 20260700159
+  },
+  {
+    "GEOCOD": "156EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700159
+  },
+  {
+    "GEOCOD": "156EGO0122",
+    "BASE": "sre_base",
+    "IDCOD": 20260700159
+  },
+  {
+    "GEOCOD": "156EGO0340",
+    "BASE": "sre_base",
+    "IDCOD": 20260700160
+  },
+  {
+    "GEOCOD": "156EGO0350",
+    "BASE": "sre_base",
+    "IDCOD": 20260700160
+  },
+  {
+    "GEOCOD": "162EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700161
+  },
+  {
+    "GEOCOD": "164EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700162
+  },
+  {
+    "GEOCOD": "180EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700163
+  },
+  {
+    "GEOCOD": "188EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700164
+  },
+  {
+    "GEOCOD": "188EGO0082",
+    "BASE": "sre_base",
+    "IDCOD": 20260700165
+  },
+  {
+    "GEOCOD": "188EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700165
+  },
+  {
+    "GEOCOD": "188EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700165
+  },
+  {
+    "GEOCOD": "219EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700167
+  },
+  {
+    "GEOCOD": "219EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700167
+  },
+  {
+    "GEOCOD": "219EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700167
+  },
+  {
+    "GEOCOD": "219EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700168
+  },
+  {
+    "GEOCOD": "222EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700169
+  },
+  {
+    "GEOCOD": "222EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700169
+  },
+  {
+    "GEOCOD": "225EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700170
+  },
+  {
+    "GEOCOD": "225EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700170
+  },
+  {
+    "GEOCOD": "225EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700170
+  },
+  {
+    "GEOCOD": "230EGO0275",
+    "BASE": "sre_base",
+    "IDCOD": 20260700171
+  },
+  {
+    "GEOCOD": "237EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700172
+  },
+  {
+    "GEOCOD": "237EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700172
+  },
+  {
+    "GEOCOD": "237EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700172
+  },
+  {
+    "GEOCOD": "237EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700172
+  },
+  {
+    "GEOCOD": "237EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700172
+  },
+  {
+    "GEOCOD": "241EGO0375",
+    "BASE": "sre_base",
+    "IDCOD": 20260700173
+  },
+  {
+    "GEOCOD": "241EGO0377",
+    "BASE": "sre_base",
+    "IDCOD": 20260700173
+  },
+  {
+    "GEOCOD": "241EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700173
+  },
+  {
+    "GEOCOD": "302EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700174
+  },
+  {
+    "GEOCOD": "302EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700174
+  },
+  {
+    "GEOCOD": "302EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700174
+  },
+  {
+    "GEOCOD": "306EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700175
+  },
+  {
+    "GEOCOD": "306EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700175
+  },
+  {
+    "GEOCOD": "307EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700176
+  },
+  {
+    "GEOCOD": "324EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700178
+  },
+  {
+    "GEOCOD": "324EGO0122",
+    "BASE": "sre_base",
+    "IDCOD": 20260700178
+  },
+  {
+    "GEOCOD": "324EGO0123",
+    "BASE": "sre_base",
+    "IDCOD": 20260700178
+  },
+  {
+    "GEOCOD": "347EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700179
+  },
+  {
+    "GEOCOD": "347EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700179
+  },
+  {
+    "GEOCOD": "430EGO0058",
+    "BASE": "sre_base",
+    "IDCOD": 20260700182
+  },
+  {
+    "GEOCOD": "430EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700182
+  },
+  {
+    "GEOCOD": "434EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700184
+  },
+  {
+    "GEOCOD": "438EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700185
+  },
+  {
+    "GEOCOD": "438EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700185
+  },
+  {
+    "GEOCOD": "438EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700185
+  },
+  {
+    "GEOCOD": "438EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700185
+  },
+  {
+    "GEOCOD": "438EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700185
+  },
+  {
+    "GEOCOD": "441EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700186
+  },
+  {
+    "GEOCOD": "441EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700186
+  },
+  {
+    "GEOCOD": "441EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700186
+  },
+  {
+    "GEOCOD": "448EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700188
+  },
+  {
+    "GEOCOD": "448EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700188
+  },
+  {
+    "GEOCOD": "452EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700189
+  },
+  {
+    "GEOCOD": "452EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700189
+  },
+  {
+    "GEOCOD": "452EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700189
+  },
+  {
+    "GEOCOD": "452EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700189
+  },
+  {
+    "GEOCOD": "454EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700190
+  },
+  {
+    "GEOCOD": "456EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700191
+  },
+  {
+    "GEOCOD": "456EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700191
+  },
+  {
+    "GEOCOD": "456EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700191
+  },
+  {
+    "GEOCOD": "456EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700191
+  },
+  {
+    "GEOCOD": "456EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700191
+  },
+  {
+    "GEOCOD": "456EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700191
+  },
+  {
+    "GEOCOD": "461EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700192
+  },
+  {
+    "GEOCOD": "461EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700192
+  },
+  {
+    "GEOCOD": "465EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700193
+  },
+  {
+    "GEOCOD": "465EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700193
+  },
+  {
+    "GEOCOD": "465EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700193
+  },
+  {
+    "GEOCOD": "465EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700193
+  },
+  {
+    "GEOCOD": "466EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700194
+  },
+  {
+    "GEOCOD": "466EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700194
+  },
+  {
+    "GEOCOD": "467EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700195
+  },
+  {
+    "GEOCOD": "473EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700197
+  },
+  {
+    "GEOCOD": "473EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700197
+  },
+  {
+    "GEOCOD": "474EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700198
+  },
+  {
+    "GEOCOD": "474EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700198
+  },
+  {
+    "GEOCOD": "474EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700198
+  },
+  {
+    "GEOCOD": "478EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700199
+  },
+  {
+    "GEOCOD": "478EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700199
+  },
+  {
+    "GEOCOD": "479EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700200
+  },
+  {
+    "GEOCOD": "517EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700201
+  },
+  {
+    "GEOCOD": "517EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700201
+  },
+  {
+    "GEOCOD": "517EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700201
+  },
+  {
+    "GEOCOD": "517EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700201
+  },
+  {
+    "GEOCOD": "526EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700202
+  },
+  {
+    "GEOCOD": "526EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700202
+  },
+  {
+    "GEOCOD": "573EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700203
+  },
+  {
+    "GEOCOD": "585EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700204
+  },
+  {
+    "GEOCOD": "184EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700206
+  },
+  {
+    "GEOCOD": "184EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700206
+  },
+  {
+    "GEOCOD": "184EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700206
+  },
+  {
+    "GEOCOD": "184EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700206
+  },
+  {
+    "GEOCOD": "184EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700206
+  },
+  {
+    "GEOCOD": "184EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700206
+  },
+  {
+    "GEOCOD": "556EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700209
+  },
+  {
+    "GEOCOD": "556EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700209
+  },
+  {
+    "GEOCOD": "568EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700210
+  },
+  {
+    "GEOCOD": "568EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700210
+  },
+  {
+    "GEOCOD": "010EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700224
+  },
+  {
+    "GEOCOD": "010EGO0023",
+    "BASE": "sre_base",
+    "IDCOD": 20260700224
+  },
+  {
+    "GEOCOD": "010EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700224
+  },
+  {
+    "GEOCOD": "010EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700224
+  },
+  {
+    "GEOCOD": "010EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700224
+  },
+  {
+    "GEOCOD": "010EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700224
+  },
+  {
+    "GEOCOD": "010EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700225
+  },
+  {
+    "GEOCOD": "010EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700225
+  },
+  {
+    "GEOCOD": "010EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700225
+  },
+  {
+    "GEOCOD": "010EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700225
+  },
+  {
+    "GEOCOD": "020EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700226
+  },
+  {
+    "GEOCOD": "020EGO0046",
+    "BASE": "sre_base",
+    "IDCOD": 20260700226
+  },
+  {
+    "GEOCOD": "020EGO0047",
+    "BASE": "sre_base",
+    "IDCOD": 20260700226
+  },
+  {
+    "GEOCOD": "020EGO0048",
+    "BASE": "sre_base",
+    "IDCOD": 20260700226
+  },
+  {
+    "GEOCOD": "020EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700226
+  },
+  {
+    "GEOCOD": "020EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700226
+  },
+  {
+    "GEOCOD": "020UGO1062",
+    "BASE": "sre_base",
+    "IDCOD": 20260700226
+  },
+  {
+    "GEOCOD": "020EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700227
+  },
+  {
+    "GEOCOD": "307EGO0085",
+    "BASE": "sre_base",
+    "IDCOD": 20260700227
+  },
+  {
+    "GEOCOD": "309EGO0102",
+    "BASE": "sre_base",
+    "IDCOD": 20260700227
+  },
+  {
+    "GEOCOD": "330EGO0088",
+    "BASE": "sre_base",
+    "IDCOD": 20260700228
+  },
+  {
+    "GEOCOD": "330EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700228
+  },
+  {
+    "GEOCOD": "020EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700230
+  },
+  {
+    "GEOCOD": "139EGO0091",
+    "BASE": "sre_base",
+    "IDCOD": 20260700230
+  },
+  {
+    "GEOCOD": "139EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700230
+  },
+  {
+    "GEOCOD": "020EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700231
+  },
+  {
+    "GEOCOD": "020EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700231
+  },
+  {
+    "GEOCOD": "020EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700231
+  },
+  {
+    "GEOCOD": "020EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700231
+  },
+  {
+    "GEOCOD": "309EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700232
+  },
+  {
+    "GEOCOD": "309EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700232
+  },
+  {
+    "GEOCOD": "309UGO1102",
+    "BASE": "sre_base",
+    "IDCOD": 20260700232
+  },
+  {
+    "GEOCOD": "309UGO1103",
+    "BASE": "sre_base",
+    "IDCOD": 20260700232
+  },
+  {
+    "GEOCOD": "020UGO1067",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "020UGO1070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "309EGO0107",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "309EGO0108",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "309UGO1109",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "330EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "330EGO0145",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "330EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "330EGO0175",
+    "BASE": "sre_base",
+    "IDCOD": 20260700233
+  },
+  {
+    "GEOCOD": "307EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700234
+  },
+  {
+    "GEOCOD": "330EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700234
+  },
+  {
+    "GEOCOD": "330EGO0125",
+    "BASE": "sre_base",
+    "IDCOD": 20260700234
+  },
+  {
+    "GEOCOD": "330EGO0127",
+    "BASE": "sre_base",
+    "IDCOD": 20260700234
+  },
+  {
+    "GEOCOD": "330EGO0128",
+    "BASE": "sre_base",
+    "IDCOD": 20260700234
+  },
+  {
+    "GEOCOD": "330EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700234
+  },
+  {
+    "GEOCOD": "020EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700235
+  },
+  {
+    "GEOCOD": "139EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "139EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "139EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "139EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "139EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "139EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "139EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "307EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "309EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "309EGO0078",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "309EGO0079",
+    "BASE": "sre_base",
+    "IDCOD": 20260700236
+  },
+  {
+    "GEOCOD": "210EGO0205",
+    "BASE": "sre_base",
+    "IDCOD": 20260700237
+  },
+  {
+    "GEOCOD": "210EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700237
+  },
+  {
+    "GEOCOD": "060EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700241
+  },
+  {
+    "GEOCOD": "060EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700241
+  },
+  {
+    "GEOCOD": "060EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700241
+  },
+  {
+    "GEOCOD": "060EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700241
+  },
+  {
+    "GEOCOD": "060EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700242
+  },
+  {
+    "GEOCOD": "060EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700242
+  },
+  {
+    "GEOCOD": "060EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700242
+  },
+  {
+    "GEOCOD": "060EGO0065",
+    "BASE": "sre_base",
+    "IDCOD": 20260700242
+  },
+  {
+    "GEOCOD": "060EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700242
+  },
+  {
+    "GEOCOD": "060EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700242
+  },
+  {
+    "GEOCOD": "060EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700243
+  },
+  {
+    "GEOCOD": "060EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700243
+  },
+  {
+    "GEOCOD": "156EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700243
+  },
+  {
+    "GEOCOD": "156EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700243
+  },
+  {
+    "GEOCOD": "060EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700244
+  },
+  {
+    "GEOCOD": "060EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700244
+  },
+  {
+    "GEOCOD": "108EGO0097",
+    "BASE": "sre_base",
+    "IDCOD": 20260700245
+  },
+  {
+    "GEOCOD": "108EGO0098",
+    "BASE": "sre_base",
+    "IDCOD": 20260700245
+  },
+  {
+    "GEOCOD": "108EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700245
+  },
+  {
+    "GEOCOD": "110EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700246
+  },
+  {
+    "GEOCOD": "110EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700246
+  },
+  {
+    "GEOCOD": "110EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700246
+  },
+  {
+    "GEOCOD": "110EGO0077",
+    "BASE": "sre_base",
+    "IDCOD": 20260700246
+  },
+  {
+    "GEOCOD": "112EGO0064",
+    "BASE": "sre_base",
+    "IDCOD": 20260700247
+  },
+  {
+    "GEOCOD": "112EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700248
+  },
+  {
+    "GEOCOD": "112EGO0061",
+    "BASE": "sre_base",
+    "IDCOD": 20260700248
+  },
+  {
+    "GEOCOD": "112EGO0062",
+    "BASE": "sre_base",
+    "IDCOD": 20260700248
+  },
+  {
+    "GEOCOD": "132EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700249
+  },
+  {
+    "GEOCOD": "108EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700250
+  },
+  {
+    "GEOCOD": "080EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "080EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "080EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "080EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "080EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "080EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "330EGO0440",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "330EGO0450",
+    "BASE": "sre_base",
+    "IDCOD": 20260700252
+  },
+  {
+    "GEOCOD": "108EGO0018",
+    "BASE": "sre_base",
+    "IDCOD": 20260700253
+  },
+  {
+    "GEOCOD": "108EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700253
+  },
+  {
+    "GEOCOD": "108EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700253
+  },
+  {
+    "GEOCOD": "108EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700253
+  },
+  {
+    "GEOCOD": "108EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700253
+  },
+  {
+    "GEOCOD": "108EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700253
+  },
+  {
+    "GEOCOD": "108EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700253
+  },
+  {
+    "GEOCOD": "050EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700254
+  },
+  {
+    "GEOCOD": "050EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700254
+  },
+  {
+    "GEOCOD": "050EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700254
+  },
+  {
+    "GEOCOD": "060EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700254
+  },
+  {
+    "GEOCOD": "070EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700255
+  },
+  {
+    "GEOCOD": "070EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700255
+  },
+  {
+    "GEOCOD": "070EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700255
+  },
+  {
+    "GEOCOD": "070EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700255
+  },
+  {
+    "GEOCOD": "070EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0135",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "070EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700256
+  },
+  {
+    "GEOCOD": "446EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700258
+  },
+  {
+    "GEOCOD": "446EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700258
+  },
+  {
+    "GEOCOD": "446EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700258
+  },
+  {
+    "GEOCOD": "446EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700258
+  },
+  {
+    "GEOCOD": "439EGO0018",
+    "BASE": "sre_base",
+    "IDCOD": 20260700260
+  },
+  {
+    "GEOCOD": "439EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700260
+  },
+  {
+    "GEOCOD": "469EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700260
+  },
+  {
+    "GEOCOD": "469EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700260
+  },
+  {
+    "GEOCOD": "469EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700260
+  },
+  {
+    "GEOCOD": "156EGO0310",
+    "BASE": "sre_base",
+    "IDCOD": 20260700262
+  },
+  {
+    "GEOCOD": "156EGO0320",
+    "BASE": "sre_base",
+    "IDCOD": 20260700262
+  },
+  {
+    "GEOCOD": "156EGO0330",
+    "BASE": "sre_base",
+    "IDCOD": 20260700262
+  },
+  {
+    "GEOCOD": "434EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700263
+  },
+  {
+    "GEOCOD": "434EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700263
+  },
+  {
+    "GEOCOD": "434EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700263
+  },
+  {
+    "GEOCOD": "434EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700263
+  },
+  {
+    "GEOCOD": "241EGO0377",
+    "BASE": "sre_base",
+    "IDCOD": 20260700264
+  },
+  {
+    "GEOCOD": "241EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700264
+  },
+  {
+    "GEOCOD": "154EGO0525",
+    "BASE": "sre_base",
+    "IDCOD": 20260700265
+  },
+  {
+    "GEOCOD": "154EGO0530",
+    "BASE": "sre_base",
+    "IDCOD": 20260700265
+  },
+  {
+    "GEOCOD": "585EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700266
+  },
+  {
+    "GEOCOD": "448EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700267
+  },
+  {
+    "GEOCOD": "448EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700267
+  },
+  {
+    "GEOCOD": "173EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700268
+  },
+  {
+    "GEOCOD": "173EGO0160",
+    "BASE": "sre_base",
+    "IDCOD": 20260700268
+  },
+  {
+    "GEOCOD": "173EGO0180",
+    "BASE": "sre_base",
+    "IDCOD": 20260700268
+  },
+  {
+    "GEOCOD": "070EGO0320",
+    "BASE": "sre_base",
+    "IDCOD": 20260700269
+  },
+  {
+    "GEOCOD": "180EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700271
+  },
+  {
+    "GEOCOD": "180EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700272
+  },
+  {
+    "GEOCOD": "040EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700274
+  },
+  {
+    "GEOCOD": "217EGO0065",
+    "BASE": "sre_base",
+    "IDCOD": 20260700274
+  },
+  {
+    "GEOCOD": "217EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700274
+  },
+  {
+    "GEOCOD": "217EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700274
+  },
+  {
+    "GEOCOD": "217EGO0077",
+    "BASE": "sre_base",
+    "IDCOD": 20260700274
+  },
+  {
+    "GEOCOD": "217EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700274
+  },
+  {
+    "GEOCOD": "217EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700274
+  },
+  {
+    "GEOCOD": "217EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700275
+  },
+  {
+    "GEOCOD": "217EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700275
+  },
+  {
+    "GEOCOD": "210EGO0247",
+    "BASE": "sre_base",
+    "IDCOD": 20260700278
+  },
+  {
+    "GEOCOD": "210EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700283
+  },
+  {
+    "GEOCOD": "210EGO0240",
+    "BASE": "sre_base",
+    "IDCOD": 20260700283
+  },
+  {
+    "GEOCOD": "309EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700285
+  },
+  {
+    "GEOCOD": "309EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700286
+  },
+  {
+    "GEOCOD": "419EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700286
+  },
+  {
+    "GEOCOD": "476EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700286
+  },
+  {
+    "GEOCOD": "476EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700286
+  },
+  {
+    "GEOCOD": "476EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700286
+  },
+  {
+    "GEOCOD": "147EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700287
+  },
+  {
+    "GEOCOD": "147EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700287
+  },
+  {
+    "GEOCOD": "147EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700287
+  },
+  {
+    "GEOCOD": "219EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700288
+  },
+  {
+    "GEOCOD": "219EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700288
+  },
+  {
+    "GEOCOD": "219EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700289
+  },
+  {
+    "GEOCOD": "010EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700290
+  },
+  {
+    "GEOCOD": "236EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700291
+  },
+  {
+    "GEOCOD": "236EGO0042",
+    "BASE": "sre_base",
+    "IDCOD": 20260700291
+  },
+  {
+    "GEOCOD": "114EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700292
+  },
+  {
+    "GEOCOD": "236EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700292
+  },
+  {
+    "GEOCOD": "116EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700293
+  },
+  {
+    "GEOCOD": "116EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700293
+  },
+  {
+    "GEOCOD": "237EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700294
+  },
+  {
+    "GEOCOD": "237EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700295
+  },
+  {
+    "GEOCOD": "237EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700296
+  },
+  {
+    "GEOCOD": "237EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700296
+  },
+  {
+    "GEOCOD": "237EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700296
+  },
+  {
+    "GEOCOD": "517EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700297
+  },
+  {
+    "GEOCOD": "306EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700298
+  },
+  {
+    "GEOCOD": "306EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700299
+  },
+  {
+    "GEOCOD": "302EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700300
+  },
+  {
+    "GEOCOD": "302EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700300
+  },
+  {
+    "GEOCOD": "164EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700301
+  },
+  {
+    "GEOCOD": "164EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700301
+  },
+  {
+    "GEOCOD": "164EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700301
+  },
+  {
+    "GEOCOD": "164EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700301
+  },
+  {
+    "GEOCOD": "307EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700302
+  },
+  {
+    "GEOCOD": "319EGO0185",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "319EGO0187",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "319EGO0190",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "319EGO0192",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "319EGO0193",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "319EGO0195",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "319EGO0200",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "319EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700304
+  },
+  {
+    "GEOCOD": "413EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700305
+  },
+  {
+    "GEOCOD": "413EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700305
+  },
+  {
+    "GEOCOD": "413EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700305
+  },
+  {
+    "GEOCOD": "413EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700305
+  },
+  {
+    "GEOCOD": "413EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700305
+  },
+  {
+    "GEOCOD": "156EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700309
+  },
+  {
+    "GEOCOD": "156EGO0117",
+    "BASE": "sre_base",
+    "IDCOD": 20260700309
+  },
+  {
+    "GEOCOD": "156EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700309
+  },
+  {
+    "GEOCOD": "156EGO0122",
+    "BASE": "sre_base",
+    "IDCOD": 20260700309
+  },
+  {
+    "GEOCOD": "162EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700310
+  },
+  {
+    "GEOCOD": "222EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700311
+  },
+  {
+    "GEOCOD": "222EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700311
+  },
+  {
+    "GEOCOD": "404EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700312
+  },
+  {
+    "GEOCOD": "404EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700312
+  },
+  {
+    "GEOCOD": "050EGO0395",
+    "BASE": "sre_base",
+    "IDCOD": 20260700316
+  },
+  {
+    "GEOCOD": "050EGO0420",
+    "BASE": "sre_base",
+    "IDCOD": 20260700317
+  },
+  {
+    "GEOCOD": "050EGO0430",
+    "BASE": "sre_base",
+    "IDCOD": 20260700317
+  },
+  {
+    "GEOCOD": "050EGO0450",
+    "BASE": "sre_base",
+    "IDCOD": 20260700317
+  },
+  {
+    "GEOCOD": "050EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700318
+  },
+  {
+    "GEOCOD": "178EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700319
+  },
+  {
+    "GEOCOD": "178EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700319
+  },
+  {
+    "GEOCOD": "178EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "178EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "178EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "178EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "206EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "206EGO0240",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "206EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "206EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "206EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700320
+  },
+  {
+    "GEOCOD": "206EGO0390",
+    "BASE": "sre_base",
+    "IDCOD": 20260700321
+  },
+  {
+    "GEOCOD": "302EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700323
+  },
+  {
+    "GEOCOD": "180EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700324
+  },
+  {
+    "GEOCOD": "180EGO0007",
+    "BASE": "sre_base",
+    "IDCOD": 20260700324
+  },
+  {
+    "GEOCOD": "180EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700324
+  },
+  {
+    "GEOCOD": "184EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700324
+  },
+  {
+    "GEOCOD": "184EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700324
+  },
+  {
+    "GEOCOD": "302EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700324
+  },
+  {
+    "GEOCOD": "302EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700324
+  },
+  {
+    "GEOCOD": "438EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700325
+  },
+  {
+    "GEOCOD": "438EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700325
+  },
+  {
+    "GEOCOD": "438EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700325
+  },
+  {
+    "GEOCOD": "438EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700325
+  },
+  {
+    "GEOCOD": "438EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700325
+  },
+  {
+    "GEOCOD": "225EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700326
+  },
+  {
+    "GEOCOD": "225EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700326
+  },
+  {
+    "GEOCOD": "225EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700326
+  },
+  {
+    "GEOCOD": "473EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700327
+  },
+  {
+    "GEOCOD": "473EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700327
+  },
+  {
+    "GEOCOD": "479EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700327
+  },
+  {
+    "GEOCOD": "430EGO0058",
+    "BASE": "sre_base",
+    "IDCOD": 20260700328
+  },
+  {
+    "GEOCOD": "430EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700328
+  },
+  {
+    "GEOCOD": "467EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700329
+  },
+  {
+    "GEOCOD": "TRE0001",
+    "BASE": "extra_base",
+    "IDCOD": 20260700403
+  },
+  {
+    "GEOCOD": "TRE0004",
+    "BASE": "extra_base",
+    "IDCOD": 20260700404
+  },
+  {
+    "GEOCOD": "TRE0002",
+    "BASE": "extra_base",
+    "IDCOD": 20260700405
+  },
+  {
+    "GEOCOD": "TRE0003",
+    "BASE": "extra_base",
+    "IDCOD": 20260700406
+  },
+  {
+    "GEOCOD": "040EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700408
+  },
+  {
+    "GEOCOD": "217EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700408
+  },
+  {
+    "GEOCOD": "217EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700408
+  },
+  {
+    "GEOCOD": "217EGO0077",
+    "BASE": "sre_base",
+    "IDCOD": 20260700408
+  },
+  {
+    "GEOCOD": "217EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700408
+  },
+  {
+    "GEOCOD": "217EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700408
+  },
+  {
+    "GEOCOD": "217EGO0102",
+    "BASE": "sre_base",
+    "IDCOD": 20260700409
+  },
+  {
+    "GEOCOD": "217EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700409
+  },
+  {
+    "GEOCOD": "217EGO0107",
+    "BASE": "sre_base",
+    "IDCOD": 20260700409
+  },
+  {
+    "GEOCOD": "217EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700409
+  },
+  {
+    "GEOCOD": "217EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700409
+  },
+  {
+    "GEOCOD": "217EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700409
+  },
+  {
+    "GEOCOD": "217EGO0135",
+    "BASE": "sre_base",
+    "IDCOD": 20260700409
+  },
+  {
+    "GEOCOD": "217EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700410
+  },
+  {
+    "GEOCOD": "217EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700410
+  },
+  {
+    "GEOCOD": "219EGO0042",
+    "BASE": "sre_base",
+    "IDCOD": 20260700411
+  },
+  {
+    "GEOCOD": "219EGO0044",
+    "BASE": "sre_base",
+    "IDCOD": 20260700411
+  },
+  {
+    "GEOCOD": "219EGO0046",
+    "BASE": "sre_base",
+    "IDCOD": 20260700411
+  },
+  {
+    "GEOCOD": "219EGO0048",
+    "BASE": "sre_base",
+    "IDCOD": 20260700411
+  },
+  {
+    "GEOCOD": "219EGO0037",
+    "BASE": "sre_base",
+    "IDCOD": 20260700412
+  },
+  {
+    "GEOCOD": "219EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700412
+  },
+  {
+    "GEOCOD": "219EGO0043",
+    "BASE": "sre_base",
+    "IDCOD": 20260700412
+  },
+  {
+    "GEOCOD": "219EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700412
+  },
+  {
+    "GEOCOD": "219EGO0047",
+    "BASE": "sre_base",
+    "IDCOD": 20260700412
+  },
+  {
+    "GEOCOD": "219EGO0049",
+    "BASE": "sre_base",
+    "IDCOD": 20260700412
+  },
+  {
+    "GEOCOD": "222EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "222EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700413
+  },
+  {
+    "GEOCOD": "236EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700414
+  },
+  {
+    "GEOCOD": "236EGO0042",
+    "BASE": "sre_base",
+    "IDCOD": 20260700414
+  },
+  {
+    "GEOCOD": "237EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0097",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0175",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0180",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "237EGO0190",
+    "BASE": "sre_base",
+    "IDCOD": 20260700415
+  },
+  {
+    "GEOCOD": "156EGO0385",
+    "BASE": "sre_base",
+    "IDCOD": 20260700416
+  },
+  {
+    "GEOCOD": "347EGO0125",
+    "BASE": "sre_base",
+    "IDCOD": 20260700417
+  },
+  {
+    "GEOCOD": "347EGO0127",
+    "BASE": "sre_base",
+    "IDCOD": 20260700417
+  },
+  {
+    "GEOCOD": "347EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700417
+  },
+  {
+    "GEOCOD": "347EGO0135",
+    "BASE": "sre_base",
+    "IDCOD": 20260700417
+  },
+  {
+    "GEOCOD": "154EGO0335",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0340",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0350",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0355",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0360",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0370",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0375",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0390",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0400",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "154EGO0410",
+    "BASE": "sre_base",
+    "IDCOD": 20260700418
+  },
+  {
+    "GEOCOD": "336EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700419
+  },
+  {
+    "GEOCOD": "336EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700419
+  },
+  {
+    "GEOCOD": "336EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700419
+  },
+  {
+    "GEOCOD": "336EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700419
+  },
+  {
+    "GEOCOD": "336EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700419
+  },
+  {
+    "GEOCOD": "241EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700420
+  },
+  {
+    "GEOCOD": "241EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700420
+  },
+  {
+    "GEOCOD": "241EGO0290",
+    "BASE": "sre_base",
+    "IDCOD": 20260700420
+  },
+  {
+    "GEOCOD": "241EGO0292",
+    "BASE": "sre_base",
+    "IDCOD": 20260700420
+  },
+  {
+    "GEOCOD": "154EGO0513",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "154EGO0515",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0018",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0021",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0023",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0029",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700421
+  },
+  {
+    "GEOCOD": "244EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700422
+  },
+  {
+    "GEOCOD": "244EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700422
+  },
+  {
+    "GEOCOD": "244EGO0013",
+    "BASE": "sre_base",
+    "IDCOD": 20260700422
+  },
+  {
+    "GEOCOD": "302EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700423
+  },
+  {
+    "GEOCOD": "306EGO0101",
+    "BASE": "sre_base",
+    "IDCOD": 20260700424
+  },
+  {
+    "GEOCOD": "306EGO0103",
+    "BASE": "sre_base",
+    "IDCOD": 20260700424
+  },
+  {
+    "GEOCOD": "306EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700424
+  },
+  {
+    "GEOCOD": "309EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700425
+  },
+  {
+    "GEOCOD": "309EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700425
+  },
+  {
+    "GEOCOD": "309UGO1102",
+    "BASE": "sre_base",
+    "IDCOD": 20260700425
+  },
+  {
+    "GEOCOD": "309UGO1103",
+    "BASE": "sre_base",
+    "IDCOD": 20260700425
+  },
+  {
+    "GEOCOD": "040EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700426
+  },
+  {
+    "GEOCOD": "040EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700426
+  },
+  {
+    "GEOCOD": "219EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700426
+  },
+  {
+    "GEOCOD": "219EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700426
+  },
+  {
+    "GEOCOD": "319EGO0243",
+    "BASE": "sre_base",
+    "IDCOD": 20260700426
+  },
+  {
+    "GEOCOD": "319EGO0245",
+    "BASE": "sre_base",
+    "IDCOD": 20260700426
+  },
+  {
+    "GEOCOD": "319EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700427
+  },
+  {
+    "GEOCOD": "319EGO0257",
+    "BASE": "sre_base",
+    "IDCOD": 20260700427
+  },
+  {
+    "GEOCOD": "319EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700427
+  },
+  {
+    "GEOCOD": "319EGO0265",
+    "BASE": "sre_base",
+    "IDCOD": 20260700427
+  },
+  {
+    "GEOCOD": "319EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700427
+  },
+  {
+    "GEOCOD": "222EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700431
+  },
+  {
+    "GEOCOD": "222EGO0220",
+    "BASE": "sre_base",
+    "IDCOD": 20260700431
+  },
+  {
+    "GEOCOD": "326EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700431
+  },
+  {
+    "GEOCOD": "326EGO0057",
+    "BASE": "sre_base",
+    "IDCOD": 20260700431
+  },
+  {
+    "GEOCOD": "330EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700432
+  },
+  {
+    "GEOCOD": "330EGO0088",
+    "BASE": "sre_base",
+    "IDCOD": 20260700433
+  },
+  {
+    "GEOCOD": "330EGO0450",
+    "BASE": "sre_base",
+    "IDCOD": 20260700434
+  },
+  {
+    "GEOCOD": "020EGO0072",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "020EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "020UGO1070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "309EGO0107",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "309EGO0108",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "309UGO1109",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "330EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "330EGO0175",
+    "BASE": "sre_base",
+    "IDCOD": 20260700435
+  },
+  {
+    "GEOCOD": "330EGO0125",
+    "BASE": "sre_base",
+    "IDCOD": 20260700436
+  },
+  {
+    "GEOCOD": "330EGO0127",
+    "BASE": "sre_base",
+    "IDCOD": 20260700436
+  },
+  {
+    "GEOCOD": "330EGO0128",
+    "BASE": "sre_base",
+    "IDCOD": 20260700436
+  },
+  {
+    "GEOCOD": "330EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700436
+  },
+  {
+    "GEOCOD": "338EGO0083",
+    "BASE": "sre_base",
+    "IDCOD": 20260700437
+  },
+  {
+    "GEOCOD": "341EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700440
+  },
+  {
+    "GEOCOD": "341EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700440
+  },
+  {
+    "GEOCOD": "341EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700440
+  },
+  {
+    "GEOCOD": "427EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700443
+  },
+  {
+    "GEOCOD": "435EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700444
+  },
+  {
+    "GEOCOD": "439EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700445
+  },
+  {
+    "GEOCOD": "440EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700446
+  },
+  {
+    "GEOCOD": "508EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700446
+  },
+  {
+    "GEOCOD": "453CGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700447
+  },
+  {
+    "GEOCOD": "453CGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700447
+  },
+  {
+    "GEOCOD": "453EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700447
+  },
+  {
+    "GEOCOD": "453EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700447
+  },
+  {
+    "GEOCOD": "460EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700448
+  },
+  {
+    "GEOCOD": "460EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700448
+  },
+  {
+    "GEOCOD": "460EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700448
+  },
+  {
+    "GEOCOD": "462EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700449
+  },
+  {
+    "GEOCOD": "462EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700449
+  },
+  {
+    "GEOCOD": "469EGO0038",
+    "BASE": "sre_base",
+    "IDCOD": 20260700450
+  },
+  {
+    "GEOCOD": "469EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700450
+  },
+  {
+    "GEOCOD": "484EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700451
+  },
+  {
+    "GEOCOD": "512EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700452
+  },
+  {
+    "GEOCOD": "512EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700452
+  },
+  {
+    "GEOCOD": "512EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700452
+  },
+  {
+    "GEOCOD": "154EGO0107",
+    "BASE": "sre_base",
+    "IDCOD": 20260700453
+  },
+  {
+    "GEOCOD": "154EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700453
+  },
+  {
+    "GEOCOD": "154EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700453
+  },
+  {
+    "GEOCOD": "154EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700453
+  },
+  {
+    "GEOCOD": "154EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700453
+  },
+  {
+    "GEOCOD": "154EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700453
+  },
+  {
+    "GEOCOD": "427EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700454
+  },
+  {
+    "GEOCOD": "427EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700454
+  },
+  {
+    "GEOCOD": "427EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700454
+  },
+  {
+    "GEOCOD": "427EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700454
+  },
+  {
+    "GEOCOD": "427EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700454
+  },
+  {
+    "GEOCOD": "427EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700454
+  },
+  {
+    "GEOCOD": "173EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700455
+  },
+  {
+    "GEOCOD": "530EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700455
+  },
+  {
+    "GEOCOD": "530EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700455
+  },
+  {
+    "GEOCOD": "530EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700455
+  },
+  {
+    "GEOCOD": "536EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700456
+  },
+  {
+    "GEOCOD": "589EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700458
+  },
+  {
+    "GEOCOD": "334EGO0037",
+    "BASE": "sre_base",
+    "IDCOD": 20260700459
+  },
+  {
+    "GEOCOD": "334EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700459
+  },
+  {
+    "GEOCOD": "334EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700459
+  },
+  {
+    "GEOCOD": "010EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700460
+  },
+  {
+    "GEOCOD": "010EGO0155",
+    "BASE": "sre_base",
+    "IDCOD": 20260700460
+  },
+  {
+    "GEOCOD": "010EGO0160",
+    "BASE": "sre_base",
+    "IDCOD": 20260700460
+  },
+  {
+    "GEOCOD": "010EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700460
+  },
+  {
+    "GEOCOD": "425EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700461
+  },
+  {
+    "GEOCOD": "020EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700463
+  },
+  {
+    "GEOCOD": "020EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700463
+  },
+  {
+    "GEOCOD": "020EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700463
+  },
+  {
+    "GEOCOD": "020EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700463
+  },
+  {
+    "GEOCOD": "060EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "060EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "060EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "060EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "060EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "060EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "060EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "060EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700468
+  },
+  {
+    "GEOCOD": "070EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0280",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0290",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0295",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "080EGO0252",
+    "BASE": "sre_base",
+    "IDCOD": 20260700471
+  },
+  {
+    "GEOCOD": "080EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700471
+  },
+  {
+    "GEOCOD": "080EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700471
+  },
+  {
+    "GEOCOD": "080EGO0265",
+    "BASE": "sre_base",
+    "IDCOD": 20260700471
+  },
+  {
+    "GEOCOD": "080EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700471
+  },
+  {
+    "GEOCOD": "080EGO0280",
+    "BASE": "sre_base",
+    "IDCOD": 20260700471
+  },
+  {
+    "GEOCOD": "108EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700472
+  },
+  {
+    "GEOCOD": "108EGO0093",
+    "BASE": "sre_base",
+    "IDCOD": 20260700472
+  },
+  {
+    "GEOCOD": "108EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700472
+  },
+  {
+    "GEOCOD": "108EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700473
+  },
+  {
+    "GEOCOD": "108EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700473
+  },
+  {
+    "GEOCOD": "108EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700473
+  },
+  {
+    "GEOCOD": "108EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700473
+  },
+  {
+    "GEOCOD": "108EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700473
+  },
+  {
+    "GEOCOD": "236EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700474
+  },
+  {
+    "GEOCOD": "110EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700475
+  },
+  {
+    "GEOCOD": "110EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700476
+  },
+  {
+    "GEOCOD": "110EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700476
+  },
+  {
+    "GEOCOD": "110EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700476
+  },
+  {
+    "GEOCOD": "110EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700476
+  },
+  {
+    "GEOCOD": "110EGO0043",
+    "BASE": "sre_base",
+    "IDCOD": 20260700476
+  },
+  {
+    "GEOCOD": "110EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700477
+  },
+  {
+    "GEOCOD": "110EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700477
+  },
+  {
+    "GEOCOD": "110EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700477
+  },
+  {
+    "GEOCOD": "110EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700477
+  },
+  {
+    "GEOCOD": "110EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700478
+  },
+  {
+    "GEOCOD": "110EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700478
+  },
+  {
+    "GEOCOD": "110EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700478
+  },
+  {
+    "GEOCOD": "112EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700479
+  },
+  {
+    "GEOCOD": "446EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700480
+  },
+  {
+    "GEOCOD": "114EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700481
+  },
+  {
+    "GEOCOD": "116EGO0013",
+    "BASE": "sre_base",
+    "IDCOD": 20260700482
+  },
+  {
+    "GEOCOD": "116EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700482
+  },
+  {
+    "GEOCOD": "132EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700483
+  },
+  {
+    "GEOCOD": "139EGO0145",
+    "BASE": "sre_base",
+    "IDCOD": 20260700484
+  },
+  {
+    "GEOCOD": "139EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700484
+  },
+  {
+    "GEOCOD": "139EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "139EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "139EGO0083",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "139EGO0085",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "139EGO0087",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "139EGO0088",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "139EGO0089",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "139EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700485
+  },
+  {
+    "GEOCOD": "151EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "151EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "151EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "151EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "151EGO0051",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "151EGO0052",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "151EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "151EGO0056",
+    "BASE": "sre_base",
+    "IDCOD": 20260700486
+  },
+  {
+    "GEOCOD": "154EGO0495",
+    "BASE": "sre_base",
+    "IDCOD": 20260700487
+  },
+  {
+    "GEOCOD": "154EGO0500",
+    "BASE": "sre_base",
+    "IDCOD": 20260700487
+  },
+  {
+    "GEOCOD": "154EGO0503",
+    "BASE": "sre_base",
+    "IDCOD": 20260700487
+  },
+  {
+    "GEOCOD": "154EGO0505",
+    "BASE": "sre_base",
+    "IDCOD": 20260700487
+  },
+  {
+    "GEOCOD": "164EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700488
+  },
+  {
+    "GEOCOD": "164EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700488
+  },
+  {
+    "GEOCOD": "164EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700488
+  },
+  {
+    "GEOCOD": "164EGO0890",
+    "BASE": "sre_base",
+    "IDCOD": 20260700490
+  },
+  {
+    "GEOCOD": "164EGO0900",
+    "BASE": "sre_base",
+    "IDCOD": 20260700490
+  },
+  {
+    "GEOCOD": "164EGO0905",
+    "BASE": "sre_base",
+    "IDCOD": 20260700490
+  },
+  {
+    "GEOCOD": "164EGO0910",
+    "BASE": "sre_base",
+    "IDCOD": 20260700490
+  },
+  {
+    "GEOCOD": "178EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700494
+  },
+  {
+    "GEOCOD": "178EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700495
+  },
+  {
+    "GEOCOD": "178EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700495
+  },
+  {
+    "GEOCOD": "178EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700495
+  },
+  {
+    "GEOCOD": "178EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700495
+  },
+  {
+    "GEOCOD": "184EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700497
+  },
+  {
+    "GEOCOD": "194EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700498
+  },
+  {
+    "GEOCOD": "194EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700499
+  },
+  {
+    "GEOCOD": "194EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700500
+  },
+  {
+    "GEOCOD": "210EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700503
+  },
+  {
+    "GEOCOD": "210EGO0240",
+    "BASE": "sre_base",
+    "IDCOD": 20260700503
+  },
+  {
+    "GEOCOD": "070EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700506
+  },
+  {
+    "GEOCOD": "070EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700506
+  },
+  {
+    "GEOCOD": "070EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700506
+  },
+  {
+    "GEOCOD": "070EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700506
+  },
+  {
+    "GEOCOD": "210EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700510
+  },
+  {
+    "GEOCOD": "210EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700510
+  },
+  {
+    "GEOCOD": "210EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700510
+  },
+  {
+    "GEOCOD": "592EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700511
+  },
+  {
+    "GEOCOD": "301EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700512
+  },
+  {
+    "GEOCOD": "457EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700513
+  },
+  {
+    "GEOCOD": "213EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700514
+  },
+  {
+    "GEOCOD": "213EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "213EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "213EGO0180",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "213EGO0185",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "213EGO0190",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "213EGO0200",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "213EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "213EGO0240",
+    "BASE": "sre_base",
+    "IDCOD": 20260700516
+  },
+  {
+    "GEOCOD": "TRE0008",
+    "BASE": "extra_base",
+    "IDCOD": 20260700517
+  },
+  {
+    "GEOCOD": "TRE0009",
+    "BASE": "extra_base",
+    "IDCOD": 20260700518
+  },
+  {
+    "GEOCOD": "TRE0010",
+    "BASE": "extra_base",
+    "IDCOD": 20260700519
+  },
+  {
+    "GEOCOD": "TRE0011",
+    "BASE": "extra_base",
+    "IDCOD": 20260700520
+  },
+  {
+    "GEOCOD": "TRE0012",
+    "BASE": "extra_base",
+    "IDCOD": 20260700521
+  },
+  {
+    "GEOCOD": "TRE0013",
+    "BASE": "extra_base",
+    "IDCOD": 20260700522
+  },
+  {
+    "GEOCOD": "TRE0014",
+    "BASE": "extra_base",
+    "IDCOD": 20260700523
+  },
+  {
+    "GEOCOD": "TRE0015",
+    "BASE": "extra_base",
+    "IDCOD": 20260700524
+  },
+  {
+    "GEOCOD": "TRE0016",
+    "BASE": "extra_base",
+    "IDCOD": 20260700525
+  },
+  {
+    "GEOCOD": "TRE0004",
+    "BASE": "extra_base",
+    "IDCOD": 20260700526
+  },
+  {
+    "GEOCOD": "TRE0017",
+    "BASE": "extra_base",
+    "IDCOD": 20260700528
+  },
+  {
+    "GEOCOD": "TRE0018",
+    "BASE": "extra_base",
+    "IDCOD": 20260700529
+  },
+  {
+    "GEOCOD": "TRE0019",
+    "BASE": "extra_base",
+    "IDCOD": 20260700530
+  },
+  {
+    "GEOCOD": "TRE0020",
+    "BASE": "extra_base",
+    "IDCOD": 20260700531
+  },
+  {
+    "GEOCOD": "TRE0021",
+    "BASE": "extra_base",
+    "IDCOD": 20260700532
+  },
+  {
+    "GEOCOD": "TRE0022",
+    "BASE": "extra_base",
+    "IDCOD": 20260700533
+  },
+  {
+    "GEOCOD": "TRE0023",
+    "BASE": "extra_base",
+    "IDCOD": 20260700534
+  },
+  {
+    "GEOCOD": "TRE0024",
+    "BASE": "extra_base",
+    "IDCOD": 20260700535
+  },
+  {
+    "GEOCOD": "TRE0025",
+    "BASE": "extra_base",
+    "IDCOD": 20260700536
+  },
+  {
+    "GEOCOD": "TRE0026",
+    "BASE": "extra_base",
+    "IDCOD": 20260700537
+  },
+  {
+    "GEOCOD": "TRE0027",
+    "BASE": "extra_base",
+    "IDCOD": 20260700538
+  },
+  {
+    "GEOCOD": "TRE0028",
+    "BASE": "extra_base",
+    "IDCOD": 20260700539
+  },
+  {
+    "GEOCOD": "TRE0029",
+    "BASE": "extra_base",
+    "IDCOD": 20260700540
+  },
+  {
+    "GEOCOD": "TRE0030",
+    "BASE": "extra_base",
+    "IDCOD": 20260700541
+  },
+  {
+    "GEOCOD": "TRE0031",
+    "BASE": "extra_base",
+    "IDCOD": 20260700542
+  },
+  {
+    "GEOCOD": "241EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700543
+  },
+  {
+    "GEOCOD": "241EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700543
+  },
+  {
+    "GEOCOD": "241EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700543
+  },
+  {
+    "GEOCOD": "241EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700543
+  },
+  {
+    "GEOCOD": "241EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700543
+  },
+  {
+    "GEOCOD": "241EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700543
+  },
+  {
+    "GEOCOD": "220EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700544
+  },
+  {
+    "GEOCOD": "220EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700544
+  },
+  {
+    "GEOCOD": "TRE0032",
+    "BASE": "extra_base",
+    "IDCOD": 20260700545
+  },
+  {
+    "GEOCOD": "TRE0033",
+    "BASE": "extra_base",
+    "IDCOD": 20260700546
+  },
+  {
+    "GEOCOD": "TRE0034",
+    "BASE": "extra_base",
+    "IDCOD": 20260700547
+  },
+  {
+    "GEOCOD": "TRE0035",
+    "BASE": "extra_base",
+    "IDCOD": 20260700549
+  },
+  {
+    "GEOCOD": "589EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700550
+  },
+  {
+    "GEOCOD": "589EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700550
+  },
+  {
+    "GEOCOD": "589EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700550
+  },
+  {
+    "GEOCOD": "589EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700550
+  },
+  {
+    "GEOCOD": "578EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700551
+  },
+  {
+    "GEOCOD": "020EGO0065",
+    "BASE": "sre_base",
+    "IDCOD": 20260700552
+  },
+  {
+    "GEOCOD": "020EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700552
+  },
+  {
+    "GEOCOD": "309EGO0105",
+    "BASE": "sre_base",
+    "IDCOD": 20260700552
+  },
+  {
+    "GEOCOD": "TRE0036",
+    "BASE": "extra_base",
+    "IDCOD": 20260700553
+  },
+  {
+    "GEOCOD": "TRE0037",
+    "BASE": "extra_base",
+    "IDCOD": 20260700554
+  },
+  {
+    "GEOCOD": "577EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700555
+  },
+  {
+    "GEOCOD": "577EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700555
+  },
+  {
+    "GEOCOD": "434EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700556
+  },
+  {
+    "GEOCOD": "TRE0038",
+    "BASE": "extra_base",
+    "IDCOD": 20260700557
+  },
+  {
+    "GEOCOD": "TRE0039",
+    "BASE": "extra_base",
+    "IDCOD": 20260700558
+  },
+  {
+    "GEOCOD": "TRE0040",
+    "BASE": "extra_base",
+    "IDCOD": 20260700559
+  },
+  {
+    "GEOCOD": "TRE0041",
+    "BASE": "extra_base",
+    "IDCOD": 20260700560
+  },
+  {
+    "GEOCOD": "TRE0042",
+    "BASE": "extra_base",
+    "IDCOD": 20260700562
+  },
+  {
+    "GEOCOD": "589EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700563
+  },
+  {
+    "GEOCOD": "241EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700564
+  },
+  {
+    "GEOCOD": "108EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "108EGO0042",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "108EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0021",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0023",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "236EGO0027",
+    "BASE": "sre_base",
+    "IDCOD": 20260700566
+  },
+  {
+    "GEOCOD": "180EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "180EGO0007",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "180EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "184EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "302EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "070EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0160",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0180",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "118EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0065",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0072",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0082",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0085",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "118EGO0092",
+    "BASE": "sre_base",
+    "IDCOD": 20260700569
+  },
+  {
+    "GEOCOD": "050UGO1100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "050UGO1110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "050UGO1120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "408EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "408EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "408EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "408EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "571EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700570
+  },
+  {
+    "GEOCOD": "020UGO1062",
+    "BASE": "sre_base",
+    "IDCOD": 20260700571
+  },
+  {
+    "GEOCOD": "020UGO1064",
+    "BASE": "sre_base",
+    "IDCOD": 20260700571
+  },
+  {
+    "GEOCOD": "020UGO1067",
+    "BASE": "sre_base",
+    "IDCOD": 20260700571
+  },
+  {
+    "GEOCOD": "020UGO1070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700571
+  },
+  {
+    "GEOCOD": "309UGO1102",
+    "BASE": "sre_base",
+    "IDCOD": 20260700571
+  },
+  {
+    "GEOCOD": "309UGO1103",
+    "BASE": "sre_base",
+    "IDCOD": 20260700571
+  },
+  {
+    "GEOCOD": "309UGO1109",
+    "BASE": "sre_base",
+    "IDCOD": 20260700571
+  },
+  {
+    "GEOCOD": "220UGO1100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700572
+  },
+  {
+    "GEOCOD": "480EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700573
+  },
+  {
+    "GEOCOD": "480EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700573
+  },
+  {
+    "GEOCOD": "480EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700573
+  },
+  {
+    "GEOCOD": "SEG0049",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0050",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0052",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0053",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0065",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0067",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0068",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0234",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0235",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0320",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0321",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0322",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0772",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0900",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0901",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0902",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG0903",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1013",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1014",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1015",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1016",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1017",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1018",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1019",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1191",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1192",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1201",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1202",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1203",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1204",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1291",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1292",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1293",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1294",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1669",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1670",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1671",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1672",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1785",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1786",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1968",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1979",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1980",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1981",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG1982",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2198",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2199",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2529",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2530",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2532",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2533",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2534",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2535",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2536",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2537",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2538",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2539",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2540",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2541",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2542",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2543",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2544",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2545",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2546",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2547",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2548",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2549",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2550",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2551",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2552",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2553",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2554",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2555",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG2933",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3199",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3312",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3314",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3357",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3465",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3475",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3556",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3601",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3632",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3847",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3957",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG3975",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4006",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4061",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4096",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4114",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4181",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4190",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4210",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4214",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4245",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4254",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "SEG4269",
+    "BASE": "ferrovias",
+    "IDCOD": 20260700576
+  },
+  {
+    "GEOCOD": "330EGO0450",
+    "BASE": "sre_base",
+    "IDCOD": 20260700251
+  },
+  {
+    "GEOCOD": "154EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700251
+  },
+  {
+    "GEOCOD": "439EGO0018",
+    "BASE": "sre_base",
+    "IDCOD": 20260700259
+  },
+  {
+    "GEOCOD": "236EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "236EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "236EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "108EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "108EGO0042",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "108EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "108EGO0057",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "108EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700261
+  },
+  {
+    "GEOCOD": "302EGO0075",
+    "BASE": "sre_base",
+    "IDCOD": 20260700322
+  },
+  {
+    "GEOCOD": "020EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700462
+  },
+  {
+    "GEOCOD": "020EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700462
+  },
+  {
+    "GEOCOD": "020EGO0012",
+    "BASE": "sre_base",
+    "IDCOD": 20260700462
+  },
+  {
+    "GEOCOD": "020EGO0022",
+    "BASE": "sre_base",
+    "IDCOD": 20260700462
+  },
+  {
+    "GEOCOD": "020EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700462
+  },
+  {
+    "GEOCOD": "020EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700462
+  },
+  {
+    "GEOCOD": "577EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700527
+  },
+  {
+    "GEOCOD": "577EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700527
+  },
+  {
+    "GEOCOD": "236EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700548
+  },
+  {
+    "GEOCOD": "236EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700548
+  },
+  {
+    "GEOCOD": "AERO002",
+    "BASE": "aero",
+    "IDCOD": 20260700577
+  },
+  {
+    "GEOCOD": "AERO003",
+    "BASE": "aero",
+    "IDCOD": 20260700578
+  },
+  {
+    "GEOCOD": "AERO004",
+    "BASE": "aero",
+    "IDCOD": 20260700579
+  },
+  {
+    "GEOCOD": "AERO005",
+    "BASE": "aero",
+    "IDCOD": 20260700580
+  },
+  {
+    "GEOCOD": "AERO006",
+    "BASE": "aero",
+    "IDCOD": 20260700581
+  },
+  {
+    "GEOCOD": "AERO009",
+    "BASE": "aero",
+    "IDCOD": 20260700582
+  },
+  {
+    "GEOCOD": "AERO010",
+    "BASE": "aero",
+    "IDCOD": 20260700583
+  },
+  {
+    "GEOCOD": "AERO011",
+    "BASE": "aero",
+    "IDCOD": 20260700584
+  },
+  {
+    "GEOCOD": "AERO013",
+    "BASE": "aero",
+    "IDCOD": 20260700585
+  },
+  {
+    "GEOCOD": "AERO014",
+    "BASE": "aero",
+    "IDCOD": 20260700586
+  },
+  {
+    "GEOCOD": "AERO015",
+    "BASE": "aero",
+    "IDCOD": 20260700587
+  },
+  {
+    "GEOCOD": "AERO018",
+    "BASE": "aero",
+    "IDCOD": 20260700588
+  },
+  {
+    "GEOCOD": "AERO019",
+    "BASE": "aero",
+    "IDCOD": 20260700589
+  },
+  {
+    "GEOCOD": "AERO021",
+    "BASE": "aero",
+    "IDCOD": 20260700590
+  },
+  {
+    "GEOCOD": "AERO022",
+    "BASE": "aero",
+    "IDCOD": 20260700591
+  },
+  {
+    "GEOCOD": "AERO026",
+    "BASE": "aero",
+    "IDCOD": 20260700592
+  },
+  {
+    "GEOCOD": "AERO028",
+    "BASE": "aero",
+    "IDCOD": 20260700593
+  },
+  {
+    "GEOCOD": "AERO029",
+    "BASE": "aero",
+    "IDCOD": 20260700594
+  },
+  {
+    "GEOCOD": "AERO031",
+    "BASE": "aero",
+    "IDCOD": 20260700595
+  },
+  {
+    "GEOCOD": "AERO033",
+    "BASE": "aero",
+    "IDCOD": 20260700596
+  },
+  {
+    "GEOCOD": "AERO034",
+    "BASE": "aero",
+    "IDCOD": 20260700597
+  },
+  {
+    "GEOCOD": "AERO036",
+    "BASE": "aero",
+    "IDCOD": 20260700598
+  },
+  {
+    "GEOCOD": "AERO032",
+    "BASE": "aero",
+    "IDCOD": 20260700599
+  },
+  {
+    "GEOCOD": "AERO037",
+    "BASE": "aero",
+    "IDCOD": 20260700600
+  },
+  {
+    "GEOCOD": "AERO041",
+    "BASE": "aero",
+    "IDCOD": 20260700601
+  },
+  {
+    "GEOCOD": "AERO042",
+    "BASE": "aero",
+    "IDCOD": 20260700602
+  },
+  {
+    "GEOCOD": "AERO043",
+    "BASE": "aero",
+    "IDCOD": 20260700603
+  },
+  {
+    "GEOCOD": "GEO0001",
+    "BASE": "geo_pol_base",
+    "IDCOD": 20260700604
+  },
+  {
+    "GEOCOD": "070EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0280",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "070EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "347EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700609
+  },
+  {
+    "GEOCOD": "429EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700610
+  },
+  {
+    "GEOCOD": "210EGO0485",
+    "BASE": "sre_base",
+    "IDCOD": 20260700074
+  },
+  {
+    "GEOCOD": "210EGO0487",
+    "BASE": "sre_base",
+    "IDCOD": 20260700074
+  },
+  {
+    "GEOCOD": "210EGO0490",
+    "BASE": "sre_base",
+    "IDCOD": 20260700074
+  },
+  {
+    "GEOCOD": "401EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700076
+  },
+  {
+    "GEOCOD": "040EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700078
+  },
+  {
+    "GEOCOD": "040EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700078
+  },
+  {
+    "GEOCOD": "040EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700078
+  },
+  {
+    "GEOCOD": "040EGO0152",
+    "BASE": "sre_base",
+    "IDCOD": 20260700078
+  },
+  {
+    "GEOCOD": "040EGO0153",
+    "BASE": "sre_base",
+    "IDCOD": 20260700078
+  },
+  {
+    "GEOCOD": "319EGO0007",
+    "BASE": "sre_base",
+    "IDCOD": 20260700079
+  },
+  {
+    "GEOCOD": "319EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700079
+  },
+  {
+    "GEOCOD": "341EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700080
+  },
+  {
+    "GEOCOD": "174EGO0175",
+    "BASE": "sre_base",
+    "IDCOD": 20260700085
+  },
+  {
+    "GEOCOD": "050EGO0280",
+    "BASE": "sre_base",
+    "IDCOD": 20260700086
+  },
+  {
+    "GEOCOD": "178EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700092
+  },
+  {
+    "GEOCOD": "333EGO0013",
+    "BASE": "sre_base",
+    "IDCOD": 20260700095
+  },
+  {
+    "GEOCOD": "570EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700095
+  },
+  {
+    "GEOCOD": "570EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700095
+  },
+  {
+    "GEOCOD": "409EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700108
+  },
+  {
+    "GEOCOD": "409EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700108
+  },
+  {
+    "GEOCOD": "411EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700114
+  },
+  {
+    "GEOCOD": "174EGO0180",
+    "BASE": "sre_base",
+    "IDCOD": 20260700130
+  },
+  {
+    "GEOCOD": "174EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700131
+  },
+  {
+    "GEOCOD": "570EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700132
+  },
+  {
+    "GEOCOD": "188EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700138
+  },
+  {
+    "GEOCOD": "188EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700138
+  },
+  {
+    "GEOCOD": "188EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700138
+  },
+  {
+    "GEOCOD": "188EGO0072",
+    "BASE": "sre_base",
+    "IDCOD": 20260700138
+  },
+  {
+    "GEOCOD": "050EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700139
+  },
+  {
+    "GEOCOD": "174EGO0195",
+    "BASE": "sre_base",
+    "IDCOD": 20260700139
+  },
+  {
+    "GEOCOD": "174EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700139
+  },
+  {
+    "GEOCOD": "174EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700139
+  },
+  {
+    "GEOCOD": "174EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700139
+  },
+  {
+    "GEOCOD": "060EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700142
+  },
+  {
+    "GEOCOD": "164EGO0540",
+    "BASE": "sre_base",
+    "IDCOD": 20260700143
+  },
+  {
+    "GEOCOD": "188EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700165
+  },
+  {
+    "GEOCOD": "213EGO0330",
+    "BASE": "sre_base",
+    "IDCOD": 20260700166
+  },
+  {
+    "GEOCOD": "213EGO0340",
+    "BASE": "sre_base",
+    "IDCOD": 20260700166
+  },
+  {
+    "GEOCOD": "409EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700180
+  },
+  {
+    "GEOCOD": "409EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700180
+  },
+  {
+    "GEOCOD": "409EGO0055",
+    "BASE": "sre_base",
+    "IDCOD": 20260700180
+  },
+  {
+    "GEOCOD": "409EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700180
+  },
+  {
+    "GEOCOD": "423EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700181
+  },
+  {
+    "GEOCOD": "423EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700181
+  },
+  {
+    "GEOCOD": "432EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700183
+  },
+  {
+    "GEOCOD": "213EGO0295",
+    "BASE": "sre_base",
+    "IDCOD": 20260700207
+  },
+  {
+    "GEOCOD": "213EGO0300",
+    "BASE": "sre_base",
+    "IDCOD": 20260700207
+  },
+  {
+    "GEOCOD": "213EGO0320",
+    "BASE": "sre_base",
+    "IDCOD": 20260700207
+  },
+  {
+    "GEOCOD": "422EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700208
+  },
+  {
+    "GEOCOD": "320EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700229
+  },
+  {
+    "GEOCOD": "184EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700240
+  },
+  {
+    "GEOCOD": "060EGO0125",
+    "BASE": "sre_base",
+    "IDCOD": 20260700244
+  },
+  {
+    "GEOCOD": "060EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700244
+  },
+  {
+    "GEOCOD": "060EGO0132",
+    "BASE": "sre_base",
+    "IDCOD": 20260700244
+  },
+  {
+    "GEOCOD": "060EGO0135",
+    "BASE": "sre_base",
+    "IDCOD": 20260700244
+  },
+  {
+    "GEOCOD": "060EGO0137",
+    "BASE": "sre_base",
+    "IDCOD": 20260700244
+  },
+  {
+    "GEOCOD": "174EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700270
+  },
+  {
+    "GEOCOD": "213EGO0290",
+    "BASE": "sre_base",
+    "IDCOD": 20260700273
+  },
+  {
+    "GEOCOD": "215EGO0032",
+    "BASE": "sre_base",
+    "IDCOD": 20260700276
+  },
+  {
+    "GEOCOD": "210EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700278
+  },
+  {
+    "GEOCOD": "515EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700279
+  },
+  {
+    "GEOCOD": "210EGO0320",
+    "BASE": "sre_base",
+    "IDCOD": 20260700281
+  },
+  {
+    "GEOCOD": "210EGO0330",
+    "BASE": "sre_base",
+    "IDCOD": 20260700281
+  },
+  {
+    "GEOCOD": "210EGO0340",
+    "BASE": "sre_base",
+    "IDCOD": 20260700281
+  },
+  {
+    "GEOCOD": "210EGO0350",
+    "BASE": "sre_base",
+    "IDCOD": 20260700281
+  },
+  {
+    "GEOCOD": "319EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700303
+  },
+  {
+    "GEOCOD": "320EGO0257",
+    "BASE": "sre_base",
+    "IDCOD": 20260700306
+  },
+  {
+    "GEOCOD": "320EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700306
+  },
+  {
+    "GEOCOD": "320EGO0265",
+    "BASE": "sre_base",
+    "IDCOD": 20260700306
+  },
+  {
+    "GEOCOD": "445EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700307
+  },
+  {
+    "GEOCOD": "050EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700308
+  },
+  {
+    "GEOCOD": "222EGO0260",
+    "BASE": "sre_base",
+    "IDCOD": 20260700311
+  },
+  {
+    "GEOCOD": "320EGO0240",
+    "BASE": "sre_base",
+    "IDCOD": 20260700313
+  },
+  {
+    "GEOCOD": "320EGO0243",
+    "BASE": "sre_base",
+    "IDCOD": 20260700313
+  },
+  {
+    "GEOCOD": "320EGO0245",
+    "BASE": "sre_base",
+    "IDCOD": 20260700313
+  },
+  {
+    "GEOCOD": "417EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700313
+  },
+  {
+    "GEOCOD": "326EGO0205",
+    "BASE": "sre_base",
+    "IDCOD": 20260700315
+  },
+  {
+    "GEOCOD": "326EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700315
+  },
+  {
+    "GEOCOD": "326EGO0220",
+    "BASE": "sre_base",
+    "IDCOD": 20260700315
+  },
+  {
+    "GEOCOD": "326EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700315
+  },
+  {
+    "GEOCOD": "487EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700561
+  },
+  {
+    "GEOCOD": "487EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700561
+  },
+  {
+    "GEOCOD": "487EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700561
+  },
+  {
+    "GEOCOD": "409EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700565
+  },
+  {
+    "GEOCOD": "184EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700567
+  },
+  {
+    "GEOCOD": "070EGO0190",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0200",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0215",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0220",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0225",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "070EGO0235",
+    "BASE": "sre_base",
+    "IDCOD": 20260700568
+  },
+  {
+    "GEOCOD": "174EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700574
+  },
+  {
+    "GEOCOD": "040EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "050EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "060EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "060EGO0235",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "164EGO0115",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "164EGO0195",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0155",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0175",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0180",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0195",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0290",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0305",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0310",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0315",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0320",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0325",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0330",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0332",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0335",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0337",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0340",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0350",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0360",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0370",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "174EGO0390",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0080",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0085",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0090",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0120",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0125",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0135",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0140",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0145",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0160",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0165",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0170",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "206EGO0175",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0320",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0330",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0340",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0350",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0360",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0370",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0375",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0383",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0385",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0387",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0390",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0395",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0410",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0430",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0440",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0450",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0453",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0455",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0457",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0460",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0462",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0465",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0470",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "210EGO0472",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "309EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "309EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "309EGO0017",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "309EGO0018",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "309EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "319EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "319EGO0065",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "320EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "320EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "320EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "320EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "320EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "320EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "401EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "401EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "410EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "410EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700575
+  },
+  {
+    "GEOCOD": "319EGO0100",
+    "BASE": "sre_base",
+    "IDCOD": 20260700407
+  },
+  {
+    "GEOCOD": "210EGO0410",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "070EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700470
+  },
+  {
+    "GEOCOD": "184EGO0150",
+    "BASE": "sre_base",
+    "IDCOD": 20260700496
+  },
+  {
+    "GEOCOD": "173EGO0013",
+    "BASE": "sre_base",
+    "IDCOD": 20260700493
+  },
+  {
+    "GEOCOD": "215EGO0035",
+    "BASE": "sre_base",
+    "IDCOD": 20260700407
+  },
+  {
+    "GEOCOD": "070EGO0245",
+    "BASE": "sre_base",
+    "IDCOD": 20260700469
+  },
+  {
+    "GEOCOD": "325EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700441
+  },
+  {
+    "GEOCOD": "206EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700501
+  },
+  {
+    "GEOCOD": "164EGO0490",
+    "BASE": "sre_base",
+    "IDCOD": 20260700489
+  },
+  {
+    "GEOCOD": "210EGO0470",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "164EGO0440",
+    "BASE": "sre_base",
+    "IDCOD": 20260700489
+  },
+  {
+    "GEOCOD": "164EGO0470",
+    "BASE": "sre_base",
+    "IDCOD": 20260700489
+  },
+  {
+    "GEOCOD": "164EGO0460",
+    "BASE": "sre_base",
+    "IDCOD": 20260700489
+  },
+  {
+    "GEOCOD": "164EGO0430",
+    "BASE": "sre_base",
+    "IDCOD": 20260700489
+  },
+  {
+    "GEOCOD": "210EGO0472",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "320EGO0005",
+    "BASE": "sre_base",
+    "IDCOD": 20260700430
+  },
+  {
+    "GEOCOD": "320EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700430
+  },
+  {
+    "GEOCOD": "320EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700430
+  },
+  {
+    "GEOCOD": "173EGO0014",
+    "BASE": "sre_base",
+    "IDCOD": 20260700493
+  },
+  {
+    "GEOCOD": "173EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700493
+  },
+  {
+    "GEOCOD": "164EGO0210",
+    "BASE": "sre_base",
+    "IDCOD": 20260700491
+  },
+  {
+    "GEOCOD": "210EGO0455",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "320EGO0135",
+    "BASE": "sre_base",
+    "IDCOD": 20260700429
+  },
+  {
+    "GEOCOD": "326EGO0060",
+    "BASE": "sre_base",
+    "IDCOD": 20260700431
+  },
+  {
+    "GEOCOD": "320EGO0130",
+    "BASE": "sre_base",
+    "IDCOD": 20260700429
+  },
+  {
+    "GEOCOD": "164EGO0180",
+    "BASE": "sre_base",
+    "IDCOD": 20260700491
+  },
+  {
+    "GEOCOD": "164EGO0190",
+    "BASE": "sre_base",
+    "IDCOD": 20260700491
+  },
+  {
+    "GEOCOD": "164EGO0197",
+    "BASE": "sre_base",
+    "IDCOD": 20260700491
+  },
+  {
+    "GEOCOD": "164EGO0193",
+    "BASE": "sre_base",
+    "IDCOD": 20260700491
+  },
+  {
+    "GEOCOD": "164EGO0200",
+    "BASE": "sre_base",
+    "IDCOD": 20260700491
+  },
+  {
+    "GEOCOD": "410EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700441
+  },
+  {
+    "GEOCOD": "210EGO0383",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0450",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0390",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "410EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0380",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "319EGO0095",
+    "BASE": "sre_base",
+    "IDCOD": 20260700407
+  },
+  {
+    "GEOCOD": "070EGO0235",
+    "BASE": "sre_base",
+    "IDCOD": 20260700469
+  },
+  {
+    "GEOCOD": "210EGO0360",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0385",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "569EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700457
+  },
+  {
+    "GEOCOD": "319EGO0110",
+    "BASE": "sre_base",
+    "IDCOD": 20260700407
+  },
+  {
+    "GEOCOD": "320EGO0255",
+    "BASE": "sre_base",
+    "IDCOD": 20260700442
+  },
+  {
+    "GEOCOD": "320EGO0250",
+    "BASE": "sre_base",
+    "IDCOD": 20260700442
+  },
+  {
+    "GEOCOD": "210EGO0395",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0370",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "070EGO0230",
+    "BASE": "sre_base",
+    "IDCOD": 20260700469
+  },
+  {
+    "GEOCOD": "210EGO0430",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "070EGO0240",
+    "BASE": "sre_base",
+    "IDCOD": 20260700469
+  },
+  {
+    "GEOCOD": "164EGO0195",
+    "BASE": "sre_base",
+    "IDCOD": 20260700491
+  },
+  {
+    "GEOCOD": "215EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700407
+  },
+  {
+    "GEOCOD": "210EGO0375",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0440",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0457",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0465",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0462",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "210EGO0460",
+    "BASE": "sre_base",
+    "IDCOD": 20260700492
+  },
+  {
+    "GEOCOD": "040EGO0084",
+    "BASE": "sre_base",
+    "IDCOD": 20260700605
+  },
+  {
+    "GEOCOD": "040EGO0085",
+    "BASE": "sre_base",
+    "IDCOD": 20260700605
+  },
+  {
+    "GEOCOD": "040EGO0089",
+    "BASE": "sre_base",
+    "IDCOD": 20260700605
+  },
+  {
+    "GEOCOD": "040EGO0087",
+    "BASE": "sre_base",
+    "IDCOD": 20260700605
+  },
+  {
+    "GEOCOD": "215EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700606
+  },
+  {
+    "GEOCOD": "215EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700606
+  },
+  {
+    "GEOCOD": "215EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700606
+  },
+  {
+    "GEOCOD": "040EGO0070",
+    "BASE": "sre_base",
+    "IDCOD": 20260700606
+  },
+  {
+    "GEOCOD": "320EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700607
+  },
+  {
+    "GEOCOD": "320EGO0025",
+    "BASE": "sre_base",
+    "IDCOD": 20260700607
+  },
+  {
+    "GEOCOD": "515EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700607
+  },
+  {
+    "GEOCOD": "515EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700607
+  },
+  {
+    "GEOCOD": "515EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700607
+  },
+  {
+    "GEOCOD": "515EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700607
+  },
+  {
+    "GEOCOD": "210EGO0290",
+    "BASE": "sre_base",
+    "IDCOD": 20260700607
+  },
+  {
+    "GEOCOD": "220EGO0030",
+    "BASE": "sre_base",
+    "IDCOD": 20260700608
+  },
+  {
+    "GEOCOD": "220EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700608
+  },
+  {
+    "GEOCOD": "220EGO0015",
+    "BASE": "sre_base",
+    "IDCOD": 20260700608
+  },
+  {
+    "GEOCOD": "220EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260700608
+  },
+  {
+    "GEOCOD": "220EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700608
+  },
+  {
+    "GEOCOD": "050EGO0270",
+    "BASE": "sre_base",
+    "IDCOD": 20260700608
+  },
+  {
+    "GEOCOD": "432EGO0020",
+    "BASE": "sre_base",
+    "IDCOD": 20260700611
+  },
+  {
+    "GEOCOD": "324EGO0040",
+    "BASE": "sre_base",
+    "IDCOD": 20260700612
+  },
+  {
+    "GEOCOD": "324EGO0045",
+    "BASE": "sre_base",
+    "IDCOD": 20260700612
+  },
+  {
+    "GEOCOD": "324EGO0050",
+    "BASE": "sre_base",
+    "IDCOD": 20260700612
+  },
+  {
+    "GEOCOD": "174EGO0290",
+    "BASE": "sre_base",
+    "IDCOD": 20260700617
+  }
+]

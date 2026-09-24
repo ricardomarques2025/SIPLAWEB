@@ -6,65 +6,10 @@ var map = L.map('map', {
 var originalCenter = map.getCenter();
 var originalZoom = map.getZoom();
 
-// Conexão direta com o Supabase (banco-gis) para as tabelas de dados de
-// negócio (dados/obras_links). Chave pública (anon) — leitura apenas, RLS
-// no banco restringe a SELECT. Alterações feitas direto no Supabase pelo
-// GOINFRA refletem no site publicado sem precisar reexportar arquivos.
-var SUPABASE_URL = 'https://ctukaanelcsevdmoqlys.supabase.co';
-var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0dWthYW5lbGNzZXZkbW9xbHlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxNDE0NTIsImV4cCI6MjEwMjcxNzQ1Mn0.WgEoQ4FEGTOuTrWtDN07eGc6huKWP5QD7Bt44GPeq4o';
-
-// Busca todas as linhas de uma tabela do Supabase via REST, paginando em
-// blocos de 1000 (limite padrão do PostgREST) até esgotar os registros.
-function carregarTabelaSupabase(tabela) {
-  var PAGE_SIZE = 1000;
-  function buscarPagina(offset, acumulado) {
-    var inicio = offset;
-    var fim = offset + PAGE_SIZE - 1;
-    return fetch(SUPABASE_URL + '/rest/v1/' + tabela + '?select=*', {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-        Range: inicio + '-' + fim
-      }
-    }).then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status + ' em tabela Supabase ' + tabela);
-      return r.json().then(function(pagina) {
-        var todos = acumulado.concat(pagina);
-        if (pagina.length < PAGE_SIZE) return todos;
-        return buscarPagina(offset + PAGE_SIZE, todos);
-      });
-    });
-  }
-  return buscarPagina(0, []).catch(function(e) {
-    console.warn('Falha ao carregar tabela Supabase:', tabela, e);
-    return [];
-  });
-}
-
-// Registra um acesso ao site via RPC (função SECURITY DEFINER, sem grant de
-// escrita direta às tabelas para a chave anon). Qualquer escrita no banco
-// conta como atividade para o Supabase não pausar o projeto por
-// inatividade (o plano gratuito pausa após 7 dias sem uso). Falha aqui
-// nunca deve afetar o carregamento do mapa.
-function registrarAcessoSupabase() {
-  fetch(SUPABASE_URL + '/rest/v1/rpc/registrar_acesso', {
-    method: 'POST',
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: 'Bearer ' + SUPABASE_ANON_KEY,
-      'Content-Type': 'application/json'
-    },
-    body: '{}'
-  }).catch(function(e) {
-    console.warn('Falha ao registrar acesso no Supabase:', e);
-  });
-}
-registrarAcessoSupabase();
-
 // Botão "Atualizar site": força o navegador a buscar novamente o mapa.html
 // (ignorando o cache local), o que também garante que a busca dos dados de
-// negócio no Supabase (dados/obras_links) e das camadas seja refeita do
-// zero. Combinado com o parâmetro "?v=" nos scripts/estilos (bumped a cada
+// negócio (data/DADOS.json e data/OBRAS_LINKS.json) e das camadas seja
+// refeita do zero. Combinado com o parâmetro "?v=" nos scripts/estilos (bumped a cada
 // alteração de código), isso garante que qualquer usuário sempre veja a
 // versão mais recente do site sem precisar saber o atalho de hard refresh.
 (function() {
@@ -2200,7 +2145,7 @@ map.addControl(new LogoMapaControl());
 
   function carregarDadosUnificados() {
     if (!dadosUnificadosPromise) {
-      dadosUnificadosPromise = carregarTabelaSupabase('dados')
+      dadosUnificadosPromise = carregarJsonOpcional('data/DADOS.json')
         .then(function(resultado) {
           return Array.isArray(resultado) ? resultado.map(normalizarRegistroDados) : [];
         });
@@ -9130,7 +9075,7 @@ map.addControl(new LogoMapaControl());
     carregarDadosUnificados(),
     fetchGeoJSON('data/regioes.geojson', true),
     fetchGeoJSON('data/extra_base.geojson', false),
-    carregarTabelaSupabase('obras_links')
+    carregarJsonOpcional('data/OBRAS_LINKS.json')
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
