@@ -19453,7 +19453,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700610,
@@ -19485,7 +19485,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700611,
@@ -19517,7 +19517,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700612,
@@ -19549,7 +19549,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700613,
@@ -19581,7 +19581,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700614,
@@ -19613,7 +19613,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700615,
@@ -19645,7 +19645,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700616,
@@ -19677,7 +19677,7 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   },
   {
     "IDCOD": 20260700617,
@@ -19709,6 +19709,38 @@
     "EXPOSICAO_DE_MOTIVOS": null,
     "LEI_ESTADUAL": null,
     "TERMO_DE_TRANSFERENCIA": null,
-    "ATUALIZACAO": "NaT"
+    "ATUALIZACAO": "2026-09-01 00:00:00"
+  },
+  {
+    "IDCOD": 20260700618,
+    "IDGRUPO": null,
+    "UNIDADE": "DOR",
+    "TIPO": "Link",
+    "NATUREZA": "Serviço",
+    "LATITUDE": null,
+    "LONGITUDE": null,
+    "REF": null,
+    "PROPOSTA": null,
+    "SRE": null,
+    "LOCALIDADE": null,
+    "MUNICIPIO": "",
+    "INTERVENCAO": "Pavimentação",
+    "RODOVIA": "VICINAL",
+    "DESCRICAO": "ENTR. GO-173 / ENTR. GO-528 (RODOVIA DO BOI)",
+    "SEI": null,
+    "SEI_OBRA_CONTRATO": 202600005012787,
+    "CONTRATO": null,
+    "EXT_CONTRATO_KM": 70.72,
+    "ETAPA": "Obra",
+    "STATUS": "Autorizado",
+    "MODALIDADE": null,
+    "EMPRESA": null,
+    "CONCLUSAO": null,
+    "PORTARIA_SRE": null,
+    "LEI_MUNICIPAL": null,
+    "EXPOSICAO_DE_MOTIVOS": null,
+    "LEI_ESTADUAL": null,
+    "TERMO_DE_TRANSFERENCIA": null,
+    "ATUALIZACAO": "2026-09-01 00:00:00"
   }
 ]

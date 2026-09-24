@@ -7078,5 +7078,10 @@
     "GEOCOD": "174EGO0290",
     "BASE": "sre_base",
     "IDCOD": 20260700617
+  },
+  {
+    "GEOCOD": "TRE0005",
+    "BASE": "extra_base",
+    "IDCOD": 20260700618
   }
 ]
