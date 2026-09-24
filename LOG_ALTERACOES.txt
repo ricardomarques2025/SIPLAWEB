@@ -412,3 +412,10 @@ Retorno das tabelas de negocio para arquivos locais (sem Supabase):
 --- Removidos de js/mapa.js a chave de acesso, a leitura paginada via REST e o registro de acessos no Supabase.
 --- Mantido o workflow .github/workflows/supabase-keepalive.yml para impedir a pausa do projeto no plano gratuito, prevendo o retorno futuro ao banco de dados.
 --- Atualizado o parametro de versao dos scripts e estilos em mapa.html para forcar o navegador a carregar a nova versao.
+
+
+VERSAO 2.9 - 24/09/2026
+-------------------------
+
+--- Botao Zoom da tabela "Mostrar todos registros": o trecho/ponto agora apenas pisca em amarelo por cerca de 2 segundos e o destaque some, em vez de ficar selecionado; o destaque nao e mais clicavel, preservando o clique que abre o popup.
+--- Atualizado o parametro de versao de js/mapa.js em mapa.html para forcar o navegador a carregar a nova versao.

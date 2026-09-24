@@ -488,6 +488,7 @@ map.addControl(new LogoMapaControl());
   var rotulosObrasPrintAtivos = false;
   var registrosZoomTabelaCompleta = [];
   var destaqueTabelaCompletaLayer = null;
+  var destaqueTabelaCompletaTimerId = null;
   var htmlPainelAntesListaCompleta = '';
   var destaqueCliqueLayer = null;
   var destaqueCliqueTimerId = null;
@@ -5987,6 +5988,10 @@ map.addControl(new LogoMapaControl());
   }
 
   function limparDestaqueTabelaCompleta() {
+    if (destaqueTabelaCompletaTimerId) {
+      clearInterval(destaqueTabelaCompletaTimerId);
+      destaqueTabelaCompletaTimerId = null;
+    }
     if (destaqueTabelaCompletaLayer) {
       map.removeLayer(destaqueTabelaCompletaLayer);
       destaqueTabelaCompletaLayer = null;
@@ -6247,19 +6252,34 @@ map.addControl(new LogoMapaControl());
     var item = registrosZoomTabelaCompleta[Number(id)];
     if (!item || !item.features || !item.features.length) return;
     limparDestaqueTabelaCompleta();
+    // Destaque apenas temporário (pisca e some) e não interativo, para não
+    // cobrir o trecho e bloquear o clique que abre o popup.
     destaqueTabelaCompletaLayer = L.geoJSON({ type: 'FeatureCollection', features: item.features }, {
-      pane: item.tipo === 'ponto' ? 'oaePane' : 'servicosPane',
+      pane: 'destaqueCliquePane',
+      interactive: false,
       pointToLayer: function(feature, latlng) {
-        return L.circleMarker(latlng, { radius: 11, color: '#0b7a2a', weight: 4, fillColor: '#dff5e6', fillOpacity: 0.65 });
+        return L.circleMarker(latlng, { radius: 16, color: '#facc15', weight: 5, fillColor: '#fef9c3', fillOpacity: 0.55 });
       },
       style: function() {
-        return { color: '#0b7a2a', weight: 9, opacity: 0.9, lineCap: 'round', lineJoin: 'round' };
+        return { color: '#facc15', weight: 11, opacity: 0.9, lineCap: 'round', lineJoin: 'round' };
       }
     }).addTo(map);
     var bounds = destaqueTabelaCompletaLayer.getBounds && destaqueTabelaCompletaLayer.getBounds();
     if (bounds && bounds.isValid && bounds.isValid()) {
       map.fitBounds(bounds, { paddingTopLeft: [70, 70], paddingBottomRight: [70, 70], maxZoom: item.tipo === 'ponto' ? 13 : 11 });
     }
+
+    var visivel = true;
+    var repeticoes = 0;
+    destaqueTabelaCompletaTimerId = setInterval(function() {
+      visivel = !visivel;
+      var estilo = { opacity: visivel ? 0.9 : 0, fillOpacity: visivel ? 0.55 : 0 };
+      destaqueTabelaCompletaLayer.eachLayer(function(l) {
+        if (l.setStyle) l.setStyle(estilo);
+      });
+      repeticoes++;
+      if (repeticoes >= 8) limparDestaqueTabelaCompleta();
+    }, 250);
   }
 
     function construirPopupLinha(feature) {
