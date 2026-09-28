@@ -7882,7 +7882,12 @@ map.addControl(new LogoMapaControl());
     atualizarIndicadoresProgramaMunicipio(municipioSelecionado);
     atualizarIndicadoresIntervencaoEOAE(municipioSelecionado);
 
-    if (opcoes.zoomRegional || opcoes.zoomAreaInfluencia) {
+    var autoZoomToggle = document.getElementById('autoZoomToggle');
+    var autoZoomAtivo = !autoZoomToggle || autoZoomToggle.checked;
+
+    if (!autoZoomAtivo) {
+      // Auto zoom desligado: mantém a visualização atual do mapa.
+    } else if (opcoes.zoomRegional || opcoes.zoomAreaInfluencia) {
       if (temFiltroRegional()) zoomParaRegioesSelecionadas();
       else if (temFiltroAreaInfluencia()) zoomParaSelecao(featuresAreaInfluenciaSelecionada());
       else map.fitBounds(L.geoJSON(municipiosData).getBounds(), { padding: [20, 20], animate: false });
