@@ -419,3 +419,22 @@ VERSAO 2.9 - 24/09/2026
 
 --- Botao Zoom da tabela "Mostrar todos registros": o trecho/ponto agora apenas pisca em amarelo por cerca de 2 segundos e o destaque some, em vez de ficar selecionado; o destaque nao e mais clicavel, preservando o clique que abre o popup.
 --- Atualizado o parametro de versao de js/mapa.js em mapa.html para forcar o navegador a carregar a nova versao.
+
+
+VERSAO 2.10 - 30/09/2026
+-------------------------
+
+Novas origens GME, GMK, GMM e GMP:
+--- Incluidos os botoes GME, GMK, GMM e GMP no painel Origem, ativos por padrao e respeitando Desligar tudo, Limpar tudo e a entrada pelo parametro ?origem=.
+--- GME e GMK sao pontos lidos das coordenadas LATITUDE/LONGITUDE de data/DADOS.json, com icones proprios: bueiro em projeto (placabueiroprojeto.svg), bueiro em obra (placabueiroobra.svg), ponte em projeto (placaoaeprojeto.svg) e ponte em obra (placaoaeobra.svg).
+--- GMM e GMP sao vinculadas a camada de municipios pelo campo REF de DADOS.json, igual ao GEOCOD do municipio; quando ligadas, contornam os municipios com registros em #800080 (GMM) e #FFFF00 (GMP). O contorno GMP e mais espesso e fica abaixo, para os dois aparecerem no mesmo municipio.
+--- As novas origens obedecem aos filtros de Municipio, Regioes de Planejamento e Manutencao e Area de Influencia, mostrando apenas os registros relativos; com Rodovia, SRE ou Proposta selecionada, GMM e GMP nao sao exibidas.
+--- Clique no contorno municipal abre popup e tabela no painel inferior, com Mostrar todos registros; os registros tambem entram na exportacao CSV e no filtro de Intervencao (ex.: CBUQ, MICRO, Bueiro, Ponte).
+--- Adicionadas legendas proprias GME, GMK, GMM e GMP no painel direito, exibidas somente quando ha elementos visiveis.
+--- Atualizados os parametros de versao de js/estilos.js, js/mapa.js e css/style.css em mapa.html.
+--- Validado em navegador headless: 625 marcadores com todas as origens, 121 municipios GMM, 160 GMP, e filtragem correta por municipio e regiao.
+--- GME e GMK: pontos sem LATITUDE/LONGITUDE passam a usar a coordenada da localidade (campo LOCALIDADE de DADOS.json comparado a NOME_ACEN de data/localidades.geojson, sem diferenciar acentos; com nomes repetidos, prefere a do mesmo municipio). Os 92 pontos GME sem coordenada foram localizados; popup e tabela exibem "Localizacao: Aproximada (localidade ...)".
+--- data/localidades.geojson passa a ser baixado uma unica vez e compartilhado entre a camada de localidades e as obras pontuais.
+--- Pendencia de dado: GMK IDCOD 20260701412 (Cavalcante) tem LATITUDE positiva (13.847202) e fica fora do mapa; corrigir para -13.847202 em DADOS.xlsx.
+--- GMM e GMP com a mesma espessura de contorno (6 px) e preenchimento de 50%: GMM em roxo suave (#A07CB8) e GMP em amarelo menos vivo (#E3CF5A); legendas mostram contorno e preenchimento.
+--- Camada GMM/GMP movida para logo acima dos municipios (pane 251) e abaixo de todas as demais camadas, inclusive regioes e area de influencia.

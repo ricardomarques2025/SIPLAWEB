@@ -7,6 +7,8 @@ const MAPA_PANES = {
   areasAmbientaisPane: 230,
   areasUrbanasPane: 240,
   municipiosPane: 250,
+  // GMM e GMP: acima dos municipios e abaixo das demais camadas.
+  origensMunicipaisPane: 251,
   regioesPane: 252,
   areaInfluenciaPane: 255,
   bufferPane: 258,
@@ -326,12 +328,54 @@ const REGRAS_ESTILO = [
       formato: 'losango',
       icone: 'data/placaobra.svg'
     },
+    BueiroProjeto: {
+      label: 'Bueiro em projeto',
+      classe: 'obra-ponto-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/placabueiroprojeto.svg'
+    },
+    BueiroObra: {
+      label: 'Bueiro em obra',
+      classe: 'obra-ponto-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/placabueiroobra.svg'
+    },
+    PonteProjeto: {
+      label: 'Ponte em projeto',
+      classe: 'obra-ponto-oae-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/placaoaeprojeto.svg'
+    },
+    PonteObra: {
+      label: 'Ponte em obra',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/placaoaeobra.svg'
+    },
     Padrao: {
       label: 'Outros',
       classe: 'obra-ponto-padrao',
       cor: '#6b7280',
       formato: 'circulo'
     }
+  };
+
+  // Ordem dos simbolos de obras pontuais nas legendas.
+  const ORDEM_LEGENDA_PONTOS = [
+    'OaePlanejamento', 'OaeProjeto', 'OaeObra',
+    'PonteProjeto', 'PonteObra', 'BueiroProjeto', 'BueiroObra',
+    'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'
+  ];
+
+  // Origens vinculadas aos poligonos municipais (DADOS.json: REF = GEOCOD do municipio).
+  // Quando ligadas, os municipios com registros recebem contorno na cor definida aqui.
+  const ORIGENS_MUNICIPAIS = {
+    GMM: { label: 'Municípios atendidos - GMM', color: '#A07CB8', weight: 6, opacity: 1, fill: true, fillColor: '#A07CB8', fillOpacity: 0.5, dashArray: null },
+    GMP: { label: 'Municípios atendidos - GMP', color: '#E3CF5A', weight: 6, opacity: 1, fill: true, fillColor: '#E3CF5A', fillOpacity: 0.5, dashArray: null }
   };
 
   window.MAPA_PANES = MAPA_PANES;
@@ -346,6 +390,8 @@ const REGRAS_ESTILO = [
   window.ROD_EST_INFO = ROD_EST_INFO;
   window.ROD_FED_INFO = ROD_FED_INFO;
   window.OBRAS_PONTOS_INFO = OBRAS_PONTOS_INFO;
+  window.ORDEM_LEGENDA_PONTOS = ORDEM_LEGENDA_PONTOS;
+  window.ORIGENS_MUNICIPAIS = ORIGENS_MUNICIPAIS;
 
 
 

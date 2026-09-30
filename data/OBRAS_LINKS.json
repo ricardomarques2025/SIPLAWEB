@@ -7083,5 +7083,1410 @@
     "GEOCOD": "TRE0005",
     "BASE": "extra_base",
     "IDCOD": 20260700618
+  },
+  {
+    "GEOCOD": 5200159,
+    "BASE": "municipios",
+    "IDCOD": 20260700620
+  },
+  {
+    "GEOCOD": 5200175,
+    "BASE": "municipios",
+    "IDCOD": 20260700621
+  },
+  {
+    "GEOCOD": 5200209,
+    "BASE": "municipios",
+    "IDCOD": 20260700622
+  },
+  {
+    "GEOCOD": 5200506,
+    "BASE": "municipios",
+    "IDCOD": 20260700623
+  },
+  {
+    "GEOCOD": 5200555,
+    "BASE": "municipios",
+    "IDCOD": 20260700624
+  },
+  {
+    "GEOCOD": 5200605,
+    "BASE": "municipios",
+    "IDCOD": 20260700625
+  },
+  {
+    "GEOCOD": 5200829,
+    "BASE": "municipios",
+    "IDCOD": 20260700626
+  },
+  {
+    "GEOCOD": 5200852,
+    "BASE": "municipios",
+    "IDCOD": 20260700627
+  },
+  {
+    "GEOCOD": 5200902,
+    "BASE": "municipios",
+    "IDCOD": 20260700628
+  },
+  {
+    "GEOCOD": 5201306,
+    "BASE": "municipios",
+    "IDCOD": 20260700629
+  },
+  {
+    "GEOCOD": 5201603,
+    "BASE": "municipios",
+    "IDCOD": 20260700630
+  },
+  {
+    "GEOCOD": 5202155,
+    "BASE": "municipios",
+    "IDCOD": 20260700631
+  },
+  {
+    "GEOCOD": 5202353,
+    "BASE": "municipios",
+    "IDCOD": 20260700632
+  },
+  {
+    "GEOCOD": 5202502,
+    "BASE": "municipios",
+    "IDCOD": 20260700633
+  },
+  {
+    "GEOCOD": 5202601,
+    "BASE": "municipios",
+    "IDCOD": 20260700634
+  },
+  {
+    "GEOCOD": 5203104,
+    "BASE": "municipios",
+    "IDCOD": 20260700635
+  },
+  {
+    "GEOCOD": 5203203,
+    "BASE": "municipios",
+    "IDCOD": 20260700636
+  },
+  {
+    "GEOCOD": 5203302,
+    "BASE": "municipios",
+    "IDCOD": 20260700637
+  },
+  {
+    "GEOCOD": 5203559,
+    "BASE": "municipios",
+    "IDCOD": 20260700638
+  },
+  {
+    "GEOCOD": 5203575,
+    "BASE": "municipios",
+    "IDCOD": 20260700639
+  },
+  {
+    "GEOCOD": 5203962,
+    "BASE": "municipios",
+    "IDCOD": 20260700640
+  },
+  {
+    "GEOCOD": 5204102,
+    "BASE": "municipios",
+    "IDCOD": 20260700641
+  },
+  {
+    "GEOCOD": 5204250,
+    "BASE": "municipios",
+    "IDCOD": 20260700642
+  },
+  {
+    "GEOCOD": 5204508,
+    "BASE": "municipios",
+    "IDCOD": 20260700643
+  },
+  {
+    "GEOCOD": 5204557,
+    "BASE": "municipios",
+    "IDCOD": 20260700644
+  },
+  {
+    "GEOCOD": 5204706,
+    "BASE": "municipios",
+    "IDCOD": 20260700645
+  },
+  {
+    "GEOCOD": 5204953,
+    "BASE": "municipios",
+    "IDCOD": 20260700646
+  },
+  {
+    "GEOCOD": 5205000,
+    "BASE": "municipios",
+    "IDCOD": 20260700647
+  },
+  {
+    "GEOCOD": 5205109,
+    "BASE": "municipios",
+    "IDCOD": 20260700648
+  },
+  {
+    "GEOCOD": 5205406,
+    "BASE": "municipios",
+    "IDCOD": 20260700649
+  },
+  {
+    "GEOCOD": 5208905,
+    "BASE": "municipios",
+    "IDCOD": 20260700650
+  },
+  {
+    "GEOCOD": 5205497,
+    "BASE": "municipios",
+    "IDCOD": 20260700651
+  },
+  {
+    "GEOCOD": 5205521,
+    "BASE": "municipios",
+    "IDCOD": 20260700652
+  },
+  {
+    "GEOCOD": 5205703,
+    "BASE": "municipios",
+    "IDCOD": 20260700653
+  },
+  {
+    "GEOCOD": 5206206,
+    "BASE": "municipios",
+    "IDCOD": 20260700654
+  },
+  {
+    "GEOCOD": 5206404,
+    "BASE": "municipios",
+    "IDCOD": 20260700655
+  },
+  {
+    "GEOCOD": 5206701,
+    "BASE": "municipios",
+    "IDCOD": 20260700656
+  },
+  {
+    "GEOCOD": 5208301,
+    "BASE": "municipios",
+    "IDCOD": 20260700657
+  },
+  {
+    "GEOCOD": 5207501,
+    "BASE": "municipios",
+    "IDCOD": 20260700658
+  },
+  {
+    "GEOCOD": 5207535,
+    "BASE": "municipios",
+    "IDCOD": 20260700659
+  },
+  {
+    "GEOCOD": 5207907,
+    "BASE": "municipios",
+    "IDCOD": 20260700660
+  },
+  {
+    "GEOCOD": 5208004,
+    "BASE": "municipios",
+    "IDCOD": 20260700661
+  },
+  {
+    "GEOCOD": 5208103,
+    "BASE": "municipios",
+    "IDCOD": 20260700662
+  },
+  {
+    "GEOCOD": 5208400,
+    "BASE": "municipios",
+    "IDCOD": 20260700663
+  },
+  {
+    "GEOCOD": 5208608,
+    "BASE": "municipios",
+    "IDCOD": 20260700664
+  },
+  {
+    "GEOCOD": 5209150,
+    "BASE": "municipios",
+    "IDCOD": 20260700665
+  },
+  {
+    "GEOCOD": 5209291,
+    "BASE": "municipios",
+    "IDCOD": 20260700666
+  },
+  {
+    "GEOCOD": 5209408,
+    "BASE": "municipios",
+    "IDCOD": 20260700667
+  },
+  {
+    "GEOCOD": 5209457,
+    "BASE": "municipios",
+    "IDCOD": 20260700668
+  },
+  {
+    "GEOCOD": 5209606,
+    "BASE": "municipios",
+    "IDCOD": 20260700669
+  },
+  {
+    "GEOCOD": 5209705,
+    "BASE": "municipios",
+    "IDCOD": 20260700670
+  },
+  {
+    "GEOCOD": 5209804,
+    "BASE": "municipios",
+    "IDCOD": 20260700671
+  },
+  {
+    "GEOCOD": 5209903,
+    "BASE": "municipios",
+    "IDCOD": 20260700672
+  },
+  {
+    "GEOCOD": 5209937,
+    "BASE": "municipios",
+    "IDCOD": 20260700673
+  },
+  {
+    "GEOCOD": 5210109,
+    "BASE": "municipios",
+    "IDCOD": 20260700674
+  },
+  {
+    "GEOCOD": 5210208,
+    "BASE": "municipios",
+    "IDCOD": 20260700675
+  },
+  {
+    "GEOCOD": 5210307,
+    "BASE": "municipios",
+    "IDCOD": 20260700676
+  },
+  {
+    "GEOCOD": 5210406,
+    "BASE": "municipios",
+    "IDCOD": 20260700677
+  },
+  {
+    "GEOCOD": 5210562,
+    "BASE": "municipios",
+    "IDCOD": 20260700678
+  },
+  {
+    "GEOCOD": 5210604,
+    "BASE": "municipios",
+    "IDCOD": 20260700679
+  },
+  {
+    "GEOCOD": 5210901,
+    "BASE": "municipios",
+    "IDCOD": 20260700680
+  },
+  {
+    "GEOCOD": 5211008,
+    "BASE": "municipios",
+    "IDCOD": 20260700681
+  },
+  {
+    "GEOCOD": 5211404,
+    "BASE": "municipios",
+    "IDCOD": 20260700682
+  },
+  {
+    "GEOCOD": 5211602,
+    "BASE": "municipios",
+    "IDCOD": 20260700683
+  },
+  {
+    "GEOCOD": 5211800,
+    "BASE": "municipios",
+    "IDCOD": 20260700684
+  },
+  {
+    "GEOCOD": 5212006,
+    "BASE": "municipios",
+    "IDCOD": 20260700685
+  },
+  {
+    "GEOCOD": 5212105,
+    "BASE": "municipios",
+    "IDCOD": 20260700686
+  },
+  {
+    "GEOCOD": 5212204,
+    "BASE": "municipios",
+    "IDCOD": 20260700687
+  },
+  {
+    "GEOCOD": 5212501,
+    "BASE": "municipios",
+    "IDCOD": 20260700688
+  },
+  {
+    "GEOCOD": 5212709,
+    "BASE": "municipios",
+    "IDCOD": 20260700689
+  },
+  {
+    "GEOCOD": 5212808,
+    "BASE": "municipios",
+    "IDCOD": 20260700690
+  },
+  {
+    "GEOCOD": 5212956,
+    "BASE": "municipios",
+    "IDCOD": 20260700691
+  },
+  {
+    "GEOCOD": 5213004,
+    "BASE": "municipios",
+    "IDCOD": 20260700692
+  },
+  {
+    "GEOCOD": 5213400,
+    "BASE": "municipios",
+    "IDCOD": 20260700693
+  },
+  {
+    "GEOCOD": 5213509,
+    "BASE": "municipios",
+    "IDCOD": 20260700694
+  },
+  {
+    "GEOCOD": 5213707,
+    "BASE": "municipios",
+    "IDCOD": 20260700695
+  },
+  {
+    "GEOCOD": 5213855,
+    "BASE": "municipios",
+    "IDCOD": 20260700696
+  },
+  {
+    "GEOCOD": 5214051,
+    "BASE": "municipios",
+    "IDCOD": 20260700697
+  },
+  {
+    "GEOCOD": 5214101,
+    "BASE": "municipios",
+    "IDCOD": 20260700698
+  },
+  {
+    "GEOCOD": 5214408,
+    "BASE": "municipios",
+    "IDCOD": 20260700699
+  },
+  {
+    "GEOCOD": 5214606,
+    "BASE": "municipios",
+    "IDCOD": 20260700700
+  },
+  {
+    "GEOCOD": 5214705,
+    "BASE": "municipios",
+    "IDCOD": 20260700701
+  },
+  {
+    "GEOCOD": 5214804,
+    "BASE": "municipios",
+    "IDCOD": 20260700702
+  },
+  {
+    "GEOCOD": 5214838,
+    "BASE": "municipios",
+    "IDCOD": 20260700703
+  },
+  {
+    "GEOCOD": 5214879,
+    "BASE": "municipios",
+    "IDCOD": 20260700704
+  },
+  {
+    "GEOCOD": 5214903,
+    "BASE": "municipios",
+    "IDCOD": 20260700705
+  },
+  {
+    "GEOCOD": 5215207,
+    "BASE": "municipios",
+    "IDCOD": 20260700706
+  },
+  {
+    "GEOCOD": 5215231,
+    "BASE": "municipios",
+    "IDCOD": 20260700707
+  },
+  {
+    "GEOCOD": 5215256,
+    "BASE": "municipios",
+    "IDCOD": 20260700708
+  },
+  {
+    "GEOCOD": 5215603,
+    "BASE": "municipios",
+    "IDCOD": 20260700709
+  },
+  {
+    "GEOCOD": 5215652,
+    "BASE": "municipios",
+    "IDCOD": 20260700710
+  },
+  {
+    "GEOCOD": 5217401,
+    "BASE": "municipios",
+    "IDCOD": 20260700711
+  },
+  {
+    "GEOCOD": 5217609,
+    "BASE": "municipios",
+    "IDCOD": 20260700712
+  },
+  {
+    "GEOCOD": 5217708,
+    "BASE": "municipios",
+    "IDCOD": 20260700713
+  },
+  {
+    "GEOCOD": 5218003,
+    "BASE": "municipios",
+    "IDCOD": 20260700714
+  },
+  {
+    "GEOCOD": 5218607,
+    "BASE": "municipios",
+    "IDCOD": 20260700715
+  },
+  {
+    "GEOCOD": 5218706,
+    "BASE": "municipios",
+    "IDCOD": 20260700716
+  },
+  {
+    "GEOCOD": 5218805,
+    "BASE": "municipios",
+    "IDCOD": 20260700717
+  },
+  {
+    "GEOCOD": 5219001,
+    "BASE": "municipios",
+    "IDCOD": 20260700718
+  },
+  {
+    "GEOCOD": 5219100,
+    "BASE": "municipios",
+    "IDCOD": 20260700719
+  },
+  {
+    "GEOCOD": 5219258,
+    "BASE": "municipios",
+    "IDCOD": 20260700720
+  },
+  {
+    "GEOCOD": 5219308,
+    "BASE": "municipios",
+    "IDCOD": 20260700721
+  },
+  {
+    "GEOCOD": 5219357,
+    "BASE": "municipios",
+    "IDCOD": 20260700722
+  },
+  {
+    "GEOCOD": 5219407,
+    "BASE": "municipios",
+    "IDCOD": 20260700723
+  },
+  {
+    "GEOCOD": 5219456,
+    "BASE": "municipios",
+    "IDCOD": 20260700724
+  },
+  {
+    "GEOCOD": 5219704,
+    "BASE": "municipios",
+    "IDCOD": 20260700725
+  },
+  {
+    "GEOCOD": 5219712,
+    "BASE": "municipios",
+    "IDCOD": 20260700726
+  },
+  {
+    "GEOCOD": 5219738,
+    "BASE": "municipios",
+    "IDCOD": 20260700727
+  },
+  {
+    "GEOCOD": 5219803,
+    "BASE": "municipios",
+    "IDCOD": 20260700728
+  },
+  {
+    "GEOCOD": 5220108,
+    "BASE": "municipios",
+    "IDCOD": 20260700729
+  },
+  {
+    "GEOCOD": 5220157,
+    "BASE": "municipios",
+    "IDCOD": 20260700730
+  },
+  {
+    "GEOCOD": 5220264,
+    "BASE": "municipios",
+    "IDCOD": 20260700731
+  },
+  {
+    "GEOCOD": 5221080,
+    "BASE": "municipios",
+    "IDCOD": 20260700732
+  },
+  {
+    "GEOCOD": 5221197,
+    "BASE": "municipios",
+    "IDCOD": 20260700733
+  },
+  {
+    "GEOCOD": 5221304,
+    "BASE": "municipios",
+    "IDCOD": 20260700734
+  },
+  {
+    "GEOCOD": 5221403,
+    "BASE": "municipios",
+    "IDCOD": 20260700735
+  },
+  {
+    "GEOCOD": 5221502,
+    "BASE": "municipios",
+    "IDCOD": 20260700736
+  },
+  {
+    "GEOCOD": 5221551,
+    "BASE": "municipios",
+    "IDCOD": 20260700737
+  },
+  {
+    "GEOCOD": 5221577,
+    "BASE": "municipios",
+    "IDCOD": 20260700738
+  },
+  {
+    "GEOCOD": 5221601,
+    "BASE": "municipios",
+    "IDCOD": 20260700739
+  },
+  {
+    "GEOCOD": 5221858,
+    "BASE": "municipios",
+    "IDCOD": 20260700740
+  },
+  {
+    "GEOCOD": 5200050,
+    "BASE": "municipios",
+    "IDCOD": 20260700741
+  },
+  {
+    "GEOCOD": 5200100,
+    "BASE": "municipios",
+    "IDCOD": 20260700742
+  },
+  {
+    "GEOCOD": 5200159,
+    "BASE": "municipios",
+    "IDCOD": 20260700743
+  },
+  {
+    "GEOCOD": 5200175,
+    "BASE": "municipios",
+    "IDCOD": 20260700744
+  },
+  {
+    "GEOCOD": 5200209,
+    "BASE": "municipios",
+    "IDCOD": 20260700745
+  },
+  {
+    "GEOCOD": 5200258,
+    "BASE": "municipios",
+    "IDCOD": 20260700746
+  },
+  {
+    "GEOCOD": 5200506,
+    "BASE": "municipios",
+    "IDCOD": 20260700747
+  },
+  {
+    "GEOCOD": 5200555,
+    "BASE": "municipios",
+    "IDCOD": 20260700748
+  },
+  {
+    "GEOCOD": 5200605,
+    "BASE": "municipios",
+    "IDCOD": 20260700749
+  },
+  {
+    "GEOCOD": 5200829,
+    "BASE": "municipios",
+    "IDCOD": 20260700750
+  },
+  {
+    "GEOCOD": 5200902,
+    "BASE": "municipios",
+    "IDCOD": 20260700751
+  },
+  {
+    "GEOCOD": 5201108,
+    "BASE": "municipios",
+    "IDCOD": 20260700752
+  },
+  {
+    "GEOCOD": 5201207,
+    "BASE": "municipios",
+    "IDCOD": 20260700753
+  },
+  {
+    "GEOCOD": 5201405,
+    "BASE": "municipios",
+    "IDCOD": 20260700754
+  },
+  {
+    "GEOCOD": 5201454,
+    "BASE": "municipios",
+    "IDCOD": 20260700755
+  },
+  {
+    "GEOCOD": 5201504,
+    "BASE": "municipios",
+    "IDCOD": 20260700756
+  },
+  {
+    "GEOCOD": 5201702,
+    "BASE": "municipios",
+    "IDCOD": 20260700757
+  },
+  {
+    "GEOCOD": 5202155,
+    "BASE": "municipios",
+    "IDCOD": 20260700758
+  },
+  {
+    "GEOCOD": 5202353,
+    "BASE": "municipios",
+    "IDCOD": 20260700759
+  },
+  {
+    "GEOCOD": 5202502,
+    "BASE": "municipios",
+    "IDCOD": 20260700760
+  },
+  {
+    "GEOCOD": 5203104,
+    "BASE": "municipios",
+    "IDCOD": 20260700761
+  },
+  {
+    "GEOCOD": 5203203,
+    "BASE": "municipios",
+    "IDCOD": 20260700762
+  },
+  {
+    "GEOCOD": 5203302,
+    "BASE": "municipios",
+    "IDCOD": 20260700763
+  },
+  {
+    "GEOCOD": 5203401,
+    "BASE": "municipios",
+    "IDCOD": 20260700764
+  },
+  {
+    "GEOCOD": 5203500,
+    "BASE": "municipios",
+    "IDCOD": 20260700765
+  },
+  {
+    "GEOCOD": 5203575,
+    "BASE": "municipios",
+    "IDCOD": 20260700766
+  },
+  {
+    "GEOCOD": 5203939,
+    "BASE": "municipios",
+    "IDCOD": 20260700767
+  },
+  {
+    "GEOCOD": 5203962,
+    "BASE": "municipios",
+    "IDCOD": 20260700768
+  },
+  {
+    "GEOCOD": 5204003,
+    "BASE": "municipios",
+    "IDCOD": 20260700769
+  },
+  {
+    "GEOCOD": 5204102,
+    "BASE": "municipios",
+    "IDCOD": 20260700770
+  },
+  {
+    "GEOCOD": 5204300,
+    "BASE": "municipios",
+    "IDCOD": 20260700771
+  },
+  {
+    "GEOCOD": 5204409,
+    "BASE": "municipios",
+    "IDCOD": 20260700772
+  },
+  {
+    "GEOCOD": 5204508,
+    "BASE": "municipios",
+    "IDCOD": 20260700773
+  },
+  {
+    "GEOCOD": 5204557,
+    "BASE": "municipios",
+    "IDCOD": 20260700774
+  },
+  {
+    "GEOCOD": 5204607,
+    "BASE": "municipios",
+    "IDCOD": 20260700775
+  },
+  {
+    "GEOCOD": 5204656,
+    "BASE": "municipios",
+    "IDCOD": 20260700776
+  },
+  {
+    "GEOCOD": 5204706,
+    "BASE": "municipios",
+    "IDCOD": 20260700777
+  },
+  {
+    "GEOCOD": 5204904,
+    "BASE": "municipios",
+    "IDCOD": 20260700778
+  },
+  {
+    "GEOCOD": 5204953,
+    "BASE": "municipios",
+    "IDCOD": 20260700779
+  },
+  {
+    "GEOCOD": 5205000,
+    "BASE": "municipios",
+    "IDCOD": 20260700780
+  },
+  {
+    "GEOCOD": 5205059,
+    "BASE": "municipios",
+    "IDCOD": 20260700781
+  },
+  {
+    "GEOCOD": 5205109,
+    "BASE": "municipios",
+    "IDCOD": 20260700782
+  },
+  {
+    "GEOCOD": 5205307,
+    "BASE": "municipios",
+    "IDCOD": 20260700783
+  },
+  {
+    "GEOCOD": 5205406,
+    "BASE": "municipios",
+    "IDCOD": 20260700784
+  },
+  {
+    "GEOCOD": 5205455,
+    "BASE": "municipios",
+    "IDCOD": 20260700785
+  },
+  {
+    "GEOCOD": 5205471,
+    "BASE": "municipios",
+    "IDCOD": 20260700786
+  },
+  {
+    "GEOCOD": 5205513,
+    "BASE": "municipios",
+    "IDCOD": 20260700787
+  },
+  {
+    "GEOCOD": 5205521,
+    "BASE": "municipios",
+    "IDCOD": 20260700788
+  },
+  {
+    "GEOCOD": 5205703,
+    "BASE": "municipios",
+    "IDCOD": 20260700789
+  },
+  {
+    "GEOCOD": 5205901,
+    "BASE": "municipios",
+    "IDCOD": 20260700790
+  },
+  {
+    "GEOCOD": 5206206,
+    "BASE": "municipios",
+    "IDCOD": 20260700791
+  },
+  {
+    "GEOCOD": 5206305,
+    "BASE": "municipios",
+    "IDCOD": 20260700792
+  },
+  {
+    "GEOCOD": 5206404,
+    "BASE": "municipios",
+    "IDCOD": 20260700793
+  },
+  {
+    "GEOCOD": 5206503,
+    "BASE": "municipios",
+    "IDCOD": 20260700794
+  },
+  {
+    "GEOCOD": 5206602,
+    "BASE": "municipios",
+    "IDCOD": 20260700795
+  },
+  {
+    "GEOCOD": 5206909,
+    "BASE": "municipios",
+    "IDCOD": 20260700796
+  },
+  {
+    "GEOCOD": 5207105,
+    "BASE": "municipios",
+    "IDCOD": 20260700797
+  },
+  {
+    "GEOCOD": 5208301,
+    "BASE": "municipios",
+    "IDCOD": 20260700798
+  },
+  {
+    "GEOCOD": 5207253,
+    "BASE": "municipios",
+    "IDCOD": 20260700799
+  },
+  {
+    "GEOCOD": 5207352,
+    "BASE": "municipios",
+    "IDCOD": 20260700800
+  },
+  {
+    "GEOCOD": 5207402,
+    "BASE": "municipios",
+    "IDCOD": 20260700801
+  },
+  {
+    "GEOCOD": 5207501,
+    "BASE": "municipios",
+    "IDCOD": 20260700802
+  },
+  {
+    "GEOCOD": 5207600,
+    "BASE": "municipios",
+    "IDCOD": 20260700803
+  },
+  {
+    "GEOCOD": 5207907,
+    "BASE": "municipios",
+    "IDCOD": 20260700804
+  },
+  {
+    "GEOCOD": 5208004,
+    "BASE": "municipios",
+    "IDCOD": 20260700805
+  },
+  {
+    "GEOCOD": 5208103,
+    "BASE": "municipios",
+    "IDCOD": 20260700806
+  },
+  {
+    "GEOCOD": 5208509,
+    "BASE": "municipios",
+    "IDCOD": 20260700807
+  },
+  {
+    "GEOCOD": 5208608,
+    "BASE": "municipios",
+    "IDCOD": 20260700808
+  },
+  {
+    "GEOCOD": 5209101,
+    "BASE": "municipios",
+    "IDCOD": 20260700809
+  },
+  {
+    "GEOCOD": 5209150,
+    "BASE": "municipios",
+    "IDCOD": 20260700810
+  },
+  {
+    "GEOCOD": 5209408,
+    "BASE": "municipios",
+    "IDCOD": 20260700811
+  },
+  {
+    "GEOCOD": 5209457,
+    "BASE": "municipios",
+    "IDCOD": 20260700812
+  },
+  {
+    "GEOCOD": 5209903,
+    "BASE": "municipios",
+    "IDCOD": 20260700813
+  },
+  {
+    "GEOCOD": 5209952,
+    "BASE": "municipios",
+    "IDCOD": 20260700814
+  },
+  {
+    "GEOCOD": 5210109,
+    "BASE": "municipios",
+    "IDCOD": 20260700815
+  },
+  {
+    "GEOCOD": 5210208,
+    "BASE": "municipios",
+    "IDCOD": 20260700816
+  },
+  {
+    "GEOCOD": 5210307,
+    "BASE": "municipios",
+    "IDCOD": 20260700817
+  },
+  {
+    "GEOCOD": 5210406,
+    "BASE": "municipios",
+    "IDCOD": 20260700818
+  },
+  {
+    "GEOCOD": 5210562,
+    "BASE": "municipios",
+    "IDCOD": 20260700819
+  },
+  {
+    "GEOCOD": 5210604,
+    "BASE": "municipios",
+    "IDCOD": 20260700820
+  },
+  {
+    "GEOCOD": 5210802,
+    "BASE": "municipios",
+    "IDCOD": 20260700821
+  },
+  {
+    "GEOCOD": 5210901,
+    "BASE": "municipios",
+    "IDCOD": 20260700822
+  },
+  {
+    "GEOCOD": 5211008,
+    "BASE": "municipios",
+    "IDCOD": 20260700823
+  },
+  {
+    "GEOCOD": 5211305,
+    "BASE": "municipios",
+    "IDCOD": 20260700824
+  },
+  {
+    "GEOCOD": 5211800,
+    "BASE": "municipios",
+    "IDCOD": 20260700825
+  },
+  {
+    "GEOCOD": 5212006,
+    "BASE": "municipios",
+    "IDCOD": 20260700826
+  },
+  {
+    "GEOCOD": 5212055,
+    "BASE": "municipios",
+    "IDCOD": 20260700827
+  },
+  {
+    "GEOCOD": 5212105,
+    "BASE": "municipios",
+    "IDCOD": 20260700828
+  },
+  {
+    "GEOCOD": 5212204,
+    "BASE": "municipios",
+    "IDCOD": 20260700829
+  },
+  {
+    "GEOCOD": 5212253,
+    "BASE": "municipios",
+    "IDCOD": 20260700830
+  },
+  {
+    "GEOCOD": 5212303,
+    "BASE": "municipios",
+    "IDCOD": 20260700831
+  },
+  {
+    "GEOCOD": 5212501,
+    "BASE": "municipios",
+    "IDCOD": 20260700832
+  },
+  {
+    "GEOCOD": 5212600,
+    "BASE": "municipios",
+    "IDCOD": 20260700833
+  },
+  {
+    "GEOCOD": 5212808,
+    "BASE": "municipios",
+    "IDCOD": 20260700834
+  },
+  {
+    "GEOCOD": 5212907,
+    "BASE": "municipios",
+    "IDCOD": 20260700835
+  },
+  {
+    "GEOCOD": 5212956,
+    "BASE": "municipios",
+    "IDCOD": 20260700836
+  },
+  {
+    "GEOCOD": 5213004,
+    "BASE": "municipios",
+    "IDCOD": 20260700837
+  },
+  {
+    "GEOCOD": 5213053,
+    "BASE": "municipios",
+    "IDCOD": 20260700838
+  },
+  {
+    "GEOCOD": 5213087,
+    "BASE": "municipios",
+    "IDCOD": 20260700839
+  },
+  {
+    "GEOCOD": 5213103,
+    "BASE": "municipios",
+    "IDCOD": 20260700840
+  },
+  {
+    "GEOCOD": 5213707,
+    "BASE": "municipios",
+    "IDCOD": 20260700841
+  },
+  {
+    "GEOCOD": 5213772,
+    "BASE": "municipios",
+    "IDCOD": 20260700842
+  },
+  {
+    "GEOCOD": 5213905,
+    "BASE": "municipios",
+    "IDCOD": 20260700843
+  },
+  {
+    "GEOCOD": 5214002,
+    "BASE": "municipios",
+    "IDCOD": 20260700844
+  },
+  {
+    "GEOCOD": 5214051,
+    "BASE": "municipios",
+    "IDCOD": 20260700845
+  },
+  {
+    "GEOCOD": 5214101,
+    "BASE": "municipios",
+    "IDCOD": 20260700846
+  },
+  {
+    "GEOCOD": 5214606,
+    "BASE": "municipios",
+    "IDCOD": 20260700847
+  },
+  {
+    "GEOCOD": 5214705,
+    "BASE": "municipios",
+    "IDCOD": 20260700848
+  },
+  {
+    "GEOCOD": 5214804,
+    "BASE": "municipios",
+    "IDCOD": 20260700849
+  },
+  {
+    "GEOCOD": 5214838,
+    "BASE": "municipios",
+    "IDCOD": 20260700850
+  },
+  {
+    "GEOCOD": 5214879,
+    "BASE": "municipios",
+    "IDCOD": 20260700851
+  },
+  {
+    "GEOCOD": 5214903,
+    "BASE": "municipios",
+    "IDCOD": 20260700852
+  },
+  {
+    "GEOCOD": 5215207,
+    "BASE": "municipios",
+    "IDCOD": 20260700853
+  },
+  {
+    "GEOCOD": 5215231,
+    "BASE": "municipios",
+    "IDCOD": 20260700854
+  },
+  {
+    "GEOCOD": 5215256,
+    "BASE": "municipios",
+    "IDCOD": 20260700855
+  },
+  {
+    "GEOCOD": 5215504,
+    "BASE": "municipios",
+    "IDCOD": 20260700856
+  },
+  {
+    "GEOCOD": 5215603,
+    "BASE": "municipios",
+    "IDCOD": 20260700857
+  },
+  {
+    "GEOCOD": 5215652,
+    "BASE": "municipios",
+    "IDCOD": 20260700858
+  },
+  {
+    "GEOCOD": 5215801,
+    "BASE": "municipios",
+    "IDCOD": 20260700859
+  },
+  {
+    "GEOCOD": 5215900,
+    "BASE": "municipios",
+    "IDCOD": 20260700860
+  },
+  {
+    "GEOCOD": 5216007,
+    "BASE": "municipios",
+    "IDCOD": 20260700861
+  },
+  {
+    "GEOCOD": 5216304,
+    "BASE": "municipios",
+    "IDCOD": 20260700862
+  },
+  {
+    "GEOCOD": 5216403,
+    "BASE": "municipios",
+    "IDCOD": 20260700863
+  },
+  {
+    "GEOCOD": 5216908,
+    "BASE": "municipios",
+    "IDCOD": 20260700864
+  },
+  {
+    "GEOCOD": 5217104,
+    "BASE": "municipios",
+    "IDCOD": 20260700865
+  },
+  {
+    "GEOCOD": 5217203,
+    "BASE": "municipios",
+    "IDCOD": 20260700866
+  },
+  {
+    "GEOCOD": 5217401,
+    "BASE": "municipios",
+    "IDCOD": 20260700867
+  },
+  {
+    "GEOCOD": 5217609,
+    "BASE": "municipios",
+    "IDCOD": 20260700868
+  },
+  {
+    "GEOCOD": 5218003,
+    "BASE": "municipios",
+    "IDCOD": 20260700869
+  },
+  {
+    "GEOCOD": 5218052,
+    "BASE": "municipios",
+    "IDCOD": 20260700870
+  },
+  {
+    "GEOCOD": 5218508,
+    "BASE": "municipios",
+    "IDCOD": 20260700871
+  },
+  {
+    "GEOCOD": 5218607,
+    "BASE": "municipios",
+    "IDCOD": 20260700872
+  },
+  {
+    "GEOCOD": 5218789,
+    "BASE": "municipios",
+    "IDCOD": 20260700873
+  },
+  {
+    "GEOCOD": 5218904,
+    "BASE": "municipios",
+    "IDCOD": 20260700874
+  },
+  {
+    "GEOCOD": 5219001,
+    "BASE": "municipios",
+    "IDCOD": 20260700875
+  },
+  {
+    "GEOCOD": 5219209,
+    "BASE": "municipios",
+    "IDCOD": 20260700876
+  },
+  {
+    "GEOCOD": 5219258,
+    "BASE": "municipios",
+    "IDCOD": 20260700877
+  },
+  {
+    "GEOCOD": 5219407,
+    "BASE": "municipios",
+    "IDCOD": 20260700878
+  },
+  {
+    "GEOCOD": 5219605,
+    "BASE": "municipios",
+    "IDCOD": 20260700879
+  },
+  {
+    "GEOCOD": 5219704,
+    "BASE": "municipios",
+    "IDCOD": 20260700880
+  },
+  {
+    "GEOCOD": 5219753,
+    "BASE": "municipios",
+    "IDCOD": 20260700881
+  },
+  {
+    "GEOCOD": 5219803,
+    "BASE": "municipios",
+    "IDCOD": 20260700882
+  },
+  {
+    "GEOCOD": 5219902,
+    "BASE": "municipios",
+    "IDCOD": 20260700883
+  },
+  {
+    "GEOCOD": 5220009,
+    "BASE": "municipios",
+    "IDCOD": 20260700884
+  },
+  {
+    "GEOCOD": 5220058,
+    "BASE": "municipios",
+    "IDCOD": 20260700885
+  },
+  {
+    "GEOCOD": 5220108,
+    "BASE": "municipios",
+    "IDCOD": 20260700886
+  },
+  {
+    "GEOCOD": 5220207,
+    "BASE": "municipios",
+    "IDCOD": 20260700887
+  },
+  {
+    "GEOCOD": 5220264,
+    "BASE": "municipios",
+    "IDCOD": 20260700888
+  },
+  {
+    "GEOCOD": 5220405,
+    "BASE": "municipios",
+    "IDCOD": 20260700889
+  },
+  {
+    "GEOCOD": 5220504,
+    "BASE": "municipios",
+    "IDCOD": 20260700890
+  },
+  {
+    "GEOCOD": 5220686,
+    "BASE": "municipios",
+    "IDCOD": 20260700891
+  },
+  {
+    "GEOCOD": 5221197,
+    "BASE": "municipios",
+    "IDCOD": 20260700892
+  },
+  {
+    "GEOCOD": 5221452,
+    "BASE": "municipios",
+    "IDCOD": 20260700893
+  },
+  {
+    "GEOCOD": 5221577,
+    "BASE": "municipios",
+    "IDCOD": 20260700894
+  },
+  {
+    "GEOCOD": 5221809,
+    "BASE": "municipios",
+    "IDCOD": 20260700895
+  },
+  {
+    "GEOCOD": 5221858,
+    "BASE": "municipios",
+    "IDCOD": 20260700896
+  },
+  {
+    "GEOCOD": 5221908,
+    "BASE": "municipios",
+    "IDCOD": 20260700897
+  },
+  {
+    "GEOCOD": 5222054,
+    "BASE": "municipios",
+    "IDCOD": 20260700898
+  },
+  {
+    "GEOCOD": 5222203,
+    "BASE": "municipios",
+    "IDCOD": 20260700899
+  },
+  {
+    "GEOCOD": 5222302,
+    "BASE": "municipios",
+    "IDCOD": 20260700900
   }
 ]

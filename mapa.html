@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=json-20260923" />
+  <link rel="stylesheet" href="css/style.css?v=gm-20260930" />
  </head>
 <body>
 <header id="topbar">
@@ -49,6 +49,10 @@
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DPL" type="button">DPL</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOC" type="button">DOC</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DSV" type="button">DSV</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GME" type="button">GME</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GMK" type="button">GMK</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GMM" type="button">GMM</button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GMP" type="button">GMP</button>
       </div>
       </div>
     </details>
@@ -400,6 +404,26 @@
         <div id="legendaDsv"></div>
       </div>
 
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">GME</div>
+        <div id="legendaGme"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">GMK</div>
+        <div id="legendaGmk"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">GMM</div>
+        <div id="legendaGmm"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">GMP</div>
+        <div id="legendaGmp"></div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaAlteracoes" style="display: none;">
         <div class="subtitulo">ALTERA&Ccedil;&Otilde;ES DE JURISDI&Ccedil;&Atilde;O</div>
         <div id="legendaAlteracoes"></div>
@@ -473,9 +497,9 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script src="js/estilos.js?v=json-20260923"></script>
+<script src="js/estilos.js?v=gm-20260930c"></script>
 <script src="js/regioes.js?v=json-20260923"></script>
-<script src="js/mapa.js?v=zoom-pisca-20260924"></script>
+<script src="js/mapa.js?v=gm-20260930c"></script>
 <script src="js/impressao.js?v=json-20260923"></script>
 <script src="js/paineis.js?v=json-20260923"></script>
 
