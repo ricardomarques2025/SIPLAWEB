@@ -438,3 +438,19 @@ Novas origens GME, GMK, GMM e GMP:
 --- Pendencia de dado: GMK IDCOD 20260701412 (Cavalcante) tem LATITUDE positiva (13.847202) e fica fora do mapa; corrigir para -13.847202 em DADOS.xlsx.
 --- GMM e GMP com a mesma espessura de contorno (6 px) e preenchimento de 50%: GMM em roxo suave (#A07CB8) e GMP em amarelo menos vivo (#E3CF5A); legendas mostram contorno e preenchimento.
 --- Camada GMM/GMP movida para logo acima dos municipios (pane 251) e abaixo de todas as demais camadas, inclusive regioes e area de influencia.
+
+
+VERSAO 2.11 - 05/10/2026
+-------------------------
+
+Nova camada Unidades de Saude:
+--- Registros de data/DADOS.json com UNIDADE = HOSPITAL (45) posicionados pela localidade (LOCALIDADE comparado a NOME_ACEN de data/localidades.geojson, sem diferenciar acentos).
+--- Cada unidade gera um circulo semitransparente de 80 km de raio, colorido pelo campo INTERVENCAO: qualquer texto com "Hospital" = Hospital (azul), Policlinica (verde), Policlinica em construcao (amarelo), Proposta (laranja). Unidades da mesma localidade e categoria compartilham um unico circulo (ex.: 11 hospitais de Goiania).
+--- Clique em qualquer circulo lista todas as unidades cujo raio de 80 km alcanca o ponto clicado, com a distancia de cada uma.
+--- Camada no pane unidadesSaudePane (259): abaixo das rodovias e localidades, acima de municipios, regioes, area de estudo e area de influencia.
+--- Botao "Unidades de Saude" em Camadas de Referencia (desligado por padrao) e filtro "Unidades de Saude" logo abaixo do filtro Area de Estudo, no mesmo formato de lista com caixas de selecao; sem categoria marcada, todas sao exibidas; marcar uma categoria liga a camada.
+--- Legenda propria no painel direito, exibida somente com a camada ligada.
+--- Codigo em js/unidades_saude.js; cores, raio e opacidades em ESTILO_UNIDADES_SAUDE (js/estilos.js).
+--- Painel Detalhes da selecao: clique em um circulo abre a tabela das unidades cujo raio alcanca o ponto (categoria, descricao, intervencao, localidade, populacao, distancia, IDCOD), com destaque nas unidades do circulo clicado.
+--- Botao Mostrar todos registros lista todas as unidades do filtro atual, com destaque nas do ponto clicado, pesquisa e botao Zoom que enquadra e pisca o circulo de 80 km da unidade; Voltar retorna a tabela do clique.
+--- Zoom da lista completa de Unidades de Saude isola a unidade: so o circulo dela fica no mapa; Voltar (ou trocar o conteudo do painel, mudar o filtro, ligar/desligar a camada) restaura todos os circulos.

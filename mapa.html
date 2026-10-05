@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=gm-20260930" />
+  <link rel="stylesheet" href="css/style.css?v=saude-20261005" />
  </head>
 <body>
 <header id="topbar">
@@ -180,6 +180,11 @@
           <div id="areaInfluenciaSelectLista" class="lista-regional"></div>
           <button id="areaInfluenciaSelectLimpar" type="button">Limpar seleção</button>
         </details>
+        <details class="filtro-regional">
+          <summary>Unidades de Saúde</summary>
+          <div id="unidadesSaudeSelectLista" class="lista-regional"></div>
+          <button id="unidadesSaudeSelectLimpar" type="button">Limpar seleção</button>
+        </details>
       </div>
     </details>
 
@@ -201,6 +206,7 @@
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleAlteracoesJurisdicao" type="button" aria-pressed="true">Alterações de Jurisdição</button>
           <button class="filtro-btn base-btn" id="togglePedagios" type="button" aria-pressed="false">Pedágios</button>
+          <button class="filtro-btn base-btn" id="toggleUnidadesSaude" type="button" aria-pressed="false">Unidades de Saúde</button>
         </div>
       </div>
     </details>
@@ -487,6 +493,11 @@
         <div id="legendaPedagios"></div>
       </div>
 
+      <div class="bloco legenda-categoria" id="blocoLegendaUnidadesSaude" style="display: none;">
+        <div class="subtitulo">Unidades de Saúde (raio de 80 km)</div>
+        <div id="legendaUnidadesSaude"></div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaAnotacoes" style="display: none;">
         <div class="subtitulo">Anotações</div>
         <div id="legendaAnotacoes"></div>
@@ -497,9 +508,10 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script src="js/estilos.js?v=gm-20260930c"></script>
+<script src="js/estilos.js?v=saude-20261005"></script>
 <script src="js/regioes.js?v=json-20260923"></script>
 <script src="js/mapa.js?v=gm-20260930c"></script>
+<script src="js/unidades_saude.js?v=saude-20261005c"></script>
 <script src="js/impressao.js?v=json-20260923"></script>
 <script src="js/paineis.js?v=json-20260923"></script>
 

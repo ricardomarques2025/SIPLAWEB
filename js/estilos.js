@@ -12,6 +12,8 @@ const MAPA_PANES = {
   regioesPane: 252,
   areaInfluenciaPane: 255,
   bufferPane: 258,
+  // Unidades de Saude: abaixo das rodovias e localidades, acima das demais camadas de area.
+  unidadesSaudePane: 259,
   snvPane: 260,
   ferroviasPane: 270,
   sreBasePane: 300,
@@ -378,6 +380,21 @@ const REGRAS_ESTILO = [
     GMP: { label: 'Municípios atendidos - GMP', color: '#E3CF5A', weight: 6, opacity: 1, fill: true, fillColor: '#E3CF5A', fillOpacity: 0.5, dashArray: null }
   };
 
+  // Unidades de Saude (DADOS.json: UNIDADE = HOSPITAL): circulo de 80 km por unidade,
+  // na cor da categoria do campo INTERVENCAO. A ordem define a legenda e o popup.
+  const ESTILO_UNIDADES_SAUDE = {
+    raioMetros: 80000,
+    espessura: 1.5,
+    opacidadeContorno: 0.8,
+    opacidadePreenchimento: 0.2,
+    categorias: {
+      hospital: { rotulo: 'Hospital', cor: '#1f6fd1' },
+      policlinica: { rotulo: 'Policlínica', cor: '#2e9e4a' },
+      policlinica_construcao: { rotulo: 'Policlínica em construção', cor: '#f2c200' },
+      proposta: { rotulo: 'Proposta', cor: '#f07c1a' }
+    }
+  };
+
   window.MAPA_PANES = MAPA_PANES;
   window.ESTILO_AREA_INFLUENCIA = ESTILO_AREA_INFLUENCIA;
   window.MAPAS_BASE_CONFIG = MAPAS_BASE_CONFIG;
@@ -392,6 +409,7 @@ const REGRAS_ESTILO = [
   window.OBRAS_PONTOS_INFO = OBRAS_PONTOS_INFO;
   window.ORDEM_LEGENDA_PONTOS = ORDEM_LEGENDA_PONTOS;
   window.ORIGENS_MUNICIPAIS = ORIGENS_MUNICIPAIS;
+  window.ESTILO_UNIDADES_SAUDE = ESTILO_UNIDADES_SAUDE;
 
 
 
