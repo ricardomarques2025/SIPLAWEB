@@ -8488,5 +8488,10 @@
     "GEOCOD": 5222302,
     "BASE": "municipios",
     "IDCOD": 20260700900
+  },
+  {
+    "GEOCOD": "488EGO0010",
+    "BASE": "sre_base",
+    "IDCOD": 20260701478
   }
 ]

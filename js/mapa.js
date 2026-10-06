@@ -502,6 +502,7 @@ map.addControl(new LogoMapaControl());
       DMA: true,
       DPJ: true,
       DPL: true,
+      TARE: true,
       DOC: true,
       DSV: true,
       GME: true,
@@ -2103,6 +2104,8 @@ map.addControl(new LogoMapaControl());
   var obrasDplPorLink = {};
   var obrasDpjData = [];
   var obrasDpjPorLink = {};
+  var obrasTareData = [];
+  var obrasTarePorLink = {};
   var dadosUnificadosPromise = null;
   var dadosUnificadosData = [];
   var dadosUnificadosPorGrupo = {};
@@ -2181,6 +2184,8 @@ map.addControl(new LogoMapaControl());
     normalizado.ORIGEM = origemNormalizadaObraPonto(normalizado);
     normalizado.INTERVENCAO = valorIntervencaoDados(normalizado);
     normalizado.SERVICO = normalizado.INTERVENCAO;
+    // TARE e sempre obra linear (vinculada ao SRE por OBRAS_LINKS), mesmo sem TIPO preenchido.
+    if (normalizado.ORIGEM === 'TARE' && !tipoRegistroDados(normalizado)) normalizado.TIPO = 'Link';
     if (normalizado.ITEM === null || normalizado.ITEM === undefined || String(normalizado.ITEM).trim() === '') {
       normalizado.ITEM = normalizado.REF || normalizado.IDCOD || '';
     }
@@ -2511,6 +2516,7 @@ map.addControl(new LogoMapaControl());
     obrasDmaData = registrosDadosPorUnidade(linhas, 'DMA');
     obrasDplData = registrosDadosPorUnidade(linhas, 'DPL');
     obrasDpjData = registrosDadosPorUnidade(linhas, 'DPJ');
+    obrasTareData = registrosDadosPorUnidade(linhas, 'TARE');
     Object.keys(ORIGENS_MUNICIPAIS).forEach(function(origem) {
       obrasMunicipaisPorGeocod[origem] = indexarRegistrosPorGeocod(registrosDadosPorUnidade(linhas, origem));
     });
@@ -2524,6 +2530,7 @@ map.addControl(new LogoMapaControl());
     obrasDmaPorLink = indexarDadosPorIdcod(obrasDmaData);
     obrasDplPorLink = indexarDadosPorIdcod(obrasDplData);
     obrasDpjPorLink = indexarDadosPorIdcod(obrasDpjData);
+    obrasTarePorLink = indexarDadosPorIdcod(obrasTareData);
 
     console.log('DADOS.json linhas carregadas:', linhas.length);
     preencherIntervencaos();
@@ -2641,7 +2648,8 @@ map.addControl(new LogoMapaControl());
         LINK_DPL: 'IDCOD_DPL',
         LINK_DPJ: 'IDCOD_DPJ',
         LINK_DOC: 'IDCOD_DOC',
-        LINK_DSV: 'IDCOD_DSV'
+        LINK_DSV: 'IDCOD_DSV',
+        LINK_TARE: 'IDCOD_TARE'
       };
       var alias = aliasesLinkIdcod[String(campo || '').toUpperCase()];
       if (alias) valor = valorSeguro(obj, alias);
@@ -3100,6 +3108,7 @@ map.addControl(new LogoMapaControl());
     if (!respeitarOrigem || servicosAtivos.DMA) addIntervencaos(obrasDmaData);
     if (!respeitarOrigem || servicosAtivos.DPJ) addIntervencaos(obrasDpjData);
     if (!respeitarOrigem || servicosAtivos.DPL) addIntervencaos(obrasDplData);
+    if (!respeitarOrigem || servicosAtivos.TARE) addIntervencaos(obrasTareData);
     addIntervencaosPontos(obrasPontosTabelaData);
     Object.keys(ORIGENS_MUNICIPAIS).forEach(function(origemMun) {
       if (respeitarOrigem && !servicosAtivos[origemMun]) return;
@@ -4117,12 +4126,14 @@ map.addControl(new LogoMapaControl());
     var linkDma = valorSeguro(feature, 'LINK_DMA');
     var linkDpl = valorSeguro(feature, 'LINK_DPL');
     var linkDpj = valorSeguro(feature, 'LINK_DPJ');
+    var linkTare = valorSeguro(feature, 'LINK_TARE');
     return (
       (servicosAtivos.FUNDEINFRA && linkFund && dadosFundeinfraDaFeature(feature)) ||
       (servicosAtivos.DOR && linkDor && dadosDorDaFeature(feature)) ||
       (servicosAtivos.DMA && linkDma && dadosDmaDaFeature(feature)) ||
       (servicosAtivos.DPL && linkDpl && dadosDplDaFeature(feature)) ||
-      (servicosAtivos.DPJ && linkDpj && dadosDpjDaFeature(feature))
+      (servicosAtivos.DPJ && linkDpj && dadosDpjDaFeature(feature)) ||
+      (servicosAtivos.TARE && linkTare && dadosTareDaFeature(feature))
     );
   }
 
@@ -4149,6 +4160,7 @@ map.addControl(new LogoMapaControl());
     if ((!respeitarOrigem || servicosAtivos.DMA) && dadosDmaDaFeatureFiltrados(feature, servico, '').length) return true;
     if ((!respeitarOrigem || servicosAtivos.DPL) && dadosDplDaFeatureFiltrados(feature, servico, '').length) return true;
     if ((!respeitarOrigem || servicosAtivos.DPJ) && dadosDpjDaFeatureFiltrados(feature, servico, '').length) return true;
+    if ((!respeitarOrigem || servicosAtivos.TARE) && dadosTareDaFeatureFiltrados(feature, servico, '').length) return true;
 
     return false;
   }
@@ -4910,6 +4922,31 @@ map.addControl(new LogoMapaControl());
     return filtrados;
   }
 
+  function dadosTareDaFeature(feature) {
+    var dados = dadosTareDaFeatureTodos(feature);
+    return dados.length ? dados[0] : null;
+  }
+
+  function dadosTareDaFeatureTodos(feature) {
+    var link = valorSeguro(feature, 'LINK_TARE');
+    if (!link) return [];
+    var dados = obrasTarePorLink[String(link)] || [];
+    return Array.isArray(dados) ? dados : [dados];
+  }
+
+  function dadosTareDaFeatureFiltrados(feature, servico, proposta) {
+    var todos = dadosTareDaFeatureTodos(feature);
+    var filtrados = [];
+
+    for (var i = 0; i < todos.length; i++) {
+      var item = todos[i];
+      if (servico && item.INTERVENCAO !== servico) continue;
+      filtrados.push(item);
+    }
+
+    return filtrados;
+  }
+
   function adicionarReferenciaProposta(lista, origem, proposta) {
     if (proposta === null || proposta === undefined || String(proposta).trim() === '') return;
     var chave = origem + '|' + String(proposta);
@@ -4928,7 +4965,7 @@ map.addControl(new LogoMapaControl());
     lista.push({ origem: origem, idcod: idcod, chave: chave });
   }
 
-  function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos) {
+  function referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos, dadosTareTodos) {
     var referencias = [];
     if (dadosFund) adicionarReferenciaProposta(referencias, 'FUNDEINFRA', dadosFund.PROPOSTA);
     for (var i = 0; i < dadosDorTodos.length; i++) {
@@ -4942,6 +4979,9 @@ map.addControl(new LogoMapaControl());
     }
     for (var j = 0; j < dadosDpjTodos.length; j++) {
       adicionarReferenciaIdcod(referencias, 'DPJ', dadosDpjTodos[j].IDCOD);
+    }
+    for (var t = 0; t < (dadosTareTodos || []).length; t++) {
+      adicionarReferenciaIdcod(referencias, 'TARE', dadosTareTodos[t].IDCOD);
     }
     return referencias;
   }
@@ -4973,6 +5013,12 @@ map.addControl(new LogoMapaControl());
       var dadosDpj = dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
       for (var j = 0; j < dadosDpj.length; j++) {
         if (String(dadosDpj[j].IDCOD) === String(referencia.idcod)) return true;
+      }
+    }
+    if (referencia.origem === 'TARE') {
+      var dadosTare = dadosTareDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+      for (var t = 0; t < dadosTare.length; t++) {
+        if (String(dadosTare[t].IDCOD) === String(referencia.idcod)) return true;
       }
     }
     return false;
@@ -5019,6 +5065,7 @@ map.addControl(new LogoMapaControl());
     var itensDma = [];
     var itensDpl = [];
     var itensDpj = [];
+    var itensTare = [];
     for (var i = 0; i < referencias.length; i++) {
       if (referencias[i].origem === 'DOR') {
         adicionarUnico(itensDor, String(referencias[i].idcod));
@@ -5028,6 +5075,8 @@ map.addControl(new LogoMapaControl());
         adicionarUnico(itensDpl, String(referencias[i].idcod));
       } else if (referencias[i].origem === 'DPJ') {
         adicionarUnico(itensDpj, String(referencias[i].idcod));
+      } else if (referencias[i].origem === 'TARE') {
+        adicionarUnico(itensTare, String(referencias[i].idcod));
       } else {
         adicionarUnico(propostas, String(referencias[i].proposta));
       }
@@ -5038,6 +5087,7 @@ map.addControl(new LogoMapaControl());
     if (itensDma.length) titulo += ' - IDCOD DMA ' + itensDma.join(', ');
     if (itensDpl.length) titulo += ' - IDCOD DPL ' + itensDpl.join(', ');
     if (itensDpj.length) titulo += ' - IDCOD DPJ ' + itensDpj.join(', ');
+    if (itensTare.length) titulo += ' - IDCOD TARE ' + itensTare.join(', ');
 
     var registros = [];
     var totalExtensao = 0;
@@ -5216,7 +5266,8 @@ map.addControl(new LogoMapaControl());
       origem === 'DOR' ? 'LINK_DOR' :
       origem === 'DMA' ? 'LINK_DMA' :
       origem === 'DPL' ? 'LINK_DPL' :
-      origem === 'DPJ' ? 'LINK_DPJ' : 'LINK';
+      origem === 'DPJ' ? 'LINK_DPJ' :
+      origem === 'TARE' ? 'LINK_TARE' : 'LINK';
     var link = valorSeguro(feature, linkCampo) || valorSeguro(feature, 'LINK');
 
     var registro = {
@@ -5293,6 +5344,10 @@ map.addControl(new LogoMapaControl());
 
         if (servicosAtivos.DPJ) {
           adicionarRegistrosObraLinear(linhas, feature, 'DPJ', dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
+        }
+
+        if (servicosAtivos.TARE) {
+          adicionarRegistrosObraLinear(linhas, feature, 'TARE', dadosTareDaFeatureFiltrados(feature, servicoFiltroAtivo, ''));
         }
       }
     }
@@ -5490,6 +5545,15 @@ map.addControl(new LogoMapaControl());
     return estilo;
   }
 
+  // TARE: cor pela intervencao (mesma paleta da DOR), linha com tracejado branco.
+  function estiloTare(dados) {
+    var estilo = estiloDor(dados);
+    var etapa = String((dados && dados.ETAPA) || '').trim();
+    estilo.tipo_linha = 'COM LINHA BRANCA TRACEJADA';
+    estilo.legenda = ((dados && dados.INTERVENCAO) || 'Interven\u00e7\u00e3o') + (etapa ? ' - ' + etapa : '');
+    return estilo;
+  }
+
   function estiloFundeinfra(dados) {
     var servico = String((dados && dados.INTERVENCAO) || '').toLowerCase();
     var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
@@ -5558,6 +5622,7 @@ map.addControl(new LogoMapaControl());
     if (origem === 'DMA' || prefixo === 'DMA') return 'Ma';
     if (origem === 'DPL' || prefixo === 'DPL') return 'Pl';
     if (origem === 'DPJ' || prefixo === 'DPJ') return 'Pj';
+    if (origem === 'TARE' || prefixo === 'TARE') return 'Ta';
     if (prefixo && prefixo.length <= 3) {
       return prefixo.charAt(0).toUpperCase() + prefixo.slice(1).toLowerCase();
     }
@@ -6273,7 +6338,8 @@ map.addControl(new LogoMapaControl());
       { origem: 'DOR', campo: 'LINK_DOR', fn: dadosDorDaFeatureFiltrados },
       { origem: 'DMA', campo: 'LINK_DMA', fn: dadosDmaDaFeatureFiltrados },
       { origem: 'DPL', campo: 'LINK_DPL', fn: dadosDplDaFeatureFiltrados },
-      { origem: 'DPJ', campo: 'LINK_DPJ', fn: dadosDpjDaFeatureFiltrados }
+      { origem: 'DPJ', campo: 'LINK_DPJ', fn: dadosDpjDaFeatureFiltrados },
+      { origem: 'TARE', campo: 'LINK_TARE', fn: dadosTareDaFeatureFiltrados }
     ];
     for (var c = 0; c < configs.length; c++) {
       var cfg = configs[c];
@@ -6429,6 +6495,7 @@ map.addControl(new LogoMapaControl());
       var dadosDmaTodos = servicosAtivos.DMA ? dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDplTodos = servicosAtivos.DPL ? dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDpjTodos = servicosAtivos.DPJ ? dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
+      var dadosTareTodos = servicosAtivos.TARE ? dadosTareDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
 
       var html = '';
       html += htmlCampoPopup('SRE', p.sre || p.SRE);
@@ -6458,6 +6525,7 @@ map.addControl(new LogoMapaControl());
       adicionarRegistrosPopup('DMA', dadosDmaTodos);
       adicionarRegistrosPopup('DPL', dadosDplTodos);
       adicionarRegistrosPopup('DPJ', dadosDpjTodos);
+      adicionarRegistrosPopup('TARE', dadosTareTodos);
 
       return html || '<b>Nenhum dado encontrado</b>';
     }
@@ -6906,6 +6974,25 @@ map.addControl(new LogoMapaControl());
     total += adicionarItensLegendaPontos(alvo, pontosVisiveis);
 
     bloco.style.display = total > 0 ? '' : 'none';
+  }
+
+  function renderizarLegendaTare(legendasVisiveis) {
+    var alvo = document.getElementById('legendaTare'); if(!alvo) return;
+    var bloco = alvo.closest('.bloco');
+    alvo.innerHTML = '';
+
+    var nomes = Object.keys(legendasVisiveis || {}).sort(function(a, b) {
+      return String(a).localeCompare(String(b), 'pt-BR');
+    });
+
+    for (var i = 0; i < nomes.length; i++) {
+      var item = document.createElement('div');
+      item.className = 'legenda-item';
+      item.innerHTML = htmlLegendaIntervencao(legendasVisiveis[nomes[i]] || '#666666') + nomes[i];
+      alvo.appendChild(item);
+    }
+
+    bloco.style.display = nomes.length > 0 ? '' : 'none';
   }
 
   function renderizarLegendaDpl(legendasVisiveis, pontosVisiveis) {
@@ -7796,9 +7883,24 @@ map.addControl(new LogoMapaControl());
       }
     }
 
+    // --- TARE (independente das demais origens, mesmo quando compartilham a mesma geometria) ---
+    if (sreData && sreData.features && servicosAtivos.TARE) {
+      for (var dt = 0; dt < sreData.features.length; dt++) {
+        var fdt = sreData.features[dt];
+        var linkTare = valorSeguro(fdt, 'LINK_TARE');
+        if (!linkTare) continue;
+        var dadosTareFiltrados = dadosTareDaFeatureFiltrados(fdt, servicoFiltroAtivo, '');
+        if (!dadosTareFiltrados.length) continue;
+        if (servicosAtivos.FUNDEINFRA && valorSeguro(fdt, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fdt, 'LINK_FUND'))]) continue;
+        if (rodoviaSelecionada && nomeRodoviaFeature(fdt) !== rodoviaSelecionada) continue;
+        if (sreSelecionado && nomeSREFeature(fdt) !== sreSelecionado) continue;
+        linhasBase.push(featureComOrigemIntervencao(fdt, 'TARE'));
+      }
+    }
+
     // Valores maiores são desenhados por último (ficam por cima). Ordem de
-    // prioridade visual: FUNDEINFRA, DOR, DMA, DPJ, DPL (FUNDEINFRA acima de todas).
-    var ordemOrigensLineares = { DPL: 0, DPJ: 1, DMA: 2, DOR: 3, FUNDEINFRA: 4 };
+    // prioridade visual: FUNDEINFRA, DOR, DMA, DPJ, DPL, TARE (FUNDEINFRA acima de todas).
+    var ordemOrigensLineares = { TARE: -1, DPL: 0, DPJ: 1, DMA: 2, DOR: 3, FUNDEINFRA: 4 };
     linhasBase = linhasBase.filter(featureAtendeRegioes);
     linhasBase.sort(function(a, b) {
       return ordemOrigensLineares[origemIntervencaoFeature(a)] - ordemOrigensLineares[origemIntervencaoFeature(b)];
@@ -7810,6 +7912,7 @@ map.addControl(new LogoMapaControl());
     var servicosVisiveisDma = {};
     var servicosVisiveisDpl = {};
     var servicosVisiveisDpj = {};
+    var servicosVisiveisTare = {};
     var idsUnicos = {};
 
         for (var k = 0; k < linhasBase.length; k++) {
@@ -7819,6 +7922,7 @@ map.addControl(new LogoMapaControl());
       var linkDma = valorSeguro(feat, 'LINK_DMA');
       var linkDpl = valorSeguro(feat, 'LINK_DPL');
       var linkDpj = valorSeguro(feat, 'LINK_DPJ');
+      var linkTare = valorSeguro(feat, 'LINK_TARE');
 
       var dados, estilo, chaveId, origemDados;
 
@@ -7849,6 +7953,11 @@ map.addControl(new LogoMapaControl());
         estilo = estiloDpj(dados);
         chaveId = 'DPJ_' + String(linkDpj) + '_' + k;
         origemDados = 'DPJ';
+      } else if (origemPreferida === 'TARE' && linkTare && dadosTareDaFeature(feat) && servicosAtivos.TARE) {
+        dados = dadosTareDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosTareDaFeature(feat);
+        estilo = estiloTare(dados);
+        chaveId = 'TARE_' + String(linkTare) + '_' + k;
+        origemDados = 'TARE';
       // Prioridade FUNDEINFRA se ambos existirem e FUNDEINFRA estiver ativo
       } else if (linkFund && dadosFundeinfraDaFeature(feat)) {
         dados = dadosFundeinfraDaFeature(feat);
@@ -7875,6 +7984,11 @@ map.addControl(new LogoMapaControl());
         estilo = estiloDpj(dados);
         chaveId = 'DPJ_' + String(linkDpj) + '_' + k;
         origemDados = 'DPJ';
+      } else if (linkTare && dadosTareDaFeature(feat)) {
+        dados = dadosTareDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosTareDaFeature(feat);
+        estilo = estiloTare(dados);
+        chaveId = 'TARE_' + String(linkTare) + '_' + k;
+        origemDados = 'TARE';
       } else {
         continue;
       }
@@ -7890,6 +8004,8 @@ map.addControl(new LogoMapaControl());
         servicosVisiveisDpl[estilo.legenda] = estilo;
       } else if (origemDados === 'DPJ') {
         servicosVisiveisDpj[estilo.legenda] = estilo;
+      } else if (origemDados === 'TARE') {
+        servicosVisiveisTare[estilo.legenda] = estilo;
       } else if (origemDados === 'DOR') {
         servicosVisiveisDor[estilo.legenda] = estilo;
       }
@@ -7921,6 +8037,7 @@ map.addControl(new LogoMapaControl());
       var linkDmaRotulo = valorSeguro(featRotulo, 'LINK_DMA');
       var linkDplRotulo = valorSeguro(featRotulo, 'LINK_DPL');
       var linkDpjRotulo = valorSeguro(featRotulo, 'LINK_DPJ');
+      var linkTareRotulo = valorSeguro(featRotulo, 'LINK_TARE');
       var dadosRotulo = null;
       var estiloRotulo = null;
       var origemRotulo = '';
@@ -7952,6 +8069,11 @@ map.addControl(new LogoMapaControl());
         estiloRotulo = estiloDpj(dadosRotulo);
         origemRotulo = 'DPJ';
         linkRotulo = linkDpjRotulo;
+      } else if (origemPreferidaRotulo === 'TARE' && linkTareRotulo && dadosTareDaFeature(featRotulo) && servicosAtivos.TARE) {
+        dadosRotulo = dadosTareDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosTareDaFeature(featRotulo);
+        estiloRotulo = estiloTare(dadosRotulo);
+        origemRotulo = 'TARE';
+        linkRotulo = linkTareRotulo;
       }
 
       if (!dadosRotulo || !estiloRotulo) continue;
@@ -7972,6 +8094,7 @@ map.addControl(new LogoMapaControl());
     var countDma = 0;
     var countDpl = 0;
     var countDpj = 0;
+    var countTare = 0;
     for (var ci = 0; ci < linhasBase.length; ci++) {
       var origemContador = origemIntervencaoFeature(linhasBase[ci]);
       if (origemContador === 'FUNDEINFRA') countFund++;
@@ -7979,12 +8102,14 @@ map.addControl(new LogoMapaControl());
       else if (origemContador === 'DMA') countDma++;
       else if (origemContador === 'DPL') countDpl++;
       else if (origemContador === 'DPJ') countDpj++;
+      else if (origemContador === 'TARE') countTare++;
       else {
         if (valorSeguro(linhasBase[ci], 'LINK_FUND')) countFund++;
         if (valorSeguro(linhasBase[ci], 'LINK_DOR')) countDor++;
         if (valorSeguro(linhasBase[ci], 'LINK_DMA')) countDma++;
         if (valorSeguro(linhasBase[ci], 'LINK_DPL')) countDpl++;
         if (valorSeguro(linhasBase[ci], 'LINK_DPJ')) countDpj++;
+        if (valorSeguro(linhasBase[ci], 'LINK_TARE')) countTare++;
       }
     }
     document.getElementById('countOAE').textContent = countFund;
@@ -7997,6 +8122,8 @@ map.addControl(new LogoMapaControl());
     if (contadorDpl) contadorDpl.textContent = countDpl;
     var contadorDpj = document.getElementById('countDpj');
     if (contadorDpj) contadorDpj.textContent = countDpj + resultadoObrasAero.countDpj;
+    var contadorTare = document.getElementById('countTare');
+    if (contadorTare) contadorTare.textContent = countTare;
 
         renderizarLegendaIntervencaos({
       linhas: servicosVisiveis,
@@ -8006,6 +8133,7 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaDma(servicosVisiveisDma, Object.assign({}, resultadoObrasPontos.legendaDma, resultadoObrasAero.legendaDma));
     renderizarLegendaDpj(servicosVisiveisDpj, Object.assign({}, resultadoObrasPontos.legendaDpj, resultadoObrasAero.legendaDpj));
     renderizarLegendaDpl(servicosVisiveisDpl, resultadoObrasPontos.legendaDpl);
+    renderizarLegendaTare(servicosVisiveisTare);
     renderizarLegendaDoc(resultadoObrasPontos.legendaDoc);
     renderizarLegendaDsv(resultadoObrasPontos.legendaDsv);
     renderizarLegendaGme(resultadoObrasPontos.legendaGme);
@@ -8024,7 +8152,8 @@ map.addControl(new LogoMapaControl());
       var dadosDmaTodos = servicosAtivos.DMA ? dadosDmaDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDplTodos = servicosAtivos.DPL ? dadosDplDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosDpjTodos = servicosAtivos.DPJ ? dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
-      var referenciasProposta = referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos);
+      var dadosTareTodos = servicosAtivos.TARE ? dadosTareDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
+      var referenciasProposta = referenciasPropostaDaFeature(feature, dadosFund, dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos, dadosTareTodos);
       var featuresSre = featuresSrePorReferenciasProposta(feature, referenciasProposta);
 
       var html = htmlTabelaDadosSre(featuresSre, referenciasProposta);
@@ -8033,11 +8162,13 @@ map.addControl(new LogoMapaControl());
       var dadosDmaTabela = expandirRegistrosPorGrupo(dadosDmaTodos, { tipo: 'Link', unidade: 'DMA' });
       var dadosDplTabela = expandirRegistrosPorGrupo(dadosDplTodos, { tipo: 'Link', unidade: 'DPL' });
       var dadosDpjTabela = expandirRegistrosPorGrupo(dadosDpjTodos, { tipo: 'Link', unidade: 'DPJ' });
+      var dadosTareTabela = expandirRegistrosPorGrupo(dadosTareTodos, { tipo: 'Link', unidade: 'TARE' });
       html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados FUNDEINFRA', dadosFundTabela), dadosFundTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_FUNDEINFRA_TABELA, dadosFundTabela));
       html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DOR', dadosDorTabela), dadosDorTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDorTabela));
       html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DMA', dadosDmaTabela), dadosDmaTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDmaTabela));
       html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DPL', dadosDplTabela), dadosDplTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDplTabela));
       html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados DPJ', dadosDpjTabela), dadosDpjTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosDpjTabela));
+      html += tabelaRegistrosHtml(tituloTabelaComGrupo('Dados TARE', dadosTareTabela), dadosTareTabela, camposTabelaAjustadosPorGrupo(CAMPOS_LINHA_UNIDADE_TABELA, dadosTareTabela));
       if (html) html += htmlAcoesTabelaCompleta('linha');
 
       document.getElementById('painelTabelaConteudo').innerHTML = html || '<em>Nenhum dado encontrado para este trecho.</em>';
@@ -8073,7 +8204,7 @@ map.addControl(new LogoMapaControl());
       var dpjAtivo = servicosAtivos.DPJ;
       var docAtivo = servicosAtivos.DOC;
       var dsvAtivo = servicosAtivos.DSV;
-      var novasOrigens = ['GME', 'GMK', 'GMM', 'GMP'];
+      var novasOrigens = ['TARE', 'GME', 'GMK', 'GMM', 'GMP'];
       var novasOrigensTodasAtivas = novasOrigens.every(function(o) { return servicosAtivos[o]; });
       var alteracaoAtiva = algumaAlteracaoAtiva();
 
@@ -8245,7 +8376,7 @@ map.addControl(new LogoMapaControl());
     if (bDpj) bDpj.style.display = 'none';
     if (bDoc) bDoc.style.display = 'none';
     if (bDsv) bDsv.style.display = 'none';
-    ['legendaGme', 'legendaGmk', 'legendaGmm', 'legendaGmp'].forEach(function(id) {
+    ['legendaTare', 'legendaGme', 'legendaGmk', 'legendaGmm', 'legendaGmp'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.closest('.bloco').style.display = 'none';
     });
@@ -8269,6 +8400,8 @@ map.addControl(new LogoMapaControl());
     if (contadorDplOff) contadorDplOff.textContent = '0';
     var contadorDpjOff = document.getElementById('countDpj');
     if (contadorDpjOff) contadorDpjOff.textContent = '0';
+    var contadorTareOff = document.getElementById('countTare');
+    if (contadorTareOff) contadorTareOff.textContent = '0';
 
     atualizarTituloTopBar();
   }
@@ -8424,7 +8557,7 @@ map.addControl(new LogoMapaControl());
     var origem = String(params.get('origem') || '').toUpperCase();
     var perfil = String(params.get('perfil') || '').toLowerCase();
     var alteracoesEntrada = params.get('alteracoes') === '1';
-    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP'];
+    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP'];
 
     if (alteracoesEntrada) {
       limparCamposFiltroEntrada();
@@ -9200,7 +9333,8 @@ map.addControl(new LogoMapaControl());
     DOR: 'LINK_DOR',
     DMA: 'LINK_DMA',
     DPL: 'LINK_DPL',
-    DPJ: 'LINK_DPJ'
+    DPJ: 'LINK_DPJ',
+    TARE: 'LINK_TARE'
   };
 
   // Cada GEOCOD (dentro de uma BASE) gera UMA única feature, com um campo

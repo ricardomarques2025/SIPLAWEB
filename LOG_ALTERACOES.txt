@@ -454,3 +454,17 @@ Nova camada Unidades de Saude:
 --- Painel Detalhes da selecao: clique em um circulo abre a tabela das unidades cujo raio alcanca o ponto (categoria, descricao, intervencao, localidade, populacao, distancia, IDCOD), com destaque nas unidades do circulo clicado.
 --- Botao Mostrar todos registros lista todas as unidades do filtro atual, com destaque nas do ponto clicado, pesquisa e botao Zoom que enquadra e pisca o circulo de 80 km da unidade; Voltar retorna a tabela do clique.
 --- Zoom da lista completa de Unidades de Saude isola a unidade: so o circulo dela fica no mapa; Voltar (ou trocar o conteudo do painel, mudar o filtro, ligar/desligar a camada) restaura todos os circulos.
+
+
+VERSAO 2.12 - 06/10/2026
+-------------------------
+
+Nova origem TARE:
+--- Incluido o botao TARE no painel Origem (apos DPL), ativo por padrao e respeitando Desligar tudo, Limpar tudo e a entrada pelo parametro ?origem=TARE.
+--- TARE e obra linear: registros de data/DADOS.json com UNIDADE = TARE sao ligados ao SRE por data/OBRAS_LINKS.json (campo LINK_TARE), como DOR/DMA/DPL/DPJ. Registros TARE sem TIPO preenchido sao tratados como Link.
+--- Estilo: cor pela intervencao (mesma paleta da DOR) com tracejado branco ao centro; desenhada abaixo das demais origens lineares. Rotulo com a sigla "Ta".
+--- Popup, tabela "Dados TARE" no painel inferior, Mostrar todos registros, exportacao CSV, filtro de Intervencao, impressao e titulo da barra superior incluem a TARE.
+--- Adicionada legenda propria TARE no painel direito, exibida somente quando ha trechos visiveis.
+--- Primeira obra: IDCOD 20260701478 (Pavimentacao GO-488, Entr. GO-210 - Entr. GO-595, 23,2 km, Vicentinopolis), SRE 488EGO0010, ETAPA Integrada (obra e projeto juntos); legenda "Pavimentacao - Integrada".
+--- Atualizados os parametros de versao de js/mapa.js e js/impressao.js em mapa.html.
+--- Validado em navegador headless: com ?origem=TARE, 1 trecho exibido e legenda "Pavimentacao"; com todas as origens ativas o mapa carrega sem erros e a TARE aparece junto das demais.

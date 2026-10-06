@@ -201,6 +201,7 @@
     if (servicosAtivos.DMA) nomesIntervencao.push('DMA');
     if (servicosAtivos.DPL) nomesIntervencao.push('DPL');
     if (servicosAtivos.DPJ) nomesIntervencao.push('DPJ');
+    if (servicosAtivos.TARE) nomesIntervencao.push('TARE');
 
     if (servico) servico.textContent = nomesIntervencao.join(' / ');
     if (data) data.textContent = textoMesAnoAtualImpressao();
@@ -262,11 +263,13 @@
     var linhasDma = [];
     var linhasDpl = [];
     var linhasDpj = [];
+    var linhasTare = [];
     var vistosFund = {};
     var vistosDor = {};
     var vistosDma = {};
     var vistosDpl = {};
     var vistosDpj = {};
+    var vistosTare = {};
 
     function valorTabela(valor) {
       return escapeHtml(valor === null || valor === undefined ? '' : valor);
@@ -404,6 +407,21 @@
             }
           }
         }
+
+        if (servicosAtivos.TARE) {
+          var linkTare = valorSeguro(feature, 'LINK_TARE');
+          if (linkTare) {
+            var dadosTare = dadosTareDaFeatureFiltrados(feature, servicoFiltroAtivo, '');
+            for (var t = 0; t < dadosTare.length; t++) {
+              var itemTare = dadosTare[t];
+              var chaveTare = String(linkTare) + '|' + String(itemTare.IDCOD || '') + '|' + String(itemTare.INTERVENCAO || '') + '|' + String(itemTare.SEI || '');
+              if (!vistosTare[chaveTare]) {
+                linhasTare.push({ dados: itemTare, feature: feature });
+                vistosTare[chaveTare] = true;
+              }
+            }
+          }
+        }
       }
     }
 
@@ -412,13 +430,15 @@
     linhasDma.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
     linhasDpl.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
     linhasDpj.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
+    linhasTare.sort(function(a, b) { return compararCampo('IDCOD')(a.dados, b.dados); });
 
     destino.innerHTML =
       blocoTabela('Dados FUNDEINFRA', linhasFund.map(function(item) { return linhaTabela(item.dados, item.feature, 'PROPOSTA', ['MODALIDADE', 'EMPRESA', 'CONTRATO', 'PROCESSO_SEI_CONTRATACAO']); }), 'Proposta', ['Modalidade', 'Empresa', 'Contrato', 'Processo SEI Contratação']) +
       blocoTabela('Dados DOR', linhasDor.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
       blocoTabela('Dados DMA', linhasDma.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
       blocoTabela('Dados DPL', linhasDpl.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
-      blocoTabela('Dados DPJ', linhasDpj.map(function(item) { return linhaTabela(item.dados, item.feature); }));
+      blocoTabela('Dados DPJ', linhasDpj.map(function(item) { return linhaTabela(item.dados, item.feature); })) +
+      blocoTabela('Dados TARE', linhasTare.map(function(item) { return linhaTabela(item.dados, item.feature); }));
     destino.style.display = destino.children.length ? 'block' : 'none';
   }
 
