@@ -168,7 +168,7 @@ body {
 .indice-titulo { margin: 0 0 4mm; font-size: 13pt; font-weight: 700; font-family: Arial, sans-serif; }
 .indice-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 0 17mm; }
 .indice-cab { text-align: right; font-size: 7.6pt; height: 4.6mm; }
-.indice-linha { display: flex; align-items: baseline; gap: 2mm; height: 3.95mm; font-size: 7.6pt; white-space: nowrap; }
+.indice-linha { display: flex; align-items: baseline; gap: 2mm; height: calc(3.95mm * var(--indice-escala, 1)); font-size: calc(7.6pt * var(--indice-escala, 1)); white-space: nowrap; }
 .indice-linha .id { width: 7mm; font-weight: 700; flex: none; }
 .indice-linha .nome { flex: 1; overflow: hidden; text-overflow: ellipsis; }
 .indice-linha .pag { flex: none; text-align: right; min-width: 8mm; }

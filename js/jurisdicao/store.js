@@ -9,7 +9,7 @@
 const Store = (function() {
   const sb = Acesso.cliente.schema('jurisdicao');
   const auth = Acesso.cliente.auth;
-  const COLUNAS = ['uid', 'versao', 'atualizado_em', 'atualizado_por', 'geom']
+  const COLUNAS = ['uid', 'id', 'versao', 'atualizado_em', 'atualizado_por', 'geom']
     .concat(CAMPOS.map(c => c.campo)).join(',');
 
   let registros = new Map();   // id -> registro (sem geometria)
@@ -118,13 +118,13 @@ const Store = (function() {
     try {
       return await enfileirar(id, async function() {
         const r = registros.get(id);
-        if (!r) throw new Error('Registro #' + id + ' não está mais disponível.');
+        if (!r) throw new Error('Registro ' + rotulo(id) + ' não está mais disponível.');
         const { data, error } = await sb.from('alteracoes').update(mudancas)
           .eq('uid', r.uid).eq('versao', r.versao).select(COLUNAS);
         if (error) throw traduzir(error);
         if (!data.length) {
           await recarregarRegistro(id);
-          throw new Error('O registro #' + id + ' foi alterado por outra pessoa enquanto você editava. ' +
+          throw new Error('O registro ' + rotulo(id) + ' foi alterado por outra pessoa enquanto você editava. ' +
             'Os dados foram atualizados; confira e refaça a alteração.');
         }
         return guardar(data[0]);
@@ -390,9 +390,10 @@ const Store = (function() {
       if (!g) return;
       const props = {};
       CAMPOS.forEach(c => { props[c.campo] = r[c.campo]; });
-      features.push({ type: 'Feature', properties: comAtributos ? props : { id: id }, geometry: g });
+      features.push({ type: 'Feature', properties: comAtributos ? props : { id: id }, geometry: g, ordem: id });
     });
-    features.sort((a, b) => a.properties.id - b.properties.id);
+    features.sort((a, b) => a.ordem - b.ordem);
+    features.forEach(f => { delete f.ordem; });
     const fc = { type: 'FeatureCollection', name: 'alt_juris', features: features };
     if (comAtributos) fc.crs = { type: 'name', properties: { name: 'urn:ogc:def:crs:EPSG::4674' } };
     return fc;
@@ -424,7 +425,11 @@ const Store = (function() {
   function emitir(evento, id, extra) { ouvintes.forEach(fn => fn(evento, id, extra)); }
   function ouvir(fn) { ouvintes.add(fn); }
 
+  // Como o registro aparece na tela: o código permanente (AJ26-0001); o id é só a chave interna.
+  function rotulo(id) { const r = registros.get(id); return r && r.codigo ? r.codigo : '#' + id; }
+
   return {
+    rotulo,
     sessao, usuario, podeEditar, podeGravar, modoProposta, eAdmin,
     carregar, recarregar, recarregarRegistro, lista, obter, definirVisao, visao: () => visao, geometria, nomeUsuario, idadeDados, gravandoAgora,
     atualizar, definirGeometria, pendente, valorAtual, totalPendentes, descartar, descartarCampo, resumoPendentes, salvar,

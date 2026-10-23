@@ -96,7 +96,7 @@ const Tabela = (function() {
         headerTooltip: c.titulo,
         tooltip: (c.tipo === 'longo' || c.tipo === 'doc' || c.tipo === 'texto')
           ? function(e, cell) { return cell.getValue() || ''; } : false,
-        bottomCalc: c.campo === 'extensao_km' ? 'sum' : (c.campo === 'id' ? 'count' : undefined),
+        bottomCalc: c.campo === 'extensao_km' ? 'sum' : (c.campo === 'codigo' ? 'count' : undefined),
         bottomCalcFormatter: c.campo === 'extensao_km'
           ? cell => '<b class="num">' + Number(cell.getValue() || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '</b>'
           : undefined
@@ -117,7 +117,7 @@ const Tabela = (function() {
       height: '100%',
       layout: 'fitDataFill',
       columns: colunas(),
-      initialSort: [{ column: 'id', dir: 'asc' }],
+      initialSort: [{ column: 'codigo', dir: 'asc' }],
       selectableRows: 1,
       editTriggerEvent: 'dblclick',
       movableColumns: true,

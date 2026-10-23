@@ -127,6 +127,7 @@ Scripts em `supabase/`:
 | `002_acesso.sql` | schema `acesso` (permissões por área), migração dos perfis, RLS das obras por origem |
 | `003_jurisdicao_no_siplaweb.sql` | regras do `jurisdicao` aceitam também a área JURISDICAO |
 | `004_niveis_aprovacao.sql` | 5 níveis por área, propostas do editor básico e aprovação pelo editor pleno (obras) |
+| `013_codigo_jurisdicao.sql` | código permanente da jurisdição **AJ26-0001** (contador `AJ`, gerado no cadastro, imutável); existentes numerados na ordem do id. O `id` fica só como chave interna; caderno e pranchas usam Nº sequencial próprio |
 | `012_fase_e_listas_DPJ.sql` | campo **Fase** (lista: Projeto, Anteprojeto, Fase Preparatória) e valores novos: status Obra/Integrada, modalidade Contratado/Interno/Doação/Tare, intervenção Sinalização Viária, fonte Doação (importação DPJ, 23/10/2026) |
 | `011_recortes_extra_base.sql` | regra dos recortes: `siplaweb.obra_para_extra_base()` leva para a malha complementar o que não é segmento SRE inteiro (`recorte_de`) |
 | `010_fonte_e_listas.sql` | campo **Fonte do recurso** (lista) e valores novos: etapa Licitação, status Em Mobilização / Aguardando Mobilização da Rede, intervenção Viaduto |

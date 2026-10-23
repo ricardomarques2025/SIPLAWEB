@@ -365,7 +365,7 @@ var JurisdicaoPainel = (function() {
     var r = Store.obter(gavetaId);
     var tipo = TIPOS[r.tipo] || { cor: '#6b7280' };
     var sit = SITUACOES[r.situacao] || { cor: '#6b7280' };
-    $('jurGavetaSup').innerHTML = '#' + r.id + ' <span class="tipo" style="--c:' + tipo.cor + '"><i></i>' + esc(r.tipo || '—') + '</span>' +
+    $('jurGavetaSup').innerHTML = esc(Store.rotulo(r.id)) + ' <span class="tipo" style="--c:' + tipo.cor + '"><i></i>' + esc(r.tipo || '—') + '</span>' +
       (r.situacao ? '<span class="badge" style="--c:' + sit.cor + '">' + esc(r.situacao) + '</span>' : '');
     $('jurGavetaTitulo').textContent = [r.rodovia, r.municipios].filter(Boolean).join(' — ') || 'Novo registro';
     $('jurVerMapa').disabled = !Store.geometria(gavetaId);
@@ -493,7 +493,7 @@ var JurisdicaoPainel = (function() {
         '</div>' +
         (irmaos.length ? '<div class="replicar"><div class="replicar-titulo">Aplicar também aos outros trechos do processo ' + esc(r.processo) + ':</div>' +
           irmaos.map(function(x) {
-            return '<label class="chk"><input type="checkbox" name="replicar" value="' + x.id + '" checked> #' + x.id + ' · ' +
+            return '<label class="chk"><input type="checkbox" name="replicar" value="' + x.id + '" checked> ' + esc(Store.rotulo(x.id)) + ' · ' +
               esc(x.tipo) + ' · ' + esc(x.trecho || x.municipios) + ' <span class="badge" style="--c:' + ((SITUACOES[x.situacao] || {}).cor || '#6b7280') + '">' + esc(x.situacao || '—') + '</span></label>';
           }).join('') + '</div>' : '') +
         '<div class="form-tramite-acoes"><span class="dica-tramite">' + (propondo
@@ -578,7 +578,7 @@ var JurisdicaoPainel = (function() {
 
   // ---------- Mapa ----------
   function verNoMapa(id) {
-    if (!Store.geometria(id)) { toast('Registro #' + id + ' ainda não tem traçado'); return; }
+    if (!Store.geometria(id)) { toast('Registro ' + Store.rotulo(id) + ' ainda não tem traçado'); return; }
     selecionadoAtual = id;
     var mudou = modo !== 'dividida';
     var pronto = mudou ? definirModo('dividida') : Promise.resolve();
@@ -667,7 +667,7 @@ var JurisdicaoPainel = (function() {
     var erros = 0, proposta = Store.modoProposta();
     $('jurRevisaoCorpo').innerHTML = '<p class="rev-resumo">' + itens.length + (itens.length === 1 ? ' registro' : ' registros') + ' · ' +
       Store.totalPendentes() + ' campo(s) alterado(s)</p>' + itens.map(function(it) {
-        return '<div class="rev-obra"><div class="rev-cab"><b>#' + it.id + '</b> ' + esc([it.r.rodovia, it.r.municipios].filter(Boolean).join(' — ')) + '</div>' +
+        return '<div class="rev-obra"><div class="rev-cab"><b>' + esc(Store.rotulo(it.id)) + '</b> ' + esc([it.r.rodovia, it.r.municipios].filter(Boolean).join(' — ')) + '</div>' +
           it.campos.map(function(c) {
             if (c.erro) erros++;
             return '<div class="rev-campo' + (c.erro ? ' rev-erro' : '') + '"><span class="rev-rotulo">' + esc(tituloCampo(c.campo)) + '</span>' +
@@ -698,7 +698,7 @@ var JurisdicaoPainel = (function() {
       if (res.gravadas.length) toast(res.proposta
         ? res.gravadas.length + (res.gravadas.length === 1 ? ' proposta enviada' : ' propostas enviadas') + ' para aprovação'
         : res.gravadas.length + (res.gravadas.length === 1 ? ' registro salvo' : ' registros salvos') + ' no banco');
-      res.recusadas.forEach(function(x) { toast('#' + x.id + ': ' + x.motivo, true); });
+      res.recusadas.forEach(function(x) { toast(Store.rotulo(x.id) + ': ' + x.motivo, true); });
       res.gravadas.forEach(function(id) { Tabela.atualizarLinha(id); });
       if (gavetaId != null) renderGaveta();
       aplicarFiltros();
@@ -723,9 +723,9 @@ var JurisdicaoPainel = (function() {
   function cartaoProposta(p) {
     var pleno = Store.podeGravar();
     var id = p.registro_uid ? Store.idPorUid(p.registro_uid) : null, r = id != null ? Store.obter(id) : null;
-    var titulo = p.tipo === 'nova' ? (p.situacao === 'aprovada' && r ? '#' + r.id + ' · registro novo' : 'Registro novo')
-      : p.tipo === 'tramite' ? 'Trâmite · ' + (p.registros || []).map(function(u) { var x = Store.idPorUid(u); return x != null ? '#' + x : '?'; }).join(', ')
-      : (r ? '#' + r.id : '(registro excluído)');
+    var titulo = p.tipo === 'nova' ? (p.situacao === 'aprovada' && r ? Store.rotulo(r.id) + ' · registro novo' : 'Registro novo')
+      : p.tipo === 'tramite' ? 'Trâmite · ' + (p.registros || []).map(function(u) { var x = Store.idPorUid(u); return x != null ? Store.rotulo(x) : '?'; }).join(', ')
+      : (r ? Store.rotulo(r.id) : '(registro excluído)');
     var comAntes = p.tipo === 'edicao' && p.situacao === 'pendente' && r;
     var conflito = comAntes && r.versao !== p.versao_base;
     var linhas = p.tipo === 'tramite'
@@ -768,7 +768,7 @@ var JurisdicaoPainel = (function() {
 
   function aprovar(pid, forcar) {
     Store.aprovar(pid, forcar).then(function(id) {
-      toast('Proposta aprovada' + (id != null ? ': #' + id : ''));
+      toast('Proposta aprovada' + (id != null ? ': ' + Store.rotulo(id) : ''));
       renderAprovacoes();
       if (gavetaId != null) renderGaveta();
       aplicarFiltros();
@@ -821,7 +821,7 @@ var JurisdicaoPainel = (function() {
     Store.criar(d).then(function(r) {
       $('jurDlgNovo').close();
       if (r.proposta) { toast('Registro novo enviado para aprovação'); return; }
-      toast('Registro #' + r.id + ' cadastrado');
+      toast('Registro ' + Store.rotulo(r.id) + ' cadastrado');
     }).catch(function(err) { $('jurNovoAviso').textContent = err.message; });
   }
 
@@ -940,7 +940,7 @@ var JurisdicaoPainel = (function() {
       if (e.target.closest('[data-abrir-aprovacoes]')) { abrirAprovacoes(); return; }
       var rest = e.target.closest('[data-restaurar]');
       var trm = e.target.closest('[data-excluir-tramite]');
-      if (rest && confirm('Voltar o registro #' + gavetaId + ' para como estava nesta versão? (a restauração também fica no histórico)')) {
+      if (rest && confirm('Voltar o registro ' + Store.rotulo(gavetaId) + ' para como estava nesta versão? (a restauração também fica no histórico)')) {
         Store.restaurarVersao(gavetaId, Number(rest.dataset.restaurar)).then(function() { toast('Versão restaurada'); renderGaveta(); })
           .catch(function(err) { toast(err.message, true); });
       } else if (trm && confirm('Remover este trâmite da linha do tempo? (a situação atual do registro não muda)')) {
@@ -953,7 +953,7 @@ var JurisdicaoPainel = (function() {
     $('jurVerMapa').addEventListener('click', function() { verNoMapa(gavetaId); });
     $('jurPrancha').addEventListener('click', function() { window.open('jurisdicao_caderno.html?id=' + gavetaId, '_blank'); });
     $('jurExcluir').addEventListener('click', function() {
-      if (gavetaId != null && confirm('Excluir o registro #' + gavetaId + '? Ele vai para a lixeira e só o administrador pode restaurá-lo.')) Store.excluir(gavetaId);
+      if (gavetaId != null && confirm('Excluir o registro ' + Store.rotulo(gavetaId) + '? Ele vai para a lixeira e só o administrador pode restaurá-lo.')) Store.excluir(gavetaId);
     });
     $('jurTNovo').addEventListener('click', abrirNovo);
 

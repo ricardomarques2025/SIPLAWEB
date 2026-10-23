@@ -47,6 +47,12 @@
     $('btnImprimir').disabled = !ok;
   }
 
+  // Numero impresso no caderno e nas pranchas: sequencial (1, 2, 3...) na ordem do documento gerado, em vez do id do
+  // banco (que tem buracos: lixeira, testes apagados). numerar() refaz a lista a cada geracao.
+  let NUMERO = new Map();
+  function numerar(lista) { NUMERO = new Map(lista.map((r, i) => [r.id, i + 1])); }
+  function num(r) { return NUMERO.get(r.id) || r.id; }
+
   // Ordem do caderno: grupo, depois municipios em ordem alfabetica (sem diferenciar acentos).
   function ordenar(lista) {
     const cmp = (a, b) => String(a || '').localeCompare(String(b || ''), 'pt-BR', { sensitivity: 'base', ignorePunctuation: true });
@@ -210,7 +216,7 @@
     q('.titulo-mapa').textContent = [r.rodovia, r.trecho].filter(Boolean).join(', ');
     q('.norte').innerHTML = rosaDosVentos();
     q('.legenda').innerHTML = legendaHTML(r);
-    q('.tabela-rodape tbody tr').innerHTML = [r.id, r.municipios, r.rodovia, r.trecho, fmtKm(r.extensao_km), r.status_detalhe]
+    q('.tabela-rodape tbody tr').innerHTML = [num(r), r.municipios, r.rodovia, r.trecho, fmtKm(r.extensao_km), r.status_detalhe]
       .map(v => '<td>' + esc(v) + '</td>').join('');
     caberTabela(q('.tabela-rodape'), folha);
     q('.numero-pagina').textContent = numero == null ? '' : numero;
@@ -470,18 +476,26 @@
     const linhas = [];
     grupos.forEach(function(g) {
       linhas.push({ grupo: g.tipo, pagina: g.pagina });
-      g.itens.forEach(it => linhas.push({ id: it.r.id, nome: it.r.municipios, pagina: it.pagina }));
+      g.itens.forEach(it => linhas.push({ id: num(it.r), nome: it.r.municipios, pagina: it.pagina }));
     });
     return linhas;
   }
 
-  function paginasIndice(nLinhas) { return Math.max(1, Math.ceil(nLinhas / (LINHAS_POR_COLUNA * 2))); }
+  // O indice cabe numa folha: com mais linhas, elas encolhem (ate 60% da altura e da letra); so passa disso vai a 2 folhas.
+  const ENCOLHE_ATE = 0.6;
+  function linhasPorColuna(nLinhas) {
+    const numaFolha = Math.ceil(nLinhas / 2);
+    return numaFolha <= LINHAS_POR_COLUNA / ENCOLHE_ATE ? Math.max(LINHAS_POR_COLUNA, numaFolha) : LINHAS_POR_COLUNA;
+  }
+  function paginasIndice(nLinhas) { return Math.max(1, Math.ceil(nLinhas / (linhasPorColuna(nLinhas) * 2))); }
 
   function preencherIndice(folhas, linhas) {
+    const porColuna = linhasPorColuna(linhas.length);
     folhas.forEach(function(f, p) {
+      f.style.setProperty('--indice-escala', (LINHAS_POR_COLUNA / porColuna).toFixed(3));
       const colunas = [0, 1].map(function(c) {
-        const ini = (p * 2 + c) * LINHAS_POR_COLUNA;
-        const parte = linhas.slice(ini, ini + LINHAS_POR_COLUNA);
+        const ini = (p * 2 + c) * porColuna;
+        const parte = linhas.slice(ini, ini + porColuna);
         if (!parte.length) return '<div class="indice-coluna"></div>';
         return '<div class="indice-coluna"><div class="indice-cab">Pág.</div>' + parte.map(l => l.grupo
           ? '<div class="indice-linha indice-grupo"><span class="nome">' + esc(l.grupo.toUpperCase()) + '</span><span class="pag">' + l.pagina + '</span></div>'
@@ -493,7 +507,7 @@
 
   // ---------- Tabela-resumo ----------
   const COLUNAS_TABELA = [
-    ['ID', 'id'], ['TIPO', 'tipo'], ['Nº PROCESSO', 'processo'], ['MUNICÍPIOS', 'municipios'], ['RODOVIA', 'rodovia'],
+    ['Nº', 'id'], ['TIPO', 'tipo'], ['Nº PROCESSO', 'processo'], ['MUNICÍPIOS', 'municipios'], ['RODOVIA', 'rodovia'],
     ['EXTENSÃO (KM)', 'extensao_km'], ['AUTORIZAÇÃO PORTARIA (SRE)', 'portaria_sre'], ['TRECHO URBANO', 'trecho_urbano', 'doc'],
     ['TRECHO', 'trecho'], ['LEI MUNICIPAL', 'lei_municipal', 'doc'], ['EXPOSIÇÃO DE MOTIVOS', 'exposicao_motivos', 'doc'],
     ['LEI ESTADUAL', 'lei_estadual', 'doc'], ['TERMO DE TRANSFERÊNCIA', 'termo_transferencia', 'doc'], ['SITUAÇÃO ATUAL', 'situacao']
@@ -517,7 +531,7 @@
   }
 
   function celulaTabela(r, col) {
-    const v = r[col[1]];
+    const v = col[1] === 'id' ? num(r) : r[col[1]];
     if (col[2] === 'doc') {
       const s = statusDoc(v);
       return '<td class="td-doc"><span class="doc-cel">' + Indicadores.iconeDoc(s, 9) + '<span>' + esc(Indicadores.textoDoc(v) || '-') + '</span></span></td>';
@@ -563,6 +577,7 @@
     $('paginas').classList.add('completo');
 
     const lista = ordenar(Store.lista().filter(r => opcoes.grupos.includes(r.tipo)));
+    numerar(lista);
     // Prancha (e item do indice) so para registro com traçado; sem ele o mapa mostraria Goias inteiro.
     // Os sem traçado continuam na tabela-resumo.
     const grupos = ORDEM_TIPOS.filter(t => opcoes.grupos.includes(t))
@@ -594,7 +609,7 @@
           fisica++;
           it.pagina = fisica - desconto;
           const vaga = novaFolha('prancha prancha-pendente');
-          vaga.innerHTML = '<div class="pendente-txt">Prancha #' + it.r.id + ' · ' + esc(it.r.municipios) + '</div>';
+          vaga.innerHTML = '<div class="pendente-txt">Prancha nº ' + num(it.r) + ' · ' + esc(it.r.municipios) + '</div>';
           fila.push({ it: it, vaga: vaga });
         });
       });
@@ -680,8 +695,9 @@
     }
 
     const lista = ordenar(Store.lista());
+    numerar(lista);
     const id = Number(params.get('id')) || lista[0].id;
-    $('selRegistro').innerHTML = lista.map(r => '<option value="' + r.id + '"' + (r.id === id ? ' selected' : '') + '>#' + r.id + ' · ' +
+    $('selRegistro').innerHTML = lista.map(r => '<option value="' + r.id + '"' + (r.id === id ? ' selected' : '') + '>Nº ' + num(r) + ' · ' +
       esc(r.tipo) + ' · ' + esc(r.municipios) + (Store.geometria(r.id) ? '' : ' (sem traçado)') + '</option>').join('');
     $('selRegistro').addEventListener('change', function() {
       params.set('id', this.value);
@@ -691,7 +707,7 @@
     const r = Store.obter(id);
     if (!r) { status('Registro não encontrado', false); return; }
     Store.registrarEvento('prancha', 'abriu a prancha #' + id);
-    document.title = 'Prancha ' + r.id + ' · ' + (r.municipios || '');
+    document.title = 'Prancha ' + num(r) + ' · ' + (r.municipios || '');
     status('Carregando imagens de satélite…', false);
     const p = montarPrancha(r, base, params.get('pagina'));
     window.__mapaPrancha = p.map;

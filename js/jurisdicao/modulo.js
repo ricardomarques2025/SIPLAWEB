@@ -67,7 +67,7 @@ var Jurisdicao = (function() {
   function conteudoPopup(r) {
     var km = r.extensao_km != null ? Number(r.extensao_km).toLocaleString('pt-BR') + ' km' : '';
     return '<div class="popup-jurisdicao">' +
-      '<div class="pj-sup">Jurisdição · #' + r.id + ' · <span style="--c:' + corTipo(r.tipo) + '"><i></i>' + esc(r.tipo) + '</span></div>' +
+      '<div class="pj-sup">Jurisdição · ' + esc(Store.rotulo(r.id)) + ' · <span style="--c:' + corTipo(r.tipo) + '"><i></i>' + esc(r.tipo) + '</span></div>' +
       '<b>' + esc(r.rodovia) + ' — ' + esc(r.municipios) + '</b>' +
       '<div>' + esc(r.trecho) + (km ? ' · <b>' + km + '</b>' : '') + '</div>' +
       '<div class="pj-sit" style="--c:' + corSituacao(r.situacao) + '">' + esc(r.situacao || 'Sem situação') + '</div>' +
@@ -79,7 +79,7 @@ var Jurisdicao = (function() {
   function mostrarNoPainel(r) {
     var painel = $('painelTabelaConteudo');
     if (!painel || typeof tabelaRegistrosHtml !== 'function') return;
-    painel.innerHTML = tabelaRegistrosHtml('Alteração de jurisdição #' + r.id, [r], CAMPOS_PAINEL);
+    painel.innerHTML = tabelaRegistrosHtml('Alteração de jurisdição ' + Store.rotulo(r.id), [r], CAMPOS_PAINEL);
   }
 
   function latlngsDe(g) {
@@ -243,7 +243,7 @@ var Jurisdicao = (function() {
       '<div class="conteudo-colapsavel">' +
         '<button type="button" class="jur-abrir-tabela" id="jurAbrirTabela">Abrir tabela</button>' +
         '<label for="jurBusca">Buscar</label>' +
-        '<input id="jurBusca" type="search" placeholder="Nº, rodovia, município, processo" autocomplete="off">' +
+        '<input id="jurBusca" type="search" placeholder="Código, rodovia, município, processo" autocomplete="off">' +
         '<label for="jurTipo">Tipo</label><select id="jurTipo"><option value="">Todos</option>' +
           Indicadores.ORDEM_TIPOS.map(function(t) { return '<option>' + esc(t) + '</option>'; }).join('') + '</select>' +
         '<label for="jurSituacao">Situação</label><select id="jurSituacao"><option value="">Todas</option>' +

@@ -109,7 +109,7 @@ var JurTracado = (function() {
       api.aoMudar(); renderResumo();
     });
     $('jtApagar').addEventListener('click', function() {
-      if (!confirm('Apagar o traçado do registro #' + id + '? (fica pendente até você salvar)')) return;
+      if (!confirm('Apagar o traçado do registro ' + Store.rotulo(id) + '? (fica pendente até você salvar)')) return;
       encerrar(); definir([]);
     });
     if (modo) renderPainel();
@@ -458,7 +458,7 @@ var JurTracado = (function() {
       var n = 0;
       $('jtMalhaCorpo').innerHTML = '<p class="rev-resumo">Partes do traçado que não estão na malha SRE nem na malha complementar. Marque as que devem virar trechos novos da malha complementar (extra_base) — assim as obras também podem usá-los.</p>' +
         lista.map(function(x) {
-          return '<div class="rev-obra"><div class="rev-cab"><b>#' + x.id + '</b> ' + esc([x.r.rodovia, x.r.municipios].filter(Boolean).join(' — ')) + '</div>' +
+          return '<div class="rev-obra"><div class="rev-cab"><b>' + Store.rotulo(x.id) + '</b> ' + esc([x.r.rodovia, x.r.municipios].filter(Boolean).join(' — ')) + '</div>' +
             x.pedacos.map(function(p) {
               var i = n++;
               return '<div class="jt-pedaco" data-i="' + i + '" data-id="' + x.id + '"><label class="chk"><input type="checkbox" checked data-usar> Cadastrar (' + km(p.properties.km) + ' km)</label>' +

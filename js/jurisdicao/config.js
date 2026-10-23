@@ -33,7 +33,8 @@ const OPCOES_DOC = ['SIM', 'NÃO', 'PARCIAL', 'NÃO SE APLICA'];
 // tipo: texto | numero | lista | doc | longo
 // grupo: usado no painel de detalhes
 const CAMPOS = [
-  { campo: 'id', titulo: 'ID', tipo: 'numero', largura: 64, fixa: true, somenteLeitura: true, grupo: 'Identificação' },
+  // Código permanente gerado pelo banco (AJ26-0001); o id numérico é só a chave interna e não aparece.
+  { campo: 'codigo', titulo: 'Código', tipo: 'texto', largura: 104, fixa: true, somenteLeitura: true, grupo: 'Identificação' },
   { campo: 'tipo', titulo: 'Tipo', tipo: 'lista', opcoes: Object.keys(TIPOS), largura: 150, fixa: true, grupo: 'Identificação' },
   { campo: 'rodovia', titulo: 'Rodovia', tipo: 'texto', largura: 120, grupo: 'Identificação' },
   { campo: 'municipios', titulo: 'Municípios', tipo: 'texto', largura: 210, grupo: 'Identificação' },
@@ -56,7 +57,7 @@ const CAMPOS = [
 
 // Cabecalhos usados na exportacao para Excel (mesma nomenclatura da planilha original).
 const CABECALHOS_EXCEL = {
-  id_est: 'ID_EST', id: 'ID', tipo: 'TIPO', id_site: 'ID SITE', processo: 'Nº PROCESSO',
+  codigo: 'CÓDIGO', id_est: 'ID_EST', tipo: 'TIPO', id_site: 'ID SITE', processo: 'Nº PROCESSO',
   municipios: 'MUNICÍPIOS', rodovia: 'RODOVIA', extensao_km: 'EXTENSÃO (KM)',
   portaria_sre: 'AUTORIZAÇÃO PORTARIA (SRE)', trecho_urbano: 'TRECHO URBANO', trecho: 'TRECHO',
   lei_municipal: 'LEI MUNICIPAL', exposicao_motivos: 'EXPOSIÇÃO DE MOTIVOS', lei_estadual: 'LEI ESTADUAL',
