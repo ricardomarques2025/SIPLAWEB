@@ -1,5 +1,5 @@
 // --- UNIDADES DE SAÚDE ---
-// Registros de data/DADOS.json com UNIDADE = HOSPITAL, posicionados pela
+// Obras do banco (js/dados_banco.js) com UNIDADE = HOSPITAL, posicionadas pela
 // localidade (campo LOCALIDADE comparado a NOME_ACEN de data/localidades.geojson).
 // Cada unidade gera um círculo de 80 km de raio, colorido pela categoria do
 // campo INTERVENCAO. Unidades da mesma localidade e categoria compartilham um
@@ -58,7 +58,7 @@
   function carregar() {
     if (carregamento) return carregamento;
     carregamento = Promise.all([
-      fetch('data/DADOS.json').then(function(r) { return r.json(); }),
+      DadosBanco.registros(),
       fetch('data/localidades.geojson').then(function(r) { return r.json(); })
     ]).then(function(resultado) {
       var registros = Array.isArray(resultado[0]) ? resultado[0] : [];
@@ -122,6 +122,13 @@
       });
   }
 
+  // Clique em qualquer outra camada (município, rodovia...) também lista as unidades cujo raio alcança o ponto.
+  registrarFontePopupNoPonto(function(latlng) {
+    if (!camadaAtiva) return '';
+    var proximas = unidadesNoPonto(latlng);
+    return proximas.length ? conteudoPopup(proximas) : '';
+  });
+
   function conteudoPopup(proximas) {
     var html = '<div class="popup-unidades-saude"><b>Unidades de Saúde (' + proximas.length + ')</b>' +
       '<div class="popup-unidades-saude-sub">Raio de ' + (RAIO_METROS / 1000) + ' km a partir do ponto clicado</div>';
@@ -149,7 +156,7 @@
     { chave: 'LOCALIDADE', rotulo: 'Localidade' },
     { chave: 'POPULACAO_2026', rotulo: 'População 2026' },
     { chave: 'DISTANCIA_KM', rotulo: 'Distância do clique (km)' },
-    { chave: 'IDCOD', rotulo: 'IDCOD' }
+    { chave: 'IDCOD', rotulo: 'Código' }
   ];
   var idsSelecionados = [];
   var unidadesPorZoomId = {};
@@ -288,10 +295,8 @@
         });
         circulo.on('click', function(e) {
           var proximas = unidadesNoPonto(e.latlng);
-          L.popup({ maxWidth: 380, maxHeight: 360 })
-            .setLatLng(e.latlng)
-            .setContent(conteudoPopup(proximas))
-            .openOn(map);
+          // Unidades primeiro; depois o município, regiões e demais áreas do ponto (js/mapa.js).
+          abrirPopupNoPonto(e.latlng, conteudoPopup(proximas), null);
           // Com uma unidade isolada, o painel mantém a lista completa (e o Voltar).
           if (!unidadeIsolada) atualizarPainel(proximas, doCirculo);
         });

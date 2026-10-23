@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Ajuda · Plano GOINFRA</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Ctext x=%2712%27 y=%2717.5%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-weight=%27700%27 font-size=%2715%27 fill=%27white%27%3E%3F%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" href="css/ajuda.css?v=ajd2-20261023" />
+</head>
+<body>
+<header class="aj-topo">
+  <button type="button" class="aj-menu-btn" id="ajMenuBtn" aria-label="Abrir o índice">☰</button>
+  <a class="aj-marca" href="#inicio"><strong>PLANO GOINFRA</strong><span>Central de Ajuda</span></a>
+  <div class="aj-busca" role="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+    <input type="search" id="ajBusca" placeholder="Pesquisar na ajuda (ex.: caderno, exportar, trâmite, SRE)" autocomplete="off" aria-label="Pesquisar na ajuda" aria-controls="ajResultados" />
+    <kbd class="aj-atalho" title="Atalho para pesquisar">/</kbd>
+  </div>
+  <div class="aj-topo-dir">
+    <span id="acessoUsuario"></span>
+    <a class="aj-topo-link" href="mapa.html?perfil=geral" title="Ir para o mapa">Mapa</a>
+    <a class="aj-topo-link" href="index.html" title="Página inicial">⌂</a>
+  </div>
+</header>
+
+<div class="aj-corpo">
+  <nav class="aj-indice" id="ajIndice" aria-label="Índice da ajuda"></nav>
+
+  <main class="aj-principal" id="ajPrincipal" tabindex="-1">
+    <section class="aj-resultados" id="ajResultados" hidden aria-live="polite"></section>
+
+    <div id="ajArtigos">
+
+<!-- ================================================================ INÍCIO -->
+<article id="inicio" data-cat="Início" data-titulo="Bem-vindo à Central de Ajuda" data-termos="ajuda manual início começar">
+  <h1>Bem-vindo à Central de Ajuda</h1>
+  <p class="aj-lead">Aqui estão explicadas todas as funções do <b>Plano GOINFRA 2026–2030 · Sistema de Monitoramento</b>: o mapa das obras por origem, o mapa rodoviário, as tabelas de obras, o módulo Jurisdição, os PDFs, as exportações e a administração de usuários.</p>
+  <p>Use a <b>pesquisa</b> no topo (atalho: tecla <kbd>/</kbd>) para achar qualquer termo, ou navegue pelo índice à esquerda.</p>
+  <h2>Tarefas mais procuradas</h2>
+  <div class="aj-cartoes">
+    <a href="#jurisdicao-caderno"><b>Gerar o caderno da Jurisdição em PDF</b><span>Caderno completo ou prancha A4 de um registro</span></a>
+    <a href="#mapa-filtros"><b>Filtrar obras no mapa</b><span>Intervenção, rodovia, SRE, município, região…</span></a>
+    <a href="#ferramentas-impressao"><b>Salvar o mapa em PDF</b><span>Formato, escala, título e rótulos</span></a>
+    <a href="#obras-editar"><b>Editar uma obra</b><span>Duplo clique, revisar e salvar</span></a>
+    <a href="#jurisdicao-tramitacao"><b>Registrar um trâmite</b><span>Nova situação do processo de jurisdição</span></a>
+    <a href="#mapa-linha-tempo"><b>Ver a situação numa data passada</b><span>Linha do tempo</span></a>
+    <a href="#aprovacao-propostas"><b>Aprovar propostas</b><span>Fila de aprovações do editor pleno</span></a>
+    <a href="#problemas"><b>Algo não aparece?</b><span>Solução de problemas</span></a>
+  </div>
+  <h2>Como esta ajuda está organizada</h2>
+  <ul>
+    <li><b>Primeiros passos</b>: entrar, página inicial, níveis de acesso e barra superior.</li>
+    <li><b>Mapa</b>: origens, filtros, camadas, consulta, legenda e linha do tempo.</li>
+    <li><b>Ferramentas do mapa</b>: anotações, medição, localizar km, impressão e exportação.</li>
+    <li><b>Obras</b>: tabela, ficha, edição, traçado, linha do tempo e histórico.</li>
+    <li><b>Jurisdição</b>: módulo, tabela, ficha, trâmites, traçado, malha complementar, exportação e caderno.</li>
+    <li><b>Aprovação</b> e <b>Administração</b>: propostas, aprovações, usuários e permissões.</li>
+    <li><b>Referência</b>: glossário, atalhos e solução de problemas.</li>
+  </ul>
+</article>
+
+<!-- ================================================================ PRIMEIROS PASSOS -->
+<article id="acesso-entrar" data-cat="Primeiros passos" data-titulo="Entrar no sistema" data-termos="login senha e-mail entrar sair conta inativa provisória acesso" data-rel="acesso-niveis acesso-inicio">
+  <h1>Entrar no sistema</h1>
+  <p>O sistema só abre com login. Entre com o <b>e-mail</b> e a <b>senha</b> fornecidos pelo administrador. Não há cadastro público.</p>
+  <h2>Primeiro acesso (senha provisória)</h2>
+  <ol>
+    <li>O administrador cria sua conta e repassa uma <b>senha provisória</b>.</li>
+    <li>Entre com o e-mail e essa senha.</li>
+    <li>O sistema pede que você <b>crie a sua própria senha</b>. A provisória deixa de valer.</li>
+  </ol>
+  <h2>Conta ainda não liberada</h2>
+  <p>Conta nova nasce <b>inativa</b>. Se aparecer o aviso “Sua conta ainda não foi liberada”, peça ao administrador para ativá-la e escolher suas áreas (veja <a href="#admin-usuarios">Usuários e permissões</a>).</p>
+  <h2>Sair</h2>
+  <p>No canto superior direito, ao lado do seu nome, clique em <b>Sair</b>. O mesmo login vale para todas as páginas do sistema.</p>
+  <div class="aj-nota aj-dica"><b>Esqueceu a senha?</b> Peça ao administrador para usar <b>Redefinir senha</b>: ele recebe uma nova senha provisória para repassar a você.</div>
+</article>
+
+<article id="acesso-inicio" data-cat="Primeiros passos" data-titulo="Página inicial" data-termos="início home painel cartões origem empreendimentos mapa geral mapa rodoviário jurisdição atalhos" data-rel="mapa-interface mapa-origens">
+  <h1>Página inicial</h1>
+  <p>A página inicial mostra uma saudação, os números do plano e um <b>cartão por origem</b> liberada para você, com o total de empreendimentos e a divisão entre planejamento, projeto e obra.</p>
+  <ul>
+    <li><b>Cartão de uma origem</b> (ex.: Obras Rodoviárias): abre o mapa só com aquela origem.</li>
+    <li><b>Mapa geral</b>: todas as suas origens juntas.</li>
+    <li><b>Mapa rodoviário</b>: malha estadual e federal, sem obras (liberado a todo usuário ativo).</li>
+    <li><b>Jurisdição</b>: abre o <a href="#jurisdicao-modulo">módulo de alterações de jurisdição</a> (se você tem a área JURISDICAO).</li>
+  </ul>
+  <p>Origens às quais você não tem acesso não aparecem. Se nenhuma aparecer, peça liberação ao administrador.</p>
+</article>
+
+<article id="acesso-niveis" data-cat="Primeiros passos" data-titulo="Níveis de acesso e permissões" data-termos="permissão perfil nível visualizador gerenciador editor básico editor pleno administrador master área exportar não aparece" data-rel="aprovacao-propostas admin-usuarios">
+  <h1>Níveis de acesso e permissões</h1>
+  <p>A permissão é dada <b>por área</b>: cada origem (FUNDEINFRA, DOR, GME…) e a área <b>JURISDICAO</b>. Em cada área você tem um dos níveis abaixo; <b>cada nível inclui tudo o que o anterior pode</b>.</p>
+  <table>
+    <thead><tr><th>Nível</th><th>O que pode fazer</th></tr></thead>
+    <tbody>
+      <tr><td><span class="aj-nivel n1">Visualizador</span></td><td>Consulta mapa, tabela e ficha. <b>Não exporta nada</b> (Excel, CSV, GeoJSON, caderno, PDF do mapa); o Ctrl+P sai só com um aviso.</td></tr>
+      <tr><td><span class="aj-nivel n2">Gerenciador</span></td><td>+ exporta e imprime.</td></tr>
+      <tr><td><span class="aj-nivel n3">Editor básico</span></td><td>+ edita dados e traçado e cadastra registros, mas tudo vira <b>proposta</b> que o editor pleno aprova. Não exclui. Na Jurisdição também <b>propõe trâmites</b>.</td></tr>
+      <tr><td><span class="aj-nivel n4">Editor pleno</span></td><td>+ grava direto, exclui, tramita, registra notas e decide as propostas em <b>Aprovações</b>.</td></tr>
+      <tr><td><span class="aj-nivel n5">Administrador</span></td><td>Tudo, em todas as áreas; gerencia usuários e pode voltar versões no histórico.</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li><b>Sem a área</b>: a origem some da página inicial e do mapa (cartões, botões, legenda).</li>
+    <li><b>Mapa geral</b>: para exportar, é preciso ser gerenciador em todas as origens que você vê.</li>
+    <li><b>Mapa rodoviário</b>: basta ser gerenciador em uma área.</li>
+  </ul>
+  <div class="aj-nota">Botões que o seu nível não permite simplesmente <b>não aparecem</b> (ex.: Exportar, Revisar e salvar, Aprovações). Se precisar, peça ao administrador.</div>
+</article>
+
+<article id="acesso-barra" data-cat="Primeiros passos" data-titulo="Barra superior" data-termos="topo atualizar site recarregar home ajuda usuários sair cache versão" data-rel="problemas">
+  <h1>Barra superior</h1>
+  <table>
+    <thead><tr><th>Botão</th><th>Função</th></tr></thead>
+    <tbody>
+      <tr><td><b>Seu nome</b></td><td>Mostra quem está conectado; passe o mouse para ver suas áreas e níveis.</td></tr>
+      <tr><td><b>Usuários</b></td><td>Só para administradores: abre <a href="#admin-usuarios">Usuários e permissões</a>.</td></tr>
+      <tr><td><b>Sair</b></td><td>Encerra a sessão.</td></tr>
+      <tr><td><b>⟳ Atualizar site</b></td><td>Busca a versão mais recente do site e dos dados, ignorando o cache do navegador. Use quando algo novo não aparecer.</td></tr>
+      <tr><td><b>⌂</b></td><td>Volta à página inicial (é por ali que se troca de origem).</td></tr>
+      <tr><td><b>?</b></td><td>Abre esta Central de Ajuda, já no assunto da tela em que você está.</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<!-- ================================================================ MAPA -->
+<article id="mapa-interface" data-cat="Mapa" data-titulo="Conhecendo a tela do mapa" data-termos="interface tela painel esquerdo direito inferior recolher legenda detalhes da seleção mapa geral rodoviário" data-rel="mapa-filtros mapa-consulta">
+  <h1>Conhecendo a tela do mapa</h1>
+  <div class="aj-esquema" aria-hidden="true">
+    <div class="e-topo">Barra superior</div>
+    <div class="e-esq">Menu esquerdo<small>origem, filtros, camadas, anotações, impressão, exportação</small></div>
+    <div class="e-mapa">Mapa<small>zoom, régua, clique para consultar</small></div>
+    <div class="e-dir">Legenda</div>
+    <div class="e-baixo">Detalhes da seleção</div>
+  </div>
+  <ul>
+    <li><b>Menu esquerdo</b>: cada grupo (ORIGEM, Filtros, Camadas de referência, Anotações, Impressão / PDF, Exportação) abre e fecha ao clicar no título.</li>
+    <li><b>Legenda (direita)</b>: muda conforme o que está visível. Veja <a href="#mapa-legenda">Legenda</a>.</li>
+    <li><b>Detalhes da seleção (embaixo)</b>: clique no título para abrir ou fechar; arraste a borda de cima para mudar a altura.</li>
+    <li>Os botões <b>«</b> e <b>»</b> recolhem os painéis laterais para ganhar espaço.</li>
+  </ul>
+  <h2>Formas de abrir o mapa</h2>
+  <table>
+    <thead><tr><th>Entrada</th><th>O que mostra</th></tr></thead>
+    <tbody>
+      <tr><td>Uma origem (cartão da página inicial)</td><td>Só as obras daquela origem, com a <a href="#obras-tabela">tabela de obras</a> disponível.</td></tr>
+      <tr><td>Mapa geral</td><td>Todas as origens liberadas para você.</td></tr>
+      <tr><td>Mapa rodoviário</td><td>Só a malha e as camadas de base (pedágios começam desligados).</td></tr>
+      <tr><td>Jurisdição</td><td>Os trechos de alteração de jurisdição, sem obras.</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article id="mapa-origens" data-cat="Mapa" data-titulo="Origens" data-termos="origem FUNDEINFRA DOR DMA DPJ DPL TARE DOC DSV GME GMK GMM GMP ligar desligar tudo limpar" data-rel="mapa-filtros glossario">
+  <h1>Origens</h1>
+  <p>A <b>origem</b> é a área responsável pelo empreendimento: FUNDEINFRA, DOR, DMA, DPJ, DPL, TARE, DOC, DSV, GME, GMK, GMM, GMP. No grupo <b>ORIGEM</b> do menu esquerdo, cada botão liga ou desliga as obras daquela origem; botão verde = ligado.</p>
+  <p>A origem controla também a legenda, a exportação, os rótulos e a impressão.</p>
+  <h2>Ligar Tudo / Limpar e Desligar Tudo</h2>
+  <ul>
+    <li><b>Ligar Tudo / Limpar</b>: limpa todos os filtros e volta ao estado em que o mapa foi aberto (só a origem escolhida; no Mapa geral, todas as suas).</li>
+    <li><b>Desligar Tudo</b>: apaga temporariamente obras e camadas, para começar uma leitura do zero.</li>
+  </ul>
+  <div class="aj-nota aj-dica">Para trocar de origem, volte à página inicial (⌂) e escolha outro cartão.</div>
+</article>
+
+<article id="mapa-filtros" data-cat="Mapa" data-titulo="Filtros" data-termos="filtrar pesquisa busca intervenção proposta rodovia SRE situação jurisdição ferrovia localidade município área de influência pedágio região manutenção planejamento área de estudo unidades de saúde auto zoom" data-rel="mapa-origens mapa-camadas">
+  <h1>Filtros</h1>
+  <p>No grupo <b>Filtros</b> do menu esquerdo. Os filtros são <b>encadeados</b>: ao escolher um, os outros passam a mostrar só as opções compatíveis.</p>
+  <table>
+    <thead><tr><th>Filtro</th><th>Para que serve</th></tr></thead>
+    <tbody>
+      <tr><td><b>Auto zoom</b></td><td>Liga/desliga a aproximação automática do mapa ao escolher um filtro.</td></tr>
+      <tr><td><b>Intervenção</b></td><td>Tipo de obra ou serviço (a lista depende das origens ligadas).</td></tr>
+      <tr><td><b>Proposta FUNDEINFRA</b></td><td>Localiza as obras de uma proposta; o mapa aproxima o trecho.</td></tr>
+      <tr><td><b>Rodovia</b></td><td>Sigla da rodovia (ex.: GO-020). Também é usada em <a href="#ferramentas-km">Localizar km</a>.</td></tr>
+      <tr><td><b>SRE</b></td><td>Segmento rodoviário da rodovia escolhida.</td></tr>
+      <tr><td><b>SRE – Situação</b> / <b>SRE – Jurisdição</b></td><td>Marque quais situações (pavimentada, leito natural…) e jurisdições da malha mostrar. <b>Marcar todos</b> volta tudo.</td></tr>
+      <tr><td><b>Ferrovia</b></td><td>Escolhe uma ferrovia.</td></tr>
+      <tr><td><b>Localidade</b> / <b>Município</b></td><td>Digite parte do nome e escolha uma sugestão. O município fica destacado e o entorno recebe uma máscara.</td></tr>
+      <tr><td><b>Área de Influência</b></td><td>Faixa ao redor de rodovias e ferrovias.</td></tr>
+      <tr><td><b>Pedágios – Tipo / Contrato</b></td><td>Praça física ou Free Flow; contrato ativo ou desativado.</td></tr>
+      <tr><td><b>Regiões de Manutenção / de Planejamento</b></td><td>Marque uma ou mais regiões; <b>Limpar seleção</b> desfaz.</td></tr>
+      <tr><td><b>Área de Estudo</b></td><td>Recorte por área de estudo.</td></tr>
+      <tr><td><b>Unidades de Saúde</b></td><td>Unidades e seu raio de 80 km (só para quem tem a área).</td></tr>
+    </tbody>
+  </table>
+  <h2>Roteiro sugerido</h2>
+  <ol>
+    <li>Ligue só as origens que interessam.</li>
+    <li>Escolha a <b>Intervenção</b>, se quiser um tipo de obra.</li>
+    <li>Refine por <b>Rodovia</b> → <b>SRE</b>, ou por <b>Município</b>/<b>Região</b>.</li>
+    <li>Clique numa obra para <a href="#mapa-consulta">consultar</a>.</li>
+  </ol>
+  <div class="aj-nota">Se a pesquisa ficou restrita demais, use <b>Ligar Tudo / Limpar</b>.</div>
+</article>
+
+<article id="mapa-camadas" data-cat="Mapa" data-titulo="Camadas de referência" data-termos="camadas base malha estadual federal municípios localidades aeródromos áreas ambientais urbanas ferrovias pedágios regiões jurisdição referência" data-rel="mapa-legenda mapa-filtros">
+  <h1>Camadas de referência</h1>
+  <p>No grupo <b>CAMADAS DE REFERÊNCIA</b>, cada botão liga ou desliga uma camada de apoio. Elas não alteram as obras, só ajudam a interpretar o mapa.</p>
+  <div class="aj-grade">
+    <div><b>Malha Estadual</b><span>Rodovias estaduais e segmentos SRE.</span></div>
+    <div><b>Malha Federal</b><span>Rodovias federais (SNV).</span></div>
+    <div><b>Municípios</b><span>Limites municipais.</span></div>
+    <div><b>Localidades</b><span>Cidades, distritos e povoados.</span></div>
+    <div><b>Aeródromos</b><span>Aeródromos e aeroportos, com obras vinculadas.</span></div>
+    <div><b>Regiões de Manutenção / Planejamento</b><span>Recortes regionais com legenda própria.</span></div>
+    <div><b>Áreas ambientais / urbanas</b><span>Unidades de conservação e manchas urbanas.</span></div>
+    <div><b>Área de Estudo / Influência</b><span>Áreas de análise.</span></div>
+    <div><b>Ferrovias</b> e <b>Pedágios</b><span>Infraestrutura complementar.</span></div>
+    <div><b>Unidades de Saúde</b><span>Com raio de 80 km.</span></div>
+    <div><b>Jurisdição</b><span>Trechos de alteração de jurisdição, só para consulta (quem tem a área JURISDICAO).</span></div>
+  </div>
+</article>
+
+<article id="mapa-consulta" data-cat="Mapa" data-titulo="Consultar obras e pontos no mapa" data-termos="clicar popup detalhes da seleção consulta obra ponto linha aeródromo marcador agrupado cluster áreas que contêm o ponto" data-rel="obras-ficha mapa-interface">
+  <h1>Consultar obras e pontos no mapa</h1>
+  <p>Clique em qualquer elemento do mapa. Abre um <b>popup</b> com o que foi clicado (obra, rodovia, localidade, aeródromo, pedágio, trecho de jurisdição, unidade de saúde) e, em seguida, <b>todas as áreas que contêm aquele ponto</b>: município, regiões de manutenção e planejamento, áreas urbanas e ambientais, área de estudo/influência.</p>
+  <p>O painel <b>Detalhes da seleção</b>, embaixo, mostra a tabela completa do que foi clicado.</p>
+  <table>
+    <thead><tr><th>Você clicou em</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>Obra em linha</td><td>Popup e tabela com origem, proposta/item, intervenção, etapa e extensão.</td></tr>
+      <tr><td>Obra em ponto</td><td>Popup do primeiro registro; o painel inferior lista todos os itens daquele ponto.</td></tr>
+      <tr><td>Aeródromo</td><td>Dados do aeródromo e obras vinculadas, por origem.</td></tr>
+      <tr><td>Marcador com número</td><td>Vários pontos próximos agrupados: aproxime ou clique para abrir.</td></tr>
+      <tr><td>Trecho de jurisdição</td><td>Resumo do registro e o botão <b>Abrir detalhes</b> (abre a ficha).</td></tr>
+    </tbody>
+  </table>
+  <div class="aj-nota aj-dica">Rótulos (escudos de rodovia, nomes de localidade) não respondem ao clique: clique na linha ou no ponto.</div>
+</article>
+
+<article id="mapa-legenda" data-cat="Mapa" data-titulo="Legenda" data-termos="legenda cores símbolos painel direito" data-rel="mapa-camadas">
+  <h1>Legenda</h1>
+  <p>A legenda, à direita, é <b>dinâmica</b>: mostra só as origens, camadas e anotações que estão ligadas. Se algo sumiu da legenda, confira se a origem ou camada está ligada.</p>
+  <p>No módulo Jurisdição, a barra da direita mostra o <a href="#jurisdicao-modulo">painel de indicadores</a>; no modo de tabela dividida a legenda recolhe sozinha.</p>
+</article>
+
+<article id="mapa-linha-tempo" data-cat="Mapa" data-titulo="Linha do tempo (situação numa data)" data-termos="linha do tempo data passada histórico situação em régua voltar para hoje só leitura" data-rel="obras-linha-tempo jurisdicao-tramitacao">
+  <h1>Linha do tempo (situação numa data)</h1>
+  <p>Mostra como estavam as obras ou os processos de jurisdição <b>num dia escolhido</b>, pela data do fato.</p>
+  <ol>
+    <li>Clique em <b>Linha do tempo</b>, no rodapé do mapa (não aparece no mapa rodoviário).</li>
+    <li>Arraste a régua ou escolha a data. Os botões <b>Um mês antes</b>/<b>Um mês depois</b> avançam de mês em mês.</li>
+    <li>O mapa e as tabelas passam a mostrar a situação naquela data, com a faixa <b>“Situação em … · só leitura”</b> (que sai também na impressão).</li>
+    <li>Clique em <b>Voltar para hoje</b> para retornar.</li>
+  </ol>
+  <ul>
+    <li><b>Obras</b>: só aparecem as já cadastradas na data, com a etapa e o status do último evento até ela.</li>
+    <li><b>Jurisdição</b>: situação do último trâmite até a data (“sem informação” antes do primeiro trâmite).</li>
+  </ul>
+  <div class="aj-nota">Fora de “hoje” nada pode ser editado. O histórico começa em 08/2026 (carga inicial).</div>
+</article>
+
+<!-- ================================================================ FERRAMENTAS -->
+<article id="ferramentas-anotacoes" data-cat="Ferramentas do mapa" data-titulo="Anotações (desenhar no mapa)" data-termos="anotação desenho linha polígono retângulo círculo ponto texto cor espessura opacidade exportar importar geojson limpar legenda das anotações" data-rel="ferramentas-medicao ferramentas-impressao">
+  <h1>Anotações (desenhar no mapa)</h1>
+  <p>No grupo <b>Anotações</b> do menu esquerdo. Servem para marcar eixos, áreas e observações para análise, reunião ou impressão.</p>
+  <table>
+    <thead><tr><th>Botão</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td><b>Linha</b></td><td>Eixo, alternativa, ligação. Clique ponto a ponto; termine com duplo clique ou botão direito.</td></tr>
+      <tr><td><b>Polígono</b></td><td>Área de interesse ou perímetro.</td></tr>
+      <tr><td><b>Retângulo</b> / <b>Círculo</b></td><td>Destaque rápido de uma região (clique e arraste).</td></tr>
+      <tr><td><b>Ponto</b></td><td>Marca um local (formato e tamanho configuráveis).</td></tr>
+      <tr><td><b>Texto</b></td><td>Escreve uma observação no mapa.</td></tr>
+      <tr><td><b>Medição</b></td><td>Liga as medidas nos desenhos. Veja <a href="#ferramentas-medicao">Medição</a>.</td></tr>
+      <tr><td><b>Limpar</b></td><td>Apaga todas as anotações.</td></tr>
+      <tr><td><b>Exportar</b> / <b>Importar</b></td><td>Salva as anotações em GeoJSON ou carrega um arquivo salvo antes.</td></tr>
+      <tr><td><b>Legenda das anotações</b></td><td>Mostra as anotações num bloco próprio da legenda.</td></tr>
+    </tbody>
+  </table>
+  <h2>Estilo</h2>
+  <p>Ajuste <b>cor das linhas/formas</b>, <b>espessura</b>, <b>opacidade do preenchimento</b>, <b>formato e tamanho do ponto</b>, <b>cor e tamanho do texto</b>. A linha de status, embaixo, diz qual ferramenta está ativa e como finalizar.</p>
+  <div class="aj-nota aj-atencao">As anotações ficam salvas <b>só neste navegador</b>. Para levar a outro computador, use <b>Exportar</b> e depois <b>Importar</b> lá.</div>
+</article>
+
+<article id="ferramentas-medicao" data-cat="Ferramentas do mapa" data-titulo="Medição de distâncias e áreas" data-termos="medir medição régua distância área extensão km comprimento" data-rel="ferramentas-anotacoes ferramentas-km">
+  <h1>Medição de distâncias e áreas</h1>
+  <h2>Régua rápida</h2>
+  <ol>
+    <li>Clique no controle <b>Régua</b> sobre o mapa.</li>
+    <li>Clique no ponto inicial, mova o mouse (a distância aparece em prévia) e clique no ponto final.</li>
+  </ol>
+  <h2>Medição com anotação</h2>
+  <ol>
+    <li>Em <b>Anotações</b>, escolha <b>Linha</b> ou <b>Polígono</b> (ou retângulo/círculo).</li>
+    <li>Clique em <b>Medição</b>.</li>
+    <li>Desenhe: a linha mostra a medida de cada segmento; o polígono mostra também a <b>área</b>.</li>
+  </ol>
+</article>
+
+<article id="ferramentas-km" data-cat="Ferramentas do mapa" data-titulo="Localizar km de rodovia" data-termos="km quilômetro marcar km rodovia localizar ponto coordenada latitude longitude SRE" data-rel="mapa-filtros">
+  <h1>Localizar km de rodovia</h1>
+  <ol>
+    <li>Em <b>Filtros</b>, escolha a <b>Rodovia</b>.</li>
+    <li>Em <b>Anotações → Localizar km da rodovia</b>, digite o km (ex.: <code>21,1</code>).</li>
+    <li>Clique em <b>Marcar km</b>. Aparece um marcador com rodovia, km, latitude e longitude.</li>
+  </ol>
+  <div class="aj-nota">Se o km não for encontrado, confira a rodovia escolhida e se o km está dentro da extensão da rodovia na base SRE.</div>
+</article>
+
+<article id="ferramentas-impressao" data-cat="Ferramentas do mapa" data-titulo="Imprimir ou salvar o mapa em PDF" data-termos="imprimir impressão PDF salvar mapa formato A4 A3 A0 orientação paisagem retrato margem escala título rótulos" data-rel="ferramentas-exportar acesso-niveis">
+  <h1>Imprimir ou salvar o mapa em PDF</h1>
+  <p>No grupo <b>Impressão / PDF</b> do menu esquerdo. <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <table>
+    <thead><tr><th>Campo</th><th>Uso</th></tr></thead>
+    <tbody>
+      <tr><td><b>Formato</b></td><td>A4 a A0, ou <b>Personalizado</b> (largura e altura em mm).</td></tr>
+      <tr><td><b>Orientação</b></td><td>Paisagem ou retrato.</td></tr>
+      <tr><td><b>Margem do mapa (mm)</b></td><td>Borda em volta do mapa.</td></tr>
+      <tr><td><b>Enquadramento</b></td><td><b>Ajustar tela</b> usa o que você vê; <b>Escala personalizada</b> usa a escala 1:N informada.</td></tr>
+      <tr><td><b>Título do mapa</b></td><td>Vazio = título automático.</td></tr>
+      <tr><td><b>Rótulos e localidades</b></td><td>Densidade dos rótulos (automático a máximo).</td></tr>
+      <tr><td><b>Rótulos das obras</b></td><td>Mostra a identificação das obras no PDF.</td></tr>
+    </tbody>
+  </table>
+  <ol>
+    <li>Arrume filtros, zoom e camadas na tela.</li>
+    <li>Escolha formato, orientação, margem e título.</li>
+    <li>Clique em <b>Salvar mapa em PDF</b>.</li>
+    <li>No diálogo do navegador, em Destino, escolha <b>Salvar como PDF</b>.</li>
+  </ol>
+</article>
+
+<article id="ferramentas-exportar" data-cat="Ferramentas do mapa" data-titulo="Exportar a tabela filtrada (CSV)" data-termos="exportar CSV planilha excel tabela filtrada download baixar" data-rel="obras-tabela jurisdicao-exportar">
+  <h1>Exportar a tabela filtrada (CSV)</h1>
+  <p>No grupo <b>Exportação</b> do menu esquerdo, <b>Exportar tabela filtrada</b> baixa um CSV com as obras visíveis (lineares, pontuais e vinculadas a aeródromos) conforme os filtros ativos. <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <p>Para a planilha completa de uma origem, use o botão <b>Excel</b> da <a href="#obras-tabela">tabela de obras</a>. Para a Jurisdição, veja <a href="#jurisdicao-exportar">Exportar dados da Jurisdição</a>.</p>
+</article>
+
+<!-- ================================================================ OBRAS -->
+<article id="obras-tabela" data-cat="Obras" data-titulo="Tabela de obras" data-termos="tabela obras abrir tabela empreendimentos buscar código SEI colunas etapa status traçado tela cheia dividida excel" data-rel="obras-editar obras-ficha">
+  <h1>Tabela de obras</h1>
+  <p>Disponível quando o mapa está aberto em <b>uma origem</b>. No menu esquerdo, clique em <b>Abrir tabela de obras</b>.</p>
+  <ul>
+    <li><b>Tela cheia</b> ou <b>Dividida com o mapa</b>: no modo dividido, arraste a borda para mudar a largura.</li>
+    <li><b>Busca</b>: código, descrição, município, SEI…</li>
+    <li>Filtros de <b>etapa</b>, <b>status</b> e <b>com/sem traçado</b>; o ícone de funil com ✕ limpa tudo.</li>
+    <li><b>Colunas</b>: escolha quais colunas aparecem.</li>
+    <li>Clique no título da coluna para ordenar.</li>
+    <li><b>Excel</b>: baixa a planilha da origem (<span class="aj-nivel n2">Gerenciador</span>).</li>
+    <li>O ícone de alfinete na linha <b>mostra a obra no mapa</b>; o ícone de painel abre a <a href="#obras-ficha">ficha</a>.</li>
+    <li>O <b>✕</b> fecha a tabela e volta ao mapa.</li>
+  </ul>
+  <div class="aj-nota">Na tela, cada registro é chamado de <b>empreendimento</b> e tem um código permanente <code>OB26-00001</code>, que não muda nem quando a obra tramita de origem.</div>
+</article>
+
+<article id="obras-editar" data-cat="Obras" data-titulo="Editar obras e cadastrar obra nova" data-termos="editar edição duplo clique célula revisar e salvar enviar descartar pendências data do fato nova obra cadastrar conflito" data-rel="aprovacao-propostas obras-tracado">
+  <h1>Editar obras e cadastrar obra nova</h1>
+  <p><span class="aj-nivel n3">Editor básico</span> (vira proposta) ou <span class="aj-nivel n4">Editor pleno</span> (grava direto).</p>
+  <h2>Editar</h2>
+  <ol>
+    <li>Dê <b>duplo clique</b> na célula e altere o valor. Pode alterar várias células e várias obras.</li>
+    <li>As mudanças ficam <b>pendentes</b> (destacadas) e o contador aparece ao lado de <b>Revisar e salvar</b>.</li>
+    <li>Clique em <b>Revisar e salvar</b> (editor básico: <b>Revisar e enviar</b>). Confira a lista “antes → depois”.</li>
+    <li>Se a etapa ou o status mudou, informe a <b>Data do fato</b> (não pode ser futura): é ela que entra na linha do tempo.</li>
+    <li>Clique em <b>Confirmar e salvar</b> (ou <b>Enviar para aprovação</b>). Para desistir, <b>Voltar e corrigir</b> ou <b>Descartar</b>.</li>
+  </ol>
+  <p>O banco confere as regras antes de gravar: SEI com 15 dígitos, valores de lista válidos, data não futura, traçado dentro de Goiás.</p>
+  <h2>Obra nova</h2>
+  <p>Clique em <b>Nova obra</b>, preencha os dados e <b>Cadastrar</b>. O código <code>OB26-…</code> é gerado pelo banco e a ficha abre na aba <a href="#obras-tracado">Traçado</a> para você definir onde a obra fica. Do editor básico, a obra nova vai para aprovação e o código só sai quando aprovada.</p>
+  <div class="aj-nota aj-atencao"><b>Edição simultânea:</b> se outra pessoa gravou a mesma obra antes de você, sua gravação é recusada e o registro é recarregado. Refaça a alteração sobre a versão nova.</div>
+</article>
+
+<article id="obras-ficha" data-cat="Obras" data-titulo="Ficha da obra" data-termos="ficha detalhes abas dados traçado linha do tempo histórico excluir ver no mapa" data-rel="obras-tracado obras-linha-tempo obras-historico">
+  <h1>Ficha da obra</h1>
+  <p>Abre pelo ícone da linha na tabela. Tem quatro abas:</p>
+  <table>
+    <thead><tr><th>Aba</th><th>Conteúdo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Dados</b></td><td>Todos os campos da obra.</td></tr>
+      <tr><td><b>Traçado</b></td><td>Onde a obra está no mapa. Veja <a href="#obras-tracado">Traçado da obra</a>.</td></tr>
+      <tr><td><b>Linha do tempo</b></td><td>Cadastro, mudanças de etapa/status, mudanças de origem e notas. Veja <a href="#obras-linha-tempo">Notas e tramitação</a>.</td></tr>
+      <tr><td><b>Histórico</b></td><td>Cada versão gravada, com autor e data. Veja <a href="#obras-historico">Histórico</a>.</td></tr>
+    </tbody>
+  </table>
+  <p>Botões: <b>Ver no mapa</b> e <b>Excluir</b> (<span class="aj-nivel n4">Editor pleno</span>).</p>
+</article>
+
+<article id="obras-tracado" data-cat="Obras" data-titulo="Traçado da obra" data-termos="traçado vínculo segmento SRE malha selecionar no mapa shift intervalo ponto coordenada marcar no mapa tipo ponto linha área" data-rel="jurisdicao-tracado glossario">
+  <h1>Traçado da obra</h1>
+  <p>Na aba <b>Traçado</b> da ficha. O traçado diz onde a obra aparece no mapa e depende do tipo:</p>
+  <ul>
+    <li><b>Linha</b>: vincule os segmentos da malha (SRE, ferrovias ou malha complementar). Marque na lista (busque por código, km ou nome; <kbd>Shift</kbd>+clique marca um intervalo) ou use <b>Selecionar no mapa</b> e clique nos trechos. <b>Marcar todos</b> pega todos os listados.</li>
+    <li><b>Ponto</b>: <b>Marcar no mapa</b> e clique no local (ou arraste o marcador); o vínculo com uma localidade/aeródromo é opcional.</li>
+    <li><b>Área</b>: vincule municípios ou áreas da base.</li>
+  </ul>
+  <p>Sem nenhum vínculo, a obra <b>não aparece no mapa</b>. A alteração vira pendência: finalize com <b>Revisar e salvar</b>.</p>
+  <div class="aj-nota">Trecho que não é um segmento SRE <b>inteiro</b> é guardado na <a href="#jurisdicao-malha">malha complementar</a> como recorte.</div>
+</article>
+
+<article id="obras-linha-tempo" data-cat="Obras" data-titulo="Notas e tramitação de origem" data-termos="nota registrar nota tramitar origem mudar origem linha do tempo evento SEI" data-rel="mapa-linha-tempo obras-ficha">
+  <h1>Notas e tramitação de origem</h1>
+  <p>Na aba <b>Linha do tempo</b> da ficha. <span class="aj-nivel n4">Editor pleno</span>.</p>
+  <h2>Registrar nota</h2>
+  <p>Informe a data, a descrição e, se houver, o SEI. A nota entra na linha do tempo; os dados da obra não mudam.</p>
+  <h2>Tramitar para outra origem</h2>
+  <p>Escolha a origem de destino e confirme. A obra passa a pertencer à nova origem e <b>mantém o mesmo código</b>. A mudança fica registrada na linha do tempo.</p>
+</article>
+
+<article id="obras-historico" data-cat="Obras" data-titulo="Histórico e restaurar versão" data-termos="histórico versão restaurar voltar versão autor data auditoria desfazer" data-rel="jurisdicao-ficha">
+  <h1>Histórico e restaurar versão</h1>
+  <p>A aba <b>Histórico</b> mostra cada versão gravada: quem, quando, o que mudou e, se veio de proposta, “proposta de Fulano”.</p>
+  <p>O <span class="aj-nivel n5">Administrador</span> vê o link <b>voltar a esta versão</b>. A restauração também fica registrada no histórico.</p>
+</article>
+
+<!-- ================================================================ JURISDIÇÃO -->
+<article id="jurisdicao-modulo" data-cat="Jurisdição" data-titulo="Módulo Jurisdição" data-termos="jurisdição estadualização federalização municipalização indicadores painel processos extensões finalizados leis enquadrar trechos abrir tabela" data-rel="jurisdicao-tabela jurisdicao-caderno">
+  <h1>Módulo Jurisdição</h1>
+  <p>Acompanha os processos de <b>alteração de jurisdição</b> de rodovias: estadualização, federalização e municipalização. Abre pelo cartão <b>Jurisdição</b> da página inicial. Exige a área JURISDICAO.</p>
+  <ul>
+    <li><b>Mapa</b>: os trechos nas cores do tipo. Clique num trecho → <b>Abrir detalhes</b>.</li>
+    <li><b>Menu esquerdo → JURISDIÇÃO</b>: <b>Abrir tabela</b>, busca (nº, rodovia, município, processo), tipo, situação, contador e <b>Enquadrar trechos</b> (aproxima nos trechos filtrados).</li>
+    <li><b>Painel da Jurisdição</b> (direita): processos totais, extensões por tipo, finalizados, situação atual, leis estaduais e municipais aprovadas. <b>Clicar num tipo ou situação filtra</b>.</li>
+  </ul>
+  <div class="aj-nota">Os filtros são um só para mapa, painel e tabela: filtrar em um lugar filtra nos três.</div>
+</article>
+
+<article id="jurisdicao-tabela" data-cat="Jurisdição" data-titulo="Tabela da Jurisdição" data-termos="tabela jurisdição tela cheia dividida buscar tipo situação traçado colunas novo registro editar duplo clique revisar salvar dados do banco recarregar" data-rel="jurisdicao-ficha jurisdicao-exportar">
+  <h1>Tabela da Jurisdição</h1>
+  <p>Abra pelo menu esquerdo <b>JURISDIÇÃO → Abrir tabela</b>.</p>
+  <h2>Barra de cima</h2>
+  <ul>
+    <li><b>Tela cheia</b> (com o painel de indicadores) ou <b>Dividida com o mapa</b> (arraste a alça para ajustar a largura; fica lembrada).</li>
+    <li><b>Revisar e salvar</b> (editor básico: <b>Revisar e enviar</b>) e <b>Descartar</b>: gravam ou desfazem as alterações pendentes.</li>
+    <li><b>Aprovações</b> / <b>Minhas propostas</b>: veja <a href="#aprovacao-propostas">Propostas e aprovações</a>.</li>
+    <li><b>Dados do banco</b>: clique para recarregar os dados.</li>
+    <li><b>Exportar</b> (azul): veja <a href="#jurisdicao-exportar">Exportar</a> e <a href="#jurisdicao-caderno">Caderno</a>.</li>
+    <li><b>✕</b>: fecha a tabela e volta ao mapa.</li>
+  </ul>
+  <h2>Filtros e ações</h2>
+  <ul>
+    <li>Busca por município, rodovia, processo ou trecho; filtros de tipo, situação e <b>com/sem traçado</b>.</li>
+    <li><b>Malha complementar</b>, <b>Colunas</b> e <b>Novo registro</b>.</li>
+    <li>Na linha: ícone de painel abre a <a href="#jurisdicao-ficha">ficha</a>; o alfinete mostra o trecho no mapa.</li>
+    <li><b>Duplo clique</b> numa célula edita (mesmo fluxo de <a href="#obras-editar">Editar obras</a>).</li>
+    <li>Passe o mouse sobre um texto cortado para ler inteiro.</li>
+  </ul>
+</article>
+
+<article id="jurisdicao-ficha" data-cat="Jurisdição" data-titulo="Ficha do registro de Jurisdição" data-termos="ficha detalhes dados tramitação traçado histórico excluir lixeira prancha ver no mapa voltar versão" data-rel="jurisdicao-tramitacao jurisdicao-tracado">
+  <h1>Ficha do registro de Jurisdição</h1>
+  <p>Abre pelo ícone da linha ou pelo <b>Abrir detalhes</b> do popup do mapa. Abas:</p>
+  <table>
+    <thead><tr><th>Aba</th><th>Conteúdo</th></tr></thead>
+    <tbody>
+      <tr><td><b>Dados</b></td><td>Campos do registro.</td></tr>
+      <tr><td><b>Tramitação</b></td><td>Trâmites do processo e registro de novo trâmite. Veja <a href="#jurisdicao-tramitacao">Trâmites</a>.</td></tr>
+      <tr><td><b>Traçado</b></td><td>Linha do trecho no mapa. Veja <a href="#jurisdicao-tracado">Traçado</a>.</td></tr>
+      <tr><td><b>Histórico</b></td><td>Versões gravadas; o administrador pode voltar uma versão.</td></tr>
+    </tbody>
+  </table>
+  <p>Botões: <b>Ver no mapa</b>, <b>Prancha</b> (PDF A4 do registro, <span class="aj-nivel n2">Gerenciador</span>) e <b>Excluir</b> (vai para a lixeira; só o administrador restaura; <span class="aj-nivel n4">Editor pleno</span>).</p>
+</article>
+
+<article id="jurisdicao-tramitacao" data-cat="Jurisdição" data-titulo="Registrar trâmite" data-termos="trâmite tramitação registrar propor nova situação data processo SEI ato replicar outros trechos mesmo processo remover" data-rel="mapa-linha-tempo aprovacao-propostas">
+  <h1>Registrar trâmite</h1>
+  <p>Na aba <b>Tramitação</b> da ficha.</p>
+  <ol>
+    <li>Informe a <b>Data do trâmite</b>.</li>
+    <li>Em <b>Nova situação</b>, escolha a situação nova ou deixe “(manter)”.</li>
+    <li>Descreva o trâmite (ex.: “Encaminhado à Procuradoria para parecer.”), o <b>Processo SEI</b> e, se houver, o <b>nº do ato</b>.</li>
+    <li>Se o processo tem <b>outros trechos</b>, eles aparecem marcados em “Aplicar também aos outros trechos do processo”: desmarque os que não devem receber o trâmite.</li>
+    <li>Clique em <b>Registrar trâmite</b>.</li>
+  </ol>
+  <p>O <span class="aj-nivel n3">Editor básico</span> vê <b>Propor trâmite</b>: o trâmite só entra na linha do tempo e muda a situação depois de aprovado. Remover trâmite é do <span class="aj-nivel n4">Editor pleno</span>.</p>
+</article>
+
+<article id="jurisdicao-tracado" data-cat="Jurisdição" data-titulo="Traçado do trecho de Jurisdição" data-termos="traçado escolher na malha desenhar editar importar geojson nova parte ímã snap UTM latitude longitude fora da malha extra_base" data-rel="jurisdicao-malha obras-tracado">
+  <h1>Traçado do trecho de Jurisdição</h1>
+  <p>Na aba <b>Traçado</b> da ficha. Três formas de definir a linha:</p>
+  <ul>
+    <li><b>Escolher na malha</b>: segmentos inteiros da malha SRE ou complementar, pela lista (<kbd>Shift</kbd>+clique = intervalo) ou clicando no mapa.</li>
+    <li><b>Desenhar / editar no mapa</b>: <b>Nova parte</b> começa uma linha; os vértices grudam nas rodovias (ímã). <b>Concluir edição</b> ao terminar.</li>
+    <li><b>Importar GeoJSON</b>: arquivo com linhas em <b>latitude/longitude</b> (EPSG:4674 ou 4326). Coordenadas UTM são recusadas.</li>
+  </ul>
+  <p>A alteração vira pendência: finalize com <b>Revisar e salvar/enviar</b>. Ao salvar, o que ficar <b>fora da malha</b> é oferecido para entrar na <a href="#jurisdicao-malha">malha complementar</a>: preencha rodovia e descrição de cada trecho (ou desmarque).</p>
+</article>
+
+<article id="jurisdicao-malha" data-cat="Jurisdição" data-titulo="Malha complementar (extra_base)" data-termos="malha complementar extra_base TRE trecho recorte cópias arquivadas excluir trecho fora da SRE" data-rel="jurisdicao-tracado glossario">
+  <h1>Malha complementar (extra_base)</h1>
+  <p>Trechos de rodovia que <b>não são segmentos SRE oficiais inteiros</b>: vias fora da SRE ou recortes de parte de um segmento. Recebem código <code>TRE0043</code>…</p>
+  <p>O botão <b>Malha complementar</b> da tabela da Jurisdição (<span class="aj-nivel n4">Editor pleno</span>) lista os trechos e permite ver no mapa e excluir. Cada alteração ou exclusão guarda uma <b>cópia arquivada</b>, visível só a administradores.</p>
+</article>
+
+<article id="jurisdicao-exportar" data-cat="Jurisdição" data-titulo="Exportar dados da Jurisdição" data-termos="exportar excel xlsx csv geojson qgis filtrados todos planilha download" data-rel="jurisdicao-caderno acesso-niveis">
+  <h1>Exportar dados da Jurisdição</h1>
+  <p>Na tabela, botão azul <b>Exportar</b> (canto superior direito). <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <table>
+    <thead><tr><th>Opção</th><th>Gera</th></tr></thead>
+    <tbody>
+      <tr><td><b>Excel (.xlsx) — todos</b></td><td>Planilha com todos os registros.</td></tr>
+      <tr><td><b>Excel (.xlsx) — filtrados</b></td><td>Só os registros visíveis com os filtros atuais.</td></tr>
+      <tr><td><b>CSV</b></td><td>Texto separado por ponto e vírgula.</td></tr>
+      <tr><td><b>GeoJSON com atributos (QGIS)</b></td><td>Trechos com todos os campos, para abrir em SIG.</td></tr>
+      <tr><td><b>Caderno completo (PDF)</b> / <b>Prancha A4 do registro (PDF)</b></td><td>Veja <a href="#jurisdicao-caderno">Caderno e prancha</a>.</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article id="jurisdicao-caderno" data-cat="Jurisdição" data-titulo="Caderno e prancha em PDF" data-termos="caderno prancha PDF salvar imprimir A4 capa índice tabela pranchas ano gerar caderno salvar como PDF margens nenhuma" data-rel="jurisdicao-exportar problemas">
+  <h1>Caderno e prancha em PDF</h1>
+  <p>O caderno <b>não fica gravado no sistema</b>: o site monta as páginas e você salva o PDF pelo diálogo de impressão do navegador. <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <h2>Caderno completo</h2>
+  <ol>
+    <li>Abra a <a href="#jurisdicao-tabela">tabela da Jurisdição</a> e clique em <b>Exportar → Caderno completo (PDF)</b>. Abre uma aba nova.</li>
+    <li>Marque os grupos (<b>Estadualização</b>, <b>Federalização</b>, <b>Municipalização</b>), as seções (<b>Capa</b>, <b>Índice</b>, <b>Tabela</b>, <b>Pranchas</b>) e o <b>Ano</b>.</li>
+    <li>Clique em <b>Gerar caderno</b> e aguarde: as imagens de satélite podem levar até 30 segundos.</li>
+    <li>Clique em <b>Imprimir / Salvar PDF</b>.</li>
+    <li>No diálogo: Destino <b>Salvar como PDF</b> · Margens <b>Nenhuma</b> · <b>Salvar</b>.</li>
+  </ol>
+  <h2>Prancha de um registro</h2>
+  <p>Na ficha, botão <b>Prancha</b> (ou <b>Exportar → Prancha A4 do registro</b>). Na página que abre, escolha o registro na lista, se quiser outro, e siga os passos 4 e 5.</p>
+  <div class="aj-nota aj-dica">Os botões <b>Prancha</b> e <b>Caderno completo</b>, no alto da página do caderno, alternam entre os dois modos. <b>← Voltar à tabela</b> retorna.</div>
+</article>
+
+<!-- ================================================================ APROVAÇÃO -->
+<article id="aprovacao-propostas" data-cat="Aprovação" data-titulo="Propostas e aprovações" data-termos="proposta aprovação aprovar recusar motivo minhas propostas cancelar pendente editor básico editor pleno conflito" data-rel="acesso-niveis obras-editar">
+  <h1>Propostas e aprovações</h1>
+  <h2>Editor básico: enviar proposta</h2>
+  <p>Suas edições, obras/registros novos e trâmites viram <b>propostas</b>: use <b>Revisar e enviar → Enviar para aprovação</b>. Só vale depois que o editor pleno aprovar. Há <b>uma proposta pendente por registro</b>; você pode refazê-la ou cancelá-la.</p>
+  <p>Em <b>Minhas propostas</b> você acompanha o que está aguardando, o que foi aprovado e o que foi recusado (com o motivo).</p>
+  <h2>Editor pleno: decidir</h2>
+  <ol>
+    <li>Clique em <b>Aprovações</b> (o número indica quantas aguardam).</li>
+    <li>Confira o “antes → depois” de cada proposta.</li>
+    <li><b>Aprovar</b>, ou <b>Recusar</b> escrevendo o motivo (o autor vai ver).</li>
+  </ol>
+  <div class="aj-nota aj-atencao">Se o registro mudou depois da proposta, aparece um aviso de <b>conflito</b> antes de aprovar. No histórico, o pleno fica como autor, com a nota “proposta de Fulano”.</div>
+</article>
+
+<!-- ================================================================ ADMINISTRAÇÃO -->
+<article id="admin-usuarios" data-cat="Administração" data-titulo="Usuários e permissões" data-termos="usuários administrador master criar conta novo usuário senha provisória redefinir senha ativar desativar excluir conta níveis por área aplicar a todas as origens registro de alterações" data-rel="acesso-niveis acesso-entrar">
+  <h1>Usuários e permissões</h1>
+  <p>Link <b>Usuários</b> na barra superior. <span class="aj-nivel n5">Administrador</span>.</p>
+  <h2>Criar um usuário</h2>
+  <ol>
+    <li>Clique em <b>Novo usuário</b>, informe nome e e-mail e <b>Criar conta</b>.</li>
+    <li>Aparece a <b>senha provisória</b> uma única vez: use <b>Copiar e-mail e senha</b> e repasse por canal seguro.</li>
+    <li>A conta nasce <b>inativa</b>: ative-a e escolha os <b>Níveis por área</b> (<b>Aplicar a todas as origens</b> agiliza).</li>
+    <li><b>Salvar alterações</b>. No primeiro acesso a pessoa cria a própria senha.</li>
+  </ol>
+  <h2>Outras ações</h2>
+  <ul>
+    <li><b>Redefinir senha</b>: gera nova senha provisória.</li>
+    <li><b>Desativar</b>: bloqueia o acesso sem apagar nada (preferível para quem já tem registros).</li>
+    <li><b>Excluir conta</b>: só o administrador master.</li>
+    <li><b>Registro de alterações</b>: quem mudou o quê, quando, antes → depois.</li>
+  </ul>
+  <div class="aj-nota">O <b>administrador master</b> (um só) é o único que cria, promove, rebaixa, altera ou exclui administradores. Administradores comuns gerenciam só usuários comuns.</div>
+</article>
+
+<!-- ================================================================ REFERÊNCIA -->
+<article id="glossario" data-cat="Referência" data-titulo="Glossário" data-termos="glossário termos significado sigla definição" data-rel="mapa-origens">
+  <h1>Glossário</h1>
+  <dl class="aj-glossario">
+    <dt id="g-empreendimento">Empreendimento</dt><dd>Cada obra, projeto ou ação acompanhada no sistema.</dd>
+    <dt id="g-codigo">Código OB / GR</dt><dd><code>OB26-00001</code> identifica a obra e <code>GR26-0001</code> o grupo de obras: ano do cadastro + sequência. Nunca é reaproveitado nem muda quando a obra tramita de origem.</dd>
+    <dt id="g-origem">Origem</dt><dd>Área responsável pelo empreendimento: FUNDEINFRA, DOR (Obras Rodoviárias), DMA (Manutenção), DPJ (Projetos), DPL (Planejamento), DOC (Obras Civis), DSV (Segurança Viária), TARE, GME, GMK, GMM e GMP.</dd>
+    <dt id="g-area">Área</dt><dd>Unidade de permissão: cada origem, Unidades de Saúde e JURISDICAO.</dd>
+    <dt id="g-sre">SRE</dt><dd>Sistema Rodoviário Estadual: a malha estadual, dividida em segmentos com código próprio (ex.: <code>309EGO0185</code>).</dd>
+    <dt id="g-snv">SNV</dt><dd>Sistema Nacional de Viação: a malha federal.</dd>
+    <dt id="g-malha">Malha complementar (extra_base)</dt><dd>Trechos que não são segmentos SRE inteiros (código <code>TRE…</code>).</dd>
+    <dt id="g-recorte">Recorte</dt><dd>Parte de um segmento SRE usada por uma obra, guardada na malha complementar.</dd>
+    <dt id="g-tracado">Traçado</dt><dd>Onde o registro aparece no mapa: vínculos com a base e/ou linha desenhada.</dd>
+    <dt id="g-sei">SEI</dt><dd>Número do processo no Sistema Eletrônico de Informações (15 dígitos).</dd>
+    <dt id="g-etapa">Etapa / Status</dt><dd>Fase do empreendimento (planejamento, projeto, licitação, obra…) e sua condição atual.</dd>
+    <dt id="g-fase">Fase</dt><dd>Fase do trabalho de projeto: Projeto, Anteprojeto ou Fase Preparatória.</dd>
+    <dt id="g-data-fato">Data do fato</dt><dd>Data em que a mudança de etapa/status aconteceu de verdade; é a usada pela linha do tempo.</dd>
+    <dt id="g-tramite">Trâmite</dt><dd>Evento de um processo de jurisdição (encaminhamento, parecer, lei…), que pode mudar a situação.</dd>
+    <dt id="g-tramitar">Tramitar origem</dt><dd>Passar uma obra para outra origem, mantendo o código.</dd>
+    <dt id="g-estadualizacao">Estadualização / Federalização / Municipalização</dt><dd>Tipos de alteração de jurisdição: a rodovia passa a ser do Estado, da União ou do município.</dd>
+    <dt id="g-proposta">Proposta</dt><dd>Alteração do editor básico que aguarda aprovação do editor pleno.</dd>
+    <dt id="g-pendencia">Pendência</dt><dd>Alteração feita na tabela e ainda não gravada (falta “Revisar e salvar”).</dd>
+    <dt id="g-prancha">Prancha / Caderno</dt><dd>PDF A4 de um registro de jurisdição / conjunto de capa, índice, tabela e pranchas.</dd>
+    <dt id="g-area-influencia">Área de influência / Área de estudo</dt><dd>Faixa ao redor de rodovias e ferrovias / recorte territorial de análise.</dd>
+    <dt id="g-geojson">GeoJSON</dt><dd>Formato de arquivo geográfico aberto, lido por QGIS e outros SIG.</dd>
+  </dl>
+</article>
+
+<article id="atalhos" data-cat="Referência" data-titulo="Atalhos e dicas de uso" data-termos="atalho teclado shift duplo clique ctrl F5 esc tecla" data-rel="problemas">
+  <h1>Atalhos e dicas de uso</h1>
+  <table>
+    <thead><tr><th>Onde</th><th>Atalho</th><th>Faz</th></tr></thead>
+    <tbody>
+      <tr><td>Ajuda</td><td><kbd>/</kbd> ou <kbd>Ctrl</kbd>+<kbd>K</kbd></td><td>Vai para a pesquisa.</td></tr>
+      <tr><td>Ajuda</td><td><kbd>↑</kbd> <kbd>↓</kbd> <kbd>Enter</kbd> / <kbd>Esc</kbd></td><td>Navega nos resultados / limpa a pesquisa.</td></tr>
+      <tr><td>Tabelas</td><td>Duplo clique</td><td>Edita a célula.</td></tr>
+      <tr><td>Listas de traçado</td><td><kbd>Shift</kbd>+clique</td><td>Marca um intervalo de segmentos.</td></tr>
+      <tr><td>Anotações</td><td>Duplo clique / botão direito</td><td>Termina linha ou polígono.</td></tr>
+      <tr><td>Qualquer tela</td><td><kbd>Ctrl</kbd>+<kbd>F5</kbd></td><td>Recarrega ignorando o cache (ou use ⟳ na barra).</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article id="problemas" data-cat="Referência" data-titulo="Solução de problemas" data-termos="problema erro não aparece sumiu botão não carrega lento exportar PDF conflito anotação senha conta inativa cache atualizar" data-rel="acesso-barra acesso-niveis">
+  <h1>Solução de problemas</h1>
+  <table>
+    <thead><tr><th>Situação</th><th>O que fazer</th></tr></thead>
+    <tbody>
+      <tr><td>Um botão ou função nova não aparece.</td><td>Clique em <b>⟳ Atualizar site</b> na barra superior (ou <kbd>Ctrl</kbd>+<kbd>F5</kbd>). Se continuar, confira seu nível em <a href="#acesso-niveis">Níveis de acesso</a>.</td></tr>
+      <tr><td>Não aparece Exportar, Prancha ou Salvar mapa em PDF.</td><td>Seu nível nessa área é <b>Visualizador</b>. Peça <b>Gerenciador</b> ao administrador.</td></tr>
+      <tr><td>Não consigo editar / não vejo Revisar e salvar.</td><td>É preciso ser <b>Editor básico</b> ou acima. Na linha do tempo (data passada) nada é editável: clique em <b>Voltar para hoje</b>.</td></tr>
+      <tr><td>“Sua conta ainda não foi liberada”.</td><td>A conta está inativa: fale com o administrador.</td></tr>
+      <tr><td>A obra esperada não aparece no mapa.</td><td>Confira origem, filtros e se a obra tem <b>traçado</b> (filtro “Sem traçado” na tabela).</td></tr>
+      <tr><td>A gravação foi recusada com “CONFLITO”.</td><td>Outra pessoa gravou antes. O registro foi recarregado: refaça a alteração.</td></tr>
+      <tr><td>O PDF saiu com margem branca ou cortado.</td><td>No diálogo de impressão use <b>Salvar como PDF</b> e Margens <b>Nenhuma</b>; no mapa, ajuste o zoom e use “Ajustar tela”.</td></tr>
+      <tr><td>O caderno demora.</td><td>As imagens de satélite levam até 30 s; espere o botão <b>Imprimir / Salvar PDF</b> ficar azul.</td></tr>
+      <tr><td>As anotações sumiram.</td><td>Elas ficam no navegador em que foram feitas. Importe o GeoJSON exportado.</td></tr>
+      <tr><td>GeoJSON recusado no traçado.</td><td>Exporte em latitude/longitude (EPSG:4674 ou 4326), não UTM; confira se lat/long não estão trocadas.</td></tr>
+    </tbody>
+  </table>
+</article>
+
+    </div>
+
+    <footer class="aj-rodape-artigo" id="ajRodapeArtigo"></footer>
+  </main>
+
+  <aside class="aj-nesta" id="ajNesta" aria-label="Nesta página"></aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/acesso.js?v=adm1-20261022"></script>
+<script src="js/ajuda.js?v=ajd2-20261023"></script>
+</body>
+</html>

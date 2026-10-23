@@ -1,1 +1,20 @@
 backup/
+
+# Obras ficam no banco (schema siplaweb, so com login); nunca publicar copias aqui.
+data/DADOS.json
+data/OBRAS_LINKS.json
+
+# Rascunhos de layout (nao publicar)
+propostas/
+
+# Ficam so no computador (nao sao necessarios ao site; o repositorio e publico) - 23/10/2026
+supabase/
+tools/
+index_antigo.html
+css/inicio.css
+js/inicio.js
+manual_assets/
+css/manual.css
+data/placapedagio.svg
+data/pracas_pedagio_goias.geojson
+LOG_ALTERACOES.txt

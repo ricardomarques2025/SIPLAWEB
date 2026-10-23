@@ -309,7 +309,7 @@
       return '<div class="bloco-servico">' +
         '<div class="titulo-servico">' + escapeHtml(titulo) + '</div>' +
         '<table class="tabela-servico">' +
-          '<tr><th>IDCOD</th>' + (rotuloIdentificador ? '<th>' + escapeHtml(rotuloIdentificador) + '</th>' : '') + '<th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Intervenção</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th>' + extras + '</tr>' +
+          '<tr><th>Código</th>' + (rotuloIdentificador ? '<th>' + escapeHtml(rotuloIdentificador) + '</th>' : '') + '<th>Rodovia</th><th>Trecho</th><th>Ext. km</th><th>Intervenção</th><th>Etapa</th><th>Status</th><th>SEI</th><th>Conclusão</th>' + extras + '</tr>' +
           linhas.join('') +
         '</table>' +
       '</div>';
@@ -602,6 +602,7 @@
   }
 
   function imprimirMapaAtual() {
+    if (window.Acesso && !Acesso.podeExportarPagina()) return;   // visualizador nao imprime (js/acesso.js)
     garantirElementosImpressao();
 
     estadoMapaAntesImpressao = {

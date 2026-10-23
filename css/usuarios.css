@@ -1,0 +1,77 @@
+/* Usuarios e permissoes (usuarios.html). Cabecalho e cores vem de css/inicio_painel.css. */
+.topo .voltar { font-size: 13px; font-weight: 600; color: var(--verde-escuro); }
+.restrito { padding: 40px clamp(16px, 4vw, 48px); color: var(--suave); }
+
+.adm { padding: 18px clamp(16px, 3vw, 40px) 40px; }
+.adm-abas { display: flex; gap: 6px; margin-bottom: 14px; }
+.adm-abas button { font: inherit; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--linha); background: #fff; color: var(--texto); cursor: pointer; }
+.adm-abas button.ativo { background: var(--verde); border-color: var(--verde); color: #fff; }
+
+.adm-usuarios { display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 820px) { .adm-usuarios { grid-template-columns: 1fr; } }
+
+.lista, .ficha, .adm-registro { background: #fff; border: 1px solid var(--linha); border-radius: 14px; padding: 14px; }
+.lista-topo { display: flex; gap: 6px; margin-bottom: 8px; }
+.lista-topo input, .lista-topo select, .ficha input:not([type=checkbox]), .ficha select, .dlg input {
+  font: inherit; font-size: 13px; height: 34px; padding: 0 10px; border: 1px solid var(--linha); border-radius: 8px; background: #fff; color: var(--texto); min-width: 0; }
+.lista-topo input { flex: 1; }
+#listaUsuarios { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; max-height: 70vh; overflow-y: auto; }
+.item { text-align: left; font: inherit; font-size: 13px; padding: 9px 10px; border: 1px solid transparent; border-radius: 10px; background: none; cursor: pointer; color: var(--texto); }
+.item:hover { background: var(--fundo); }
+.item.ativo { border-color: #b8dcc2; background: #eef8f1; }
+.item.inativo b { color: var(--suave); }
+.item small { display: block; margin-top: 2px; color: var(--suave); font-size: 12px; }
+.selo { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 999px; font-size: 10.5px; font-weight: 700; vertical-align: 1px; }
+.selo-master { background: #0f2a1a; color: #fff; }
+.selo-admin { background: #dcfce7; color: #166534; }
+.selo-inativo { background: #f1f5f9; color: #64748b; }
+.selo-senha { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+
+.btn { font: inherit; font-size: 13px; font-weight: 600; height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--linha); background: #fff; color: var(--texto); cursor: pointer; }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn-primario { background: var(--verde); border-color: var(--verde); color: #fff; }
+.btn-perigo { color: #b91c1c; border-color: #fecaca; }
+.btn.largo { width: 100%; }
+
+.ficha .vazio, .adm-registro .vazio, #listaUsuarios .vazio { color: var(--suave); padding: 20px 6px; text-align: center; }
+.ficha-topo h2 { margin: 0; font-size: 20px; text-transform: none; letter-spacing: 0; color: var(--tinta); }
+.ficha-topo .sub { color: var(--suave); font-size: 12.5px; margin-top: 2px; }
+.bloqueio { margin: 12px 0 0; padding: 9px 12px; border-radius: 10px; background: #f8fafc; border: 1px solid var(--linha); color: var(--texto); font-size: 13px; }
+.grupo { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--linha); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+.grupo h3 { flex-basis: 100%; margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--suave); }
+.campo { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--suave); flex: 1 1 240px; }
+.chave { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.chave small { display: block; font-weight: 400; color: var(--suave); margin-left: 4px; }
+.nota { flex-basis: 100%; margin: 0; font-size: 12px; color: var(--suave); line-height: 1.5; }
+.todas { flex-basis: 100%; font-size: 13px; }
+#grupoNiveis { align-items: flex-start; }
+.areas { flex: 1 1 300px; display: flex; flex-direction: column; gap: 4px; }
+.areas h4 { margin: 4px 0; font-size: 12px; color: var(--suave); }
+.area { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; padding: 3px 0; border-bottom: 1px dashed #edf1ee; }
+.area small { font-weight: 400; color: var(--suave); }
+.area select { width: 150px; }
+.area select.nivel-nenhum { color: var(--suave); }
+.area select.nivel-visualizador { background: #f8fafc; }
+.area select.nivel-gerenciador { background: #eff6ff; }
+.area select.nivel-editor_basico { background: #fffbeb; }
+.area select.nivel-editor_pleno { background: #ecfdf3; }
+.acoes { display: flex; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--linha); flex-wrap: wrap; }
+.acoes .espaco { flex: 1; }
+
+.reg { padding: 9px 4px; border-bottom: 1px solid var(--linha); font-size: 13px; }
+.reg-cab { color: var(--texto); }
+.reg-mud { margin-top: 4px; color: var(--suave); font-size: 12.5px; line-height: 1.6; }
+
+.dlg { border: 0; border-radius: 14px; padding: 20px 22px; width: min(440px, calc(100vw - 32px)); box-shadow: 0 20px 50px rgba(0,0,0,.25); font-family: Inter, Arial, sans-serif; color: var(--texto); }
+.dlg::backdrop { background: rgba(15, 42, 26, .35); }
+.dlg h3 { margin: 0 0 12px; color: var(--tinta); }
+.dlg label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--suave); margin-bottom: 10px; }
+.dlg .aviso { color: #b91c1c; font-size: 13px; min-height: 18px; margin: 6px 0 0; }
+.dlg-acoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.senha-caixa { display: grid; gap: 8px; padding: 12px 14px; border-radius: 10px; background: var(--fundo); border: 1px solid var(--linha); }
+.senha-caixa small { display: block; font-size: 11px; color: var(--suave); }
+.senha-caixa b { font-size: 16px; font-family: Consolas, monospace; color: var(--tinta); user-select: all; }
+
+.toasts { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 50; }
+.toast { background: #0f2a1a; color: #fff; padding: 10px 14px; border-radius: 10px; font-size: 13px; box-shadow: 0 8px 20px rgba(0,0,0,.2); max-width: 380px; }
+.toast-erro { background: #991b1b; }

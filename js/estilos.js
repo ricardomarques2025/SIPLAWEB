@@ -373,14 +373,14 @@ const REGRAS_ESTILO = [
     'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'
   ];
 
-  // Origens vinculadas aos poligonos municipais (DADOS.json: REF = GEOCOD do municipio).
+  // Origens vinculadas aos poligonos municipais (obras do banco: REF = GEOCOD do municipio).
   // Quando ligadas, os municipios com registros recebem contorno na cor definida aqui.
   const ORIGENS_MUNICIPAIS = {
     GMM: { label: 'Municípios atendidos - GMM', color: '#A07CB8', weight: 6, opacity: 1, fill: true, fillColor: '#A07CB8', fillOpacity: 0.5, dashArray: null },
     GMP: { label: 'Municípios atendidos - GMP', color: '#E3CF5A', weight: 6, opacity: 1, fill: true, fillColor: '#E3CF5A', fillOpacity: 0.5, dashArray: null }
   };
 
-  // Unidades de Saude (DADOS.json: UNIDADE = HOSPITAL): circulo de 80 km por unidade,
+  // Unidades de Saude (obras do banco: UNIDADE = HOSPITAL): circulo de 80 km por unidade,
   // na cor da categoria do campo INTERVENCAO. A ordem define a legenda e o popup.
   const ESTILO_UNIDADES_SAUDE = {
     raioMetros: 80000,

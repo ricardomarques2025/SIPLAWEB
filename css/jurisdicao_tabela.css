@@ -1,0 +1,337 @@
+/* Modulo Jurisdicao: tabela, ficha de detalhes, dialogos e avisos (vindos de JURISDICAO/SITE/css/app.css).
+   Todas as regras ficam restritas a .jur-ui para nao interferir no restante do SIPLAWEB. */
+.jur-ui {
+  --fundo: #f4f5f7;
+  --superficie: #ffffff;
+  --superficie-2: #f8fafc;
+  --borda: #e3e6eb;
+  --borda-forte: #cfd4dc;
+  --texto: #111827;
+  --texto-2: #4b5563;
+  --texto-3: #8a93a3;
+  --primaria: #0f5bd8;
+  --primaria-hover: #0b4bb5;
+  --primaria-suave: #e8f0fe;
+  --perigo: #dc2626;
+  --ok: #16a34a;
+  --alerta: #d97706;
+  --editado: #fff7d6;
+  --editado-borda: #f2c94c;
+  --raio: 10px;
+  --sombra: 0 1px 2px rgba(16, 24, 40, .05);
+  --sombra-alta: 0 12px 32px rgba(16, 24, 40, .16);
+  --topo: 60px;
+}
+/* Reset: neutraliza as regras genericas do SIPLAWEB (button/select/label/input em css/style.css).
+   Os componentes acima (.btn, .seletor, .campo...) sao mais especificos e continuam valendo. */
+.jur-ui button { margin: 0; padding: 0; width: auto; font-weight: inherit; }
+.jur-ui select { margin: 0; padding: 0; width: auto; height: auto; font-weight: inherit; border-radius: 0; background-color: transparent; }
+.jur-ui label { margin: 0; font-size: inherit; font-weight: inherit; color: inherit; }
+.jur-ui input { margin: 0; padding: 0; width: auto; height: auto; font-size: inherit; border-radius: 0; }
+.jur-ui button,.jur-ui input,.jur-ui select,.jur-ui textarea { font: inherit; color: inherit; }
+.jur-ui svg:has(> use) { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.jur-ui .segmentado {
+  display: flex; gap: 2px; padding: 3px;
+  background: #eef0f3; border-radius: 9px;
+}
+.jur-ui .segmentado button {
+  display: flex; align-items: center; gap: 6px;
+  border: 0; background: transparent; border-radius: 7px;
+  padding: 6px 12px; font-weight: 500; color: var(--texto-2); cursor: pointer;
+}
+.jur-ui .segmentado button:hover { color: var(--texto); }
+.jur-ui .segmentado button.ativo { background: var(--superficie); color: var(--texto); box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.jur-ui .topbar-acoes { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.jur-ui .pill-status {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--borda); background: var(--superficie-2);
+  border-radius: 999px; padding: 6px 12px; cursor: pointer; color: var(--texto-2); font-weight: 500;
+}
+.jur-ui .pill-status .ponto { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.jur-ui .pill-status.pendente { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+.jur-ui .pill-status.pendente .ponto { background: var(--alerta); }
+/* ---------- Botoes ---------- */
+.jur-ui .btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 12px;
+  border: 1px solid var(--borda-forte); border-radius: 8px;
+  background: var(--superficie); color: var(--texto); font-weight: 500;
+  cursor: pointer; white-space: nowrap;
+}
+.jur-ui .btn:hover { background: var(--superficie-2); border-color: #b9c0cb; }
+.jur-ui .btn-primario { background: var(--primaria); border-color: var(--primaria); color: #fff; }
+.jur-ui .btn-primario:hover { background: var(--primaria-hover); border-color: var(--primaria-hover); }
+.jur-ui .btn-fantasma { border-color: transparent; background: transparent; color: var(--texto-2); padding: 0 8px; }
+.jur-ui .btn-perigo { color: var(--perigo); border-color: #f3b4b4; }
+.jur-ui .btn-perigo-fantasma { color: var(--perigo); border-color: transparent; background: transparent; }
+.jur-ui .btn-perigo-fantasma:hover { background: #fef2f2; border-color: transparent; }
+.jur-ui .btn:disabled { opacity: .45; cursor: not-allowed; }
+.jur-ui .btn-icone {
+  width: 32px; height: 32px; border-radius: 8px; border: 0; background: transparent;
+  display: grid; place-items: center; cursor: pointer; color: var(--texto-2);
+}
+.jur-ui .btn-icone:hover { background: #eef0f3; color: var(--texto); }
+.jur-ui .menu { position: relative; }
+.jur-ui .menu-lista {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 3000;
+  min-width: 250px; padding: 6px;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio);
+  box-shadow: var(--sombra-alta); display: none;
+}
+.jur-ui .menu-lista.direita { left: auto; right: 0; }
+.jur-ui .menu-lista.aberto { display: block; }
+.jur-ui .menu-lista button {
+  display: block; width: 100%; text-align: left;
+  border: 0; background: transparent; padding: 8px 10px; border-radius: 6px; cursor: pointer;
+}
+.jur-ui .menu-lista button:hover { background: var(--primaria-suave); color: var(--primaria); }
+.jur-ui .menu-rotulo { font-size: 11px; font-weight: 600; color: var(--texto-3); text-transform: uppercase; letter-spacing: .05em; padding: 8px 10px 4px; }
+/* ---------- Resumo (paineis no padrao da tabela original) ---------- */
+.jur-ui .resumo {
+  display: grid;
+  grid-template-columns: minmax(150px, .8fr) minmax(250px, 1.45fr) minmax(200px, 1.1fr) minmax(340px, 2fr) minmax(160px, .9fr) minmax(160px, .9fr);
+  gap: 12px; padding: 14px 20px 0; flex: none;
+}
+.jur-ui .ind {
+  display: flex; align-items: center; gap: 12px; min-width: 0;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio);
+  padding: 10px 14px; box-shadow: var(--sombra);
+}
+.jur-ui .ico-ind { flex: none; }
+.jur-ui .ind-corpo { flex: 1; min-width: 0; }
+.jur-ui .ind-valor { font-size: 26px; font-weight: 700; letter-spacing: -.02em; line-height: 1.05; }
+.jur-ui .ind-rotulo { font-size: 11.5px; font-weight: 600; color: var(--texto-2); line-height: 1.25; margin-top: 2px; }
+.jur-ui .ind-sub { font-size: 11.5px; color: var(--texto-3); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.jur-ui .ind-titulo { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-2); margin-bottom: 4px; }
+.jur-ui .ind-linha {
+  display: flex; align-items: center; gap: 7px; width: 100%; padding: 2px 6px; margin: 0 -6px;
+  border: 1px solid transparent; border-radius: 6px; background: transparent; text-align: left; font-size: 12px;
+}
+.jur-ui button.ind-linha { cursor: pointer; }
+.jur-ui button.ind-linha:hover { background: #f1f3f6; }
+.jur-ui .ind-linha.ativo { border-color: var(--cor); background: color-mix(in srgb, var(--cor) 9%, white); }
+.jur-ui .ind-linha i { width: 9px; height: 9px; border-radius: 3px; background: var(--cor); flex: none; }
+.jur-ui .ind-linha .rot { flex: 1; color: var(--texto-2); font-weight: 500; }
+.jur-ui .ind-linha b { font-size: 14px; font-variant-numeric: tabular-nums; min-width: 22px; text-align: right; }
+.jur-ui .ind-linha .km { display: block; font-size: 11px; font-weight: 400; color: var(--texto-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.jur-ui .ind-linha i { align-self: flex-start; margin-top: 4px; }
+.jur-ui .ind-situacoes .barra { display: flex; height: 7px; border-radius: 4px; overflow: hidden; margin: 2px 0 6px; background: #eef0f3; }
+.jur-ui .ind-situacoes .barra span { display: block; height: 100%; }
+.jur-ui .ind-sits { display: grid; grid-template-columns: 1fr 1fr; gap: 1px 10px; }
+.jur-ui .ind-sit {
+  display: flex; align-items: center; gap: 6px; padding: 2px 6px; border: 1px solid transparent; border-radius: 6px;
+  background: transparent; cursor: pointer; font-size: 11.5px; color: var(--texto-2); text-align: left;
+}
+.jur-ui .ind-sit:hover { background: #f1f3f6; }
+.jur-ui .ind-sit.ativo { border-color: var(--cor); background: color-mix(in srgb, var(--cor) 9%, white); color: var(--texto); }
+.jur-ui .ind-sit i { width: 8px; height: 8px; border-radius: 50%; background: var(--cor); flex: none; }
+.jur-ui .ind-sit b { margin-left: auto; font-size: 13px; color: var(--texto); font-variant-numeric: tabular-nums; }
+/* ---------- Ferramentas ---------- */
+.jur-ui .ferramentas { display: flex; align-items: center; gap: 8px; padding: 12px 20px; flex: none; }
+.jur-ui .busca {
+  display: flex; align-items: center; gap: 8px; width: 340px; height: 32px; padding: 0 10px;
+  background: var(--superficie); border: 1px solid var(--borda-forte); border-radius: 8px; color: var(--texto-3);
+}
+.jur-ui .busca:focus-within { border-color: var(--primaria); box-shadow: 0 0 0 3px var(--primaria-suave); }
+.jur-ui .busca input { border: 0; outline: 0; flex: 1; background: transparent; color: var(--texto); }
+.jur-ui .seletor {
+  height: 32px; padding: 0 28px 0 10px; border: 1px solid var(--borda-forte); border-radius: 8px;
+  background: var(--superficie) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a93a3' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 9px center;
+  appearance: none; cursor: pointer; max-width: 210px;
+}
+.jur-ui .seletor.ativo { border-color: var(--primaria); background-color: var(--primaria-suave); }
+.jur-ui .contador { color: var(--texto-3); font-weight: 500; margin-left: 4px; white-space: nowrap; }
+.jur-ui .espaco { flex: 1; }
+/* ---------- Tabulator ---------- */
+.jur-ui .tabulator { border: 0; background: var(--superficie); font-size: 12.5px; }
+.jur-ui .tabulator .tabulator-header { background: var(--superficie-2); border-bottom: 1px solid var(--borda); color: var(--texto-2); }
+.jur-ui .tabulator .tabulator-header .tabulator-col { background: var(--superficie-2); border-right: 1px solid #edf0f3; }
+.jur-ui .tabulator .tabulator-header .tabulator-col .tabulator-col-content { padding: 9px 10px; }
+.jur-ui .tabulator .tabulator-header .tabulator-col .tabulator-col-title { font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; }
+.jur-ui .tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover { background: #eef1f5; }
+.jur-ui .tabulator-row { border-bottom: 1px solid #f0f2f5; min-height: 36px; }
+.jur-ui .tabulator-row.tabulator-row-even { background: var(--superficie); }
+.jur-ui .tabulator-row .tabulator-cell { padding: 9px 10px; border-right: 1px solid #f3f4f6; }
+.jur-ui .tabulator-row.tabulator-selectable:hover { background: #f5f8ff; }
+.jur-ui .tabulator-row.tabulator-selected { background: #e8f0fe !important; }
+.jur-ui .tabulator-row.tabulator-selected .tabulator-cell { border-right-color: #d6e3fb; }
+.jur-ui .tabulator-row .tabulator-cell.tabulator-frozen { background: inherit; }
+.jur-ui .tabulator-row .tabulator-cell.tabulator-editing { border: 2px solid var(--primaria); padding: 0; }
+.jur-ui .tabulator-row .tabulator-cell.tabulator-editing input,.jur-ui .tabulator-row .tabulator-cell.tabulator-editing textarea { padding: 7px 8px !important; }
+.jur-ui .tabulator .tabulator-cell.celula-editada { background: var(--editado) !important; box-shadow: inset 3px 0 0 var(--editado-borda); }
+.jur-ui .tabulator .tabulator-footer { background: var(--superficie-2); border-top: 1px solid var(--borda); }
+.tabulator-edit-list { border-radius: 8px; box-shadow: 0 12px 32px rgba(16, 24, 40, .16); border: 1px solid #e3e6eb; font-size: 12.5px; z-index: 6000 !important; }
+.tabulator-edit-list .tabulator-edit-list-item { padding: 7px 10px; }
+.tabulator-edit-list .tabulator-edit-list-item.active { background: #0f5bd8; }
+.jur-ui .tabulator .tabulator-tableholder .tabulator-placeholder span { color: var(--texto-3); font-weight: 500; font-size: 13px; }
+.jur-ui .col-acao { cursor: pointer; }
+/* ---------- Celulas especiais ---------- */
+.jur-ui .badge {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%;
+  padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600;
+  color: var(--c); background: color-mix(in srgb, var(--c) 11%, white);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.jur-ui .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c); flex: none; }
+.jur-ui .tipo { display: inline-flex; align-items: center; gap: 7px; font-weight: 500; }
+.jur-ui .tipo i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); flex: none; }
+.jur-ui .doc { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; font-size: 11.5px; font-weight: 600; }
+.jur-ui .doc .ico-doc { flex: none; }
+.jur-ui .doc-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.jur-ui .doc-sim { color: #2f6b3d; }
+.jur-ui .doc-nao { color: #9a3a26; }
+.jur-ui .doc-parcial { color: #9a6a00; }
+.jur-ui .doc-na,.jur-ui .doc-vazio { color: #9aa1ac; font-weight: 500; }
+.jur-ui .geo-ok { color: var(--primaria); }
+.jur-ui .geo-sem { color: #d1d5db; }
+.jur-ui .num { font-variant-numeric: tabular-nums; }
+/* ---------- Gaveta de detalhes ---------- */
+.jur-ui .gaveta {
+  position: fixed; top: var(--topo); right: 0; bottom: 0; width: 460px; max-width: 100vw;
+  background: var(--superficie); border-left: 1px solid var(--borda); box-shadow: var(--sombra-alta);
+  display: flex; flex-direction: column; z-index: 2000;
+  transform: translateX(100%); transition: transform .2s ease;
+}
+.jur-ui .gaveta.aberta { transform: none; }
+.jur-ui .gaveta-topo { display: flex; justify-content: space-between; align-items: flex-start; padding: 16px 18px 10px; }
+.jur-ui .gaveta-sup { display: flex; gap: 8px; align-items: center; color: var(--texto-3); font-weight: 600; font-size: 11.5px; }
+.jur-ui .gaveta h2 { margin: 6px 0 0; font-size: 17px; letter-spacing: -.01em; line-height: 1.3; }
+.jur-ui .gaveta-abas { display: flex; gap: 2px; padding: 0 18px; border-bottom: 1px solid var(--borda); }
+.jur-ui .gaveta-abas button { border: 0; background: transparent; padding: 9px 10px; font-weight: 500; color: var(--texto-2); border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -1px; }
+.jur-ui .gaveta-abas button.ativo { color: var(--primaria); border-bottom-color: var(--primaria); }
+.jur-ui .gaveta-corpo { flex: 1; overflow: auto; padding: 6px 18px 18px; }
+.jur-ui .gaveta-rodape { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--borda); background: var(--superficie-2); }
+.jur-ui .form-grupo { margin-top: 14px; }
+.jur-ui .form-grupo h4 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--texto-3); font-weight: 600; }
+.jur-ui .form-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; }
+.jur-ui .campo { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.jur-ui .campo.largo { grid-column: 1 / -1; }
+.jur-ui .campo label { font-size: 11.5px; font-weight: 500; color: var(--texto-2); display: flex; gap: 6px; align-items: center; }
+.jur-ui .campo label .marcador { width: 6px; height: 6px; border-radius: 50%; background: var(--editado-borda); display: none; }
+.jur-ui .campo.editado label .marcador { display: inline-block; }
+.jur-ui .campo input,.jur-ui .campo select,.jur-ui .campo textarea {
+  border: 1px solid var(--borda-forte); border-radius: 7px; padding: 7px 9px; background: var(--superficie); outline: 0; width: 100%;
+}
+.jur-ui .campo textarea { resize: vertical; min-height: 60px; line-height: 1.45; }
+.jur-ui .campo input:focus,.jur-ui .campo select:focus,.jur-ui .campo textarea:focus { border-color: var(--primaria); box-shadow: 0 0 0 3px var(--primaria-suave); }
+.jur-ui .campo.editado input,.jur-ui .campo.editado select,.jur-ui .campo.editado textarea { background: var(--editado); border-color: var(--editado-borda); }
+.jur-ui .campo input[readonly] { background: var(--superficie-2); color: var(--texto-3); }
+.jur-ui .doc-campo { display: flex; gap: 6px; }
+.jur-ui .doc-campo select { flex: 0 0 132px; }
+.jur-ui .historico-item { padding: 10px 0; border-bottom: 1px solid #f0f2f5; }
+.jur-ui .historico-item .quando { color: var(--texto-3); font-size: 11.5px; }
+.jur-ui .historico-item .de { color: #b91c1c; text-decoration: line-through; word-break: break-word; }
+.jur-ui .historico-item .para { color: #15803d; word-break: break-word; }
+.jur-ui .vazio { color: var(--texto-3); padding: 24px 0; text-align: center; }
+.jur-ui .chk { display: flex; align-items: center; gap: 8px; padding: 5px 4px; cursor: pointer; border-radius: 6px; }
+.jur-ui .chk:hover { background: var(--superficie-2); }
+/* ---------- Dialogos ---------- */
+.jur-ui .dialogo {
+  border: 0; border-radius: 14px; padding: 0; width: 720px; max-width: calc(100vw - 32px); max-height: calc(100vh - 64px);
+  box-shadow: var(--sombra-alta); color: var(--texto);
+}
+.jur-ui .dialogo[open] { display: flex; flex-direction: column; }
+.jur-ui .dialogo-pequeno { width: 380px; }
+.jur-ui .dialogo::backdrop { background: rgba(15, 23, 42, .35); }
+.jur-ui .dialogo-topo { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--borda); }
+.jur-ui .dialogo-topo h3 { margin: 0; font-size: 15px; }
+.jur-ui .dialogo-corpo { padding: 12px 18px; overflow: auto; flex: 1; }
+.jur-ui .dialogo-rodape { display: flex; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--borda); background: var(--superficie-2); }
+.jur-ui .tabela-simples { width: 100%; border-collapse: collapse; }
+.jur-ui .tabela-simples th,.jur-ui .tabela-simples td { text-align: left; padding: 7px 8px; border-bottom: 1px solid #f0f2f5; vertical-align: top; }
+.jur-ui .tabela-simples th { font-size: 11px; text-transform: uppercase; color: var(--texto-3); letter-spacing: .04em; }
+.jur-ui .tag { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: #eef0f3; color: var(--texto-2); }
+.jur-ui .tag.novo { background: #dcfce7; color: #166534; }
+.jur-ui .tag.excluido { background: #fee2e2; color: #991b1b; }
+.jur-ui .tag.geo { background: #e0e7ff; color: #3730a3; }
+/* ---------- Toasts ---------- */
+.jur-ui .toasts { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 5000; }
+.jur-ui .toast { background: #111827; color: #fff; padding: 10px 14px; border-radius: 9px; box-shadow: var(--sombra-alta); font-weight: 500; animation: entrar .2s ease; }
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(8px); } }
+@media (max-width: 1600px) {
+.jur-ui .resumo {
+    grid-template-columns: minmax(118px, .75fr) minmax(220px, 1.45fr) minmax(165px, 1.05fr) minmax(300px, 2fr) minmax(125px, .8fr) minmax(125px, .8fr);
+    gap: 8px; overflow-x: auto;
+  }
+.jur-ui .ind { gap: 8px; padding: 8px 10px; }
+.jur-ui .ind .ico-ind { width: 30px; height: 30px; }
+.jur-ui .ind-valor { font-size: 22px; }
+.jur-ui .ind-rotulo { font-size: 11px; }
+.jur-ui .ind-linha { font-size: 11.5px; gap: 5px; }
+.jur-ui .ind-linha .km { min-width: 72px; }
+.jur-ui .ind-sit { font-size: 11px; }
+}
+@media (max-width: 1200px) {
+.jur-ui .busca { width: 240px; }
+}
+/* ---------- Banco de dados: status, usuario, login ---------- */
+.jur-ui .pill-status.salvando { background: var(--primaria-suave); border-color: #c7dafc; color: var(--primaria); }
+.jur-ui .pill-status.salvando .ponto { background: var(--primaria); animation: pulsar 1s ease-in-out infinite; }
+@keyframes pulsar {
+  50% { opacity: .3; } }
+.jur-ui:not(.admin) .so-admin { display: none !important; }
+.jur-ui.somente-leitura .so-editor { display: none !important; }
+.jur-ui .campo select:disabled,.jur-ui .campo input:disabled,.jur-ui .campo textarea:disabled { background: var(--superficie-2); color: var(--texto); opacity: 1; }
+.jur-ui .aviso-form { margin: 0; min-height: 18px; color: var(--perigo); font-size: 12.5px; line-height: 1.45; }
+.jur-ui .link { border: 0; background: transparent; color: var(--primaria); cursor: pointer; padding: 0; font-weight: 500; }
+.jur-ui .link:hover { text-decoration: underline; }
+.jur-ui .link-perigo { color: var(--perigo); }
+.jur-ui .toast-erro { background: #991b1b; max-width: 560px; }
+/* ---------- Gaveta: carimbo, tramitacao, historico ---------- */
+.jur-ui .carimbo { margin-top: 12px; font-size: 11.5px; color: var(--texto-3); }
+.jur-ui .form-tramite { margin-top: 14px; padding: 12px; border: 1px solid var(--borda); border-radius: var(--raio); background: var(--superficie-2); }
+.jur-ui .form-tramite h4 { margin: 0 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--texto-3); font-weight: 600; }
+.jur-ui .replicar { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--borda-forte); }
+.jur-ui .replicar-titulo { font-size: 11.5px; font-weight: 500; color: var(--texto-2); margin-bottom: 4px; }
+.jur-ui .replicar .chk { align-items: center; flex-wrap: wrap; }
+.jur-ui .form-tramite-acoes { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.jur-ui .dica-tramite { flex: 1; font-size: 11.5px; color: var(--texto-3); }
+.jur-ui .linha-tempo { margin-top: 16px; }
+.jur-ui .tramite { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f0f2f5; }
+.jur-ui .tramite-data { flex: 0 0 76px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--texto-2); }
+.jur-ui .tramite-corpo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.jur-ui .tramite-desc { line-height: 1.45; word-break: break-word; }
+.jur-ui .tramite-sei { font-size: 11.5px; color: var(--texto-2); }
+.jur-ui .tramite-autor { font-size: 11px; color: var(--texto-3); }
+.jur-ui .historico-item .mudanca { margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--borda); }
+.jur-ui .historico-item .mudanca b { font-weight: 600; font-size: 11.5px; color: var(--texto-2); }
+
+/* ---------- Painel da tabela sobre o mapa do SIPLAWEB ---------- */
+.jur-ui { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 13px; color: var(--texto); }
+.jur-ui .jur-tabela {
+  position: fixed; top: var(--jur-topo, 64px); left: 0; bottom: 0; width: 100vw; z-index: 1500;
+  display: flex; flex-direction: column; background: var(--fundo);
+  transition: width .35s cubic-bezier(.2, .8, .2, 1);
+}
+.jur-ui .jur-tabela[hidden] { display: none; }
+/* Dividida: a tabela ocupa a esquerda (largura ajustavel) e o mapa continua visivel a direita. */
+.jur-ui .jur-tabela[data-modo="dividida"] { width: var(--jur-largura, 55vw); border-right: 1px solid var(--borda); box-shadow: var(--sombra-alta); }
+.jur-ui .jur-tabela.arrastando { transition: none; user-select: none; }
+.jur-ui .jur-tabela.jur-entrando { animation: jurEntrar .32s cubic-bezier(.2, .8, .2, 1); }
+@keyframes jurEntrar { from { opacity: 0; transform: translateX(-36px); } to { opacity: 1; transform: none; } }
+/* Alca de redimensionar (so no modo dividido). */
+.jur-ui .jur-redimensionar { display: none; position: absolute; top: 0; right: -6px; width: 12px; height: 100%; cursor: col-resize; z-index: 3; touch-action: none; }
+.jur-ui .jur-tabela[data-modo="dividida"] .jur-redimensionar { display: block; }
+.jur-ui .jur-redimensionar::after {
+  content: ''; position: absolute; top: 50%; left: 3px; width: 6px; height: 56px; margin-top: -28px;
+  border-radius: 3px; background: #cbd5e1; box-shadow: 0 0 0 1px #fff; transition: background .15s;
+}
+.jur-ui .jur-redimensionar:hover::after, .jur-ui .jur-tabela.arrastando .jur-redimensionar::after { background: var(--primaria); }
+.jur-ui .jur-tabela[data-modo="dividida"] .resumo { display: none; }
+.jur-ui .jur-tabela-topo {
+  display: flex; align-items: center; gap: 12px; flex: none;
+  padding: 10px 20px; background: var(--superficie); border-bottom: 1px solid var(--borda);
+}
+.jur-ui .jur-tabela-titulo { font-size: 14px; }
+.jur-ui .ferramentas { flex-wrap: wrap; }
+.jur-ui .painel-tabela {
+  flex: 1; min-height: 0; margin: 0 20px 16px; overflow: hidden;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio); box-shadow: var(--sombra);
+}
+.jur-ui #jurGrade { width: 100%; height: 100%; }
+.jur-ui .gaveta { top: var(--jur-topo, 64px); z-index: 1700; }
+.jur-ui .contador { border: 0; background: none; box-shadow: none; padding: 0; border-radius: 0; height: auto; display: inline; }
+/* Tabela estreita (dividida): botoes do topo sem quebrar texto; o topo quebra em linhas se faltar espaco. */
+.jur-ui .jur-tabela-topo { flex-wrap: wrap; row-gap: 8px; }
+.jur-ui .segmentado button, .jur-ui .pill-status, .jur-ui .jur-tabela-titulo, .jur-ui .btn { white-space: nowrap; }

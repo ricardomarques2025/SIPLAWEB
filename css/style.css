@@ -840,14 +840,6 @@
       justify-content: center;
     }
 
-    .grid-servicos.grid-alteracoes {
-      grid-template-columns: 1fr;
-    }
-
-    .grid-servicos.grid-alteracoes .filtro-btn {
-      min-height: 46px;
-    }
-
     @media (max-width: 1200px) {
       #app {
         grid-template-columns: 320px 1fr 320px;
@@ -986,6 +978,13 @@
 
 #topbar .topbar-left span {
   color: var(--cor-topbar-subtitulo);
+}
+
+/* Usuario logado (js/acesso.js): nome menor que o titulo da barra. */
+#topbar .topbar-right #acessoUsuario,
+#topbar .topbar-right #acessoUsuario span {
+  font-size: 13px;
+  font-weight: 600;
 }
 
 /* ===== SIDEBAR MODERNA ===== */
@@ -2746,3 +2745,32 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 .popup-unidades-saude-sub { font-size: 11px; color: #666666; margin: 2px 0 6px; }
 .popup-unidade-saude { display: flex; gap: 8px; align-items: flex-start; padding: 6px 0; border-top: 1px solid #e5e7eb; }
 .popup-unidade-saude-cor { width: 12px; height: 12px; border-radius: 50%; margin-top: 3px; flex-shrink: 0; opacity: 0.8; }
+
+
+/* ===== POPUP DAS OBRAS (cartao, no padrao do popup da Jurisdicao) ===== */
+.popup-cabecalho { line-height: 1.4; margin-bottom: 6px; }
+.popup-cabecalho .pc-sup { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+.popup-cabecalho .pc-titulo { font-size: 14px; font-weight: 800; color: #111827; }
+.popup-cabecalho .pc-linha { font-size: 12px; color: #4b5563; }
+.po-contagem { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; margin: 8px 0 2px; }
+.popup-obra { line-height: 1.4; padding: 8px 0; border-top: 1px solid #eef0f3; min-width: 250px; }
+.popup-obra:first-child { border-top: 0; padding-top: 0; }
+.popup-cabecalho + .popup-obra, .po-contagem + .popup-obra { border-top: 0; }
+.popup-obra .po-sup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 11px; color: #6b7280; font-weight: 600; }
+.popup-obra .po-sup span + span::before { content: '·'; margin-right: 6px; color: #c0c5cd; }
+.popup-obra .po-origem { padding: 1px 7px; border-radius: 5px; background: #111827; color: #fff; font-weight: 800; letter-spacing: .03em; }
+.popup-obra .po-origem + span::before { content: none; }
+.popup-obra .po-titulo { margin-top: 3px; font-size: 13.5px; font-weight: 800; color: #111827; }
+.popup-obra .po-desc { font-size: 12px; color: #4b5563; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.popup-obra .po-situacao { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 5px; }
+.popup-obra .po-etapa {
+  display: inline-flex; align-items: center; gap: 5px; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
+  color: var(--c); background: color-mix(in srgb, var(--c) 12%, white); border: 1px solid color-mix(in srgb, var(--c) 35%, white);
+}
+.popup-obra .po-etapa::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+.popup-obra .po-status { font-size: 12px; font-weight: 600; color: #374151; }
+.popup-obra .po-campos { display: grid; grid-template-columns: auto 1fr; gap: 1px 10px; margin: 6px 0 0; font-size: 12px; }
+.popup-obra .po-campos dt { color: #6b7280; }
+.popup-obra .po-campos dd { margin: 0; color: #111827; font-weight: 600; word-break: break-word; }
+.po-vazio { font-size: 12px; color: #6b7280; padding-top: 4px; }
+.popup-obras-pontos-aviso { display: block; margin-top: 8px; }

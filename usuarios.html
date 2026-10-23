@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Usuários · Plano GOINFRA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/inicio_painel.css?v=mosaico-20261021" />
+  <link rel="stylesheet" href="css/usuarios.css?v=adm2-20261022" />
+</head>
+<body>
+  <header class="topo">
+    <a href="index.html"><img src="data/Logo_GOINFRA_DPL_2025.png" alt="GOINFRA"></a>
+    <div class="marca">Usuários e permissões<small>Plano GOINFRA · Sistema de Monitoramento</small></div>
+    <div class="espaco"></div>
+    <a class="voltar" href="index.html">← Início</a>
+    <span id="acessoUsuario"></span>
+  </header>
+
+  <main class="adm" id="adm" hidden>
+    <nav class="adm-abas">
+      <button type="button" class="ativo" data-aba="usuarios">Usuários</button>
+      <button type="button" data-aba="registro">Registro de alterações</button>
+    </nav>
+
+    <section class="adm-usuarios" id="abaUsuarios">
+      <aside class="lista">
+        <div class="lista-topo">
+          <input id="busca" type="search" placeholder="Buscar nome ou e-mail…" autocomplete="off">
+          <select id="filtro">
+            <option value="">Todos</option><option value="ativos">Ativos</option><option value="inativos">Inativos</option>
+            <option value="admins">Administradores</option><option value="trocar">Senha provisória</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primario largo" id="novo">+ Novo usuário</button>
+        <div id="listaUsuarios"></div>
+      </aside>
+      <section class="ficha" id="ficha"><div class="vazio">Escolha um usuário na lista ou crie um novo.</div></section>
+    </section>
+
+    <section class="adm-registro" id="abaRegistro" hidden><div id="registro"></div></section>
+  </main>
+  <p class="restrito" id="restrito" hidden>Esta página é só para administradores.</p>
+
+  <dialog id="dlgNovo" class="dlg"><form id="formNovo">
+    <h3>Novo usuário</h3>
+    <label>Nome<input name="nome" required autocomplete="off"></label>
+    <label>E-mail<input name="email" type="email" required autocomplete="off"></label>
+    <p class="nota">A conta é criada <b>inativa</b>, com uma senha provisória que aparece uma única vez para você repassar.
+      No primeiro acesso a pessoa cria a própria senha. Depois, ative a conta e escolha os níveis.</p>
+    <p class="aviso" id="avisoNovo"></p>
+    <div class="dlg-acoes"><button type="button" class="btn" data-fechar>Cancelar</button><button type="submit" class="btn btn-primario">Criar conta</button></div>
+  </form></dialog>
+
+  <dialog id="dlgSenha" class="dlg">
+    <h3 id="senhaTitulo">Senha provisória</h3>
+    <p>Repasse à pessoa por um canal seguro. Ela vai criar a própria senha no primeiro acesso.</p>
+    <div class="senha-caixa"><div><small>E-mail</small><b id="senhaEmail"></b></div><div><small>Senha provisória</small><b id="senhaValor"></b></div></div>
+    <p class="nota">Esta senha não aparece de novo. Se perder, use "Redefinir senha".</p>
+    <div class="dlg-acoes"><button type="button" class="btn" id="copiarSenha">Copiar e-mail e senha</button><button type="button" class="btn btn-primario" data-fechar>Pronto</button></div>
+  </dialog>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/acesso.js?v=adm1-20261022"></script>
+  <script src="js/usuarios.js?v=adm1-20261022"></script>
+</body>
+</html>

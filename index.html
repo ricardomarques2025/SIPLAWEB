@@ -2,40 +2,47 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <title>Plano Goinfra 2026</title>
+  <title>Plano GOINFRA 2026</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/inicio.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/inicio_painel.css?v=mosaico-20261021" />
 </head>
 <body>
-  <main class="inicio" style="--inicio-bg: url('data/GERAL.jpg');">
-    <div class="inicio-stage">
-      <div class="inicio-foto" aria-hidden="true">
-        <img id="inicioFotoImg" src="data/GERAL.jpg" alt="" />
+  <header class="topo">
+    <img src="data/Logo_GOINFRA_DPL_2025.png" alt="GOINFRA">
+    <div class="marca">Plano GOINFRA 2026–2030<small>Sistema de Monitoramento</small></div>
+    <div class="espaco"></div>
+    <span id="acessoUsuario"></span>
+  </header>
+
+  <section class="hero">
+    <div class="hero-conteudo">
+      <h1 id="saudacao">Plano GOINFRA 2026</h1>
+      <p>Obras, projetos e planejamento da infraestrutura de Goiás em um só mapa.</p>
+      <div class="numeros">
+        <div><b id="nTotal">—</b><span id="rotuloTotal">empreendimentos acompanhados</span></div>
+        <div><b id="nObra">—</b><span>em obra</span></div>
+        <div><b id="nProjeto">—</b><span>em projeto</span></div>
+        <div><b id="nAtualizado">—</b><span>última atualização</span></div>
       </div>
-      <img class="inicio-vetor" src="data/INICIO_DIREITA.svg" alt="Plano Goinfra 2026" />
-      <nav class="inicio-menu" aria-label="Acessos do Plano GOINFRA">
-        <div class="inicio-links">
-          <a class="inicio-link" href="mapa.html?origem=FUNDEINFRA&sidebar=fechada" data-bg="data/FUNDEINFRA.jpg">FUNDEINFRA</a>
-          <a class="inicio-link" href="mapa.html?origem=DOR&sidebar=fechada" data-bg="data/DOR.jpg">Obras Rodovi&aacute;rias</a>
-          <a class="inicio-link" href="mapa.html?origem=DMA&sidebar=fechada" data-bg="data/DMA.jpg">Manuten&ccedil;&atilde;o</a>
-          <a class="inicio-link" href="mapa.html?origem=DPJ&sidebar=fechada" data-bg="data/DPJ.jpg">Projetos</a>
-          <a class="inicio-link" href="mapa.html?origem=DPL&sidebar=fechada" data-bg="data/DPL.jpg">Planejamento</a>
-          <a class="inicio-link" href="mapa.html?origem=DOC&sidebar=fechada" data-bg="data/DOC.jpg">Obras Civis</a>
-          <a class="inicio-link" href="mapa.html?origem=DSV&sidebar=fechada" data-bg="data/DSV.jpg">Seguran&ccedil;a Vi&aacute;ria</a>
-        </div>
-
-        <div class="inicio-links inicio-links-secundarios">
-          <a class="inicio-link" href="mapa.html?alteracoes=1&sidebar=fechada" data-bg="data/ALTERACAO.jpg">Altera&ccedil;&otilde;es de Jurisdi&ccedil;&atilde;o</a>
-          <a class="inicio-link" href="mapa.html?perfil=geral" data-bg="data/GERAL.jpg">Geral</a>
-          <a class="inicio-link" href="mapa.html?perfil=rodoviario&sidebar=fechada" data-bg="data/MAPA.jpg">Mapa Rodovi&aacute;rio</a>
-        </div>
-      </nav>
     </div>
-  </main>
+  </section>
 
-  <script src="js/inicio.js"></script>
+  <main>
+    <h2>Origens</h2>
+    <div class="legenda-etapas">
+      <span style="--c:var(--plan)">Planejamento</span><span style="--c:var(--projeto)">Projeto</span>
+      <span style="--c:var(--obra)">Obra</span><span style="--c:var(--outros)">Outras etapas</span>
+    </div>
+    <nav class="grade" id="grade" aria-label="Origens"></nav>
+    <nav class="atalhos" id="atalhos" aria-label="Mapas"></nav>
+  </main>
+  <div class="rodape">GOINFRA · Diretoria de Planejamento · GEREF</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/acesso.js?v=adm1-20261022"></script>
+  <script src="js/dados_banco.js?v=dpj1-20261023"></script>
+  <script src="js/inicio_painel.js?v=jur1-20261021"></script>
 </body>
 </html>
-
-
-

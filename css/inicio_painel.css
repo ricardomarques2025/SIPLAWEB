@@ -1,0 +1,75 @@
+/* Pagina inicial (painel). A versao anterior continua em index_antigo.html + css/inicio.css. */
+:root {
+  --verde: #1e9538; --verde-escuro: #12662a;
+  --tinta: #0f2a1a; --texto: #334139; --suave: #6b7a70; --linha: #e3e9e5; --fundo: #f4f7f5;
+  --obra: #1e9538; --projeto: #2b7bd6; --plan: #e0a019; --outros: #b8c2bc;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, Arial, sans-serif; background: var(--fundo); color: var(--texto); }
+a { color: inherit; text-decoration: none; }
+
+.topo { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 16px;
+  padding: 12px clamp(16px, 4vw, 48px); background: #fff; border-bottom: 1px solid var(--linha); }
+.topo img { height: 34px; }
+.topo .marca { font-weight: 800; color: var(--tinta); letter-spacing: .01em; }
+.topo .marca small { display: block; font-weight: 500; color: var(--suave); font-size: 12px; }
+.topo .espaco { flex: 1; }
+#acessoUsuario { color: var(--tinta); }
+
+.hero { position: relative; margin: 20px clamp(16px, 4vw, 48px) 0; border-radius: 18px; overflow: hidden;
+  min-height: 230px; display: flex; align-items: flex-end; color: #fff;
+  background: linear-gradient(90deg, rgba(10,60,25,.92) 0%, rgba(10,60,25,.65) 45%, rgba(10,60,25,.1) 100%), url('../data/GERAL.jpg') center 60% / cover; }
+.hero-conteudo { padding: 32px clamp(20px, 4vw, 44px); max-width: 720px; }
+.hero h1 { margin: 0 0 6px; font-size: clamp(28px, 4vw, 44px); font-weight: 900; letter-spacing: -.01em; }
+.hero p { margin: 0; font-size: 16px; opacity: .92; }
+.hero .numeros { display: flex; gap: 28px; margin-top: 20px; flex-wrap: wrap; }
+.hero .numeros b { display: block; font-size: 30px; font-weight: 800; }
+.hero .numeros span { font-size: 13px; opacity: .85; }
+
+main { padding: 26px clamp(16px, 4vw, 48px) 40px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--suave); margin: 8px 0 14px; }
+
+/* Origens: todas na mesma linha em tela larga; quebram em telas menores. */
+.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); gap: 14px; }
+@media (min-width: 1200px) { .grade { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+.cartao { background: #fff; border: 1px solid var(--linha); border-radius: 14px; overflow: hidden;
+  display: flex; flex-direction: column; transition: transform .15s, box-shadow .15s; }
+.cartao:hover, .cartao:focus-visible { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(15,42,26,.12); outline: none; }
+.cartao .foto { height: 104px; background-size: cover; background-position: center; position: relative; }
+.cartao .sigla { position: absolute; left: 10px; top: 10px; background: rgba(255,255,255,.95); color: var(--verde-escuro);
+  font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 6px; letter-spacing: .04em; }
+.cartao .corpo { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+.cartao .nome { font-weight: 800; font-size: 16px; color: var(--tinta); line-height: 1.2; min-height: 2.4em; }
+.cartao .total { font-size: 13px; color: var(--suave); margin-top: auto; }
+.cartao .total b { font-size: 22px; color: var(--tinta); margin-right: 4px; }
+.barra { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--linha); gap: 2px; }
+.barra i { display: block; height: 100%; }
+.legenda-etapas { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--suave); margin: -4px 0 18px; }
+.legenda-etapas span::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; background: var(--c); vertical-align: -1px; }
+
+.atalhos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 14px; margin-top: 30px; }
+@media (min-width: 1000px) { .atalhos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.atalho { position: relative; border-radius: 14px; overflow: hidden; min-height: 120px; color: #fff; display: flex; align-items: flex-end;
+  padding: 18px 20px; background-size: cover; background-position: center; transition: transform .15s; }
+.atalho::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(0,0,0,.8), rgba(0,0,0,.25) 70%, rgba(0,0,0,.05)); }
+.atalho:hover, .atalho:focus-visible { transform: translateY(-3px); outline: none; }
+.atalho div { position: relative; z-index: 2; }
+
+/* Mapa geral: faixas inclinadas, uma foto por origem. */
+.mosaico { position: absolute; z-index: 0; top: 0; bottom: 0; left: -8%; right: -8%; display: flex; gap: 3px; background: #fff; }
+.mosaico span { position: relative; flex: 1; overflow: hidden; transform: skewX(-14deg); }
+.mosaico i { position: absolute; inset: 0 -40%; background-size: cover; background-position: center; transform: skewX(14deg);
+  transition: transform .4s ease; }
+.atalho:hover .mosaico i { transform: skewX(14deg) scale(1.08); }
+.atalho b { display: block; font-size: 20px; font-weight: 800; }
+.atalho span { font-size: 13px; opacity: .9; }
+.atalho .externo { position: absolute; top: 14px; right: 14px; z-index: 2; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+  background: rgba(255,255,255,.92); color: var(--verde-escuro); padding: 3px 8px; border-radius: 6px; }
+.sem-origens { grid-column: 1 / -1; margin: 0; padding: 22px; background: #fff; border: 1px dashed var(--linha); border-radius: 14px; color: var(--suave); }
+.rodape { text-align: center; font-size: 12px; color: var(--suave); padding: 10px 0 24px; }
+
+@media (max-width: 600px) {
+  .topo img { height: 26px; }
+  .topo .marca { display: none; }
+  .hero .numeros { gap: 18px; }
+}

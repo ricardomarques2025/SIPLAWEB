@@ -7,11 +7,22 @@ var originalCenter = map.getCenter();
 var originalZoom = map.getZoom();
 
 // Botão "Atualizar site": força o navegador a buscar novamente o mapa.html
-// (ignorando o cache local), o que também garante que a busca dos dados de
-// negócio (data/DADOS.json e data/OBRAS_LINKS.json) e das camadas seja
-// refeita do zero. Combinado com o parâmetro "?v=" nos scripts/estilos (bumped a cada
+// (ignorando o cache local), o que também garante que a busca das obras no
+// banco (js/dados_banco.js) e das camadas seja refeita do zero. Combinado com o parâmetro "?v=" nos scripts/estilos (bumped a cada
 // alteração de código), isso garante que qualquer usuário sempre veja a
 // versão mais recente do site sem precisar saber o atalho de hard refresh.
+// Botao "?": abre a Central de Ajuda (ajuda.html) no assunto da tela atual.
+(function() {
+  var ajuda = document.getElementById('btnAjuda');
+  if (!ajuda) return;
+  var q = new URLSearchParams(location.search);
+  var assunto = q.get('modulo') === 'jurisdicao' ? 'jurisdicao-modulo'
+    : String(q.get('perfil')).toLowerCase() === 'rodoviario' ? 'mapa-camadas'
+    : q.get('origem') ? 'obras-tabela'
+    : 'mapa-interface';
+  ajuda.href = 'ajuda.html#' + assunto;
+})();
+
 (function() {
   var btn = document.getElementById('btnAtualizarSite');
   if (!btn) return;
@@ -459,9 +470,6 @@ map.addControl(new LogoMapaControl());
   var oaeData = null;
   var estadosData = null;
   var snvData = null;
-  var alteracoesData = null;
-  var alteracoesTabelaData = [];
-  var alteracoesPorId = {};
 
   var estadosLayer = null;
   var municipiosLayer = null;
@@ -484,7 +492,6 @@ map.addControl(new LogoMapaControl());
   var snvLayer = null;
   var obrasLabelLayer = null;
   var regraLayers = [];
-  var alteracoesLayer = null;
   var rotulosObrasPrintAtivos = false;
   var registrosZoomTabelaCompleta = [];
   var destaqueTabelaCompletaLayer = null;
@@ -511,17 +518,6 @@ map.addControl(new LogoMapaControl());
       GMP: true
     };
     var servicoFiltroAtivo = '';
-
-    var TIPOS_ALTERACAO = [
-      'Estadualiza\u00e7\u00e3o',
-      'Federaliza\u00e7\u00e3o',
-      'Municipaliza\u00e7\u00e3o'
-    ];
-    var alteracoesAtivas = {};
-    var alteracoesReferenciaAtiva = true;
-    for (var iAltInicial = 0; iAltInicial < TIPOS_ALTERACAO.length; iAltInicial++) {
-      alteracoesAtivas[TIPOS_ALTERACAO[iAltInicial]] = true;
-    }
 
   var anotacoesLayer = L.featureGroup().addTo(map);
   var anotacoesHistorico = [];
@@ -2184,7 +2180,7 @@ map.addControl(new LogoMapaControl());
     normalizado.ORIGEM = origemNormalizadaObraPonto(normalizado);
     normalizado.INTERVENCAO = valorIntervencaoDados(normalizado);
     normalizado.SERVICO = normalizado.INTERVENCAO;
-    // TARE e sempre obra linear (vinculada ao SRE por OBRAS_LINKS), mesmo sem TIPO preenchido.
+    // TARE e sempre obra linear (vinculada ao SRE pelos vínculos), mesmo sem TIPO preenchido.
     if (normalizado.ORIGEM === 'TARE' && !tipoRegistroDados(normalizado)) normalizado.TIPO = 'Link';
     if (normalizado.ITEM === null || normalizado.ITEM === undefined || String(normalizado.ITEM).trim() === '') {
       normalizado.ITEM = normalizado.REF || normalizado.IDCOD || '';
@@ -2197,7 +2193,7 @@ map.addControl(new LogoMapaControl());
 
   function carregarDadosUnificados() {
     if (!dadosUnificadosPromise) {
-      dadosUnificadosPromise = carregarJsonOpcional('data/DADOS.json')
+      dadosUnificadosPromise = DadosBanco.registros()
         .then(function(resultado) {
           return Array.isArray(resultado) ? resultado.map(normalizarRegistroDados) : [];
         });
@@ -2448,8 +2444,8 @@ map.addControl(new LogoMapaControl());
     };
   }
 
-  function carregarTabelaObrasPontos() {
-    Promise.all([
+  function carregarTabelaObrasPontos(opcoesFiltro) {
+    return Promise.all([
       carregarDadosUnificados(),
       carregarLocalidades().catch(function() { return null; })
     ]).then(function(resultado) {
@@ -2502,12 +2498,12 @@ map.addControl(new LogoMapaControl());
       atualizarObrasPontosDataComCoordenadas();
       console.log('OBRAS_PONTOS/DADOS carregados:', obrasPontosTabelaData.length, 'registros; pontos por coordenada:', featuresCoordenadas.length);
       if (municipiosData) preencherPropostas();
-      if (obrasPontosData && municipiosData) aplicarFiltros();
+      if (obrasPontosData && municipiosData) aplicarFiltros(opcoesFiltro);
     }).catch(function(e) {
       console.warn('Falha ao carregar tabelas de obras pontuais:', e);
     });
   }
-  function atualizarDadosObrasUnificadas(registros) {
+  function atualizarDadosObrasUnificadas(registros, opcoesFiltro) {
     dadosUnificadosData = registros || [];
     dadosUnificadosPorGrupo = indexarDadosPorGrupo(dadosUnificadosData);
     var linhas = registrosDadosPorTipo(registros, 'Link');
@@ -2532,13 +2528,13 @@ map.addControl(new LogoMapaControl());
     obrasDpjPorLink = indexarDadosPorIdcod(obrasDpjData);
     obrasTarePorLink = indexarDadosPorIdcod(obrasTareData);
 
-    console.log('DADOS.json linhas carregadas:', linhas.length);
+    console.log('Obras carregadas (tabelas):', linhas.length);
     preencherIntervencaos();
     if (sreData && municipiosData) {
       preencherRodovias();
       preencherSREs();
       preencherPropostas();
-      aplicarFiltros();
+      aplicarFiltros(opcoesFiltro);
     }
   }
 
@@ -2556,7 +2552,6 @@ map.addControl(new LogoMapaControl());
   
   function atualizarBotoesBase() {
     atualizarBotoesRegionais();
-    atualizarBotoesAlteracoes();
     var btnOAE = document.getElementById('toggleOAE');
     if (btnOAE) btnOAE.classList.toggle('ativo-filtro', oaeFiltroAtivo);
     document.getElementById('toggleSREBase').classList.toggle('ativo-filtro', sreBaseFiltroAtivo);
@@ -2598,7 +2593,6 @@ map.addControl(new LogoMapaControl());
       btnAreaInfluencia.classList.toggle('ativo-filtro', areaInfluenciaFiltroAtivo || areaInfluenciaSelecionada);
       btnAreaInfluencia.setAttribute('aria-pressed', String(areaInfluenciaFiltroAtivo || areaInfluenciaSelecionada));
     }
-    atualizarBotoesAlteracoes();
   }
 
 
@@ -2618,10 +2612,6 @@ map.addControl(new LogoMapaControl());
     if (aeroObrasIconLayer) {
       map.removeLayer(aeroObrasIconLayer);
       aeroObrasIconLayer = null;
-    }
-    if (alteracoesLayer) {
-      map.removeLayer(alteracoesLayer);
-      alteracoesLayer = null;
     }
     aeroObrasClusterRefs = [];
   }
@@ -3566,7 +3556,13 @@ map.addControl(new LogoMapaControl());
     municipiosLayer = L.layerGroup([preenchimentos, contornosBrancos, contornosTracejados]).addTo(map);
   }
 
+  // Popup do ponto clicado: o que foi clicado (rodovia, obra, círculo...) e, em seguida, todas as
+  // áreas visíveis que contêm o ponto (municípios, regiões, áreas urbanas/ambientais, áreas de
+  // estudo/influência) e as fontes extras registradas (ex.: Unidades de Saúde no raio).
   var camadasAreasPopup = new Map();
+  var fontesPopupNoPonto = [];
+
+  function registrarFontePopupNoPonto(fonte) { fontesPopupNoPonto.push(fonte); }
 
   function conteudoPopupAreasSobrepostas(layerClicada, latlng) {
     var conteudos = [];
@@ -3577,29 +3573,55 @@ map.addControl(new LogoMapaControl());
     if (camadasAreasPopup.has(layerClicada)) adicionar(layerClicada, camadasAreasPopup.get(layerClicada));
     camadasAreasPopup.forEach(function(conteudo, layer) {
       if (layer === layerClicada || !map.hasLayer(layer)) return;
-      if (!layer.getBounds().contains(latlng)) return;
+      // Feição sem geometria desenhável tem limites vazios; antes isso quebrava o popup inteiro.
+      var limites = layer.getBounds();
+      if (!limites.isValid() || !limites.contains(latlng)) return;
       if (pontoEmPoligonoFeature(latlng.lng, latlng.lat, layer.feature)) adicionar(layer, conteudo);
     });
-    return conteudos.map(function(html) {
-      return '<section class="popup-area-sobreposta">' + html + '</section>';
-    }).join('');
+    return conteudos;
   }
+
+  function abrirPopupNoPonto(latlng, principal, layerClicada) {
+    // Escolhendo o traçado de uma obra (js/obras/tracado.js): o clique é da seleção, não abre popup.
+    if (window.obrasSelecaoTracadoAtiva) return;
+    var secoes = [];
+    function adicionar(html) { if (html && secoes.indexOf(html) === -1) secoes.push(html); }
+    adicionar(principal);
+    conteudoPopupAreasSobrepostas(layerClicada, latlng).forEach(adicionar);
+    fontesPopupNoPonto.forEach(function(fonte) { adicionar(fonte(latlng)); });
+    if (!secoes.length) return;
+    L.popup({ maxWidth: 380, maxHeight: 360 })
+      .setLatLng(latlng)
+      .setContent(secoes.map(function(html) {
+        return '<section class="popup-area-sobreposta">' + html + '</section>';
+      }).join(''))
+      .openOn(map);
+  }
+  window.abrirPopupNoPonto = abrirPopupNoPonto;
+
+  // Marcador (localidade, aeródromo, pedágio, obra pontual): ele primeiro, depois as áreas do ponto.
+  function vincularPopupNoPonto(marker, conteudo) {
+    marker.on('click', function() {
+      abrirPopupNoPonto(marker.getLatLng(), typeof conteudo === 'function' ? conteudo(marker) : conteudo, null);
+    });
+  }
+  window.registrarFontePopupNoPonto = registrarFontePopupNoPonto;
 
   function vincularPopupComAreaClique(layer, conteudo) {
     if (layer instanceof L.Polygon && layer.feature) {
       layer.on('add', function() { camadasAreasPopup.set(layer, conteudo); });
       layer.on('remove', function() { camadasAreasPopup.delete(layer); });
       if (map.hasLayer(layer)) camadasAreasPopup.set(layer, conteudo);
-      layer.on('click', function(e) {
-        L.popup({ maxWidth: 380, maxHeight: 360 }, layer)
-          .setLatLng(e.latlng)
-          .setContent(conteudoPopupAreasSobrepostas(layer, e.latlng))
-          .openOn(map);
-      });
+      layer.on('click', function(e) { abrirPopupNoPonto(e.latlng, null, layer); });
       return;
     }
-    layer.bindPopup(conteudo);
-    if (!(layer instanceof L.Polyline) || layer instanceof L.Polygon) return;
+    if (!(layer instanceof L.Polyline) || layer instanceof L.Polygon) {
+      layer.bindPopup(conteudo);
+      return;
+    }
+    layer.on('click', function(e) {
+      abrirPopupNoPonto(e.latlng, typeof conteudo === 'function' ? conteudo(layer) : conteudo, null);
+    });
     var areaClique = null;
     layer.on('add', function() {
       if (areaClique) return;
@@ -3624,7 +3646,7 @@ map.addControl(new LogoMapaControl());
     });
   }
 
-  // Vínculo via OBRAS_LINKS.json (GEOCOD/BASE/IDCOD) + DADOS.json
+  // Vínculo via vínculos das obras (GEOCOD/BASE/IDCOD), lidos do banco
   // (NATUREZA = 'Espacialização'), cruzado com sre_base/ferrovias/extra_base.
   function prepararBuffer(links, registrosPorIdcod, baseIndices) {
     bufferData.features = construirBufferDeLinks(links, registrosPorIdcod, baseIndices);
@@ -3675,9 +3697,9 @@ map.addControl(new LogoMapaControl());
         return ESTILOS_AREA_ESTUDO[feature.properties.BASE] || ESTILOS_AREA_ESTUDO.sre_base;
       },
       onEachFeature: function(feature, layer) {
-        layer.bindPopup(function() {
+        vincularPopupComAreaClique(layer, function() {
           return construirPopupAreaBase(feature, feature.properties.DESCRICAO || 'Área de Influência', [
-            { rotulo: 'Identificador', nome: 'IDCOD' },
+            { rotulo: 'Código', nome: 'IDCOD' },
             { rotulo: 'Base', nome: 'BASE' },
             { rotulo: 'Trecho', nome: 'SRE' }
           ]);
@@ -3881,13 +3903,14 @@ map.addControl(new LogoMapaControl());
       });
 
       // Adicionar popup
-      marker.bindPopup('<b>' + nome + '</b><br>População: ' + populacao.toLocaleString('pt-BR'));
+      vincularPopupNoPonto(marker, '<b>' + nome + '</b><br>População: ' + populacao.toLocaleString('pt-BR'));
 
       localidadesLayer.addLayer(marker);
 
       // Adicionar rótulo baseado no zoom e população
       var label = L.marker(latlng, {
         pane: 'rotulosBasePane',
+        interactive: false,
         icon: L.divIcon({
           className: 'localidade-label',
           html: '<div class="label-text">' + nome + '</div>',
@@ -4006,7 +4029,7 @@ map.addControl(new LogoMapaControl());
         title: valorSeguro(feature, 'NOME') || ''
       });
 
-      marker.bindPopup(construirPopupPedagio(feature));
+      vincularPopupNoPonto(marker, construirPopupPedagio(feature));
       pedagiosLayer.addLayer(marker);
     });
 
@@ -4063,7 +4086,7 @@ map.addControl(new LogoMapaControl());
         zIndexOffset: tipo === 'aeroporto' ? 20 : 10
       });
 
-      marker.bindPopup(construirPopupAero(feature));
+      vincularPopupNoPonto(marker, construirPopupAero(feature));
       aeroLayer.addLayer(marker);
     });
 
@@ -4318,6 +4341,7 @@ map.addControl(new LogoMapaControl());
 
     return L.marker(latlng, {
       pane: 'rotulosBasePane',
+      interactive: false,
       icon: L.divIcon({
         className: federal ? 'sre-label-escudo snv-label-escudo' : 'sre-label-escudo',
         html: html,
@@ -5083,11 +5107,11 @@ map.addControl(new LogoMapaControl());
     }
     var titulo = 'Dados do SRE';
     if (propostas.length) titulo += ' - Proposta ' + propostas.join(', ');
-    if (itensDor.length) titulo += ' - IDCOD DOR ' + itensDor.join(', ');
-    if (itensDma.length) titulo += ' - IDCOD DMA ' + itensDma.join(', ');
-    if (itensDpl.length) titulo += ' - IDCOD DPL ' + itensDpl.join(', ');
-    if (itensDpj.length) titulo += ' - IDCOD DPJ ' + itensDpj.join(', ');
-    if (itensTare.length) titulo += ' - IDCOD TARE ' + itensTare.join(', ');
+    if (itensDor.length) titulo += ' - Código DOR ' + itensDor.join(', ');
+    if (itensDma.length) titulo += ' - Código DMA ' + itensDma.join(', ');
+    if (itensDpl.length) titulo += ' - Código DPL ' + itensDpl.join(', ');
+    if (itensDpj.length) titulo += ' - Código DPJ ' + itensDpj.join(', ');
+    if (itensTare.length) titulo += ' - Código TARE ' + itensTare.join(', ');
 
     var registros = [];
     var totalExtensao = 0;
@@ -5138,7 +5162,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function rotuloIdentificadorObraPonto(dados) {
-    return origemObraPonto(dados) === 'FUNDEINFRA' ? 'Proposta' : 'IDCOD';
+    return origemObraPonto(dados) === 'FUNDEINFRA' ? 'Proposta' : 'Código';
   }
 
   function valorIdentificadorObraPonto(dados) {
@@ -5155,8 +5179,8 @@ map.addControl(new LogoMapaControl());
       else temOutrasOrigens = true;
     }
 
-    if (temFundeinfra && temOutrasOrigens) return 'Proposta/IDCOD';
-    return temFundeinfra ? 'Proposta' : 'IDCOD';
+    if (temFundeinfra && temOutrasOrigens) return 'Proposta/Código';
+    return temFundeinfra ? 'Proposta' : 'Código';
   }
 
   function intervencaoEhOAE(dados) {
@@ -5441,6 +5465,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function exportarTabelaFiltradaCsv() {
+    if (!Acesso.podeExportarPagina()) return;   // visualizador nao exporta (js/acesso.js)
     var linhas = coletarDadosTabularesFiltrados();
     if (!linhas.length) {
       alert('Nenhum dado tabular encontrado para os filtros atuais.');
@@ -5482,6 +5507,8 @@ map.addControl(new LogoMapaControl());
     }
     var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
     var intervencao = valorIntervencaoDados(dados).toLowerCase();
+    // Licitação usa o mesmo ícone de obra (por enquanto não há ícone próprio).
+    if (etapa.indexOf('licita') >= 0) etapa = 'obra';
     if (intervencao.indexOf('bueiro') >= 0) {
       if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.BueiroProjeto;
       if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.BueiroObra;
@@ -5518,6 +5545,8 @@ map.addControl(new LogoMapaControl());
       else if (servico.indexOf('reforma') >= 0) cor = '#14b8a6';
 
       if (servico.indexOf('revitaliza') >= 0 && etapa.indexOf('planejamento') >= 0) tipoLinha = 'COM LINHA BRANCA DOR';
+      // Em licitação: mesma cor da intervenção, com tracejado branco (ainda não é obra em execução).
+      if (etapa.indexOf('licita') >= 0) tipoLinha = 'COM LINHA BRANCA TRACEJADA';
 
       return {
         cor: cor,
@@ -5904,6 +5933,86 @@ map.addControl(new LogoMapaControl());
     return '<b>' + escapeHtml(rotulo) + ':</b> ' + escapeHtml(exibicao) + (sufixo || '') + '<br>';
   }
 
+  // ---------- Popup das obras (cartao no padrao do popup da Jurisdicao) ----------
+  // Linha superior (origem, codigo, proposta), intervencao como titulo, descricao, selo de etapa/status
+  // e so os campos preenchidos numa grade rotulo/valor.
+  var CORES_ETAPA_POPUP = {
+    'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'
+  };
+  var CAMPOS_CARTAO_OBRA = [
+    { chave: 'FASE', rotulo: 'Fase' },
+    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'PROCESSO_SEI_CONTRATACAO', rotulo: 'SEI contratação' },
+    { chave: 'CONTRATO', rotulo: 'Contrato' },
+    { chave: 'EMPRESA', rotulo: 'Empresa' },
+    { chave: 'MODALIDADE', rotulo: 'Modalidade' },
+    { chave: 'FONTE', rotulo: 'Fonte do recurso' },
+    { chave: 'CONCLUSAO', rotulo: 'Conclusão prevista' },
+    { chave: 'RODOVIA', rotulo: 'Rodovia' },
+    { chave: 'MUNICIPIO', rotulo: 'Município' },
+    { chave: 'LOCALIDADE', rotulo: 'Localidade' },
+    { chave: 'LOCALIZACAO', rotulo: 'Localização' },
+    { chave: 'LOTE', rotulo: 'Lote' },
+    { chave: 'AREA_CONTRATADA_M2', rotulo: 'Área contratada', sufixo: ' m²' },
+    { chave: 'AREA_EXECUTADA_M2', rotulo: 'Área executada', sufixo: ' m²' },
+    { chave: 'HORAS_PAGAS', rotulo: 'Horas pagas' },
+    { chave: 'ATUALIZACAO', rotulo: 'Atualizado em' }
+  ];
+  var MESES_POPUP = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+  function valorCartaoObra(dados, campo) {
+    var v = valorExibicao(dados && dados[campo.chave]);
+    if (v === '') return '';
+    if (campo.chave === 'ATUALIZACAO' && /^\d{4}-\d{2}/.test(String(v))) {
+      return MESES_POPUP[Number(String(v).slice(5, 7)) - 1] + '/' + String(v).slice(0, 4);
+    }
+    if (typeof v === 'number') v = v.toLocaleString('pt-BR');
+    return String(v) + (campo.sufixo || '');
+  }
+
+  // opcoes.ocultar: chaves que o cabecalho do popup ja mostra (ex.: RODOVIA no trecho da malha).
+  function cartaoObraPopup(dados, opcoes) {
+    if (!dados) return '';
+    opcoes = opcoes || {};
+    var ocultar = opcoes.ocultar || [];
+    var origem = origemNormalizadaObraPonto(dados);
+    var sup = '<span class="po-origem">' + escapeHtml(origem) + '</span>' +
+      (dados.IDCOD ? '<span>' + escapeHtml(dados.IDCOD) + '</span>' : '') +
+      (valorExibicao(dados.PROPOSTA) !== '' ? '<span>Proposta ' + escapeHtml(dados.PROPOSTA) + '</span>' : '');
+    var intervencao = valorExibicao(dados.INTERVENCAO);
+    var descricao = valorExibicao(dados.DESCRICAO);
+    var titulo = intervencao || descricao;
+    var etapa = valorExibicao(dados.ETAPA), status = valorExibicao(dados.STATUS);
+    var selo = etapa || status
+      ? '<div class="po-situacao">' + (etapa ? '<span class="po-etapa" style="--c:' + (CORES_ETAPA_POPUP[etapa] || '#64748b') + '">' + escapeHtml(etapa) + '</span>' : '') +
+        (status ? '<span class="po-status">' + escapeHtml(status) + '</span>' : '') + '</div>'
+      : '';
+    var campos = CAMPOS_CARTAO_OBRA.filter(function(c) { return ocultar.indexOf(c.chave) === -1; }).map(function(c) {
+      var v = valorCartaoObra(dados, c);
+      return v === '' ? '' : '<dt>' + escapeHtml(c.rotulo) + '</dt><dd>' + escapeHtml(v) + '</dd>';
+    }).join('');
+    return '<div class="popup-obra">' +
+      '<div class="po-sup">' + sup + '</div>' +
+      (titulo ? '<div class="po-titulo">' + escapeHtml(titulo) + '</div>' : '') +
+      (descricao && descricao !== titulo ? '<div class="po-desc">' + escapeHtml(descricao) + '</div>' : '') +
+      selo +
+      (campos ? '<dl class="po-campos">' + campos + '</dl>' : '') +
+      '</div>';
+  }
+
+  // Cabecalho do elemento clicado (trecho da malha, aerodromo, municipio) acima dos cartoes.
+  function cabecalhoPopup(sup, titulo, linha) {
+    return '<div class="popup-cabecalho">' +
+      (sup ? '<div class="pc-sup">' + escapeHtml(sup) + '</div>' : '') +
+      '<div class="pc-titulo">' + escapeHtml(titulo || '') + '</div>' +
+      (linha ? '<div class="pc-linha">' + escapeHtml(linha) + '</div>' : '') +
+      '</div>';
+  }
+
+  function contagemObrasPopup(n, onde) {
+    return n > 1 ? '<div class="po-contagem">' + n + ' obras ' + onde + '</div>' : '';
+  }
+
   function htmlCamposPopup(dados, campos) {
     var html = '';
     for (var i = 0; i < campos.length; i++) {
@@ -5952,164 +6061,8 @@ map.addControl(new LogoMapaControl());
     return html + '</table></div>';
   }
 
-  var CORES_ALTERACAO = {
-    'Estadualiza\u00e7\u00e3o': '#159447',
-    'Federaliza\u00e7\u00e3o': '#1d4ed8',
-    'Municipaliza\u00e7\u00e3o': '#dc2626'
-  };
-
-  var CAMPOS_ALTERACOES_POPUP = [
-    { chave: 'TIPO', rotulo: 'Tipo' },
-    { chave: 'PROCESSO', rotulo: 'Processo' },
-    { chave: 'MUNICIPIOS', rotulo: 'Munic\u00edpios' },
-    { chave: 'SITUACAO_ATUAL', rotulo: 'Situa\u00e7\u00e3o atual' }
-  ];
-
-  var CAMPOS_ALTERACOES_TABELA = [
-    { chave: 'ID', rotulo: 'ID' },
-    { chave: 'TIPO', rotulo: 'Tipo' },
-    { chave: 'PROCESSO', rotulo: 'Processo' },
-    { chave: 'MUNICIPIOS', rotulo: 'Munic\u00edpios' },
-    { chave: 'RODOVIA', rotulo: 'Rodovia' },
-    { chave: 'EXTENSAO_KM', rotulo: 'Extens\u00e3o km' },
-    { chave: 'PORTARIA_SRE', rotulo: 'Portaria SRE' },
-    { chave: 'TRECHO', rotulo: 'Trecho' },
-    { chave: 'LEI_MUNICIPAL', rotulo: 'Lei municipal' },
-    { chave: 'EXPOSICAO_DE_MOTIVOS', rotulo: 'Exposi\u00e7\u00e3o de motivos' },
-    { chave: 'LEI_ESTADUAL', rotulo: 'Lei estadual' },
-    { chave: 'TERMO_DE_TRANSFERENCIA', rotulo: 'Termo de transfer\u00eancia' },
-    { chave: 'SITUACAO_ATUAL', rotulo: 'Situa\u00e7\u00e3o atual' }
-  ];
-
-  function atualizarBotoesAlteracoes() {
-    var tiposSelecionados = TIPOS_ALTERACAO.filter(function(tipo) { return alteracoesAtivas[tipo]; });
-    document.getElementById('alteracaoJurisdicaoSelect').value = tiposSelecionados.length === 1 ? tiposSelecionados[0] : '';
-    var botao = document.getElementById('toggleAlteracoesJurisdicao');
-    botao.classList.toggle('ativo-filtro', alteracoesReferenciaAtiva);
-    botao.setAttribute('aria-pressed', String(alteracoesReferenciaAtiva));
-  }
-
-  function definirAlteracoesAtivas(valor) {
-    alteracoesReferenciaAtiva = !!valor;
-    for (var i = 0; i < TIPOS_ALTERACAO.length; i++) {
-      alteracoesAtivas[TIPOS_ALTERACAO[i]] = !!valor;
-    }
-    atualizarBotoesAlteracoes();
-  }
-
-  function algumaAlteracaoAtiva() {
-    if (!alteracoesReferenciaAtiva) return false;
-    for (var i = 0; i < TIPOS_ALTERACAO.length; i++) {
-      if (alteracoesAtivas[TIPOS_ALTERACAO[i]]) return true;
-    }
-    return false;
-  }
-
-  function normalizarAlteracaoRegistro(item) {
-    var registro = {};
-    item = item || {};
-    for (var i = 0; i < CAMPOS_ALTERACOES_TABELA.length; i++) {
-      var chave = CAMPOS_ALTERACOES_TABELA[i].chave;
-      registro[chave] = item[chave];
-    }
-    return registro;
-  }
-
-  function atualizarAlteracoesTabela(registros) {
-    alteracoesTabelaData = Array.isArray(registros) ? registros.map(normalizarAlteracaoRegistro) : [];
-    alteracoesPorId = {};
-    for (var i = 0; i < alteracoesTabelaData.length; i++) {
-      var id = alteracoesTabelaData[i].ID;
-      if (id === null || id === undefined || String(id).trim() === '') continue;
-      alteracoesPorId[String(id).trim()] = alteracoesTabelaData[i];
-    }
-  }
-
-  function dadosAlteracaoDaFeature(feature) {
-    var id = valorSeguro(feature, 'ID');
-    if (id === null || id === undefined || String(id).trim() === '') return null;
-    return alteracoesPorId[String(id).trim()] || null;
-  }
-
-  function corAlteracao(tipo) {
-    return CORES_ALTERACAO[tipo] || '#64748b';
-  }
-
-  function construirPopupAlteracao(feature) {
-    var dados = dadosAlteracaoDaFeature(feature);
-    if (!dados) return '<b>Nenhum dado encontrado</b>';
-    return htmlCamposPopup(dados, CAMPOS_ALTERACOES_POPUP) || '<b>Nenhum dado encontrado</b>';
-  }
-
-  function atualizarPainelInferiorAlteracao(feature) {
-    var dados = dadosAlteracaoDaFeature(feature);
-    var registros = dados ? [dados] : [];
-    var html = tabelaRegistrosHtml('Altera\u00e7\u00f5es de Jurisdi\u00e7\u00e3o', registros, CAMPOS_ALTERACOES_TABELA);
-    if (html) html += htmlAcoesTabelaCompleta('alteracao');
-    document.getElementById('painelTabelaConteudo').innerHTML = html || '<em>Nenhum dado encontrado para este trecho.</em>';
-  }
-
-  function desenharAlteracoesJuridicao() {
-    if (alteracoesLayer) {
-      map.removeLayer(alteracoesLayer);
-      alteracoesLayer = null;
-    }
-    if (!alteracoesData || !alteracoesData.features || !algumaAlteracaoAtiva()) return {};
-
-    var features = [];
-    var legendas = {};
-    for (var i = 0; i < alteracoesData.features.length; i++) {
-      var feature = alteracoesData.features[i];
-      if (!featureAtendeRegioes(feature)) continue;
-      var dados = dadosAlteracaoDaFeature(feature);
-      if (!dados || !alteracoesAtivas[dados.TIPO]) continue;
-      features.push(feature);
-      legendas[dados.TIPO] = corAlteracao(dados.TIPO);
-    }
-    if (!features.length) return legendas;
-
-    var sombra = L.geoJSON({ type: 'FeatureCollection', features: features }, {
-      pane: 'servicosPane',
-      interactive: false,
-      style: function(feature) {
-        var dados = dadosAlteracaoDaFeature(feature);
-        return {
-          color: dados ? corAlteracao(dados.TIPO) : '#111827',
-          weight: 10,
-          opacity: 0.20,
-          lineCap: 'round',
-          lineJoin: 'round'
-        };
-      }
-    });
-
-    var linhas = L.geoJSON({ type: 'FeatureCollection', features: features }, {
-      pane: 'servicosPane',
-      style: function(feature) {
-        var dados = dadosAlteracaoDaFeature(feature);
-        return {
-          color: dados ? corAlteracao(dados.TIPO) : '#64748b',
-          weight: 5,
-          opacity: 0.95,
-          lineCap: 'round',
-          lineJoin: 'round'
-        };
-      },
-      onEachFeature: function(feature, layer) {
-        vincularPopupComAreaClique(layer, construirPopupAlteracao(feature));
-        layer.on('click', function() {
-          piscarFeatureClicada(feature);
-          atualizarPainelInferiorAlteracao(feature);
-        });
-      }
-    });
-
-    alteracoesLayer = L.layerGroup([sombra, linhas]).addTo(map);
-    return legendas;
-  }
-
   var CAMPOS_LINHA_FUNDEINFRA = [
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'PROPOSTA', rotulo: 'Proposta' },
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
@@ -6128,7 +6081,7 @@ map.addControl(new LogoMapaControl());
   ]);
 
   var CAMPOS_LINHA_UNIDADE = [
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
     { chave: 'STATUS', rotulo: 'Status' },
@@ -6143,7 +6096,7 @@ map.addControl(new LogoMapaControl());
 
   var CAMPOS_LISTA_LINHAS_FILTRADAS = [
     { chave: '__ORIGEM_LISTA', rotulo: 'Origem' },
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'PROPOSTA', rotulo: 'Proposta' },
     { chave: 'INTERVENCAO', rotulo: 'Interven\u00e7\u00e3o' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
@@ -6155,7 +6108,7 @@ map.addControl(new LogoMapaControl());
 
   var CAMPOS_LISTA_PONTOS_FILTRADOS = [
     { chave: '__ORIGEM_LISTA', rotulo: 'Origem' },
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'PROPOSTA', rotulo: 'Proposta' },
     { chave: 'LOCALIDADE', rotulo: 'Localidade' },
     { chave: 'INTERVENCAO', rotulo: 'Interven\u00e7\u00e3o' },
@@ -6394,32 +6347,6 @@ map.addControl(new LogoMapaControl());
     return registros;
   }
 
-  function coletarAlteracoesFiltradasParaTabela() {
-    var registros = [];
-    if (!alteracoesData || !alteracoesData.features || !algumaAlteracaoAtiva()) return registros;
-    // Cada alteração (ID) pode abranger vários trechos/SREs, cada um com sua
-    // própria feature. Agrupamos por ID para exibir uma única linha na tabela,
-    // guardando todas as features para o Zoom abranger a alteração inteira.
-    var gruposPorId = {};
-    var ordemIds = [];
-    for (var i = 0; i < alteracoesData.features.length; i++) {
-      var feature = alteracoesData.features[i];
-      var dados = dadosAlteracaoDaFeature(feature);
-      if (!dados || !alteracoesAtivas[dados.TIPO]) continue;
-      var id = String(valorSeguro(feature, 'ID')).trim();
-      if (!gruposPorId[id]) {
-        gruposPorId[id] = { dados: dados, features: [] };
-        ordemIds.push(id);
-      }
-      gruposPorId[id].features.push(feature);
-    }
-    for (var g = 0; g < ordemIds.length; g++) {
-      var grupo = gruposPorId[ordemIds[g]];
-      registros.push(prepararRegistroListaCompleta(grupo.dados, grupo.dados.TIPO, grupo.features, 'alteracao'));
-    }
-    return registros;
-  }
-
   function renderizarListaCompletaFiltrada(tipo) {
     var painel = document.getElementById('painelTabelaConteudo');
     htmlPainelAntesListaCompleta = painel ? painel.innerHTML : '';
@@ -6428,11 +6355,7 @@ map.addControl(new LogoMapaControl());
     var registros = [];
     var campos = [];
     var titulo = 'Registros filtrados';
-    if (tipo === 'alteracao') {
-      registros = coletarAlteracoesFiltradasParaTabela();
-      campos = CAMPOS_ALTERACOES_TABELA;
-      titulo = 'Altera\u00e7\u00f5es de Jurisdi\u00e7\u00e3o filtradas (' + registros.length + ')';
-    } else if (tipo === 'municipal') {
+    if (tipo === 'municipal') {
       registros = coletarMunicipaisFiltradosParaTabela();
       campos = CAMPOS_ORIGEM_MUNICIPAL;
       titulo = 'Registros municipais filtrados (' + registros.length + ')';
@@ -6497,37 +6420,17 @@ map.addControl(new LogoMapaControl());
       var dadosDpjTodos = servicosAtivos.DPJ ? dadosDpjDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
       var dadosTareTodos = servicosAtivos.TARE ? dadosTareDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
 
-      var html = '';
-      html += htmlCampoPopup('SRE', p.sre || p.SRE);
-      html += htmlCampoPopup('Rodovia', p.RODOVIA || p.rodovia);
-      html += htmlCampoPopup('Trecho', valorTrechoFeature(feature));
-      html += htmlCampoPopup('Extensão', valorExtensaoKmFeature(feature), ' km');
-
-      if (dadosFund) {
-        var htmlFund = htmlCamposPopup(dadosFund, CAMPOS_LINHA_FUNDEINFRA);
-        if (htmlFund) html += '<br><b>-- FUNDEINFRA --</b><br>' + htmlFund;
-      }
-
-      function adicionarRegistrosPopup(titulo, registros) {
-        if (!registros.length) return;
-        var bloco = '';
-        for (var i = 0; i < registros.length; i++) {
-          var htmlRegistro = htmlCamposPopup(registros[i], CAMPOS_LINHA_UNIDADE);
-          if (!htmlRegistro) continue;
-          if (bloco) bloco += '<br>';
-          if (registros.length > 1) bloco += '<b>Registro ' + (i + 1) + '</b><br>';
-          bloco += htmlRegistro;
-        }
-        if (bloco) html += '<br><br><b>-- ' + escapeHtml(titulo) + ' --</b><br>' + bloco;
-      }
-
-      adicionarRegistrosPopup('DOR', dadosDorTodos);
-      adicionarRegistrosPopup('DMA', dadosDmaTodos);
-      adicionarRegistrosPopup('DPL', dadosDplTodos);
-      adicionarRegistrosPopup('DPJ', dadosDpjTodos);
-      adicionarRegistrosPopup('TARE', dadosTareTodos);
-
-      return html || '<b>Nenhum dado encontrado</b>';
+      // Cabecalho: o trecho da malha; abaixo, um cartao por obra (FUNDEINFRA, DOR, DMA, DPL, DPJ, TARE).
+      var ext = valorExtensaoKmFeature(feature);
+      var sre = p.sre || p.SRE;
+      var cabecalho = cabecalhoPopup(
+        'Trecho da malha' + (sre ? ' · SRE ' + sre : ''),
+        p.RODOVIA || p.rodovia || 'Rodovia',
+        [valorTrechoFeature(feature), valorExibicao(ext) !== '' ? Number(ext).toLocaleString('pt-BR') + ' km' : ''].filter(Boolean).join(' · ')
+      );
+      var obras = (dadosFund ? [dadosFund] : []).concat(dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos, dadosTareTodos);
+      var cartoes = obras.map(function(d) { return cartaoObraPopup(d, { ocultar: ['RODOVIA'] }); }).join('');
+      return cabecalho + contagemObrasPopup(obras.length, 'neste trecho') + (cartoes || '<div class="po-vazio">Nenhuma obra encontrada com os filtros atuais.</div>');
     }
     function construirLayerNormal(features, cor, espessura) {
       var sombra = L.geoJSON({
@@ -6740,27 +6643,6 @@ map.addControl(new LogoMapaControl());
     return '<span class="legenda-linha-wrap">' +
       '<span class="legenda-linha" style="height:4px;background:' + cor + ';"></span>' +
     '</span>';
-  }
-
-  function renderizarLegendaAlteracoes(legendasVisiveis) {
-    var bloco = document.getElementById('blocoLegendaAlteracoes');
-    var alvo = document.getElementById('legendaAlteracoes');
-    if (!bloco || !alvo) return;
-
-    alvo.innerHTML = '';
-    var total = 0;
-    for (var i = 0; i < TIPOS_ALTERACAO.length; i++) {
-      var tipo = TIPOS_ALTERACAO[i];
-      if (!legendasVisiveis || !legendasVisiveis[tipo]) continue;
-      var item = document.createElement('div');
-      item.className = 'legenda-item';
-      item.innerHTML = '<span class="legenda-linha-wrap">' +
-        '<span class="legenda-linha" style="height:9px;background:' + legendasVisiveis[tipo] + ';"></span>' +
-        '</span><div class="legenda-texto">' + escapeHtml(tipo) + '</div>';
-      alvo.appendChild(item);
-      total++;
-    }
-    bloco.style.display = total > 0 ? '' : 'none';
   }
 
   function renderizarLegendaIntervencaos(legendasVisiveis) {
@@ -7194,7 +7076,7 @@ map.addControl(new LogoMapaControl());
   }
 
   var CAMPOS_OBRA_PONTO_POPUP = [
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'UNIDADE', rotulo: 'Unidade' },
     { chave: 'PROPOSTA', rotulo: 'Proposta' },
     { chave: 'LOCALIDADE', rotulo: 'Localidade' },
@@ -7236,13 +7118,13 @@ map.addControl(new LogoMapaControl());
     var dadosTodos = dadosObrasPontosFiltrados(feature, propostaSelecionada);
     var totalDados = dadosTodos.length;
     var dadosPopup = totalDados ? dadosTodos[0] : null;
-    var html = dadosPopup ? htmlPopupCamposTabelaObraPonto(dadosPopup) : '';
+    var html = dadosPopup ? cartaoObraPopup(dadosPopup) : '';
 
     if (totalDados > 1) {
       var restantes = totalDados - 1;
-      html += '<br><br><span class="popup-obras-pontos-aviso">Existem mais ' +
+      html += '<div class="popup-obras-pontos-aviso">Existem mais ' +
         restantes + ' ' + (restantes === 1 ? 'obra' : 'obras') +
-        ' neste ponto. Veja a lista completa no painel inferior.</span>';
+        ' neste ponto. Veja a lista completa no painel inferior.</div>';
     }
 
     return html || '<b>Nenhum dado encontrado</b>';
@@ -7266,7 +7148,7 @@ map.addControl(new LogoMapaControl());
   ];
 
   var CAMPOS_AERO_OBRA_POPUP = [
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
     { chave: 'STATUS', rotulo: 'Status' },
     { chave: 'SEI', rotulo: 'SEI' },
@@ -7275,7 +7157,7 @@ map.addControl(new LogoMapaControl());
   ];
 
   var CAMPOS_AERO_OBRA_TABELA = [
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: '__ORIGEM', rotulo: 'Origem' },
     { chave: '__IDENTIFICADOR', rotulo: 'Proposta' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
@@ -7291,30 +7173,19 @@ map.addControl(new LogoMapaControl());
     var dadosTodos = dadosObrasAeroFiltrados(feature);
     var totalDados = dadosTodos.length;
     var dadosPopup = dadosSelecionado || (totalDados ? dadosTodos[0] : null);
-    var html = htmlCamposPopup(p, [
-      { chave: 'NOME', rotulo: 'Aeródromo/Aeroporto' },
-      { chave: 'TIPO', rotulo: 'Tipo' },
-      { chave: 'MUNICIPIO', rotulo: 'Município' },
-      { chave: 'COD', rotulo: 'Código' }
-    ]);
+    var html = cabecalhoPopup(
+      [valorExibicao(p.TIPO), valorExibicao(p.COD)].filter(Boolean).join(' · ') || 'Aeródromo',
+      p.NOME || 'Aeródromo/Aeroporto',
+      valorExibicao(p.MUNICIPIO)
+    );
 
-    if (dadosPopup) {
-      var dados = Object.assign({}, dadosPopup);
-      var origem = origemObraPonto(dados);
-      var camposObra = CAMPOS_AERO_OBRA_POPUP;
-      if (origem === 'FUNDEINFRA') {
-        camposObra = [{ chave: '__IDENTIFICADOR', rotulo: 'Proposta' }].concat(CAMPOS_AERO_OBRA_POPUP);
-        dados.__IDENTIFICADOR = valorIdentificadorObraPonto(dados);
-      }
-      var htmlObra = htmlCamposPopup(dados, camposObra);
-      if (htmlObra) html += '<br><br><b>-- ' + escapeHtml(origem) + ' --</b><br>' + htmlObra;
-    }
+    if (dadosPopup) html += cartaoObraPopup(dadosPopup, { ocultar: ['MUNICIPIO'] });
 
     if (totalDados > 1) {
       var restantes = totalDados - 1;
-      html += '<br><br><span class="popup-obras-pontos-aviso">Existem mais ' +
+      html += '<div class="popup-obras-pontos-aviso">Existem mais ' +
         restantes + ' ' + (restantes === 1 ? 'obra' : 'obras') +
-        ' neste aeródromo/aeroporto. Veja a lista completa no painel inferior.</span>';
+        ' neste aeródromo/aeroporto. Veja a lista completa no painel inferior.</div>';
     }
 
     return html || '<b>Nenhum dado encontrado</b>';
@@ -7603,7 +7474,7 @@ map.addControl(new LogoMapaControl());
         title: valorSeguro(feature, 'trecho') + ' - ' + ((dados && dados.ETAPA) || '')
       });
 
-      marker.bindPopup(construirPopupObraPonto(feature));
+      vincularPopupNoPonto(marker, construirPopupObraPonto(feature));
       marker._quantidadeObrasPontos = dadosFiltrados.length;
       marker.on('click', function(f) {
         return function() {
@@ -7631,7 +7502,7 @@ map.addControl(new LogoMapaControl());
   }
 
   var CAMPOS_ORIGEM_MUNICIPAL = [
-    { chave: 'IDCOD', rotulo: 'IDCOD' },
+    { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'MUNICIPIO', rotulo: 'Município' },
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
@@ -7648,10 +7519,9 @@ map.addControl(new LogoMapaControl());
 
   function construirPopupOrigemMunicipal(feature, origem) {
     var dados = dadosMunicipaisFiltrados(feature, origem);
-    var html = '<b>' + escapeHtml(origem) + ' - ' + escapeHtml(valorSeguro(feature, 'NM_MUN')) + '</b>';
-    for (var i = 0; i < dados.length; i++) {
-      html += '<br>' + htmlCamposPopup(dados[i], CAMPOS_ORIGEM_MUNICIPAL.filter(function(c) { return c.chave !== 'MUNICIPIO'; }));
-    }
+    var html = cabecalhoPopup('Município atendido · ' + origem, valorSeguro(feature, 'NM_MUN'), '');
+    html += contagemObrasPopup(dados.length, 'neste município');
+    for (var i = 0; i < dados.length; i++) html += cartaoObraPopup(dados[i], { ocultar: ['MUNICIPIO'] });
     return html;
   }
 
@@ -7742,7 +7612,7 @@ map.addControl(new LogoMapaControl());
           title: (p.NOME || p.MUNICIPIO || '') + ' - ' + origem
         });
 
-        marker.bindPopup(construirPopupObraAero(feature, dados));
+        vincularPopupNoPonto(marker, construirPopupObraAero(feature, dados));
         marker._quantidadeObrasPontos = 1;
         marker.on('click', function(f, item) {
           return function() {
@@ -7784,7 +7654,6 @@ map.addControl(new LogoMapaControl());
 
     var situacoesFedVisiveis = desenharSNV();
     var situacoesEstVisiveis = desenharSREBase();
-    var alteracoesVisiveis = desenharAlteracoesJuridicao();
 
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
     var sreSelecionado = document.getElementById('sreSelect').value;
@@ -8140,7 +8009,6 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaGmk(resultadoObrasPontos.legendaGmk);
     renderizarLegendaOrigemMunicipal('legendaGmm', 'GMM', totaisOrigensMunicipais.GMM);
     renderizarLegendaOrigemMunicipal('legendaGmp', 'GMP', totaisOrigensMunicipais.GMP);
-    renderizarLegendaAlteracoes(alteracoesVisiveis);
     renderizarLegendaOAE({});
     renderizarLegendaRodEst(situacoesEstVisiveis);
     renderizarLegendaRodFed(situacoesFedVisiveis);
@@ -8206,10 +8074,9 @@ map.addControl(new LogoMapaControl());
       var dsvAtivo = servicosAtivos.DSV;
       var novasOrigens = ['TARE', 'GME', 'GMK', 'GMM', 'GMP'];
       var novasOrigensTodasAtivas = novasOrigens.every(function(o) { return servicosAtivos[o]; });
-      var alteracaoAtiva = algumaAlteracaoAtiva();
 
       strong.textContent = 'PLANO GOINFRA';
-      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo && dpjAtivo && docAtivo && dsvAtivo && novasOrigensTodasAtivas && alteracaoAtiva) {
+      if (fundAtivo && dorAtivo && dmaAtivo && dplAtivo && dpjAtivo && docAtivo && dsvAtivo && novasOrigensTodasAtivas) {
         span.textContent = '';
       } else {
         var origensAtivas = [];
@@ -8223,6 +8090,7 @@ map.addControl(new LogoMapaControl());
         novasOrigens.forEach(function(o) { if (servicosAtivos[o]) origensAtivas.push(o); });
         span.textContent = origensAtivas.length ? '- ' + origensAtivas.join(' / ') : '';
       }
+      if (window.Jurisdicao && Jurisdicao.ativo()) span.textContent = '- JURISDIÇÃO';
     }
   }
 
@@ -8300,7 +8168,6 @@ map.addControl(new LogoMapaControl());
     for (var chave in servicosAtivos) {
       servicosAtivos[chave] = false;
     }
-    definirAlteracoesAtivas(false);
     oaeFiltroAtivo = false;
         sreBaseFiltroAtivo = false;
     snvFiltroAtivo = false;
@@ -8363,7 +8230,6 @@ map.addControl(new LogoMapaControl());
     var bDpj = document.getElementById('legendaDpj') ? document.getElementById('legendaDpj').closest('.bloco') : null;
     var bDoc = document.getElementById('legendaDoc') ? document.getElementById('legendaDoc').closest('.bloco') : null;
     var bDsv = document.getElementById('legendaDsv') ? document.getElementById('legendaDsv').closest('.bloco') : null;
-    var bAlteracoes = document.getElementById('blocoLegendaAlteracoes');
     var bAero = document.getElementById('blocoLegendaAero');
     var bPedagios = document.getElementById('blocoLegendaPedagios');
     if (b1) b1.style.display = 'none';
@@ -8380,7 +8246,6 @@ map.addControl(new LogoMapaControl());
       var el = document.getElementById(id);
       if (el) el.closest('.bloco').style.display = 'none';
     });
-    if (bAlteracoes) bAlteracoes.style.display = 'none';
     if (bAero) bAero.style.display = 'none';
     if (bPedagios) bPedagios.style.display = 'none';
 
@@ -8428,7 +8293,6 @@ map.addControl(new LogoMapaControl());
     for (var chave in servicosAtivos) {
       servicosAtivos[chave] = true;
     }
-    definirAlteracoesAtivas(true);
     oaeFiltroAtivo = true;
         sreBaseFiltroAtivo = true;
     snvFiltroAtivo = true;
@@ -8517,7 +8381,6 @@ map.addControl(new LogoMapaControl());
     for (var chave in servicosAtivos) {
       servicosAtivos[chave] = !origemAtiva || chave === origemAtiva;
     }
-    definirAlteracoesAtivas(!origemAtiva);
 
     preencherIntervencaos();
     resetarBotoesIntervencao();
@@ -8552,29 +8415,22 @@ map.addControl(new LogoMapaControl());
     mapasBase[nomeBase].addTo(map);
   }
 
-  function aplicarEntradaMapa() {
+  // inicial = abertura da pagina (tambem recolhe a barra lateral se pedido no endereco);
+  // sem ele, so restaura as origens/camadas da entrada (botao "Ligar Tudo / Limpar").
+  function aplicarEntradaMapa(inicial) {
     var params = parametrosEntradaMapa();
     var origem = String(params.get('origem') || '').toUpperCase();
     var perfil = String(params.get('perfil') || '').toLowerCase();
-    var alteracoesEntrada = params.get('alteracoes') === '1';
     var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP'];
 
-    if (alteracoesEntrada) {
-      limparCamposFiltroEntrada();
-      municipioBaseFiltroAtivo = true;
-      for (var chaveAltEntrada in servicosAtivos) {
-        servicosAtivos[chaveAltEntrada] = false;
-      }
-      definirAlteracoesAtivas(true);
-      preencherIntervencaos();
-      resetarBotoesIntervencao();
-      preencherPropostas();
-      preencherRodovias();
-      preencherSREs();
-      aplicarFiltros();
-    } else if (origem && origensValidas.indexOf(origem) !== -1) {
+    if (origem && origensValidas.indexOf(origem) !== -1) {
       limparCamposFiltroEntrada();
       definirOrigensAtivas(origem);
+      aplicarFiltros();
+    } else if (params.get('modulo') === 'jurisdicao') {
+      // Mesma base de uma origem (malhas, localidades, aeródromos), sem obras; os trechos vêm de js/jurisdicao/modulo.js.
+      limparCamposFiltroEntrada();
+      definirOrigensAtivas('JURISDICAO');
       aplicarFiltros();
     } else if (perfil === 'rodoviario') {
       limparCamposFiltroEntrada();
@@ -8582,7 +8438,6 @@ map.addControl(new LogoMapaControl());
       for (var chave in servicosAtivos) {
         servicosAtivos[chave] = false;
       }
-      definirAlteracoesAtivas(false);
       preencherIntervencaos();
       resetarBotoesIntervencao();
 
@@ -8591,7 +8446,7 @@ map.addControl(new LogoMapaControl());
       snvFiltroAtivo = true;
       localidadeFiltroAtivo = true;
       aeroFiltroAtivo = true;
-      pedagiosFiltroAtivo = true;
+      pedagiosFiltroAtivo = false;   // praças de pedágio começam desligadas; o botão liga
       municipioBaseFiltroAtivo = true;
       areasAmbientaisFiltroAtivo = true;
       areasUrbanasFiltroAtivo = true;
@@ -8608,7 +8463,7 @@ map.addControl(new LogoMapaControl());
       atualizarTextoDensidadeRotulos();
     }
 
-    if (params.get('sidebar') === 'fechada') {
+    if (inicial && params.get('sidebar') === 'fechada') {
       definirSidebarRecolhida('sidebar-left', 'sidebar-left-collapsed', botaoSidebarLeft, true);
     }
   }
@@ -8659,8 +8514,10 @@ map.addControl(new LogoMapaControl());
     desligarTudo();
   });
 
+  // Volta ao estado em que o mapa abriu (ex.: so a origem escolhida na pagina inicial).
   document.getElementById('limparFiltro').addEventListener('click', function() {
     limparTudo();
+    aplicarEntradaMapa(false);
   });
 
   var botaoExportarTabela = document.getElementById('exportarTabelaFiltrada');
@@ -8955,25 +8812,6 @@ map.addControl(new LogoMapaControl());
     });
   }
 
-  document.getElementById('toggleAlteracoesJurisdicao').addEventListener('click', function() {
-    alteracoesReferenciaAtiva = !alteracoesReferenciaAtiva;
-    if (alteracoesReferenciaAtiva && !TIPOS_ALTERACAO.some(function(tipo) { return alteracoesAtivas[tipo]; })) {
-      definirAlteracoesAtivas(true);
-    }
-    atualizarBotoesAlteracoes();
-    aplicarFiltros({ preservarZoom: true });
-  });
-
-  document.getElementById('alteracaoJurisdicaoSelect').addEventListener('change', function() {
-    var tipoSelecionado = this.value;
-    TIPOS_ALTERACAO.forEach(function(tipo) {
-      alteracoesAtivas[tipo] = !tipoSelecionado || tipo === tipoSelecionado;
-    });
-    alteracoesReferenciaAtiva = true;
-    atualizarBotoesAlteracoes();
-    aplicarFiltros({ preservarZoom: true });
-  });
-
   var botoesIntervencao = document.querySelectorAll('.servico-btn');
   for (var iServ = 0; iServ < botoesIntervencao.length; iServ++) {
     botoesIntervencao[iServ].addEventListener('click', function() {
@@ -9242,6 +9080,27 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  // Malha complementar (extra_base): vem do banco (editavel pelo site, js/jurisdicao/tracado.js);
+  // o arquivo data/extra_base.geojson so e usado se o banco nao responder.
+  function carregarExtraBase() {
+    return Acesso.pronto.then(function() { return Acesso.cliente.rpc('extra_base_geojson'); }).then(function(res) {
+      if (res.error || !res.data) throw new Error(res.error ? res.error.message : 'sem dados');
+      return res.data;
+    }).catch(function(e) {
+      console.warn('extra_base do banco falhou, usando o arquivo:', e.message);
+      return fetchGeoJSON('data/extra_base.geojson', false);
+    });
+  }
+  window.recarregarExtraBase = function() {
+    return carregarExtraBase().then(function(fc) {
+      extraBaseData = fc;
+      if (indicesBaseObras) indicesBaseObras.extra_base = indexarPorGeocod(fc);
+      return fc;
+    });
+  };
+  // Camadas de base cruas (GeoJSON) para o traçado da jurisdição.
+  window.camadaBaseMapa = function(nome) { return nome === 'sre_base' ? sreBaseData : nome === 'extra_base' ? extraBaseData : null; };
+
   function fetchGeoJSON(nome, obrigatorio) {
     return fetch(nome)
       .then(function(r) {
@@ -9301,8 +9160,8 @@ map.addControl(new LogoMapaControl());
     });
   }
 
-  // --- Construção em memória de obras_linhas / aerodromos_obras / alteracoes_linhas ---
-  // a partir de OBRAS_LINKS.json + DADOS.json cruzados com as bases geográficas
+  // --- Construção em memória de obras_linhas / aerodromos_obras ---
+  // a partir de vínculos + obras do banco (js/dados_banco.js) cruzados com as bases geográficas
   // (sre_base, ferrovias, extra_base, AERO), substituindo os antigos arquivos
   // GeoJSON estáticos equivalentes sem alterar os campos que o restante do
   // código já espera encontrar em cada feature.
@@ -9393,48 +9252,9 @@ map.addControl(new LogoMapaControl());
     return { type: 'FeatureCollection', features: Object.keys(featuresPorGeocod).map(function(geocod) { return featuresPorGeocod[geocod]; }) };
   }
 
-  var MAPA_CAMPOS_ALTERACAO_DE_DADOS = {
-    ID: 'IDCOD',
-    TIPO: 'INTERVENCAO',
-    PROCESSO: 'SEI',
-    MUNICIPIOS: 'MUNICIPIO',
-    RODOVIA: 'RODOVIA',
-    EXTENSAO_KM: 'EXT_CONTRATO_KM',
-    PORTARIA_SRE: 'PORTARIA_SRE',
-    TRECHO: 'DESCRICAO',
-    LEI_MUNICIPAL: 'LEI_MUNICIPAL',
-    EXPOSICAO_DE_MOTIVOS: 'EXPOSICAO_DE_MOTIVOS',
-    LEI_ESTADUAL: 'LEI_ESTADUAL',
-    TERMO_DE_TRANSFERENCIA: 'TERMO_DE_TRANSFERENCIA',
-    SITUACAO_ATUAL: 'STATUS'
-  };
-
-  function construirRegistrosAlteracoesDeDados(registrosJurisdicao) {
-    return registrosJurisdicao.map(function(registro) {
-      var mapeado = {};
-      Object.keys(MAPA_CAMPOS_ALTERACAO_DE_DADOS).forEach(function(campoAlteracao) {
-        mapeado[campoAlteracao] = registro[MAPA_CAMPOS_ALTERACAO_DE_DADOS[campoAlteracao]];
-      });
-      return mapeado;
-    });
-  }
-
-  function construirAlteracoesDataDeLinks(links, registrosPorIdcod, baseIndices) {
-    var features = [];
-    (links || []).forEach(function(vinculo) {
-      var registro = registrosPorIdcod[String(vinculo.IDCOD)];
-      if (!registro || registro.NATUREZA !== 'Jurisdição') return;
-      var indice = baseIndices[vinculo.BASE];
-      var baseFeature = indice && indice[String(vinculo.GEOCOD)];
-      if (!baseFeature || !baseFeature.geometry) return;
-      features.push({ type: 'Feature', properties: { ID: registro.IDCOD }, geometry: baseFeature.geometry });
-    });
-    return { type: 'FeatureCollection', features: features };
-  }
-
   // --- Área de Estudo (polígono, base geo_pol_base) e Área de Influência ---
   // (buffer de linhas ao longo de rodovias/ferrovias) — ambas vinculadas via
-  // DADOS.json (NATUREZA = 'Espacialização') + OBRAS_LINKS.json.
+  // obras do banco (NATUREZA = 'Espacialização') + vínculos.
 
   function construirAreaInfluenciaDeLinks(links, registrosPorIdcod, geoPolIndice) {
     var features = [];
@@ -9472,6 +9292,31 @@ map.addControl(new LogoMapaControl());
     return features;
   }
 
+  var indicesBaseObras = null;
+
+  // Busca as obras de novo no banco e redesenha o mapa sem mexer no zoom (usado apos gravar na tabela de obras).
+  // buscar = false: só remonta com o que já está em memória (ex.: troca de data na linha do tempo).
+  function recarregarObrasDoMapa(buscar) {
+    if (!indicesBaseObras) return Promise.resolve();
+    dadosUnificadosPromise = null;
+    var opcoes = { preservarZoom: true };
+    return (buscar === false ? Promise.resolve() : DadosBanco.recarregar()).then(function() {
+      return Promise.all([DadosBanco.registros(), DadosBanco.links(), carregarDadosUnificados(), DadosBanco.desenhos()]);
+    }).then(function(r) {
+      indicesBaseObras.desenho = r[3] || {};
+      var registrosPorIdcod = indexarRegistrosPorIdcod(r[0]);
+      var links = r[1];
+      sreData = construirSreDataDeLinks(links, registrosPorIdcod, indicesBaseObras);
+      aeroObrasData = construirAeroObrasDeLinks(links, registrosPorIdcod, indicesBaseObras.aero);
+      areaInfluenciaData = construirAreaInfluenciaDeLinks(links, registrosPorIdcod, indicesBaseObras.geo_pol_base);
+      prepararBuffer(links, registrosPorIdcod, indicesBaseObras);
+      atualizarDadosObrasUnificadas(r[2], opcoes);
+      return carregarTabelaObrasPontos(opcoes);
+    });
+  }
+  window.recarregarObrasDoMapa = recarregarObrasDoMapa;
+  window.indicesBaseObrasMapa = function() { return indicesBaseObras; };
+
   Promise.all([
     fetchGeoJSON('data/municipios.geojson', true),
     carregarLocalidades(),
@@ -9487,8 +9332,9 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/pedagios.geojson', false),
     carregarDadosUnificados(),
     fetchGeoJSON('data/regioes.geojson', true),
-    fetchGeoJSON('data/extra_base.geojson', false),
-    carregarJsonOpcional('data/OBRAS_LINKS.json')
+    carregarExtraBase(),
+    DadosBanco.links(),
+    DadosBanco.desenhos()
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
@@ -9519,20 +9365,24 @@ map.addControl(new LogoMapaControl());
     var baseIndices = {
       sre_base: indexarPorGeocod(sreBaseData),
       ferrovias: indexarPorGeocod(ferroviasData),
-      extra_base: indexarPorGeocod(extraBaseData)
+      extra_base: indexarPorGeocod(extraBaseData),
+      desenho: resultado[16] || {}   // obras em linha com traçado desenhado (js/dados_banco.js)
     };
     var aeroIndice = indexarPorGeocod(aeroData);
     var geoPolIndice = indexarPorGeocod(geoPolBaseData);
 
     sreData = construirSreDataDeLinks(links, registrosPorIdcod, baseIndices);
     aeroObrasData = construirAeroObrasDeLinks(links, registrosPorIdcod, aeroIndice);
-    alteracoesData = construirAlteracoesDataDeLinks(links, registrosPorIdcod, baseIndices);
     areaInfluenciaData = construirAreaInfluenciaDeLinks(links, registrosPorIdcod, geoPolIndice);
     prepararFiltroAreaInfluencia();
     prepararBuffer(links, registrosPorIdcod, baseIndices);
-
-    var registrosJurisdicao = registros.filter(function(r) { return r.NATUREZA === 'Jurisdição'; });
-    atualizarAlteracoesTabela(construirRegistrosAlteracoesDeDados(registrosJurisdicao));
+    // Indices das camadas de base por GEOCOD (tabela de obras: "Ver no mapa" e recarga apos gravar).
+    indicesBaseObras = Object.assign({}, baseIndices, {
+      aero: aeroIndice,
+      geo_pol_base: geoPolIndice,
+      municipios: indexarPorGeocod(municipiosData),
+      localidades: indexarPorGeocod(localidadesData)
+    });
 
     preencherRGPlan();
     prepararRegioes();
@@ -9541,7 +9391,7 @@ map.addControl(new LogoMapaControl());
     preencherRodovias();
     preencherSREs();
     limparTudo();
-    aplicarEntradaMapa();
+    aplicarEntradaMapa(true);
   }).catch(function(e) {
     console.error('Falha detalhada no carregamento:', e);
     alert(

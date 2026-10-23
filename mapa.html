@@ -4,10 +4,30 @@
   <meta charset="utf-8" />
   <title>PLANO GOINFRA 2026 - 2030</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=saude-20261005" />
+  <link rel="stylesheet" href="css/style.css?v=popup-20261022" />
+  <link rel="stylesheet" href="css/jurisdicao.css?v=ext1-20261023" />
+  <!-- Tema do mapa: o novo (css/tema_novo.css) e o padrao. mapa.html?tema=antigo mostra o visual anterior e fica
+       lembrado neste navegador; ?tema=novo volta ao padrao. -->
+  <script>
+    (function() {
+      var pedido = new URLSearchParams(location.search).get('tema');
+      var tema = pedido;
+      try {
+        if (pedido) localStorage.setItem('siplaweb.tema', pedido);
+        else tema = localStorage.getItem('siplaweb.tema');
+      } catch (e) { /* sem storage: vale so o endereco */ }
+      if (tema !== 'antigo') document.documentElement.classList.add('tema-novo');
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
+  <link rel="stylesheet" href="css/tema_novo.css?v=tema5-20261022" />
+  <link rel="stylesheet" href="css/jurisdicao_tabela.css?v=ext1-20261023" />
+  <link rel="stylesheet" href="css/obras.css?v=trc1-20261023" />
+  <link rel="stylesheet" href="css/linha_tempo.css?v=lt4-20261023" />
  </head>
 <body>
 <header id="topbar">
@@ -18,6 +38,7 @@
 
   <div class="topbar-right">
     <span>Sistema de Monitoramento</span>
+    <span id="acessoUsuario"></span>
     <button id="btnAtualizarSite" type="button" class="topbar-home-btn topbar-icon-btn" title="Atualizar site (busca a versão mais recente do mapa e dos dados)" aria-label="Atualizar site">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M4 12a8 8 0 0 1 14.2-5" />
@@ -27,7 +48,7 @@
       </svg>
     </button>
     <a class="topbar-home-btn" href="index.html" title="Voltar à página inicial" aria-label="Voltar à página inicial">⌂</a>
-    <a class="topbar-help-btn" href="manual.html" target="_blank" rel="noopener" title="Abrir manual do usuário" aria-label="Abrir manual do usuário">?</a>
+    <a class="topbar-help-btn" id="btnAjuda" href="ajuda.html" target="_blank" rel="noopener" title="Central de Ajuda" aria-label="Abrir a Central de Ajuda">?</a>
   </div>
 </header>
   <div id="app" class="com-topbar">
@@ -141,14 +162,6 @@
           <option value="">Todos</option>
         </select>
 
-        <label for="alteracaoJurisdicaoSelect">Alterações de Jurisdição</label>
-        <select id="alteracaoJurisdicaoSelect">
-          <option value="">Todos</option>
-          <option value="Estadualização">Estadualização</option>
-          <option value="Federalização">Federalização</option>
-          <option value="Municipalização">Municipalização</option>
-        </select>
-
         <label for="pedagioTipoSelect">Pedágios - Tipo</label>
         <select id="pedagioTipoSelect">
           <option value="">Todos</option>
@@ -181,7 +194,7 @@
           <div id="areaInfluenciaSelectLista" class="lista-regional"></div>
           <button id="areaInfluenciaSelectLimpar" type="button">Limpar seleção</button>
         </details>
-        <details class="filtro-regional">
+        <details class="filtro-regional" data-area="HOSPITAL">
           <summary>Unidades de Saúde</summary>
           <div id="unidadesSaudeSelectLista" class="lista-regional"></div>
           <button id="unidadesSaudeSelectLimpar" type="button">Limpar seleção</button>
@@ -205,9 +218,9 @@
           <button class="filtro-btn base-btn" id="toggleAreaInfluencia" type="button" aria-pressed="false">Área de Estudo</button>
           <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de Influência</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
-          <button class="filtro-btn base-btn ativo-filtro" id="toggleAlteracoesJurisdicao" type="button" aria-pressed="true">Alterações de Jurisdição</button>
           <button class="filtro-btn base-btn" id="togglePedagios" type="button" aria-pressed="false">Pedágios</button>
-          <button class="filtro-btn base-btn" id="toggleUnidadesSaude" type="button" aria-pressed="false">Unidades de Saúde</button>
+          <button class="filtro-btn base-btn" id="toggleUnidadesSaude" type="button" aria-pressed="false" data-area="HOSPITAL">Unidades de Saúde</button>
+          <button class="filtro-btn base-btn" id="toggleJurisdicao" type="button" aria-pressed="false" data-area="JURISDICAO">Jurisdição</button>
         </div>
       </div>
     </details>
@@ -319,14 +332,14 @@
 
           <button class="filtro-btn" id="toggleRotulosObrasPrint" type="button">Rótulos das obras</button>
 
-          <button id="printMapa" type="button">Salvar mapa em PDF</button>
+          <button id="printMapa" type="button" data-exportar>Salvar mapa em PDF</button>
         </div>
       </details>
 
       <details class="painel-colapsavel">
         <summary class="subtitulo subtitulo-painel">Exportação</summary>
         <div class="conteudo-colapsavel">
-          <button id="exportarTabelaFiltrada" type="button">Exportar tabela filtrada</button>
+          <button id="exportarTabelaFiltrada" type="button" data-exportar>Exportar tabela filtrada</button>
         </div>
       </details>
 
@@ -437,11 +450,6 @@
         <div id="legendaGmp"></div>
       </div>
 
-      <div class="bloco legenda-categoria" id="blocoLegendaAlteracoes" style="display: none;">
-        <div class="subtitulo">ALTERA&Ccedil;&Otilde;ES DE JURISDI&Ccedil;&Atilde;O</div>
-        <div id="legendaAlteracoes"></div>
-      </div>
-
       <div class="bloco legenda-categoria" id="blocoLegendaRegioesManutencao" style="display: none;">
         <div class="subtitulo">Regiões de Manutenção</div>
         <div id="legendaRegioesManutencao"></div>
@@ -513,13 +521,28 @@
   </aside>
 </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/acesso.js?v=adm1-20261022"></script>
+<script src="js/dados_banco.js?v=dpj1-20261023"></script>
 <script src="js/estilos.js?v=saude-20261005"></script>
 <script src="js/regioes.js?v=json-20260923"></script>
-<script src="js/mapa.js?v=tare-20261006"></script>
-<script src="js/unidades_saude.js?v=saude-20261005c"></script>
-<script src="js/impressao.js?v=tare-20261006"></script>
+<script src="js/mapa.js?v=dpj1-20261023"></script>
+<script src="js/unidades_saude.js?v=popup-20261021"></script>
+<script src="js/jurisdicao/config.js?v=jur6-20261021"></script>
+<script src="js/jurisdicao/indicadores.js?v=jur6-20261021"></script>
+<script src="js/jurisdicao/store.js?v=ant1-20261023"></script>
+<script src="js/jurisdicao/tabela.js?v=niv2-20261022"></script>
+<script src="js/jurisdicao/modulo.js?v=ext1-20261023"></script>
+<script src="js/jurisdicao/tracado.js?v=trc1-20261023"></script>
+<script src="js/jurisdicao/painel.js?v=exp1-20261023"></script>
+<script src="js/obras/config.js?v=dpj1-20261023"></script>
+<script src="js/obras/store.js?v=dpj1-20261023"></script>
+<script src="js/obras/tracado.js?v=dor1-20261023"></script>
+<script src="js/obras/painel.js?v=dor1-20261023"></script>
+<script src="js/linha_tempo.js?v=lt3-20261023"></script>
+<script src="js/impressao.js?v=niv1-20261022"></script>
 <script src="js/paineis.js?v=json-20260923"></script>
 
 </body>

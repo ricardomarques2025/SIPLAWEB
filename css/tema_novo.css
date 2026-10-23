@@ -1,0 +1,136 @@
+/* Tema PADRAO do mapa (desde 22/10/2026), no estilo da pagina inicial e da tabela da Jurisdicao:
+   fundo claro, barra verde, logo no rodape do menu esquerdo, fonte Inter, cartoes com borda suave e verde como destaque.
+   Aplicado por <html class="tema-novo">, que o mapa.html liga sempre, exceto com ?tema=antigo (visual anterior,
+   que continua todo em css/style.css). */
+
+html.tema-novo {
+  --altura-topbar: 60px;
+  --cor-topbar: #1e9538;
+  --cor-topbar-texto: #ffffff;
+  --cor-topbar-subtitulo: rgba(255, 255, 255, .72);
+  --cor-texto: #0f2a1a;
+  --cor-texto-suave: #4b5a52;
+  --cor-botao-ativo: #1e9538;
+  --cor-acao-principal: #1e9538;
+  --raio-painel: 12px;
+  --raio-controle: 10px;
+  --borda-controle: #d9e1dc;
+  --fundo-painel: #ffffff;
+  --sombra-painel: none;
+  --borda-mapa: #e3e9e5;
+  --tn-borda: #e3e9e5;
+  --tn-fundo: #f4f7f5;
+  --tn-suave: #6b7a70;
+  --tn-verde-escuro: #12662a;
+}
+
+html.tema-novo body {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--tn-fundo);
+  color: var(--cor-texto);
+}
+
+/* ---------- Barra superior: verde (como hoje) ---------- */
+html.tema-novo #topbar {
+  background: #1e9538;
+  border-bottom: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0 20px;
+}
+html.tema-novo #topbar .topbar-left { display: flex; align-items: center; gap: 14px; }
+html.tema-novo #topbar .topbar-left strong { font-size: 18px; font-weight: 800; letter-spacing: .02em; color: #ffffff; }
+html.tema-novo #topbar .topbar-left span { margin-left: 0; font-size: 18px; font-weight: 700; color: rgba(255, 255, 255, .72); }
+html.tema-novo #topbar .topbar-right > span:first-child {
+  font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .85);
+}
+html.tema-novo #topbar .topbar-right #acessoUsuario,
+html.tema-novo #topbar .topbar-right #acessoUsuario span { color: #ffffff; }
+html.tema-novo .topbar-home-btn,
+html.tema-novo .topbar-help-btn {
+  border: 1px solid rgba(255, 255, 255, .45); border-radius: 9px; background: rgba(255, 255, 255, .12); color: #ffffff; font-size: 18px;
+}
+html.tema-novo .topbar-home-btn:hover,
+html.tema-novo .topbar-home-btn:focus-visible,
+html.tema-novo .topbar-help-btn:hover,
+html.tema-novo .topbar-help-btn:focus-visible { background: rgba(255, 255, 255, .24); }
+
+/* Logo no rodape do menu esquerdo, fixo abaixo da area que rola (some com o menu recolhido). */
+html.tema-novo #sidebar-left .scroll-inner { height: calc(100% - 66px); }
+html.tema-novo #sidebar-left::after {
+  content: ''; position: absolute; left: 16px; right: 16px; bottom: 12px; height: 48px;
+  border-top: 1px solid var(--tn-borda); padding-top: 10px;
+  background: url('../data/Logo_GOINFRA_DPL_2025.png') center bottom / auto 34px no-repeat content-box;
+}
+html.tema-novo #sidebar-left.sidebar-colapsed::after { display: none; }
+
+/* Logo dentro do mapa: sai da tela (fica no menu esquerdo), mas continua na impressao/PDF. */
+html.tema-novo body:not(.modo-impressao) .logo-mapa-control { display: none; }
+
+/* ---------- Barras laterais e blocos: cartoes brancos com borda suave ---------- */
+html.tema-novo #sidebar-left,
+html.tema-novo #sidebar-right {
+  background: #ffffff;
+  border: 1px solid var(--tn-borda);
+  border-radius: 14px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+html.tema-novo .bloco {
+  background: #ffffff;
+  border: 1px solid var(--tn-borda);
+  border-radius: 12px;
+  box-shadow: none;
+}
+html.tema-novo .subtitulo { font-size: 11.5px; font-weight: 800; letter-spacing: .08em; color: var(--tn-suave); }
+/* Titulos das secoes do menu (ORIGEM, FILTROS...): discretos, como "ORIGENS" na pagina inicial. */
+html.tema-novo .subtitulo-painel { font-size: 12.5px; font-weight: 800; letter-spacing: .1em; color: var(--cor-texto); }
+
+html.tema-novo select,
+html.tema-novo button {
+  border-radius: var(--raio-controle);
+  border-color: var(--borda-controle);
+  box-shadow: none;
+}
+html.tema-novo select { background-color: #ffffff; font-weight: 600; }
+html.tema-novo label { font-weight: 700; color: var(--cor-texto-suave); }
+
+html.tema-novo .filtro-btn { background: #ffffff; border: 1px solid var(--borda-controle); font-weight: 700; color: #334139; }
+html.tema-novo .filtro-btn:hover { transform: none; box-shadow: none; border-color: #b9c6be; background: var(--tn-fundo); }
+html.tema-novo .filtro-btn.ativo-filtro,
+html.tema-novo .filtro-btn.ativo-municipio {
+  background: #e8f5ec; color: var(--tn-verde-escuro); border-color: var(--cor-botao-ativo);
+  box-shadow: inset 0 0 0 1px var(--cor-botao-ativo);
+}
+
+/* Botoes grandes de acao do menu esquerdo (Desligar/Ligar Tudo, PDF, exportar, Marcar todos/Limpar selecao,
+   Abrir tabela/Enquadrar da Jurisdicao): fundo verde claro e fonte normal. Os de ligar/desligar (.filtro-btn) seguem acima. */
+html.tema-novo #sidebar-left button:not(.filtro-btn):not(.sidebar-toggle-btn) {
+  background: #e8f5ec; color: var(--tn-verde-escuro);
+  border: 1px solid #c5e3cf; border-radius: var(--raio-controle);
+  font-weight: 400; box-shadow: none;
+}
+html.tema-novo #sidebar-left button:not(.filtro-btn):not(.sidebar-toggle-btn):hover { background: #d6ecdd; border-color: #a9d4b6; }
+
+/* ---------- Mapa e painel inferior ---------- */
+html.tema-novo #map-wrap {
+  border: 1px solid var(--tn-borda);
+  border-radius: 14px;
+  box-shadow: none;
+  background: #ffffff;
+}
+html.tema-novo #painelTabela {
+  border: 1px solid var(--tn-borda);
+  border-radius: 14px;
+  box-shadow: none;
+}
+html.tema-novo .painel-tabela-titulo { color: var(--tn-suave); font-weight: 800; letter-spacing: .08em; }
+
+/* Controles do canto do mapa (zoom, camadas, regua) */
+html.tema-novo .zoom-valor-control,
+html.tema-novo .leaflet-control-layers-toggle,
+html.tema-novo .leaflet-bar {
+  border: 1px solid var(--tn-borda) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 3px rgba(15, 42, 26, .08) !important;
+}

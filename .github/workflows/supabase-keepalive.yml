@@ -3,8 +3,9 @@ name: Supabase Keepalive
 # O plano gratuito do Supabase pausa o projeto após 7 dias sem atividade
 # suficiente. Uma chamada diária isolada não bastou (aviso de pausa recebido
 # em 06/10/2026), então este workflow roda a cada 6 horas e, além de chamar
-# registrar_acesso() (escrita), lê as tabelas dados e obras_links, simulando
-# o uso real do site.
+# registrar_acesso() (escrita), lê uma camada pelo export_geojson, simulando
+# o uso real do site. Desde 21/10/2026 as obras ficam no schema siplaweb, só
+# com login, então a leitura sem login usa a camada pública de aeródromos.
 on:
   schedule:
     # A cada 6 horas, no minuto 17 (evita o pico de filas do GitHub na hora cheia).
@@ -15,7 +16,7 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Chamar registrar_acesso() e ler tabelas no Supabase
+      - name: Chamar registrar_acesso() e ler uma camada no Supabase
         env:
           # Chave pública ("publishable") do projeto banco-gis. Substituiu a
           # antiga chave "anon" (desativada em 21/10/2026). Não é um segredo
@@ -29,9 +30,9 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{}'
           echo "registrar_acesso(): ok"
-          for tabela in dados obras_links; do
-            curl -sf -o /dev/null "https://ctukaanelcsevdmoqlys.supabase.co/rest/v1/${tabela}?select=*&limit=100" \
-              -H "apikey: ${SUPABASE_ANON_KEY}" \
-              -H "Authorization: Bearer ${SUPABASE_ANON_KEY}"
-            echo "Leitura de ${tabela}: ok"
-          done
+          curl -sf -o /dev/null -X POST "https://ctukaanelcsevdmoqlys.supabase.co/rest/v1/rpc/export_geojson" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"p_table":"aero"}'
+          echo "Leitura da camada aero: ok"
