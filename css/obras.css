@@ -83,3 +83,9 @@
 .obr-ui .jt-pedaco .form-grade { margin-top: 6px; }
 .obr-ui .trc-acoes .espaco { flex: 1; }
 .obr-ui .trc-acoes .btn.ativo { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+/* Título da tabela com o seletor de origem (js/obras/painel.js: trocarOrigem). */
+.jur-ui .obr-titulo { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--tinta, #0f2a1a); }
+.jur-ui .obr-titulo select { font: inherit; font-weight: 800; color: inherit; height: 30px; padding: 0 26px 0 10px; border: 1px solid #b8dcc2;
+  border-radius: 8px; background: #eef8f1; cursor: pointer; }
+.jur-ui .obr-titulo select:focus { outline: 2px solid #1e953833; }

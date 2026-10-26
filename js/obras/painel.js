@@ -1,4 +1,5 @@
-// Tabela de edicao das obras da origem aberta (mapa.html?origem=DOR...).
+// Tabela de edicao das obras da origem aberta (mapa.html?origem=DOR...). A origem pode mudar sem recarregar a pagina:
+// pelo seletor no titulo da tabela ou quando so uma origem fica ligada nos botoes do mapa (trocarOrigem).
 // "Abrir tabela" no painel ORIGEM do menu esquerdo; tela cheia ou dividida com o mapa (como na Jurisdicao).
 // Edicoes ficam pendentes (amarelo) ate "Revisar e salvar", que mostra o resumo antes -> depois, confere as
 // regras e, se etapa/status mudaram, pede a data do fato para a linha do tempo. Depois de gravar, o mapa e
@@ -17,7 +18,7 @@ var ObrasPainel = (function() {
     xlsx: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
   };
   var CHAVE_LARGURA = 'siplaweb.obras.larguraTabela';
-  var CHAVE_COLUNAS = 'siplaweb.obras.colunas.' + ORIGEM;
+  function chaveColunas() { return 'siplaweb.obras.colunas.' + ORIGEM; }
   var LARGURA_MIN = 30, LARGURA_MAX = 80;
   var ACOES = { criado: 'Cadastrou', editado: 'Editou', tracado: 'Alterou o traçado', tramitou_origem: 'Tramitou de origem', excluido: 'Excluiu', restaurado: 'Restaurou' };
   var EVENTOS = { cadastro: 'Cadastro', situacao: 'Situação', origem: 'Mudança de origem', nota: 'Nota' };
@@ -99,7 +100,7 @@ var ObrasPainel = (function() {
     ui.innerHTML = SPRITE +
       '<section class="jur-tabela" id="obrTabela" hidden data-modo="cheia">' +
         '<div class="jur-tabela-topo">' +
-          '<b class="jur-tabela-titulo">' + esc(ORIGEM) + ' · Obras</b><span class="lt-selo" hidden></span>' +
+          '<label class="jur-tabela-titulo obr-titulo"><select id="obrOrigem" title="Trocar a origem da tabela (o mapa acompanha)"></select> · Obras</label><span class="lt-selo" hidden></span>' +
           '<nav class="segmentado" aria-label="Modo da tabela">' +
             '<button type="button" data-obr-modo="cheia"><svg><use href="#o-table"/></svg>Tela cheia</button>' +
             '<button type="button" data-obr-modo="dividida"><svg><use href="#o-split"/></svg>Dividida com o mapa</button>' +
@@ -143,7 +144,7 @@ var ObrasPainel = (function() {
         '<div class="dialogo-rodape"><span class="obr-aviso" id="obrRevisaoAviso"></span><div class="espaco"></div>' +
           '<button type="button" class="btn" data-obr-fechar>Voltar e corrigir</button>' +
           '<button type="button" class="btn btn-primario" id="obrConfirmar"><svg><use href="#o-check"/></svg>Confirmar e salvar</button></div></dialog>' +
-      '<dialog id="obrDlgNova" class="dialogo dialogo-pequeno"><form id="obrFormNova"><div class="dialogo-topo"><h3>Nova obra · ' + esc(ORIGEM) + '</h3><button type="button" class="btn-icone" data-obr-fechar><svg><use href="#o-x"/></svg></button></div>' +
+      '<dialog id="obrDlgNova" class="dialogo dialogo-pequeno"><form id="obrFormNova"><div class="dialogo-topo"><h3 id="obrNovaTitulo">Nova obra · ' + esc(ORIGEM) + '</h3><button type="button" class="btn-icone" data-obr-fechar><svg><use href="#o-x"/></svg></button></div>' +
         '<div class="dialogo-corpo" id="obrNovaCorpo"></div>' +
         '<div class="dialogo-rodape"><span class="obr-aviso" id="obrNovaAviso"></span><div class="espaco"></div><button type="submit" class="btn btn-primario"><svg><use href="#o-check"/></svg>Cadastrar</button></div></form></dialog>' +
       '<dialog id="obrDlgColunas" class="dialogo dialogo-pequeno"><div class="dialogo-topo"><h3>Colunas visíveis</h3><button type="button" class="btn-icone" data-obr-fechar><svg><use href="#o-x"/></svg></button></div>' +
@@ -165,6 +166,63 @@ var ObrasPainel = (function() {
     conteudo.insertBefore(botao, conteudo.firstElementChild);
     botao.addEventListener('click', function() { definirModo('cheia'); });
     ligarEventos();
+  }
+
+  // ---------- Origem da tabela ----------
+  // Origens que a pessoa ve, na ordem dos botoes do mapa.
+  function origensVisiveis() {
+    return Array.prototype.map.call(document.querySelectorAll('.servico-btn[data-servico]'), function(b) { return b.dataset.servico; })
+      .filter(function(o) { return Acesso.podeVer(o); });
+  }
+  function preencherSeletorOrigem() {
+    $('obrOrigem').innerHTML = origensVisiveis().map(function(o) {
+      return '<option value="' + esc(o) + '"' + (o === ORIGEM ? ' selected' : '') + '>' + esc(o) + '</option>';
+    }).join('');
+  }
+
+  // Troca a tabela para outra origem: confere pendencias, recarrega as obras e (se pedido) leva o mapa junto.
+  // Devolve false se a pessoa preferiu nao descartar o que estava pendente.
+  function trocarOrigem(nova, levarMapa) {
+    nova = String(nova || '').toUpperCase();
+    if (!nova || nova === ORIGEM || !Acesso.podeVer(nova)) return true;
+    var n = ObrasStore.totalPendentes();
+    if (n && !confirm('A tabela de ' + ORIGEM + ' tem ' + n + ' alteração(ões) não salvas. Trocar para ' + nova + ' descarta essas alterações.\n\nTrocar mesmo assim?')) {
+      $('obrOrigem').value = ORIGEM;
+      return false;
+    }
+    if (ObrasTracado.ativo()) ObrasTracado.encerrar();
+    fecharFicha();
+    limparHalo();
+    ORIGEM = nova;
+    $('obrOrigem').value = nova;
+    $('obrNovaTitulo').textContent = 'Nova obra · ' + nova;
+    $('obrAbrirTabela').textContent = 'Abrir tabela de obras';
+    filtros = { busca: '', etapa: '', status: '', tracado: '' };
+    ['obrBusca', 'obrFEtapa', 'obrFStatus', 'obrFTracado'].forEach(function(id) { $(id).value = ''; });
+    if (grade) { grade.destroy(); grade = null; }
+    tabelaPronta = null;
+    // Endereco acompanha (recarregar ou mandar o link abre esta origem).
+    var url = new URL(location.href);
+    url.searchParams.set('origem', nova);
+    history.replaceState(null, '', url.toString());
+    if (levarMapa && typeof mostrarSoOrigemNoMapa === 'function') mostrarSoOrigemNoMapa(nova);
+    if (modo !== 'fechado') definirModo(modo);
+    else contarAprovacoes();
+    return true;
+  }
+
+  // Botoes de origem do mapa: com uma origem so ligada, a tabela vai para ela.
+  function origensMudaram(ativas) {
+    var visiveis = ativas.filter(function(o) { return Acesso.podeVer(o) && origensVisiveis().indexOf(o) !== -1; });
+    if (visiveis.length === 1 && visiveis[0] !== ORIGEM) trocarOrigem(visiveis[0], false);
+  }
+
+  function contarAprovacoes() {
+    if (!Acesso.podeEditar(ORIGEM)) return;
+    var origem = ORIGEM;
+    Acesso.cliente.from('propostas').select('pid', { count: 'exact', head: true }).eq('origem', origem).eq('situacao', 'pendente').then(function(res) {
+      if (!res.error && res.count && !grade && origem === ORIGEM) $('obrAbrirTabela').textContent = 'Abrir tabela de obras · ' + res.count + ' para aprovar';
+    });
   }
 
   // ---------- Modos (como na tabela da Jurisdicao) ----------
@@ -228,7 +286,7 @@ var ObrasPainel = (function() {
     }).map(function(c) { return c.campo; });
   }
   function colunasVisiveis() {
-    try { var v = JSON.parse(localStorage.getItem(CHAVE_COLUNAS)); if (Array.isArray(v)) return v; } catch (e) { /* sem storage */ }
+    try { var v = JSON.parse(localStorage.getItem(chaveColunas())); if (Array.isArray(v)) return v; } catch (e) { /* sem storage */ }
     return colunasVisiveisPadrao();
   }
 
@@ -829,6 +887,7 @@ var ObrasPainel = (function() {
       ObrasStore.descartar(); recarregarGrade(); if (fichaUid) renderFicha();
     });
     $('obrExportar').addEventListener('click', exportar);
+    $('obrOrigem').addEventListener('change', function() { trocarOrigem(this.value, true); });
     $('obrAprovacoes').addEventListener('click', abrirAprovacoes);
     $('obrAprovCorpo').addEventListener('click', aoClicarAprovacoes);
     $('obrNova').addEventListener('click', abrirNova);
@@ -843,11 +902,11 @@ var ObrasPainel = (function() {
       var c = e.target.dataset.coluna; if (!c) return;
       var col = grade.getColumn(c); e.target.checked ? col.show() : col.hide();
       var visiveis = CAMPOS_OBRA.filter(function(x) { return grade.getColumn(x.campo).isVisible(); }).map(function(x) { return x.campo; });
-      try { localStorage.setItem(CHAVE_COLUNAS, JSON.stringify(visiveis)); } catch (x) { /* sem storage */ }
+      try { localStorage.setItem(chaveColunas(), JSON.stringify(visiveis)); } catch (x) { /* sem storage */ }
     });
     $('obrColunasCorpo').addEventListener('click', function(e) {
       if (e.target.id !== 'obrColunasPadrao') return;
-      try { localStorage.removeItem(CHAVE_COLUNAS); } catch (x) { /* sem storage */ }
+      try { localStorage.removeItem(chaveColunas()); } catch (x) { /* sem storage */ }
       var padrao = colunasVisiveisPadrao();
       CAMPOS_OBRA.forEach(function(c) { var col = grade.getColumn(c.campo); padrao.indexOf(c.campo) !== -1 ? col.show() : col.hide(); });
       $('obrDlgColunas').close();
@@ -908,14 +967,12 @@ var ObrasPainel = (function() {
   Acesso.pronto.then(function() {
     if (!Acesso.podeVer(ORIGEM)) return;
     montar();
-    if (Acesso.podeEditar(ORIGEM)) {
-      Acesso.cliente.from('propostas').select('pid', { count: 'exact', head: true }).eq('origem', ORIGEM).eq('situacao', 'pendente').then(function(res) {
-        if (!res.error && res.count && !grade) $('obrAbrirTabela').textContent = 'Abrir tabela de obras · ' + res.count + ' para aprovar';
-      });
-    }
+    preencherSeletorOrigem();
+    contarAprovacoes();
     var t = new URLSearchParams(location.search).get('tabela');
     if (t) definirModo(t === 'dividida' ? 'dividida' : 'cheia');
   });
 
-  return { definirModo: definirModo, abrirFicha: abrirFicha };
+  return { definirModo: definirModo, abrirFicha: abrirFicha, trocarOrigem: trocarOrigem, origensMudaram: origensMudaram,
+    origem: function() { return ORIGEM; } };
 })();
