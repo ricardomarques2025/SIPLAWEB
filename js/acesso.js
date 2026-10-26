@@ -10,9 +10,10 @@
 // de acesso (RLS) no banco. O login vale tambem para o site do jurisdicao (mesmo projeto).
 
 var Acesso = (function() {
+  // Projeto banco-gis-dpl (São Paulo, sa-east-1) desde 26/10/2026; antes banco-gis (Oregon, ctukaanelcsevdmoqlys).
   var SUPABASE = {
-    url: 'https://ctukaanelcsevdmoqlys.supabase.co',
-    chave: 'sb_publishable_3rZz4l0RT7vf8oJSIBnekw_V-ZZD-CK'
+    url: 'https://zeneqnnrlrmmmejchbrl.supabase.co',
+    chave: 'sb_publishable_U8n8H8rjvsT8zTpQfZf1dQ_XtV8seBI'
   };
   var sb = supabase.createClient(SUPABASE.url, SUPABASE.chave, { db: { schema: 'siplaweb' } });
   var perfil = null;
@@ -262,7 +263,10 @@ var Acesso = (function() {
     var areas = Object.keys(perfil.areas);
     el.title = perfil.email + (perfil.admin ? ' · administrador' : ' · ' + (areas.length
       ? areas.map(function(a) { return a + ': ' + (NOME_NIVEL[perfil.areas[a]] || perfil.areas[a]); }).join(', ') : 'sem áreas liberadas'));
-    el.innerHTML = '<span></span>' + (perfil.admin ? '<a class="acesso-admin" href="usuarios.html" title="Usuários e permissões">Usuários</a>' : '') +
+    // Painel (painel.html): a partir de gerenciador em alguma area.
+    var painel = perfil.admin || areas.some(podeExportar);
+    el.innerHTML = '<span></span>' + (painel ? '<a class="acesso-admin" href="painel.html" title="Indicadores, avisos e aprovações">Painel</a>' : '') +
+      (perfil.admin ? '<a class="acesso-admin" href="usuarios.html" title="Usuários e permissões">Usuários</a>' : '') +
       '<button type="button">Sair</button>';
     el.firstChild.textContent = perfil.nome;
     el.lastChild.addEventListener('click', sair);
@@ -289,6 +293,7 @@ var Acesso = (function() {
   return {
     pronto: pronto,
     cliente: sb,
+    url: SUPABASE.url,                        // funções do servidor (Edge Functions) usam o mesmo projeto
     perfil: function() { return perfil; },
     podeVer: podeVer,
     podeExportar: podeExportar,

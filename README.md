@@ -43,8 +43,17 @@ tem um dos níveis abaixo (cada um inclui os anteriores) ou nenhum acesso. O ban
   arquivadas só para administradores.
 - Na **JURISDICAO** valem as mesmas regras (tabela com pendências + "Revisar e salvar/enviar", fila de Aprovações); lá o
   editor básico também **propõe trâmite** (só entra na linha do tempo e muda a situação depois de aprovado). Remover trâmite e excluir são do pleno.
+- **Camadas editáveis** (`supabase/014_camadas_editaveis.sql`, `js/camadas_edicao.js`): botão "Editar camadas" no mapa para
+  quem pode editar alguma camada. Camadas: `extra_base` (malha complementar, TRE), `geo_lin_base` (linhas genéricas, LIN),
+  `geo_pt_base` (pontos genéricos, PTO) e `geo_pol_base` (áreas de estudo, GEO). Quem edita: administrador; editor pleno
+  (em alguma área) com a camada marcada pelo admin em Painel › Configurações (`acesso.camadas_permissoes`); e, só na
+  extra_base, o editor pleno da JURISDICAO. Criar desenhando (Geoman) ou importando GeoJSON, editar dados e vértices,
+  excluir; cada alteração/exclusão vira cópia arquivada (só admin vê); não exclui feição ligada a obra. As três geo_*
+  servem de traçado das obras (Ponto → geo_pt_base, que também dá a posição do ponto; Linha → geo_lin_base; Área →
+  geo_pol_base) e são lidas do banco por `siplaweb.camada_geojson()` (`data/geo_pol_base.geojson` é só reserva).
+  As bases principais (SRE, municípios, ferrovias...) não se editam pelo site. Entram no backup diário.
 - **Mapa geral** mostra só as origens liberadas ao usuário. **Mapa rodoviário** (sem obras) é liberado a todo usuário ativo.
-- O login vale para todo o projeto `banco-gis` (é o mesmo do site antigo do jurisdição). O cadastro público está desligado.
+- O login vale para todo o projeto `banco-gis-dpl`. O cadastro público está desligado.
 - **Usuários e permissões:** página `usuarios.html` (link "Usuários" no topo, só para administradores).
   - **Novo usuário:** nome + e-mail → a conta nasce **inativa** com uma **senha provisória** mostrada uma única vez
     (repasse por canal seguro); no primeiro acesso a pessoa é obrigada a criar a própria senha. Depois ative e escolha
@@ -62,6 +71,7 @@ tem um dos níveis abaixo (cada um inclui os anteriores) ou nenhum acesso. O ban
 | Página | Conteúdo |
 |---|---|
 | `index.html` | página inicial (painel): saudação, números do plano, um cartão por origem com o total de empreendimentos e a divisão planejamento/projeto/obra, e os atalhos Mapa geral (mosaico das origens), Mapa rodoviário e Jurisdição |
+| `painel.html` | painel de gestão (link "Painel" no topo, a partir de gerenciador): **Visão geral** = indicadores das origens liberadas (filtro por origem, etapa por origem, status, municípios, atualização dos dados, alterações em 30 dias, jurisdição) + **Avisos e aprovações** (o pleno aprova/recusa ali mesmo; o básico acompanha as dele; o gerenciador vê o que está parado; dados com mais de 90 dias); **Configurações** (só administrador) = quem pode o quê por área e acessos recentes. Código em `js/painel_gestao.js` e `css/painel.css` |
 | `index_antigo.html` | página inicial anterior (capa verde), guardada como alternativa |
 | `mapa.html` | o mapa. Entradas: `?origem=DOR`, `?perfil=geral`, `?perfil=rodoviario`, `?modulo=jurisdicao` (`&tabela=cheia` ou `&tabela=dividida` abre a tabela direto) |
 | `jurisdicao_caderno.html` | caderno em PDF da jurisdição (prancha A4 de um registro ou caderno completo) |
@@ -110,7 +120,11 @@ Código em `js/jurisdicao/` (`config`, `indicadores`, `store`, `tabela`, `modulo
 `css/jurisdicao*.css`. O CSS da tabela é todo restrito ao contêiner `.jur-ui`, com um reset das regras genéricas
 de `css/style.css`. Tabulator e XLSX são carregados só quando a tabela/exportação é usada.
 
-## Banco de dados (Supabase, projeto `banco-gis`)
+## Banco de dados (Supabase, projeto `banco-gis-dpl`)
+
+Projeto `banco-gis-dpl` (ref `zeneqnnrlrmmmejchbrl`, São Paulo `sa-east-1`) desde 26/10/2026. Antes era o `banco-gis`
+(`ctukaanelcsevdmoqlys`, Oregon `us-west-2`): migrado por cópia completa (estrutura + dados + contas, conferida tabela
+a tabela por md5), para responder mais rápido em Goiás. Endereço e chave pública ficam em `js/acesso.js` e no keepalive.
 
 | Schema | Conteúdo |
 |---|---|

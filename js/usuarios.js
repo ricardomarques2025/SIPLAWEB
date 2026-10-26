@@ -5,7 +5,7 @@
 
 (function() {
   var sb = Acesso.cliente;   // schema siplaweb
-  var FUNCAO = 'https://ctukaanelcsevdmoqlys.supabase.co/functions/v1/admin-usuarios';
+  var FUNCAO = Acesso.url + '/functions/v1/admin-usuarios';
   var NIVEIS = [['', 'Sem acesso'], ['visualizador', 'Visualizador'], ['gerenciador', 'Gerenciador'],
     ['editor_basico', 'Editor básico'], ['editor_pleno', 'Editor pleno']];
   var DICA_NIVEL = {
@@ -243,6 +243,7 @@
         if (b.dataset.aba === 'registro') renderRegistro();
       });
     });
+    if (location.hash === '#registro') document.querySelector('.adm-abas [data-aba="registro"]').click();   // link do painel
     carregar().catch(function(e) { toast(e.message, true); });
   });
 })();

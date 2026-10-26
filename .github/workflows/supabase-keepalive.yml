@@ -18,19 +18,19 @@ jobs:
     steps:
       - name: Chamar registrar_acesso() e ler uma camada no Supabase
         env:
-          # Chave pública ("publishable") do projeto banco-gis. Substituiu a
-          # antiga chave "anon" (desativada em 21/10/2026). Não é um segredo
+          # Chave pública ("publishable") do projeto banco-gis-dpl (São Paulo,
+          # desde 26/10/2026; antes banco-gis, em Oregon). Não é um segredo
           # (protegida por RLS no banco), por isso fica direto aqui em vez
           # de exigir configurar um secret.
-          SUPABASE_ANON_KEY: "sb_publishable_3rZz4l0RT7vf8oJSIBnekw_V-ZZD-CK"
+          SUPABASE_ANON_KEY: "sb_publishable_U8n8H8rjvsT8zTpQfZf1dQ_XtV8seBI"
         run: |
-          curl -sf -X POST "https://ctukaanelcsevdmoqlys.supabase.co/rest/v1/rpc/registrar_acesso" \
+          curl -sf -X POST "https://zeneqnnrlrmmmejchbrl.supabase.co/rest/v1/rpc/registrar_acesso" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
             -H "Content-Type: application/json" \
             -d '{}'
           echo "registrar_acesso(): ok"
-          curl -sf -o /dev/null -X POST "https://ctukaanelcsevdmoqlys.supabase.co/rest/v1/rpc/export_geojson" \
+          curl -sf -o /dev/null -X POST "https://zeneqnnrlrmmmejchbrl.supabase.co/rest/v1/rpc/export_geojson" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
             -H "Content-Type: application/json" \

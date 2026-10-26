@@ -273,6 +273,11 @@ var JurTracado = (function() {
 
   // ---------- 2. Desenhar / editar (Geoman) ----------
   function carregarGeoman() {
+    if (!geomanPronto && window.L && L.PM) {   // o editor de camadas (js/camadas_edicao.js) já carregou
+      L.PM.setOptIn(true);
+      if (!map.pm) map.pm = new L.PM.Map(map);
+      geomanPronto = Promise.resolve();
+    }
     if (!geomanPronto) {
       geomanPronto = new Promise(function(resolve, reject) {
         var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = GEOMAN.css; document.head.appendChild(l);

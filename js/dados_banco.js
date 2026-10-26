@@ -46,13 +46,28 @@ var DadosBanco = (function() {
   // posicionados pelo nome da localidade, como antes.
   function tipoLegado(o) {
     if (o.tipo !== 'Ponto') return 'Link';
+    if (pontoDaBase(o) && !(o.geom && o.geom.type === 'Point')) return 'Ponto';
     if (o.origem === 'HOSPITAL') return 'Link';
     if ((o.vinculos || []).some(function(v) { return v.indexOf('aero:') === 0; })) return 'Link';
     return 'Ponto';
   }
 
+  // Obra em ponto ligada a um ponto genérico (geo_pt_base, editável pelo site): fica na posição dele.
+  var pontosBase = {};
+  function buscarPontosBase() {
+    return Acesso.cliente.rpc('camada_geojson', { p_camada: 'geo_pt_base' }).then(function(res) {
+      pontosBase = {};
+      if (res.error) { console.warn('geo_pt_base indisponível:', res.error.message); return; }
+      (res.data.features || []).forEach(function(f) { pontosBase[f.properties.GEOCOD] = f.geometry.coordinates; });
+    });
+  }
+  function pontoDaBase(o) {
+    var v = (o.vinculos || []).find(function(x) { return x.indexOf('geo_pt_base:') === 0; });
+    return v ? pontosBase[v.slice(12)] || null : null;
+  }
+
   function registroLegado(o) {
-    var ponto = o.geom && o.geom.type === 'Point' ? o.geom.coordinates : null;
+    var ponto = o.geom && o.geom.type === 'Point' ? o.geom.coordinates : pontoDaBase(o);
     return {
       IDCOD: o.codigo,
       IDCOD_LEGADO: o.idcod_legado,
@@ -106,7 +121,9 @@ var DadosBanco = (function() {
 
   function carregar() {
     if (!carga) {
-      carga = Acesso.pronto.then(buscarObras).then(function(obras) {
+      carga = Acesso.pronto.then(function() {
+        return Promise.all([buscarObras(), buscarPontosBase()]).then(function(r) { return r[0]; });
+      }).then(function(obras) {
         console.log('Obras carregadas do banco:', obras.length);
         var desenhos = {};
         obras.filter(temDesenho).forEach(function(o) {

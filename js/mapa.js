@@ -9098,8 +9098,32 @@ map.addControl(new LogoMapaControl());
       return fc;
     });
   };
-  // Camadas de base cruas (GeoJSON) para o traçado da jurisdição.
-  window.camadaBaseMapa = function(nome) { return nome === 'sre_base' ? sreBaseData : nome === 'extra_base' ? extraBaseData : null; };
+  // Camadas editáveis pelo site (supabase/014_camadas_editaveis.sql): áreas de estudo (geo_pol_base) e as bases
+  // genéricas de pontos (geo_pt_base) e linhas (geo_lin_base) vêm do banco; servem de traçado para as obras.
+  // Só a geo_pol_base tem arquivo de reserva (data/geo_pol_base.geojson).
+  var camadasEditaveisData = {};
+  var VAZIA = { type: 'FeatureCollection', features: [] };
+  function carregarCamadaBanco(nome, reserva) {
+    return Acesso.pronto.then(function() { return Acesso.cliente.rpc('camada_geojson', { p_camada: nome }); }).then(function(res) {
+      if (res.error || !res.data) throw new Error(res.error ? res.error.message : 'sem dados');
+      return res.data;
+    }).catch(function(e) {
+      console.warn(nome + ' do banco falhou' + (reserva ? ', usando o arquivo' : '') + ':', e.message);
+      return reserva ? fetchGeoJSON(reserva, false) : VAZIA;
+    }).then(function(fc) { camadasEditaveisData[nome] = fc; return fc; });
+  }
+  // Depois de gravar uma feição (js/camadas_edicao.js): lê a camada de novo e redesenha as obras ligadas a ela.
+  window.recarregarCamadaMapa = function(nome) {
+    if (nome === 'extra_base') return window.recarregarExtraBase().then(function() { return recarregarObrasDoMapa(true); });
+    return carregarCamadaBanco(nome, nome === 'geo_pol_base' ? 'data/geo_pol_base.geojson' : null).then(function(fc) {
+      if (indicesBaseObras) indicesBaseObras[nome] = indexarPorGeocod(fc);
+      return recarregarObrasDoMapa(true);   // relê as obras (e os pontos genéricos, em js/dados_banco.js)
+    });
+  };
+  // Camadas de base cruas (GeoJSON) para o traçado da jurisdição e o editor de camadas.
+  window.camadaBaseMapa = function(nome) {
+    return nome === 'sre_base' ? sreBaseData : nome === 'extra_base' ? extraBaseData : camadasEditaveisData[nome] || null;
+  };
 
   function fetchGeoJSON(nome, obrigatorio) {
     return fetch(nome)
@@ -9202,9 +9226,12 @@ map.addControl(new LogoMapaControl());
   // (ex.: FUNDEINFRA e DOR) sobre o mesmo trecho continuem sendo detectadas
   // e exibidas juntas (popup e tabelas inferiores), em vez de virarem
   // features separadas que só carregam uma origem cada.
+  // Só bases de linha (na recarga o índice traz também pontos e áreas).
+  var BASES_LINHA_OBRAS = { sre_base: 1, ferrovias: 1, extra_base: 1, geo_lin_base: 1, desenho: 1 };
   function construirSreDataDeLinks(links, registrosPorIdcod, baseIndices) {
     var featuresPorChave = {};
     (links || []).forEach(function(vinculo) {
+      if (!BASES_LINHA_OBRAS[vinculo.BASE]) return;
       var registro = registrosPorIdcod[String(vinculo.IDCOD)];
       if (!registro) return;
       var linkField = LINK_FIELD_POR_UNIDADE[String(registro.UNIDADE || '').toUpperCase()];
@@ -9219,8 +9246,8 @@ map.addControl(new LogoMapaControl());
         var props = {
           sre: bp.sre || '',
           rodovia: bp.rodovia || '',
-          trecho: bp.trecho || bp.nome || '',
-          EXT_KM: bp.ext != null ? bp.ext : (bp.extensao != null ? bp.extensao : '')
+          trecho: bp.trecho || bp.nome || bp.NOME || '',
+          EXT_KM: bp.ext != null ? bp.ext : (bp.extensao != null ? bp.extensao : (bp.EXT_KM != null ? bp.EXT_KM : ''))
         };
         if (bp.reg_man != null) props.reg_man = bp.reg_man;
         feature = { type: 'Feature', properties: props, geometry: baseFeature.geometry };
@@ -9272,7 +9299,7 @@ map.addControl(new LogoMapaControl());
   function construirBufferDeLinks(links, registrosPorIdcod, baseIndices) {
     var features = [];
     (links || []).forEach(function(vinculo) {
-      if (vinculo.BASE === 'geo_pol_base' || vinculo.BASE === 'aero') return;
+      if (!BASES_LINHA_OBRAS[vinculo.BASE]) return;
       var registro = registrosPorIdcod[String(vinculo.IDCOD)];
       if (!registro || registro.NATUREZA !== 'Espacialização') return;
       var indice = baseIndices[vinculo.BASE];
@@ -9327,14 +9354,16 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/estados.geojson', false),
     fetchGeoJSON('data/mascara_brasil.geojson', false),
     fetchGeoJSON('data/aero.geojson', false),
-    fetchGeoJSON('data/geo_pol_base.geojson', false),
+    carregarCamadaBanco('geo_pol_base', 'data/geo_pol_base.geojson'),
     fetchGeoJSON('data/ferrovias.geojson', false),
     fetchGeoJSON('data/pedagios.geojson', false),
     carregarDadosUnificados(),
     fetchGeoJSON('data/regioes.geojson', true),
     carregarExtraBase(),
     DadosBanco.links(),
-    DadosBanco.desenhos()
+    DadosBanco.desenhos(),
+    carregarCamadaBanco('geo_lin_base', null),
+    carregarCamadaBanco('geo_pt_base', null)
   ]).then(function(resultado) {
     municipiosData = resultado[0];
     localidadesData = resultado[1];
@@ -9366,6 +9395,7 @@ map.addControl(new LogoMapaControl());
       sre_base: indexarPorGeocod(sreBaseData),
       ferrovias: indexarPorGeocod(ferroviasData),
       extra_base: indexarPorGeocod(extraBaseData),
+      geo_lin_base: indexarPorGeocod(resultado[17]),
       desenho: resultado[16] || {}   // obras em linha com traçado desenhado (js/dados_banco.js)
     };
     var aeroIndice = indexarPorGeocod(aeroData);
@@ -9380,6 +9410,7 @@ map.addControl(new LogoMapaControl());
     indicesBaseObras = Object.assign({}, baseIndices, {
       aero: aeroIndice,
       geo_pol_base: geoPolIndice,
+      geo_pt_base: indexarPorGeocod(resultado[18]),
       municipios: indexarPorGeocod(municipiosData),
       localidades: indexarPorGeocod(localidadesData)
     });

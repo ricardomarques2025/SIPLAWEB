@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Painel · Plano GOINFRA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/inicio_painel.css?v=mosaico-20261021" />
+  <link rel="stylesheet" href="css/usuarios.css?v=adm2-20261022" />
+  <link rel="stylesheet" href="css/painel.css?v=cam1-20261026" />
+</head>
+<body>
+  <header class="topo">
+    <a href="index.html"><img src="data/Logo_GOINFRA_DPL_2025.png" alt="GOINFRA"></a>
+    <div class="marca">Painel<small>Plano GOINFRA · Sistema de Monitoramento</small></div>
+    <div class="espaco"></div>
+    <a class="voltar" href="index.html">← Início</a>
+    <span id="acessoUsuario"></span>
+  </header>
+
+  <main class="adm pn" id="painel" hidden>
+    <nav class="adm-abas">
+      <button type="button" class="ativo" data-aba="geral">Visão geral</button>
+      <button type="button" data-aba="config" id="abaBotaoConfig" hidden>Configurações</button>
+      <span class="pn-papel" id="papel"></span>
+    </nav>
+
+    <section id="abaGeral">
+      <div class="pn-filtros" id="filtros" role="group" aria-label="Filtrar por origem"></div>
+
+      <div class="pn-kpis" id="kpis"></div>
+
+      <div class="pn-grade">
+        <article class="pn-cartao pn-largo">
+          <h3>Etapa por origem <small>clique numa origem para filtrar</small></h3>
+          <div class="pn-legenda">
+            <span style="--c:var(--plan)">Planejamento</span><span style="--c:var(--projeto)">Projeto</span>
+            <span style="--c:var(--obra)">Obra</span><span style="--c:var(--outros)">Outras / sem etapa</span>
+          </div>
+          <div id="gEtapas" class="pn-barras"></div>
+        </article>
+        <article class="pn-cartao">
+          <h3>Status mais frequentes</h3>
+          <div id="gStatus" class="pn-barras"></div>
+        </article>
+        <article class="pn-cartao">
+          <h3>Municípios com mais empreendimentos</h3>
+          <div id="gMunicipios" class="pn-barras"></div>
+        </article>
+        <article class="pn-cartao">
+          <h3>Atualização dos dados por origem <small>data de referência mais recente</small></h3>
+          <div id="tAtualizacao"></div>
+        </article>
+        <article class="pn-cartao">
+          <h3>Alterações registradas <small>últimos 30 dias</small></h3>
+          <div id="gAtividade"></div>
+        </article>
+        <article class="pn-cartao pn-largo" id="cartaoJur" hidden>
+          <h3>Jurisdição <small>processos de alteração por situação</small></h3>
+          <div class="pn-jur">
+            <div class="pn-kpis pn-kpis-mini" id="kpisJur"></div>
+            <div id="gJur" class="pn-barras"></div>
+          </div>
+        </article>
+      </div>
+
+      <h2 class="pn-titulo-secao" id="avisos">Avisos e aprovações</h2>
+      <div id="listaAvisos"></div>
+    </section>
+
+    <section id="abaConfig" hidden>
+      <div class="pn-config-atalhos">
+        <a class="pn-cartao pn-atalho" href="usuarios.html"><b>Usuários e permissões</b><span id="resumoUsuarios">Criar contas, ativar, níveis por área</span></a>
+        <a class="pn-cartao pn-atalho" href="usuarios.html#registro"><b>Registro de alterações</b><span>Quem mudou o quê nas contas e permissões</span></a>
+      </div>
+      <article class="pn-cartao">
+        <h3>Quem pode o quê <small>nível de cada usuário por área · para mudar, use Usuários e permissões</small></h3>
+        <div class="pn-legenda pn-legenda-niveis">
+          <span class="nv nv-visualizador">V</span> visualizador <span class="nv nv-gerenciador">G</span> gerenciador
+          <span class="nv nv-editor_basico">EB</span> editor básico <span class="nv nv-editor_pleno">EP</span> editor pleno
+          <span class="nv nv-admin">ADM</span> administrador
+        </div>
+        <div id="matriz" class="pn-rolagem"></div>
+      </article>
+      <article class="pn-cartao">
+        <h3>Camadas editáveis <small>quais camadas cada editor pleno pode criar, alterar e excluir no mapa · grava ao marcar</small></h3>
+        <p class="pn-nota pn-nota-topo">As camadas de base principais (malha SRE, municípios, ferrovias, localidades...) não aparecem aqui: não se editam pelo site.
+          Administradores editam todas. O editor pleno da Jurisdição já edita a malha complementar.</p>
+        <div id="camadasEdicao" class="pn-rolagem"></div>
+      </article>
+      <article class="pn-cartao">
+        <h3>Acessos recentes <small>últimos 50 registros</small></h3>
+        <div id="acessos" class="pn-rolagem"></div>
+      </article>
+    </section>
+  </main>
+  <p class="restrito" id="restrito" hidden>O painel é liberado a partir do nível <b>gerenciador</b> em alguma área. Peça ao administrador.</p>
+
+  <div class="pn-dica" id="dica" role="tooltip" hidden></div>
+  <div class="toasts" id="toasts"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/acesso.js?v=sp1-20261026"></script>
+  <script src="js/obras/config.js?v=cam1-20261026"></script>
+  <script src="js/jurisdicao/config.js?v=cod1-20261023"></script>
+  <script src="js/painel_gestao.js?v=cam1-20261026"></script>
+</body>
+</html>

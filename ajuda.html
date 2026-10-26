@@ -99,7 +99,7 @@
       <tr><td><span class="aj-nivel n1">Visualizador</span></td><td>Consulta mapa, tabela e ficha. <b>Não exporta nada</b> (Excel, CSV, GeoJSON, caderno, PDF do mapa); o Ctrl+P sai só com um aviso.</td></tr>
       <tr><td><span class="aj-nivel n2">Gerenciador</span></td><td>+ exporta e imprime.</td></tr>
       <tr><td><span class="aj-nivel n3">Editor básico</span></td><td>+ edita dados e traçado e cadastra registros, mas tudo vira <b>proposta</b> que o editor pleno aprova. Não exclui. Na Jurisdição também <b>propõe trâmites</b>.</td></tr>
-      <tr><td><span class="aj-nivel n4">Editor pleno</span></td><td>+ grava direto, exclui, tramita, registra notas e decide as propostas em <b>Aprovações</b>.</td></tr>
+      <tr><td><span class="aj-nivel n4">Editor pleno</span></td><td>+ grava direto, exclui, tramita, registra notas e decide as propostas em <b>Aprovações</b>. Pode também <b>editar camadas</b> que o administrador liberar (veja <a href="#camadas-edicao">Editar camadas</a>).</td></tr>
       <tr><td><span class="aj-nivel n5">Administrador</span></td><td>Tudo, em todas as áreas; gerencia usuários e pode voltar versões no histórico.</td></tr>
     </tbody>
   </table>
@@ -533,6 +533,54 @@
 </article>
 
 <!-- ================================================================ ADMINISTRAÇÃO -->
+<article id="admin-painel" data-cat="Administração" data-titulo="Painel (indicadores, avisos e aprovações)" data-termos="painel indicadores dashboard resumo gráficos avisos aprovações aprovar recusar propostas paradas dados desatualizados atualização configurações camadas editáveis acessos recentes quem pode o quê" data-rel="aprovacao-propostas camadas-edicao admin-usuarios">
+  <h1>Painel</h1>
+  <p>Link <b>Painel</b> na barra superior, a partir de <span class="aj-nivel n2">Gerenciador</span> em alguma área. Os números mostram só as áreas liberadas para você.</p>
+  <h2>Visão geral</h2>
+  <ul>
+    <li><b>Filtro por origem</b> no topo: vale para todos os números e gráficos (clicar numa barra de "Etapa por origem" também filtra).</li>
+    <li><b>Indicadores</b>: empreendimentos, em obra, em projeto, em planejamento, km contratados, municípios atendidos e propostas aguardando.</li>
+    <li><b>Gráficos</b>: etapa por origem, status, municípios, atualização dos dados por origem, alterações nos últimos 30 dias e jurisdição por situação. Passe o mouse para ver os valores.</li>
+  </ul>
+  <h2>Avisos e aprovações</h2>
+  <ul>
+    <li><span class="aj-nivel n4">Editor pleno</span>: <b>Para você aprovar</b>, com antes → depois; aprove ou recuse (com motivo) ali mesmo.</li>
+    <li><span class="aj-nivel n3">Editor básico</span>: <b>Minhas propostas</b>, aguardando, aprovadas ou recusadas.</li>
+    <li><span class="aj-nivel n2">Gerenciador</span>: quantas propostas estão paradas em cada área e desde quando.</li>
+    <li>Todos: <b>origens com dados atrasados</b> (amarelo depois de 45 dias, vermelho depois de 90). O aviso fica até a origem atualizar a data de referência.</li>
+  </ul>
+  <h2>Configurações</h2>
+  <p><span class="aj-nivel n5">Administrador</span>: quadro <b>Quem pode o quê</b> (nível de cada pessoa por área), <b>Camadas editáveis</b> (marque as camadas que cada editor pleno pode editar; grava ao marcar) e <b>Acessos recentes</b>.</p>
+</article>
+
+<article id="camadas-edicao" data-cat="Mapa" data-titulo="Editar camadas no mapa" data-termos="editar camadas desenhar ponto linha polígono área de estudo pontos genéricos linhas genéricas malha complementar geo_pt_base geo_lin_base geo_pol_base importar geojson vértices excluir cópias arquivadas PTO LIN GEO" data-rel="admin-painel jurisdicao-malha obras-tracado">
+  <h1>Editar camadas no mapa</h1>
+  <p>Botão <b>Editar camadas</b> no canto inferior direito do mapa. Aparece para o <span class="aj-nivel n4">Editor pleno</span> com camadas liberadas pelo administrador (Painel › Configurações) e para administradores.</p>
+  <table>
+    <thead><tr><th>Camada</th><th>Para quê</th><th>Código</th></tr></thead>
+    <tbody>
+      <tr><td>Malha complementar</td><td>Trechos de rodovia fora da SRE (veja <a href="#jurisdicao-malha">Malha complementar</a>)</td><td>TRE0001</td></tr>
+      <tr><td>Linhas genéricas</td><td>Linhas de projetos esporádicos; servem de traçado para obras em linha</td><td>LIN0001</td></tr>
+      <tr><td>Pontos genéricos</td><td>Pontos de projetos esporádicos; servem de posição para obras em ponto</td><td>PTO0001</td></tr>
+      <tr><td>Áreas de estudo</td><td>Polígonos; servem de traçado para obras em área</td><td>GEO0001</td></tr>
+    </tbody>
+  </table>
+  <p>As bases principais (malha SRE, municípios, ferrovias, localidades…) <b>não</b> se editam pelo site.</p>
+  <h2>Criar</h2>
+  <ol>
+    <li>Escolha a camada e clique em <b>+ Nova</b>.</li>
+    <li>Desenhe: ponto = um clique; linha ou área = um clique por vértice e <b>duplo clique</b> no último (na área, também dá para clicar no primeiro vértice). <b>Desenhar parte</b> acrescenta outra parte. Ou use <b>Importar GeoJSON</b> (latitude/longitude, EPSG 4674 ou 4326; UTM é recusado).</li>
+    <li>Preencha o nome (e a descrição, se quiser) e <b>Salvar</b>. O código é dado pelo sistema.</li>
+  </ol>
+  <h2>Alterar e excluir</h2>
+  <ul>
+    <li><b>editar</b> na lista (ou clique na feição no mapa): mude os dados; <b>Mover vértices</b> arrasta os pontos (clique no meio de um lado cria vértice; clique direito apaga).</li>
+    <li><b>excluir</b>: não é possível se a feição estiver ligada a alguma obra (tire o vínculo antes).</li>
+    <li>Toda alteração e exclusão guarda uma <b>cópia arquivada</b>; administradores veem em <b>ver cópias arquivadas</b>.</li>
+  </ul>
+  <div class="aj-nota">O banco confere tudo de novo: geometria do tipo da camada, dentro de Goiás, polígono sem bordas cruzadas, e só quem tem a camada liberada grava.</div>
+</article>
+
 <article id="admin-usuarios" data-cat="Administração" data-titulo="Usuários e permissões" data-termos="usuários administrador master criar conta novo usuário senha provisória redefinir senha ativar desativar excluir conta níveis por área aplicar a todas as origens registro de alterações" data-rel="acesso-niveis acesso-entrar">
   <h1>Usuários e permissões</h1>
   <p>Link <b>Usuários</b> na barra superior. <span class="aj-nivel n5">Administrador</span>.</p>
@@ -624,7 +672,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=adm1-20261022"></script>
+<script src="js/acesso.js?v=sp1-20261026"></script>
 <script src="js/ajuda.js?v=ajd2-20261023"></script>
 </body>
 </html>

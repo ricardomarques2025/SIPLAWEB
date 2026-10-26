@@ -99,13 +99,32 @@ var BASES_TRACADO = {
     grupo: function(p) { return p.rg_plan; }, ordem: function(p) { return p.NM_MUN || ''; },
     rotulo: function(p) { return p.NM_MUN || p.GEOCOD; }, detalhe: function(p) { return p.rg_plan || ''; }
   },
+  // As três abaixo são editáveis pelo site (js/camadas_edicao.js, supabase/014_camadas_editaveis.sql).
   geo_pol_base: {
     nome: 'Áreas de estudo', rotuloGrupo: '', item: 'área',
     grupo: function() { return ''; }, ordem: function(p) { return p.GEOCOD; },
-    rotulo: function(p) { return p.NOME || p.GEOCOD; }, detalhe: function(p) { return p.AREA_KM2 ? kmObra(p.AREA_KM2) + ' km²' : ''; }
+    rotulo: function(p) { return p.NOME || p.GEOCOD; },
+    detalhe: function(p) { return [p.GEOCOD, p.AREA_KM2 ? kmObra(p.AREA_KM2) + ' km²' : '', p.DESCRICAO].filter(Boolean).join(' · '); }
+  },
+  geo_lin_base: {
+    nome: 'Linhas genéricas (projetos)', rotuloGrupo: '', item: 'linha',
+    grupo: function() { return ''; }, ordem: function(p) { return p.GEOCOD; },
+    rotulo: function(p) { return p.NOME || p.GEOCOD; },
+    detalhe: function(p) { return [p.GEOCOD, p.EXT_KM != null ? kmObra(p.EXT_KM) + ' km' : '', p.DESCRICAO].filter(Boolean).join(' · '); },
+    km: function(p) { return Number(p.EXT_KM) || 0; }
+  },
+  geo_pt_base: {
+    nome: 'Pontos genéricos (projetos)', rotuloGrupo: '', item: 'ponto',
+    grupo: function() { return ''; }, ordem: function(p) { return p.GEOCOD; },
+    rotulo: function(p) { return p.NOME || p.GEOCOD; },
+    detalhe: function(p) { return [p.GEOCOD, p.DESCRICAO].filter(Boolean).join(' · '); }
   }
 };
-var BASES_POR_TIPO = { 'Ponto': ['localidades', 'aero'], 'Linha': ['sre_base', 'ferrovias', 'extra_base'], 'Área': ['municipios', 'geo_pol_base'] };
+var BASES_POR_TIPO = {
+  'Ponto': ['localidades', 'aero', 'geo_pt_base'],
+  'Linha': ['sre_base', 'ferrovias', 'extra_base', 'geo_lin_base'],
+  'Área': ['municipios', 'geo_pol_base']
+};
 
 // Coordenada do ponto: mesma caixa de Goiás (com folga) que o banco usa.
 function validarPontoObra(lat, lon) {
