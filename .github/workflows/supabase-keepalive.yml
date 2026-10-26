@@ -18,21 +18,18 @@ jobs:
     steps:
       - name: Chamar registrar_acesso() e ler uma camada no Supabase
         env:
-          # Chave pública ("publishable") do projeto banco-gis-dpl (São Paulo,
-          # desde 26/10/2026; antes banco-gis, em Oregon). Não é um segredo
-          # (protegida por RLS no banco), por isso fica direto aqui em vez
-          # de exigir configurar um secret.
-          SUPABASE_ANON_KEY: "sb_publishable_U8n8H8rjvsT8zTpQfZf1dQ_XtV8seBI"
+          # Chaves públicas ("publishable"): não são segredo (o banco protege com login + RLS).
+          # O mesmo arquivo roda nos dois repositórios: SIPLAWEB (produção, banco-gis-dpl) e
+          # SIPLAWEB_HOMOLOG (homologação, banco-gis-homolog). Ambos em São Paulo.
+          REPOSITORIO: ${{ github.repository }}
         run: |
-          curl -sf -X POST "https://zeneqnnrlrmmmejchbrl.supabase.co/rest/v1/rpc/registrar_acesso" \
-            -H "apikey: ${SUPABASE_ANON_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
-            -H "Content-Type: application/json" \
-            -d '{}'
+          if [ "${REPOSITORIO##*/}" = "SIPLAWEB_HOMOLOG" ]; then
+            URL="https://lbhgjkhpxhihmuzapxui.supabase.co"; CHAVE="sb_publishable_HzhId9FCLmFz_TQrmoU2NQ_qJFEandU"
+          else
+            URL="https://zeneqnnrlrmmmejchbrl.supabase.co"; CHAVE="sb_publishable_U8n8H8rjvsT8zTpQfZf1dQ_XtV8seBI"
+          fi
+          echo "Banco: $URL"
+          curl -sf -X POST "$URL/rest/v1/rpc/registrar_acesso"             -H "apikey: $CHAVE" -H "Authorization: Bearer $CHAVE" -H "Content-Type: application/json" -d '{}'
           echo "registrar_acesso(): ok"
-          curl -sf -o /dev/null -X POST "https://zeneqnnrlrmmmejchbrl.supabase.co/rest/v1/rpc/export_geojson" \
-            -H "apikey: ${SUPABASE_ANON_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
-            -H "Content-Type: application/json" \
-            -d '{"p_table":"aero"}'
+          curl -sf -o /dev/null -X POST "$URL/rest/v1/rpc/export_geojson"             -H "apikey: $CHAVE" -H "Authorization: Bearer $CHAVE" -H "Content-Type: application/json" -d '{"p_table":"aero"}'
           echo "Leitura da camada aero: ok"

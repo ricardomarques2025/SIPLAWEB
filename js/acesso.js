@@ -1,4 +1,4 @@
-// Acesso ao SIPLAWEB: login obrigatorio (Supabase Auth do projeto banco-gis).
+// Acesso ao SIPLAWEB: login obrigatorio (Supabase Auth do projeto do ambiente: producao ou homologacao, abaixo).
 // Permissoes por AREA (cada origem + JURISDICAO) no schema acesso do banco, em 5 niveis (cada um inclui os
 // anteriores): visualizador (so ve), gerenciador (+ exporta), editor_basico (+ propoe edicoes que o pleno
 // aprova), editor_pleno (+ grava direto e aprova) e administrador (tudo, em todas as areas);
@@ -10,11 +10,26 @@
 // de acesso (RLS) no banco. O login vale tambem para o site do jurisdicao (mesmo projeto).
 
 var Acesso = (function() {
-  // Projeto banco-gis-dpl (São Paulo, sa-east-1) desde 26/10/2026; antes banco-gis (Oregon, ctukaanelcsevdmoqlys).
-  var SUPABASE = {
-    url: 'https://zeneqnnrlrmmmejchbrl.supabase.co',
-    chave: 'sb_publishable_U8n8H8rjvsT8zTpQfZf1dQ_XtV8seBI'
+  // Dois bancos (projetos Supabase em São Paulo), escolhidos pelo endereço do site:
+  //   producao     banco-gis-dpl  -> ricardomarques2025.github.io/SIPLAWEB/ (desde 26/10/2026; antes banco-gis, Oregon)
+  //   homologacao  banco-gis-homolog -> ricardomarques2025.github.io/SIPLAWEB_HOMOLOG/ e o site local (127.0.0.1/localhost);
+  //                no local, ?banco=producao usa a produção (fica lembrado na aba; ?banco=homologacao volta).
+  // Fora da produção aparece a faixa do ambiente no topo da página.
+  var AMBIENTES = {
+    producao: { nome: 'Produção', url: 'https://zeneqnnrlrmmmejchbrl.supabase.co', chave: 'sb_publishable_U8n8H8rjvsT8zTpQfZf1dQ_XtV8seBI' },
+    homologacao: { nome: 'Homologação', url: 'https://lbhgjkhpxhihmuzapxui.supabase.co', chave: 'sb_publishable_HzhId9FCLmFz_TQrmoU2NQ_qJFEandU' }
   };
+  function escolherAmbiente() {
+    var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
+    if (!local) return /^\/SIPLAWEB_HOMOLOG(\/|$)/i.test(location.pathname) ? 'homologacao' : 'producao';
+    var pedido = new URLSearchParams(location.search).get('banco');
+    try {
+      if (pedido === 'producao' || pedido === 'homologacao') sessionStorage.setItem('siplaweb_banco', pedido);
+      return sessionStorage.getItem('siplaweb_banco') || 'homologacao';
+    } catch (e) { return pedido === 'producao' ? 'producao' : 'homologacao'; }
+  }
+  var AMBIENTE = escolherAmbiente();
+  var SUPABASE = AMBIENTES[AMBIENTE];
   var sb = supabase.createClient(SUPABASE.url, SUPABASE.chave, { db: { schema: 'siplaweb' } });
   var perfil = null;
   var resolverPronto;
@@ -48,7 +63,13 @@ var Acesso = (function() {
     '.acesso-usuario{display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap}' +
     '.acesso-usuario .acesso-admin{color:inherit;border:1px solid currentColor;border-radius:5px;font-size:11px;padding:2px 7px;text-decoration:none;opacity:.85}' +
     '.acesso-usuario button{background:none;border:1px solid currentColor;border-radius:5px;color:inherit;font-size:11px;padding:2px 7px;cursor:pointer;opacity:.85}' +
-    '.acesso-usuario-flutuante{position:fixed;top:10px;right:12px;z-index:9999;background:rgba(15,43,70,.85);color:#fff;padding:5px 10px;border-radius:7px}';
+    '.acesso-usuario-flutuante{position:fixed;top:10px;right:12px;z-index:9999;background:rgba(15,43,70,.85);color:#fff;padding:5px 10px;border-radius:7px}' +
+    '.acesso-ambiente{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:100001;pointer-events:auto;' +
+    'font:800 11px/1 Inter,Segoe UI,Arial,sans-serif;letter-spacing:.12em;color:#fff;padding:5px 14px 6px;border-radius:0 0 9px 9px;' +
+    'box-shadow:0 3px 10px rgba(0,0,0,.25);white-space:nowrap}' +
+    '.acesso-ambiente-homologacao{background:#c2410c}' +
+    '.acesso-ambiente-producao{background:#b91c1c}' +
+    '@media print{.acesso-ambiente{display:block!important;position:absolute;-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
 
   function $(id) { return document.getElementById(id); }
 
@@ -277,8 +298,23 @@ var Acesso = (function() {
     registrarEvento('saiu').then(function() { return sb.auth.signOut(); }).then(function() { location.reload(); });
   }
 
+  // Faixa do ambiente: homologação (ou o site local usando a produção). Não some na impressão nem no login.
+  function montarFaixa() {
+    var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
+    if (AMBIENTE === 'producao' && !local) return;
+    var faixa = document.createElement('div');
+    faixa.className = 'acesso-ambiente acesso-ambiente-' + AMBIENTE;
+    faixa.textContent = AMBIENTE === 'producao' ? 'PRODUÇÃO · site local' : 'HOMOLOGAÇÃO · ambiente de teste';
+    faixa.title = AMBIENTE === 'producao' ? 'Site local ligado ao banco de PRODUÇÃO: o que você gravar vale de verdade.'
+      : 'Banco de homologação: dados de teste, nada aqui vale para a produção.';
+    document.body.appendChild(faixa);
+    document.documentElement.classList.add('amb-' + AMBIENTE);
+    if (AMBIENTE !== 'producao') document.title = '[HOMOLOGAÇÃO] ' + document.title;
+  }
+
   function iniciar() {
     montarTela();
+    montarFaixa();
     sb.auth.onAuthStateChange(function(evento) {
       if (evento === 'PASSWORD_RECOVERY') setTimeout(function() { mostrarTela('', false, true); }, 0);
     });
@@ -294,6 +330,7 @@ var Acesso = (function() {
     pronto: pronto,
     cliente: sb,
     url: SUPABASE.url,                        // funções do servidor (Edge Functions) usam o mesmo projeto
+    ambiente: AMBIENTE,                       // 'producao' | 'homologacao'
     perfil: function() { return perfil; },
     podeVer: podeVer,
     podeExportar: podeExportar,
