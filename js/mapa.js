@@ -8827,17 +8827,15 @@ map.addControl(new LogoMapaControl());
       preencherRodovias();
       preencherSREs();
       aplicarFiltros({ preservarZoom: true });
-      // Tabela de obras (js/obras/painel.js): com uma origem só ligada, ela passa para essa origem.
-      if (window.ObrasPainel && ObrasPainel.origensMudaram) {
-        ObrasPainel.origensMudaram(Object.keys(servicosAtivos).filter(function(k) { return servicosAtivos[k]; }));
-      }
+      // Tabela de obras (js/obras/painel.js): a lista de origens acompanha e, se a origem da tabela foi desligada,
+      // ela passa para a próxima ligada.
+      if (window.ObrasPainel && ObrasPainel.origensMudaram) ObrasPainel.origensMudaram();
     });
   }
 
-  // Seletor de origem da tabela de obras: o mapa passa a mostrar só aquela origem (como entrar por ?origem=).
-  window.mostrarSoOrigemNoMapa = function(origem) {
-    definirOrigensAtivas(origem);
-    aplicarFiltros();
+  // Origens ligadas no mapa (a tabela de obras lista só estas).
+  window.origensAtivasMapa = function() {
+    return Object.keys(servicosAtivos).filter(function(k) { return servicosAtivos[k]; });
   };
 
   var btnToggleOAE = document.getElementById('toggleOAE');

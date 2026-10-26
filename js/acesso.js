@@ -310,7 +310,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-10-26.3';
+  var VERSAO_SITE = '2026-10-26.4';
   var conferidaEm = 0, avisoAdiadoAte = 0;
 
   function conferirVersao() {

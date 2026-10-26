@@ -1,5 +1,6 @@
 // Tabela de edicao das obras da origem aberta (mapa.html?origem=DOR...). A origem pode mudar sem recarregar a pagina:
-// pelo seletor no titulo da tabela ou quando so uma origem fica ligada nos botoes do mapa (trocarOrigem).
+// o seletor no titulo lista SO as origens ligadas no mapa (trocar ali nao mexe no mapa) e, se a origem da tabela for
+// desligada nos botoes, a tabela passa para a proxima ligada (trocarOrigem / origensMudaram).
 // "Abrir tabela" no painel ORIGEM do menu esquerdo; tela cheia ou dividida com o mapa (como na Jurisdicao).
 // Edicoes ficam pendentes (amarelo) ate "Revisar e salvar", que mostra o resumo antes -> depois, confere as
 // regras e, se etapa/status mudaram, pede a data do fato para a linha do tempo. Depois de gravar, o mapa e
@@ -169,20 +170,26 @@ var ObrasPainel = (function() {
   }
 
   // ---------- Origem da tabela ----------
-  // Origens que a pessoa ve, na ordem dos botoes do mapa.
-  function origensVisiveis() {
+  // Origens ligadas no mapa que a pessoa ve, na ordem dos botoes (js/mapa.js: origensAtivasMapa).
+  function origensAtivas() {
+    var ligadas = typeof origensAtivasMapa === 'function' ? origensAtivasMapa() : [ORIGEM];
     return Array.prototype.map.call(document.querySelectorAll('.servico-btn[data-servico]'), function(b) { return b.dataset.servico; })
-      .filter(function(o) { return Acesso.podeVer(o); });
+      .filter(function(o) { return ligadas.indexOf(o) !== -1 && Acesso.podeVer(o); });
   }
+  // Lista do titulo: as ligadas (sem nenhuma ligada, so a origem atual da tabela).
   function preencherSeletorOrigem() {
-    $('obrOrigem').innerHTML = origensVisiveis().map(function(o) {
+    var lista = origensAtivas();
+    if (lista.indexOf(ORIGEM) === -1) lista = lista.length ? lista : [ORIGEM];
+    $('obrOrigem').innerHTML = lista.map(function(o) {
       return '<option value="' + esc(o) + '"' + (o === ORIGEM ? ' selected' : '') + '>' + esc(o) + '</option>';
     }).join('');
+    $('obrOrigem').disabled = lista.length < 2;
+    $('obrOrigem').title = lista.length < 2 ? 'Ligue mais origens no mapa para alternar entre elas aqui' : 'Alternar entre as origens ligadas no mapa';
   }
 
-  // Troca a tabela para outra origem: confere pendencias, recarrega as obras e (se pedido) leva o mapa junto.
+  // Troca a tabela para outra origem: confere pendencias e recarrega as obras (o mapa nao muda).
   // Devolve false se a pessoa preferiu nao descartar o que estava pendente.
-  function trocarOrigem(nova, levarMapa) {
+  function trocarOrigem(nova) {
     nova = String(nova || '').toUpperCase();
     if (!nova || nova === ORIGEM || !Acesso.podeVer(nova)) return true;
     var n = ObrasStore.totalPendentes();
@@ -194,7 +201,7 @@ var ObrasPainel = (function() {
     fecharFicha();
     limparHalo();
     ORIGEM = nova;
-    $('obrOrigem').value = nova;
+    preencherSeletorOrigem();
     $('obrNovaTitulo').textContent = 'Nova obra · ' + nova;
     $('obrAbrirTabela').textContent = 'Abrir tabela de obras';
     filtros = { busca: '', etapa: '', status: '', tracado: '' };
@@ -205,16 +212,16 @@ var ObrasPainel = (function() {
     var url = new URL(location.href);
     url.searchParams.set('origem', nova);
     history.replaceState(null, '', url.toString());
-    if (levarMapa && typeof mostrarSoOrigemNoMapa === 'function') mostrarSoOrigemNoMapa(nova);
     if (modo !== 'fechado') definirModo(modo);
     else contarAprovacoes();
     return true;
   }
 
-  // Botoes de origem do mapa: com uma origem so ligada, a tabela vai para ela.
-  function origensMudaram(ativas) {
-    var visiveis = ativas.filter(function(o) { return Acesso.podeVer(o) && origensVisiveis().indexOf(o) !== -1; });
-    if (visiveis.length === 1 && visiveis[0] !== ORIGEM) trocarOrigem(visiveis[0], false);
+  // Botoes de origem do mapa: a lista acompanha; se a origem da tabela foi desligada, vai para a primeira ligada.
+  function origensMudaram() {
+    var ligadas = origensAtivas();
+    if (ligadas.length && ligadas.indexOf(ORIGEM) === -1) trocarOrigem(ligadas[0]);
+    preencherSeletorOrigem();
   }
 
   function contarAprovacoes() {
@@ -262,6 +269,7 @@ var ObrasPainel = (function() {
 
   function definirModo(novo) {
     var anterior = modo;
+    if (anterior === 'fechado' && novo !== 'fechado') origensMudaram();   // abre já numa origem ligada no mapa
     modo = novo;
     var painel = $('obrTabela');
     recolherLegenda(novo === 'dividida');
@@ -887,7 +895,8 @@ var ObrasPainel = (function() {
       ObrasStore.descartar(); recarregarGrade(); if (fichaUid) renderFicha();
     });
     $('obrExportar').addEventListener('click', exportar);
-    $('obrOrigem').addEventListener('change', function() { trocarOrigem(this.value, true); });
+    $('obrOrigem').addEventListener('change', function() { trocarOrigem(this.value); });
+    $('obrOrigem').addEventListener('mousedown', preencherSeletorOrigem);   // ligou/desligou origens por outro caminho
     $('obrAprovacoes').addEventListener('click', abrirAprovacoes);
     $('obrAprovCorpo').addEventListener('click', aoClicarAprovacoes);
     $('obrNova').addEventListener('click', abrirNova);
