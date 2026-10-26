@@ -18,3 +18,7 @@ css/manual.css
 data/placapedagio.svg
 data/pracas_pedagio_goias.geojson
 LOG_ALTERACOES.txt
+
+# Camadas da GOINFRA: só no banco (lidas com login)
+data/extra_base.geojson
+data/geo_pol_base.geojson

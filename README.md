@@ -50,7 +50,7 @@ tem um dos níveis abaixo (cada um inclui os anteriores) ou nenhum acesso. O ban
   extra_base, o editor pleno da JURISDICAO. Criar desenhando (Geoman) ou importando GeoJSON, editar dados e vértices,
   excluir; cada alteração/exclusão vira cópia arquivada (só admin vê); não exclui feição ligada a obra. As três geo_*
   servem de traçado das obras (Ponto → geo_pt_base, que também dá a posição do ponto; Linha → geo_lin_base; Área →
-  geo_pol_base) e são lidas do banco por `siplaweb.camada_geojson()` (`data/geo_pol_base.geojson` é só reserva).
+  geo_pol_base) e são lidas do banco por `siplaweb.camada_geojson()` (só no banco; os arquivos `data/extra_base.geojson` e `data/geo_pol_base.geojson` saíram do repositório em 26/10/2026).
   As bases principais (SRE, municípios, ferrovias...) não se editam pelo site. Entram no backup diário.
 - **Mapa geral** mostra só as origens liberadas ao usuário. **Mapa rodoviário** (sem obras) é liberado a todo usuário ativo.
 - O login vale para todo o projeto `banco-gis-dpl`. O cadastro público está desligado.
@@ -65,6 +65,28 @@ tem um dos níveis abaixo (cada um inclui os anteriores) ou nenhum acesso. O ban
   - Criar conta, redefinir senha e excluir passam pela Edge Function `admin-usuarios`
     (`supabase/functions/admin-usuarios/`), que usa a chave secreta do ambiente do Supabase (nunca vai para o site).
     O e-mail padrão do Supabase só entrega para a equipe do projeto, por isso a senha provisória em vez de convite.
+
+## Ambientes e publicação
+
+| Ambiente | Site | Repositório | Banco (Supabase, São Paulo) |
+|---|---|---|---|
+| **Produção** | https://ricardomarques2025.github.io/SIPLAWEB/ | `origin` = SIPLAWEB | `banco-gis-dpl` (`zeneqnnrlrmmmejchbrl`) |
+| **Homologação** | https://ricardomarques2025.github.io/SIPLAWEB_HOMOLOG/ | `homolog` = SIPLAWEB_HOMOLOG | `banco-gis-homolog` (`lbhgjkhpxhihmuzapxui`) |
+
+O mesmo código serve aos dois: `js/acesso.js` escolhe o banco pelo endereço (`/SIPLAWEB_HOMOLOG/` e o site local = homologação;
+no local, `?banco=producao` usa a produção) e mostra a faixa do ambiente; o keepalive escolhe pelo nome do repositório.
+
+**Para publicar uma mudança:**
+1. Testar no local (homologação). Script de banco novo (`supabase/0xx`): aplicar primeiro na homologação.
+2. Trocar a versão do site: `VERSAO_SITE` em `js/acesso.js` **e** `versao.json` com o mesmo valor novo (ex.: `2026-10-27.1`),
+   e o `?v=` dos arquivos mudados nas páginas.
+3. `git push homolog main` → testar em https://ricardomarques2025.github.io/SIPLAWEB_HOMOLOG/.
+4. Com o OK: script no banco de produção e `git push origin main`.
+
+Quem estiver com o site aberto vê em até 5 minutos o aviso **"Nova versão do site publicada · Atualizar agora"** (a página
+confere `versao.json` sem cache ao abrir, a cada 5 min e ao voltar para a aba). "Atualizar agora" e o botão "Atualizar site"
+do mapa baixam de novo, sem cache, tudo o que a página usou (scripts, estilos, camadas) e recarregam: o mesmo que Ctrl+F5.
+Para recopiar a produção na homologação: mesmo roteiro de `SIPLAWEB/DADOS/bkp/2026-10-26_oregon_final/LEIA-ME.txt`.
 
 ## Páginas
 

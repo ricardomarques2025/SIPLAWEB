@@ -67,6 +67,14 @@ var Acesso = (function() {
     '.acesso-ambiente{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:100001;pointer-events:auto;' +
     'font:800 11px/1 Inter,Segoe UI,Arial,sans-serif;letter-spacing:.12em;color:#fff;padding:5px 14px 6px;border-radius:0 0 9px 9px;' +
     'box-shadow:0 3px 10px rgba(0,0,0,.25);white-space:nowrap}' +
+    '.acesso-versao{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:100002;display:flex;align-items:center;gap:10px;' +
+    'flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);background:#0f2a1a;color:#fff;padding:10px 12px 10px 16px;border-radius:12px;' +
+    'box-shadow:0 10px 28px rgba(0,0,0,.3);font:13px Inter,Segoe UI,Arial,sans-serif}' +
+    '.acesso-versao span{opacity:.85}' +
+    '.acesso-versao button{border:0;border-radius:8px;padding:7px 12px;font:700 12.5px Inter,Segoe UI,Arial,sans-serif;cursor:pointer;background:#22c55e;color:#06260f}' +
+    '.acesso-versao button.depois{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:600}' +
+    '.acesso-versao button:disabled{opacity:.7;cursor:wait}' +
+    '@media print{.acesso-versao{display:none!important}}' +
     '.acesso-ambiente-homologacao{background:#c2410c}' +
     '.acesso-ambiente-producao{background:#b91c1c}' +
     '@media print{.acesso-ambiente{display:block!important;position:absolute;-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
@@ -298,6 +306,67 @@ var Acesso = (function() {
     registrarEvento('saiu').then(function() { return sb.auth.signOut(); }).then(function() { location.reload(); });
   }
 
+  // ---------- Versão do site ----------
+  // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
+  // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
+  // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
+  var VERSAO_SITE = '2026-10-26.2';
+  var conferidaEm = 0, avisoAdiadoAte = 0;
+
+  function conferirVersao() {
+    conferidaEm = Date.now();
+    return fetch('versao.json?t=' + Date.now(), { cache: 'no-store' }).then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(j) { if (j && j.versao && j.versao !== VERSAO_SITE && Date.now() > avisoAdiadoAte) mostrarAvisoVersao(j.versao); })
+      .catch(function() { /* sem internet ou arquivo: tenta na próxima */ });
+  }
+
+  function mostrarAvisoVersao(nova) {
+    if ($('acessoVersao')) return;
+    var aviso = document.createElement('div');
+    aviso.id = 'acessoVersao';
+    aviso.className = 'acesso-versao';
+    aviso.innerHTML = '<b>Nova versão do site publicada.</b><span>Atualize para usar a versão mais recente.</span>' +
+      '<button type="button" data-atualizar>Atualizar agora</button><button type="button" class="depois" data-depois>Depois</button>';
+    aviso.title = 'Versão aberta: ' + VERSAO_SITE + ' · publicada: ' + nova;
+    aviso.querySelector('[data-atualizar]').addEventListener('click', atualizarSite);
+    aviso.querySelector('[data-depois]').addEventListener('click', function() { avisoAdiadoAte = Date.now() + 30 * 60000; aviso.remove(); });
+    document.body.appendChild(aviso);
+  }
+
+  function pendentesNaoSalvos() {
+    var n = 0;
+    try { if (typeof ObrasStore !== 'undefined' && ObrasStore.totalPendentes) n += ObrasStore.totalPendentes(); } catch (e) { /* módulo não carregado */ }
+    try { if (typeof Store !== 'undefined' && Store.totalPendentes) n += Store.totalPendentes(); } catch (e) { /* idem */ }
+    return n;
+  }
+
+  // Equivale ao Ctrl+F5: baixa de novo (sem cache) os scripts, estilos e camadas que esta página usou e recarrega.
+  function atualizarSite() {
+    var n = pendentesNaoSalvos();
+    if (n && !confirm('Há ' + n + ' alteração(ões) não salvas nesta página. Atualizar agora descarta essas alterações.\n\nAtualizar mesmo assim?')) return;
+    var botao = document.querySelector('#acessoVersao [data-atualizar]');
+    if (botao) { botao.disabled = true; botao.textContent = 'Atualizando…'; }
+    var urls = {};
+    document.querySelectorAll('script[src], link[rel="stylesheet"][href]').forEach(function(el) { urls[el.src || el.href] = 1; });
+    if (window.performance && performance.getEntriesByType) {
+      performance.getEntriesByType('resource').forEach(function(r) { if (/\.(geojson|json|js|css|svg|png|jpe?g)(\?|$)/i.test(r.name)) urls[r.name] = 1; });
+    }
+    var proprias = Object.keys(urls).filter(function(u) { return u.indexOf(location.origin) === 0; });
+    return Promise.all(proprias.map(function(u) { return fetch(u, { cache: 'reload' }).catch(function() {}); })).then(function() {
+      var url = new URL(location.href);
+      url.searchParams.set('_atualizar', Date.now());
+      location.replace(url.toString());
+    });
+  }
+
+  function vigiarVersao() {
+    conferirVersao();
+    setInterval(conferirVersao, 5 * 60000);
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' && Date.now() - conferidaEm > 60000) conferirVersao();
+    });
+  }
+
   // Faixa do ambiente: homologação (ou o site local usando a produção). Não some na impressão nem no login.
   function montarFaixa() {
     var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
@@ -315,6 +384,7 @@ var Acesso = (function() {
   function iniciar() {
     montarTela();
     montarFaixa();
+    vigiarVersao();
     sb.auth.onAuthStateChange(function(evento) {
       if (evento === 'PASSWORD_RECOVERY') setTimeout(function() { mostrarTela('', false, true); }, 0);
     });
@@ -331,6 +401,8 @@ var Acesso = (function() {
     cliente: sb,
     url: SUPABASE.url,                        // funções do servidor (Edge Functions) usam o mesmo projeto
     ambiente: AMBIENTE,                       // 'producao' | 'homologacao'
+    versao: VERSAO_SITE,
+    atualizarSite: atualizarSite,             // botão "Atualizar site" do mapa e aviso de versão nova
     perfil: function() { return perfil; },
     podeVer: podeVer,
     podeExportar: podeExportar,

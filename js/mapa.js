@@ -27,6 +27,8 @@ var originalZoom = map.getZoom();
   var btn = document.getElementById('btnAtualizarSite');
   if (!btn) return;
   btn.addEventListener('click', function() {
+    // Atualização completa (como Ctrl+F5): js/acesso.js baixa de novo, sem cache, o que a página usou e recarrega.
+    if (window.Acesso && Acesso.atualizarSite) { Acesso.atualizarSite(); return; }
     var limpezaCaches = ('caches' in window)
       ? caches.keys().then(function(chaves) {
           return Promise.all(chaves.map(function(chave) { return caches.delete(chave); }));
@@ -9081,14 +9083,14 @@ map.addControl(new LogoMapaControl());
   }
 
   // Malha complementar (extra_base): vem do banco (editavel pelo site, js/jurisdicao/tracado.js);
-  // o arquivo data/extra_base.geojson so e usado se o banco nao responder.
+  // so do banco (o arquivo data/extra_base.geojson saiu do repositorio publico em 26/10/2026).
   function carregarExtraBase() {
     return Acesso.pronto.then(function() { return Acesso.cliente.rpc('extra_base_geojson'); }).then(function(res) {
       if (res.error || !res.data) throw new Error(res.error ? res.error.message : 'sem dados');
       return res.data;
     }).catch(function(e) {
-      console.warn('extra_base do banco falhou, usando o arquivo:', e.message);
-      return fetchGeoJSON('data/extra_base.geojson', false);
+      console.warn('extra_base do banco falhou:', e.message);
+      return { type: 'FeatureCollection', features: [] };
     });
   }
   window.recarregarExtraBase = function() {
@@ -9100,7 +9102,7 @@ map.addControl(new LogoMapaControl());
   };
   // Camadas editáveis pelo site (supabase/014_camadas_editaveis.sql): áreas de estudo (geo_pol_base) e as bases
   // genéricas de pontos (geo_pt_base) e linhas (geo_lin_base) vêm do banco; servem de traçado para as obras.
-  // Só a geo_pol_base tem arquivo de reserva (data/geo_pol_base.geojson).
+  // Só do banco: os arquivos de reserva saíram do repositório público em 26/10/2026.
   var camadasEditaveisData = {};
   var VAZIA = { type: 'FeatureCollection', features: [] };
   function carregarCamadaBanco(nome, reserva) {
@@ -9115,7 +9117,7 @@ map.addControl(new LogoMapaControl());
   // Depois de gravar uma feição (js/camadas_edicao.js): lê a camada de novo e redesenha as obras ligadas a ela.
   window.recarregarCamadaMapa = function(nome) {
     if (nome === 'extra_base') return window.recarregarExtraBase().then(function() { return recarregarObrasDoMapa(true); });
-    return carregarCamadaBanco(nome, nome === 'geo_pol_base' ? 'data/geo_pol_base.geojson' : null).then(function(fc) {
+    return carregarCamadaBanco(nome, null).then(function(fc) {
       if (indicesBaseObras) indicesBaseObras[nome] = indexarPorGeocod(fc);
       return recarregarObrasDoMapa(true);   // relê as obras (e os pontos genéricos, em js/dados_banco.js)
     });
@@ -9354,7 +9356,7 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/estados.geojson', false),
     fetchGeoJSON('data/mascara_brasil.geojson', false),
     fetchGeoJSON('data/aero.geojson', false),
-    carregarCamadaBanco('geo_pol_base', 'data/geo_pol_base.geojson'),
+    carregarCamadaBanco('geo_pol_base', null),
     fetchGeoJSON('data/ferrovias.geojson', false),
     fetchGeoJSON('data/pedagios.geojson', false),
     carregarDadosUnificados(),
