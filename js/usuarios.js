@@ -6,15 +6,11 @@
 (function() {
   var sb = Acesso.cliente;   // schema siplaweb
   var FUNCAO = Acesso.url + '/functions/v1/admin-usuarios';
-  var NIVEIS = [['', 'Sem acesso'], ['visualizador', 'Visualizador'], ['gerenciador', 'Gerenciador'],
-    ['editor_basico', 'Editor básico'], ['editor_pleno', 'Editor pleno']];
-  var DICA_NIVEL = {
-    visualizador: 'só vê; não exporta nem imprime', gerenciador: 'vê, exporta e imprime',
-    editor_basico: 'edita, mas tudo vai para aprovação', editor_pleno: 'edita direto e aprova propostas'
-  };
+  // Perfis (acesso.perfis, supabase/015_perfis.sql), na ordem definida no Painel › Configurações.
+  function niveis() { return [['', 'Sem acesso']].concat((dados.perfis || []).map(function(f) { return [f.codigo, f.nome]; })); }
   var ACOES = { criou: 'Criou a conta', alterou: 'Alterou', redefiniu_senha: 'Redefiniu a senha', excluiu: 'Excluiu a conta' };
 
-  var dados = { eu: {}, areas: [], usuarios: [] };
+  var dados = { eu: {}, areas: [], usuarios: [], perfis: [] };
   var selecionado = null;
 
   function $(id) { return document.getElementById(id); }
@@ -86,7 +82,7 @@
       var v = (u.areas || {})[a.codigo] || '';
       return '<label class="area"><span>' + esc(a.codigo) + (a.nome && a.nome !== a.codigo ? ' <small>' + esc(a.nome) + '</small>' : '') + '</span>' +
         '<select data-area="' + esc(a.codigo) + '"' + bloq + ' class="nivel-' + (v || 'nenhum') + '">' +
-        NIVEIS.map(function(n) { return '<option value="' + n[0] + '"' + (n[0] === v ? ' selected' : '') + '>' + n[1] + '</option>'; }).join('') + '</select></label>';
+        niveis().map(function(n) { return '<option value="' + n[0] + '"' + (n[0] === v ? ' selected' : '') + '>' + esc(n[1]) + '</option>'; }).join('') + '</select></label>';
     }
     $('ficha').innerHTML =
       '<div class="ficha-topo"><div><h2>' + esc(u.nome) + ' ' + papel(u) + '</h2><div class="sub">' + esc(u.email) +
@@ -97,14 +93,15 @@
         '<label class="chave"><input type="checkbox" id="fAdmin"' + (u.admin ? ' checked' : '') + (u.master || !ehMaster ? ' disabled' : bloq) + '> Administrador' +
           '<small>' + (ehMaster ? 'acesso total a todas as áreas e gerencia usuários comuns' : 'só o administrador master define administradores') + '</small></label>' +
       '</div>' +
-      '<div class="grupo" id="grupoNiveis"' + (u.admin ? ' hidden' : '') + '><h3>Níveis por área</h3>' +
-        '<p class="nota">Cada nível inclui os anteriores. ' + Object.keys(DICA_NIVEL).map(function(k) { return '<b>' + NIVEIS.find(function(n) { return n[0] === k; })[1] + '</b>: ' + DICA_NIVEL[k]; }).join(' · ') + '.</p>' +
+      '<div class="grupo" id="grupoNiveis"' + (u.admin ? ' hidden' : '') + '><h3>Perfil por área</h3>' +
+        '<p class="nota">' + (dados.perfis || []).map(function(f) { return '<b>' + esc(f.nome) + '</b>: ' + esc(f.descricao); }).join(' · ') +
+          ' <a href="painel.html">Perfis no Painel › Configurações</a></p>' +
         (pode ? '<div class="todas">Aplicar a todas as origens: <select id="fTodas"><option value="-">—</option>' +
-          NIVEIS.map(function(n) { return '<option value="' + n[0] + '">' + n[1] + '</option>'; }).join('') + '</select></div>' : '') +
+          niveis().map(function(n) { return '<option value="' + n[0] + '">' + esc(n[1]) + '</option>'; }).join('') + '</select></div>' : '') +
         '<div class="areas"><h4>Origens</h4>' + origens.map(linhaArea).join('') + '</div>' +
         '<div class="areas"><h4>Módulos</h4>' + sites.map(linhaArea).join('') + '</div>' +
       '</div>' +
-      '<p class="nota" id="notaAdmin"' + (u.admin ? '' : ' hidden') + '>Administrador acessa todas as áreas como editor pleno.</p>' +
+      '<p class="nota" id="notaAdmin"' + (u.admin ? '' : ' hidden') + '>Administrador acessa todas as áreas com todos os poderes (grava direto e aprova tudo).</p>' +
       '<div class="acoes">' +
         (pode && !u.master && ehMaster ? '<button type="button" class="btn btn-perigo" id="fExcluir">Excluir conta</button>' : '') +
         (pode ? '<button type="button" class="btn" id="fSenha">Redefinir senha</button>' : '') +

@@ -2,9 +2,10 @@
 // "Abrir tabela" no painel JURISDICAO do menu esquerdo; tela cheia ou dividida com o mapa (largura
 // ajustavel arrastando a borda); ficha de detalhes (dados, tramitacao, historico), exportacao, novo
 // registro e exclusao. Fechar volta so ao mapa.
-// Mesmo fluxo da tabela de obras: edicao pendente (amarelo) ate "Revisar e salvar" (editor pleno) ou
-// "Revisar e enviar" (editor basico: vira proposta; tramite e registro novo tambem). O pleno decide em
-// "Aprovações". Excluir e remover tramite sao do pleno. Visual das conferencias: css/obras.css (.obr-ui).
+// Mesmo fluxo da tabela de obras: edicao pendente (amarelo) ate "Revisar e salvar" (quem grava direto) ou
+// "Revisar e enviar" (quem propoe: vira proposta; tramite, registro novo, exclusao e remocao de tramite tambem).
+// Quem aprova decide em "Aprovações" (o pleno decide o basico; o gerenciador, os dois). Visual das conferencias:
+// css/obras.css (.obr-ui).
 
 var JurisdicaoPainel = (function() {
   if (!Jurisdicao.ativo()) return null;
@@ -87,7 +88,7 @@ var JurisdicaoPainel = (function() {
           '<button type="button" class="btn btn-primario so-editor" id="jurRevisar" disabled><svg><use href="#i-check"/></svg>Revisar e salvar</button>' +
           '<span class="obr-pendentes" id="jurPendentes" hidden></span>' +
           '<button type="button" class="btn btn-fantasma so-editor" id="jurDescartar" hidden>Descartar</button>' +
-          '<button type="button" class="btn so-editor" id="jurAprovacoes"></button>' +
+          '<button type="button" class="btn" id="jurAprovacoes" hidden></button>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="pill-status" id="jurStatus" title="Recarregar os dados do banco"><span class="ponto"></span><span id="jurTxtStatus">Carregando…</span></button>' +
           '<div class="menu" data-exportar>' +
@@ -115,7 +116,7 @@ var JurisdicaoPainel = (function() {
           '<button type="button" class="btn btn-fantasma" id="jurTLimpar" title="Limpar filtros"><svg><use href="#i-filter-x"/></svg></button>' +
           '<span class="contador" id="jurTContador"></span>' +
           '<div class="espaco"></div>' +
-          '<button type="button" class="btn so-editor so-pleno" id="jurMalha" title="Trechos da malha complementar (extra_base)">Malha complementar</button>' +
+          '<button type="button" class="btn so-camadas" id="jurMalha" title="Trechos da malha complementar (extra_base)">Malha complementar</button>' +
           '<button type="button" class="btn" id="jurTColunas"><svg><use href="#i-cols"/></svg>Colunas</button>' +
           '<button type="button" class="btn btn-primario so-editor" id="jurTNovo"><svg><use href="#i-plus"/></svg>Novo registro</button>' +
         '</section>' +
@@ -128,7 +129,7 @@ var JurisdicaoPainel = (function() {
         '<div class="gaveta-abas"><button type="button" class="ativo" data-aba="dados">Dados</button><button type="button" data-aba="tracado">Traçado</button><button type="button" data-aba="tramitacao">Tramitação</button><button type="button" data-aba="historico">Histórico</button></div>' +
         '<div class="gaveta-corpo" id="jurGavetaCorpo"></div>' +
         '<div class="gaveta-rodape">' +
-          '<button type="button" class="btn btn-perigo-fantasma so-editor so-pleno" id="jurExcluir"><svg><use href="#i-trash"/></svg>Excluir</button>' +
+          '<button type="button" class="btn btn-perigo-fantasma so-editor" id="jurExcluir"><svg><use href="#i-trash"/></svg>Excluir</button>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="btn" id="jurPrancha" data-exportar title="Abrir a prancha A4 deste registro"><svg><use href="#i-down"/></svg>Prancha</button>' +
           '<button type="button" class="btn btn-primario" id="jurVerMapa"><svg><use href="#i-pin"/></svg>Ver no mapa</button>' +
@@ -165,7 +166,7 @@ var JurisdicaoPainel = (function() {
       if (evento === 'visao') {
         JurTracado.encerrar();
         $('jurUi').classList.toggle('somente-leitura', !Store.podeEditar());
-        $('jurUi').classList.toggle('sem-pleno', !Store.podeGravar());
+        $('jurUi').classList.toggle('sem-camadas', !Store.podeCamadas());
         if (tabelaPronta) { Tabela.recarregar(); aplicarFiltros(); }
         if (gavetaId != null) renderGaveta();
       }
@@ -222,7 +223,7 @@ var JurisdicaoPainel = (function() {
       carregarCss(LIBS.tabulatorCss);
       tabelaPronta = Promise.all([carregarScript(LIBS.tabulatorJs), Jurisdicao.carregar()]).then(function() {
         document.getElementById('jurUi').classList.toggle('somente-leitura', !Store.podeEditar());
-        document.getElementById('jurUi').classList.toggle('sem-pleno', !Store.podeGravar());
+        document.getElementById('jurUi').classList.toggle('sem-camadas', !Store.podeCamadas());
         document.getElementById('jurUi').classList.toggle('admin', Store.eAdmin());
         return Tabela.iniciar({ aoSelecionar: selecionar, aoAbrir: abrirGaveta, aoVerMapa: verNoMapa, aoFiltrar: aoFiltrar });
       }).then(function() {
@@ -497,13 +498,13 @@ var JurisdicaoPainel = (function() {
               esc(x.tipo) + ' · ' + esc(x.trecho || x.municipios) + ' <span class="badge" style="--c:' + ((SITUACOES[x.situacao] || {}).cor || '#6b7280') + '">' + esc(x.situacao || '—') + '</span></label>';
           }).join('') + '</div>' : '') +
         '<div class="form-tramite-acoes"><span class="dica-tramite">' + (propondo
-          ? 'Vai para aprovação do editor pleno; só entra na linha do tempo (e muda a situação) depois de aprovado.'
+          ? 'Vai para aprovação; só entra na linha do tempo (e muda a situação) depois de aprovado.'
           : 'Se for o trâmite mais recente, atualiza a situação e o status detalhado.') + '</span>' +
         '<button class="btn btn-primario" type="submit"><svg><use href="#i-check"/></svg>' + (propondo ? 'Enviar para aprovação' : 'Registrar') + '</button></div></form>';
     }
-    var aguardando = Store.propostas().filter(function(p) { return p.tipo === 'tramite' && p.situacao === 'pendente' && (p.registros || []).indexOf(r.uid) !== -1; });
+    var aguardando = Store.propostas().filter(function(p) { return (p.tipo === 'tramite' || p.tipo === 'tramite_exclusao') && p.situacao === 'pendente' && (p.registros || []).indexOf(r.uid) !== -1; });
     html += aguardando.map(function(p) {
-      return '<div class="obr-aviso-proposta">◷ Trâmite proposto por <b>' + esc(Store.nomeUsuario(p.criado_por) || '—') + '</b> aguardando aprovação: ' +
+      return '<div class="obr-aviso-proposta">◷ ' + (p.tipo === 'tramite' ? 'Trâmite proposto' : 'Remoção de trâmite proposta') + ' por <b>' + esc(Store.nomeUsuario(p.criado_por) || '—') + '</b> aguardando aprovação: ' +
         fmtData(p.mudancas.data) + (p.mudancas.situacao ? ' · ' + esc(p.mudancas.situacao) : '') + ' · ' + esc(p.mudancas.descricao) +
         ' <button type="button" class="link" data-abrir-aprovacoes>Ver</button></div>';
     }).join('');
@@ -520,7 +521,7 @@ var JurisdicaoPainel = (function() {
           '<div class="tramite-desc">' + esc(t.descricao) + '</div>' +
           (t.processo_sei ? '<div class="tramite-sei">SEI ' + esc(t.processo_sei) + '</div>' : '') +
           '<div class="tramite-autor">Lançado por ' + esc(Store.nomeUsuario(t.criado_por) || '—') + ' em ' + fmtDataHora(t.criado_em) +
-          (Store.podeGravar() ? ' · <button type="button" class="link link-perigo" data-excluir-tramite="' + t.tid + '">remover</button>' : '') + '</div>' +
+          (Store.podeEditar() ? ' · <button type="button" class="link link-perigo" data-excluir-tramite="' + t.tid + '">' + (Store.modoProposta() ? 'propor remoção' : 'remover') + '</button>' : '') + '</div>' +
           '</div></div>';
       }).join('') : '<div class="vazio">Nenhum trâmite registrado ainda.</div>';
     }).catch(function(e) {
@@ -679,7 +680,7 @@ var JurisdicaoPainel = (function() {
     $('jurRevisaoTitulo').textContent = proposta ? 'Conferir antes de enviar para aprovação' : 'Conferir antes de salvar';
     $('jurConfirmar').lastChild.textContent = proposta ? 'Enviar para aprovação' : 'Confirmar e salvar';
     $('jurRevisaoAviso').textContent = erros ? 'Corrija ' + erros + ' valor(es) em vermelho antes de ' + (proposta ? 'enviar.' : 'salvar.')
-      : proposta ? 'As mudanças só valem depois que o editor pleno aprovar.' : '';
+      : proposta ? 'As mudanças só valem depois de aprovadas.' : '';
     $('jurConfirmar').disabled = erros > 0;
     $('jurDlgRevisao').showModal();
   }
@@ -706,30 +707,38 @@ var JurisdicaoPainel = (function() {
       .then(function() { $('jurConfirmar').disabled = false; atualizarPendentes(); });
   }
 
+  // Aprovador (pleno, gerenciador...): "Aprovações", com as que ele decide; quem só propõe: "Minhas propostas".
   function atualizarAprovacoes() {
     var b = $('jurAprovacoes');
-    if (!b || !Store.podeEditar()) return;
-    var pleno = Store.podeGravar();
-    var pend = Store.propostas().filter(function(p) { return p.situacao === 'pendente' && (pleno || p.criado_por === eu()); }).length;
-    b.innerHTML = (pleno ? 'Aprovações' : 'Minhas propostas') + (pend ? ' <span class="obr-contagem">' + pend + '</span>' : '');
-    b.classList.toggle('tem-pendente', pleno && pend > 0);
+    if (!b) return;
+    var aprovador = Store.podeAprovarAlgo();
+    b.hidden = !aprovador && !Store.podeEditar();
+    var pendentes = Store.propostas().filter(function(p) { return p.situacao === 'pendente'; });
+    var decidir = pendentes.filter(Store.podeDecidir).length;
     var menu = $('jurAbrirTabela');
-    if (menu) menu.textContent = 'Abrir tabela' + (pleno && pend ? ' · ' + pend + ' para aprovar' : '');
+    if (menu) menu.textContent = 'Abrir tabela' + (decidir ? ' · ' + decidir + ' para aprovar' : '');
+    if (b.hidden) return;
+    var n = aprovador ? decidir : pendentes.filter(function(p) { return p.criado_por === eu(); }).length;
+    b.innerHTML = (aprovador ? 'Aprovações' : 'Minhas propostas') + (n ? ' <span class="obr-contagem">' + n + '</span>' : '');
+    b.classList.toggle('tem-pendente', aprovador && decidir > 0);
   }
 
   function abrirAprovacoes() { renderAprovacoes(); if (!$('jurDlgAprov').open) $('jurDlgAprov').showModal(); }
 
   var SITUACAO_PROPOSTA = { pendente: 'Aguardando', aprovada: 'Aprovada', recusada: 'Recusada', cancelada: 'Cancelada' };
   function cartaoProposta(p) {
-    var pleno = Store.podeGravar();
+    var decide = p.situacao === 'pendente' && Store.podeDecidir(p);
     var id = p.registro_uid ? Store.idPorUid(p.registro_uid) : null, r = id != null ? Store.obter(id) : null;
     var titulo = p.tipo === 'nova' ? (p.situacao === 'aprovada' && r ? Store.rotulo(r.id) + ' · registro novo' : 'Registro novo')
       : p.tipo === 'tramite' ? 'Trâmite · ' + (p.registros || []).map(function(u) { var x = Store.idPorUid(u); return x != null ? Store.rotulo(x) : '?'; }).join(', ')
-      : (r ? Store.rotulo(r.id) : '(registro excluído)');
+      : p.tipo === 'tramite_exclusao' ? 'Remover trâmite · ' + (r ? Store.rotulo(r.id) : '?')
+      : (r ? Store.rotulo(r.id) : '(registro excluído)') + (p.tipo === 'exclusao' ? ' · excluir o registro' : '');
     var comAntes = p.tipo === 'edicao' && p.situacao === 'pendente' && r;
-    var conflito = comAntes && r.versao !== p.versao_base;
-    var linhas = p.tipo === 'tramite'
-      ? [['Data', fmtData(p.mudancas.data)], ['Nova situação', p.mudancas.situacao || '(mantém)'], ['Descrição', p.mudancas.descricao], ['Processo SEI', p.mudancas.processo_sei || '']]
+    var conflito = (comAntes || (p.tipo === 'exclusao' && p.situacao === 'pendente' && r)) && r.versao !== p.versao_base;
+    var linhas = p.tipo === 'exclusao' ? '<div class="rev-campo"><span class="rev-rotulo">Motivo</span><span></span><span></span><span class="para">' + esc(p.mudancas.motivo || '') + '</span></div>'
+      : p.tipo === 'tramite' || p.tipo === 'tramite_exclusao'
+      ? (p.tipo === 'tramite_exclusao' ? [['Motivo da remoção', p.mudancas.motivo]] : []).concat([['Data', fmtData(p.mudancas.data)],
+          ['Nova situação', p.mudancas.situacao || (p.tipo === 'tramite' ? '(mantém)' : '')], ['Descrição', p.mudancas.descricao], ['Processo SEI', p.mudancas.processo_sei || '']])
         .filter(function(l) { return l[1]; }).map(function(l) { return '<div class="rev-campo"><span class="rev-rotulo">' + l[0] + '</span><span></span><span></span><span class="para">' + esc(l[1]) + '</span></div>'; }).join('')
       : Object.keys(p.mudancas).map(function(c) {
         return '<div class="rev-campo"><span class="rev-rotulo">' + esc(tituloCampo(c)) + '</span>' +
@@ -738,7 +747,7 @@ var JurisdicaoPainel = (function() {
       }).join('');
     var acoes = '';
     if (p.situacao === 'pendente') {
-      if (pleno) acoes = '<button type="button" class="btn btn-fantasma" data-recusar="' + p.pid + '">Recusar</button>' +
+      if (decide) acoes = '<button type="button" class="btn btn-fantasma" data-recusar="' + p.pid + '">Recusar</button>' +
         '<button type="button" class="btn btn-primario" data-aprovar="' + p.pid + '"><svg><use href="#i-check"/></svg>Aprovar</button>';
       else if (p.criado_por === eu()) acoes = '<button type="button" class="btn btn-fantasma" data-cancelar="' + p.pid + '">Cancelar proposta</button>';
     }
@@ -748,7 +757,8 @@ var JurisdicaoPainel = (function() {
       (p.motivo ? ' · motivo: ' + esc(p.motivo) : '') + '</div>';
     return '<div class="rev-obra aprov-' + p.situacao + '" data-pid="' + p.pid + '"><div class="rev-cab"><b>' + esc(titulo) + '</b> ' +
       esc(r ? [r.rodovia, r.municipios].filter(Boolean).join(' — ') : [p.mudancas.rodovia, p.mudancas.municipios].filter(Boolean).join(' — ')) + '</div>' +
-      '<div class="aprov-autor">Proposta de <b>' + esc(Store.nomeUsuario(p.criado_por) || '—') + '</b> em ' + fmtDataHora(p.criado_em) + '</div>' +
+      '<div class="aprov-autor">Proposta de <b>' + esc(Store.nomeUsuario(p.criado_por) || '—') + '</b>' +
+        (p.perfil_autor ? ' (' + esc(Acesso.nomePerfil(p.perfil_autor)) + ')' : '') + ' em ' + fmtDataHora(p.criado_em) + '</div>' +
       (conflito ? '<div class="aprov-conflito">O registro foi alterado depois desta proposta (versão ' + p.versao_base + ' → ' + r.versao + '). Confira os valores atuais antes de aprovar.</div>' : '') +
       linhas + decisao +
       '<div class="aprov-recusa" hidden><textarea rows="2" placeholder="Motivo da recusa (o autor vai ver)"></textarea>' +
@@ -756,13 +766,20 @@ var JurisdicaoPainel = (function() {
       (acoes ? '<div class="aprov-acoes">' + acoes + '</div>' : '') + '</div>';
   }
 
+  // Aparecem as propostas que a pessoa decide e as dela (pendentes e decididas nos últimos 30 dias).
   function renderAprovacoes() {
-    var pleno = Store.podeGravar();
-    var todas = Store.propostas().filter(function(p) { return pleno || p.criado_por === eu(); });
-    var pend = todas.filter(function(p) { return p.situacao === 'pendente'; }), dec = todas.filter(function(p) { return p.situacao !== 'pendente'; });
-    $('jurAprovTitulo').textContent = (pleno ? 'Aprovações' : 'Minhas propostas') + ' · Jurisdição';
-    $('jurAprovCorpo').innerHTML = '<h4 class="aprov-secao">Aguardando decisão (' + pend.length + ')</h4>' +
-      (pend.length ? pend.map(cartaoProposta).join('') : '<div class="vazio">' + (pleno ? 'Nenhuma proposta para aprovar.' : 'Nenhuma proposta sua aguardando.') + '</div>') +
+    var aprovador = Store.podeAprovarAlgo();
+    function minha(p) { return p.criado_por === eu(); }
+    var todas = Store.propostas().filter(function(p) { return minha(p) || Acesso.podeAprovar('JURISDICAO', p.perfil_autor, p.criado_por); });
+    var decidir = todas.filter(function(p) { return p.situacao === 'pendente' && !minha(p); });
+    var minhas = todas.filter(function(p) { return p.situacao === 'pendente' && minha(p); });
+    var dec = todas.filter(function(p) { return p.situacao !== 'pendente'; });
+    $('jurAprovTitulo').textContent = (aprovador ? 'Aprovações' : 'Minhas propostas') + ' · Jurisdição';
+    $('jurAprovCorpo').innerHTML =
+      (aprovador ? '<h4 class="aprov-secao">Para você decidir (' + decidir.length + ')</h4>' +
+        (decidir.length ? decidir.map(cartaoProposta).join('') : '<div class="vazio">Nenhuma proposta para aprovar.</div>') : '') +
+      (Store.podeEditar() || minhas.length ? '<h4 class="aprov-secao">Minhas propostas aguardando (' + minhas.length + ')</h4>' +
+        (minhas.length ? minhas.map(cartaoProposta).join('') : '<div class="vazio">Nenhuma proposta sua aguardando.</div>') : '') +
       (dec.length ? '<h4 class="aprov-secao">Decididas nos últimos 30 dias</h4>' + dec.map(cartaoProposta).join('') : '');
   }
 
@@ -809,7 +826,7 @@ var JurisdicaoPainel = (function() {
       '<div class="campo largo"><label>Municípios</label><input name="municipios" required></div>' +
       '<div class="campo largo"><label>Trecho</label><textarea name="trecho" rows="2"></textarea></div>' +
       '</div><p class="nota">' + (Store.modoProposta()
-        ? 'O registro entra como proposta: o número (#) e o cadastro saem quando o editor pleno aprovar.'
+        ? 'O registro entra como proposta: o número (#) e o cadastro saem quando for aprovado.'
         : 'O número (#) é gerado pelo banco; depois de cadastrar, a ficha abre para completar os dados.') + '</p>';
     $('jurNovoAviso').textContent = '';
     $('jurDlgNovo').showModal();
@@ -943,6 +960,12 @@ var JurisdicaoPainel = (function() {
       if (rest && confirm('Voltar o registro ' + Store.rotulo(gavetaId) + ' para como estava nesta versão? (a restauração também fica no histórico)')) {
         Store.restaurarVersao(gavetaId, Number(rest.dataset.restaurar)).then(function() { toast('Versão restaurada'); renderGaveta(); })
           .catch(function(err) { toast(err.message, true); });
+      } else if (trm && Store.modoProposta()) {
+        var motivoT = prompt('Propor a remoção deste trâmite (só vale depois de aprovada). Motivo:');
+        if (motivoT === null) return;
+        if (!motivoT.trim()) { toast('Informe o motivo da remoção', true); return; }
+        Store.excluirTramite(trm.dataset.excluirTramite, motivoT.trim()).then(function() { toast('Remoção do trâmite enviada para aprovação'); atualizarAprovacoes(); renderGaveta(); })
+          .catch(function(err) { toast(err.message, true); });
       } else if (trm && confirm('Remover este trâmite da linha do tempo? (a situação atual do registro não muda)')) {
         Store.excluirTramite(trm.dataset.excluirTramite).then(renderGaveta).catch(function(err) { toast(err.message, true); });
       }
@@ -953,7 +976,16 @@ var JurisdicaoPainel = (function() {
     $('jurVerMapa').addEventListener('click', function() { verNoMapa(gavetaId); });
     $('jurPrancha').addEventListener('click', function() { window.open('jurisdicao_caderno.html?id=' + gavetaId, '_blank'); });
     $('jurExcluir').addEventListener('click', function() {
-      if (gavetaId != null && confirm('Excluir o registro ' + Store.rotulo(gavetaId) + '? Ele vai para a lixeira e só o administrador pode restaurá-lo.')) Store.excluir(gavetaId);
+      if (gavetaId == null) return;
+      if (Store.modoProposta()) {
+        var id = gavetaId, motivo = prompt('Propor a exclusão do registro ' + Store.rotulo(id) + ' (só vale depois de aprovada). Motivo:');
+        if (motivo === null) return;
+        if (!motivo.trim()) { toast('Informe o motivo da exclusão', true); return; }
+        Store.excluir(id, motivo.trim()).then(function() { toast('Exclusão de ' + Store.rotulo(id) + ' enviada para aprovação'); atualizarAprovacoes(); })
+          .catch(function(err) { toast(err.message, true); });
+        return;
+      }
+      if (confirm('Excluir o registro ' + Store.rotulo(gavetaId) + '? Ele vai para a lixeira e só o administrador pode restaurá-lo.')) Store.excluir(gavetaId);
     });
     $('jurTNovo').addEventListener('click', abrirNovo);
 

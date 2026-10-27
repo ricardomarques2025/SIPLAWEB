@@ -1,8 +1,9 @@
 // Dados da tabela de obras (schema siplaweb). As edicoes ficam PENDENTES no navegador ate o editor
 // "Revisar e salvar"; a gravacao confere a versao de cada obra (se outra pessoa gravou antes, aquela obra e
 // recusada e recarregada; nada e sobrescrito em silencio). O banco valida tudo de novo e guarda o historico.
-// Editor basico (js/acesso.js): o mesmo "salvar" vira PROPOSTA (siplaweb.propor / propor_nova), que o editor
-// pleno aprova ou recusa; ate la a obra nao muda.
+// Perfil que propoe sem gravar direto (js/acesso.js; editor basico e pleno): o mesmo "salvar" vira PROPOSTA
+// (siplaweb.propor / propor_nova), assim como excluir e mudar de origem (propor_exclusao / propor_origem); quem
+// aprova depende do perfil de quem propos (o pleno aprova o basico, o gerenciador os dois). Ate la a obra nao muda.
 
 var ObrasStore = (function() {
   var sb = Acesso.cliente;   // schema siplaweb
@@ -85,9 +86,12 @@ var ObrasStore = (function() {
       .order('pid', { ascending: false }).limit(300)
       .then(function(res) { if (res.error) throw erro(res.error); propostas = res.data; emitir('propostas'); });
   }
-  function propostaPendente(uid) {
-    return propostas.find(function(p) { return p.obra_uid === uid && p.situacao === 'pendente' && p.tipo === 'edicao'; }) || null;
+  function propostaPendente(uid, tipos) {
+    tipos = tipos || ['edicao'];
+    return propostas.find(function(p) { return p.obra_uid === uid && p.situacao === 'pendente' && tipos.indexOf(p.tipo) !== -1; }) || null;
   }
+  // Quem decide esta proposta: depende do perfil de quem propos (guardado na proposta).
+  function podeDecidir(p) { return !visao && Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }
 
   function recarregarObra(uid) {
     return sb.from('obras').select(COLUNAS + ',excluido_em').eq('uid', uid).maybeSingle().then(function(res) {
@@ -190,8 +194,15 @@ var ObrasStore = (function() {
     });
   }
 
-  function excluir(uid) {
+  // motivo: obrigatorio quando vira proposta (quem aprova le).
+  function excluir(uid, motivo) {
     var r = registros.get(uid);
+    if (modoProposta()) {
+      return sb.rpc('propor_exclusao', { p_obra: uid, p_motivo: motivo || '' }).then(function(res) {
+        if (res.error) throw erro(res.error);
+        return carregarPropostas().then(function() { return { proposta: res.data }; });
+      });
+    }
     return sb.from('obras').update({ excluido_em: new Date().toISOString() }).eq('uid', uid).eq('versao', r.versao).select('uid').then(function(res) {
       if (res.error) throw erro(res.error);
       if (!res.data.length) throw new Error('A obra foi alterada por outra pessoa; recarregue e tente de novo.');
@@ -201,6 +212,12 @@ var ObrasStore = (function() {
   }
 
   function tramitarOrigem(uids, nova, data, descricao, sei) {
+    if (modoProposta()) {
+      return sb.rpc('propor_origem', { p_obras: uids, p_nova_origem: nova, p_data: data, p_descricao: descricao, p_sei: sei || null }).then(function(res) {
+        if (res.error) throw erro(res.error);
+        return carregarPropostas().then(function() { return { proposta: true }; });
+      });
+    }
     return sb.rpc('tramitar_origem', { p_obras: uids, p_nova_origem: nova, p_data: data, p_descricao: descricao, p_sei: sei || null }).then(function(res) {
       if (res.error) throw erro(res.error);
       uids.forEach(function(uid) { registros.delete(uid); pendentes.delete(uid); });
@@ -221,7 +238,7 @@ var ObrasStore = (function() {
       .then(function(res) { if (res.error) throw erro(res.error); return res.data; });
   }
 
-  // ---------- Aprovacao (editor pleno) ----------
+  // ---------- Aprovacao (quem aprova o perfil de quem propos) ----------
   function aprovar(pid, forcar) {
     return sb.rpc('aprovar_proposta', { p_pid: pid, p_forcar: !!forcar }).then(function(res) {
       if (res.error) throw erro(res.error);
@@ -267,10 +284,13 @@ var ObrasStore = (function() {
     obter: function(uid) { return registros.get(uid); },
     listas: function() { return listas; },
     nomeUsuario: function(id) { return nomes.get(id) || ''; },
-    // podeAlterar: mexe na tabela/ficha/traçado (editor basico ou pleno); podeGravar: grava direto, aprova,
-    // exclui, tramita e anota (pleno); modoProposta: basico, cujo "salvar" vira proposta.
+    // podeAlterar: mexe na tabela/ficha/traçado, exclui, tramita e anota (quem propõe); podeGravar: grava direto,
+    // sem aprovação (admin ou perfil com "gravar"); modoProposta: propõe sem gravar (tudo vira proposta);
+    // podeAprovarAlgo: decide propostas de alguém nesta origem (pleno, gerenciador...); podeDecidir(p): esta proposta.
     podeAlterar: function() { return !visao && Acesso.podePropor(origem); },
     podeGravar: function() { return !visao && Acesso.podeEditar(origem); },
+    podeAprovarAlgo: function() { return !visao && Acesso.aprovaNaArea(origem); },
+    podeDecidir: podeDecidir,
     modoProposta: modoProposta,
     propostas: function() { return propostas; }, propostaPendente: propostaPendente, carregarPropostas: carregarPropostas,
     aprovar: aprovar, recusar: recusar, cancelar: cancelar,

@@ -1,10 +1,13 @@
 // Editor de camadas no mapa (mapa.html): botão "Editar camadas" para quem pode editar alguma camada
-// (Acesso.perfil().camadas, vindo de siplaweb.meu_acesso). Quem pode: administrador; editor pleno com a camada liberada
-// pelo administrador (painel.html > Configurações); e, na malha complementar, o editor pleno da Jurisdição.
+// (Acesso.perfil().camadas, vindo de siplaweb.meu_acesso). Quem pode: administrador; perfil que edita camadas, com a camada liberada
+// pelo administrador (painel.html > Configurações); e, na malha complementar, quem edita camadas na Jurisdição.
 // Camadas: extra_base (malha complementar), geo_lin_base (linhas genéricas), geo_pt_base (pontos genéricos) e
 // geo_pol_base (áreas de estudo). As bases principais (SRE, municípios...) não entram.
 // Criar: desenhar (Geoman, carregado só aqui) ou importar GeoJSON; editar dados e vértices; excluir. Cada alteração e
 // exclusão deixa uma cópia arquivada no banco (só administradores veem). Banco: supabase/014_camadas_editaveis.sql.
+// Aprovação (016_camadas_aprovacao.sql): quem não grava direto (o editor pleno) salva o desenho em
+// siplaweb.camadas_propostas e a camada oficial só muda quando alguém que aprova o perfil dele decidir; até lá o
+// desenho aparece TRACEJADO para quem edita camadas. Quem aprova abre mapa.html?proposta_camada=<n> (vem do Painel).
 
 var CamadasEdicao = (function() {
   var GEOMAN = {
@@ -17,12 +20,15 @@ var CamadasEdicao = (function() {
     padrao: [['NOME', 'Nome', 'Ex.: Contorno de Anápolis (estudo)'], ['DESCRICAO', 'Descrição (opcional)', 'Processo SEI, finalidade, observações']]
   };
   var DESENHO = { 'Ponto': 'Marker', 'Linha': 'Line', 'Área': 'Polygon' };
-  var COR = '#7c3aed';
+  var COR = '#7c3aed', COR_PENDENTE = '#ea580c';
+  var NOMES = { extra_base: 'Malha complementar', geo_lin_base: 'Linhas genéricas', geo_pt_base: 'Pontos genéricos', geo_pol_base: 'Áreas de estudo' };
+  var ACAO = { criar: 'nova feição', alterar: 'alteração', excluir: 'exclusão' };
 
   var camadas = [], atual = null;          // atual = { codigo, nome, geometria }
   var visao = null, destaque = null;       // camada no mapa enquanto o painel está aberto
   var form = null;                         // { geocod|null, grupo (featureGroup das partes), editando }
   var geomanPronto = null, busca = '';
+  var pendentes = [], visaoPendentes = null;   // propostas pendentes da camada aberta (desenho tracejado)
 
   function $(id) { return document.getElementById(id); }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -39,6 +45,23 @@ var CamadasEdicao = (function() {
     return Acesso.cliente.rpc(nome, args).then(function(res) { if (res.error) throw new Error(res.error.message); return res.data; });
   }
   function feicoes() { var fc = camadaBaseMapa(atual.codigo); return (fc && fc.features) || []; }
+  // Grava direto (sem aprovação): administrador ou perfil com "gravar" numa área em que edita camadas.
+  function gravaDireto() {
+    var p = Acesso.perfil();
+    return p.admin || Object.keys(p.areas).some(function(a) { return Acesso.podeCamadas(a) && Acesso.podeEditar(a); });
+  }
+  function eu() { return Acesso.perfil().user_id; }
+  function quando(v) { return new Date(v).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }); }
+  function carregarPendentes() {
+    if (!atual) return Promise.resolve();
+    var codigo = atual.codigo;
+    return Acesso.cliente.from('camadas_propostas').select('pid,acao,geocod,dados,geojson,criado_por,criado_em,area,perfil_autor')
+      .eq('camada', codigo).eq('situacao', 'pendente').order('pid').then(function(res) {
+        if (res.error) throw new Error(res.error.message);
+        if (atual && atual.codigo === codigo) pendentes = res.data;
+      });
+  }
+  function pendenteDe(geocod) { return pendentes.find(function(p) { return p.geocod === geocod; }) || null; }
   function campos() { return CAMPOS[atual.codigo] || CAMPOS.padrao; }
   function rotulo(p) { return atual.codigo === 'extra_base' ? (p.rodovia || '') + ' · ' + (p.trecho || '') : p.NOME || ''; }
   function medida(p) {
@@ -116,8 +139,11 @@ var CamadasEdicao = (function() {
   function escolher(codigo) {
     atual = camadas.find(function(c) { return c.codigo === codigo; });
     busca = '';
+    pendentes = [];
     desenharVisao();
     renderLista();
+    carregarPendentes().then(function() { if (!form && atual && atual.codigo === codigo) { desenharVisao(); renderLista(); } })
+      .catch(function(e) { toast('Pendentes: ' + e.message, true); });
   }
 
   // Camada inteira no mapa enquanto o painel está aberto; clicar numa feição abre a edição.
@@ -132,9 +158,23 @@ var CamadasEdicao = (function() {
         l.on('click', function(e) { if (form) return; L.DomEvent.stopPropagation(e); abrirForm(p.GEOCOD); });
       }
     }).addTo(map);
+    // Propostas pendentes: tracejado laranja por cima (exclusão = a feição atual tracejada em vermelho).
+    var fs = pendentes.map(function(p) {
+      var atualF = p.geocod ? feicoes().find(function(f) { return f.properties.GEOCOD === p.geocod; }) : null;
+      var g = p.acao === 'excluir' ? atualF && atualF.geometry : p.geojson;
+      return g ? { type: 'Feature', geometry: g, properties: { pid: p.pid, acao: p.acao, geocod: p.geocod, rotulo: rotulo(p.acao === 'excluir' && atualF ? atualF.properties : p.dados) } } : null;
+    }).filter(Boolean);
+    if (fs.length) visaoPendentes = L.geoJSON({ type: 'FeatureCollection', features: fs }, {
+      style: function(f) { var cor = f.properties.acao === 'excluir' ? '#dc2626' : COR_PENDENTE; return { color: cor, weight: 4, dashArray: '8 6', opacity: 0.95, fillColor: cor, fillOpacity: 0.1 }; },
+      pointToLayer: function(f, ll) { return L.circleMarker(ll, { radius: 8, color: f.properties.acao === 'excluir' ? '#dc2626' : COR_PENDENTE, weight: 3, dashArray: '3 3', fillOpacity: 0.15 }); },
+      onEachFeature: function(f, l) {
+        l.bindTooltip('◷ ' + esc(ACAO[f.properties.acao]) + ' aguardando aprovação' + (f.properties.geocod ? ' · <b>' + esc(f.properties.geocod) + '</b>' : '') + ' ' + esc(f.properties.rotulo), { sticky: true, direction: 'top' });
+      }
+    }).addTo(map);
   }
   function limparVisao() {
     if (visao) { map.removeLayer(visao); visao = null; }
+    if (visaoPendentes) { map.removeLayer(visaoPendentes); visaoPendentes = null; }
     if (destaque) { map.removeLayer(destaque); destaque = null; }
   }
 
@@ -147,10 +187,18 @@ var CamadasEdicao = (function() {
     $('ceCorpo').innerHTML =
       '<div class="ce-linha"><input id="ceBusca" type="search" class="ce-input" placeholder="Buscar código ou nome…" value="' + esc(busca) + '">' +
       '<button type="button" class="ce-btn ce-primario" data-acao="nova">+ Nova</button></div>' +
-      '<p class="ce-nota">' + feicoes().length + ' feição(ões) · ' + esc(atual.geometria.toLowerCase()) + '. Clique numa feição do mapa para editar.</p>' +
+      '<p class="ce-nota">' + feicoes().length + ' feição(ões) · ' + esc(atual.geometria.toLowerCase()) + '. Clique numa feição do mapa para editar.' +
+        (gravaDireto() ? '' : ' Suas alterações ficam <b>aguardando aprovação</b> (tracejadas) e só valem para todos depois de aprovadas.') + '</p>' +
+      (pendentes.length ? '<h4 class="ce-titulo ce-pendentes">◷ Aguardando aprovação (' + pendentes.length + ')</h4><div class="ce-lista">' + pendentes.map(function(p) {
+        return '<div class="ce-item pendente"><div><b>' + esc(p.geocod || 'nova') + '</b> ' + esc(ACAO[p.acao]) + ' · ' + esc(rotulo(p.dados)) +
+          '<small>' + esc(Acesso.cliente && p.criado_por === eu() ? 'sua' : 'de outra pessoa') + ' · ' + quando(p.criado_em) + '</small></div>' +
+          '<span class="ce-acoes">' + (p.acao !== 'excluir' ? '<button type="button" class="ce-link" data-ver-pendente="' + p.pid + '">ver</button>' : '') +
+          (p.criado_por === eu() ? '<button type="button" class="ce-link perigo" data-cancelar="' + p.pid + '">cancelar</button>' : '') + '</span></div>';
+      }).join('') + '</div>' : '') +
       '<div class="ce-lista">' + (lista.length ? lista.map(function(f) {
-        var p = f.properties;
-        return '<div class="ce-item"><div><b>' + esc(p.GEOCOD) + '</b> ' + esc(rotulo(p)) + '<small>' + esc([medida(p), p.DESCRICAO].filter(Boolean).join(' · ')) + '</small></div>' +
+        var p = f.properties, pend = pendenteDe(p.GEOCOD);
+        return '<div class="ce-item' + (pend ? ' com-pendente' : '') + '"><div><b>' + esc(p.GEOCOD) + '</b> ' + esc(rotulo(p)) + (pend ? ' <span class="ce-selo">◷ ' + esc(ACAO[pend.acao]) + ' pendente</span>' : '') +
+          '<small>' + esc([medida(p), p.DESCRICAO].filter(Boolean).join(' · ')) + '</small></div>' +
           '<span class="ce-acoes"><button type="button" class="ce-link" data-ver="' + esc(p.GEOCOD) + '">ver</button>' +
           '<button type="button" class="ce-link" data-editar="' + esc(p.GEOCOD) + '">editar</button>' +
           '<button type="button" class="ce-link perigo" data-excluir="' + esc(p.GEOCOD) + '">excluir</button></span></div>';
@@ -163,10 +211,10 @@ var CamadasEdicao = (function() {
     var b = L.geoJSON(geojson).getBounds();
     if (b.isValid()) map.fitBounds(b, { maxZoom: 16, padding: [60, 60] });
   }
-  function ver(f) {
+  function ver(f, tracejado) {   // tracejado: desenho ainda aguardando aprovação
     if (destaque) map.removeLayer(destaque);
     destaque = L.geoJSON(f, {
-      style: { color: '#f59e0b', weight: 8, opacity: 0.9, fillOpacity: 0.25 },
+      style: { color: tracejado ? COR_PENDENTE : '#f59e0b', weight: 8, opacity: 0.9, fillOpacity: 0.25, dashArray: tracejado ? '10 8' : null },
       pointToLayer: function(x, ll) { return L.circleMarker(ll, { radius: 11, color: '#f59e0b', weight: 4, fillOpacity: 0.2 }); },
       interactive: false
     }).addTo(map);
@@ -181,6 +229,14 @@ var CamadasEdicao = (function() {
     if (b.dataset.editar) return abrirForm(b.dataset.editar);
     if (b.dataset.excluir) return excluir(b.dataset.excluir);
     if (b.dataset.arquivoVer) return ver(JSON.parse(decodeURIComponent(b.dataset.arquivoVer)));
+    if (b.dataset.verPendente) { var pp = pendentes.find(function(x) { return x.pid === Number(b.dataset.verPendente); }); if (pp) ver({ type: 'Feature', geometry: pp.geojson, properties: {} }, true); return; }
+    if (b.dataset.cancelar) {
+      if (!confirm('Cancelar esta alteração pendente? O desenho proposto é descartado.')) return;
+      return rpc('cancelar_camada', { p_pid: Number(b.dataset.cancelar) }).then(function() {
+        toast('Alteração pendente cancelada');
+        return carregarPendentes().then(function() { desenharVisao(); renderLista(); });
+      }).catch(function(e) { toast(e.message, true); });
+    }
     var acao = b.dataset.acao;
     if (acao === 'nova') abrirForm(null);
     else if (acao === 'arquivo') mostrarArquivo();
@@ -196,6 +252,9 @@ var CamadasEdicao = (function() {
   function abrirForm(geocod) {
     carregarGeoman().then(function() {
       var f = geocod ? feicoes().find(function(x) { return x.properties.GEOCOD === geocod; }) : null;
+      // Já tem alteração SUA pendente: continua a partir do desenho proposto (salvar refaz a mesma proposta).
+      var pend = geocod ? pendenteDe(geocod) : null;
+      if (pend && pend.criado_por === eu() && pend.acao === 'alterar') f = { type: 'Feature', geometry: pend.geojson, properties: Object.assign({ GEOCOD: geocod }, pend.dados) };
       var p = f ? f.properties : {};
       modoDesenho(true);
       form = { geocod: geocod, grupo: L.featureGroup().addTo(map), editando: false };
@@ -348,6 +407,11 @@ var CamadasEdicao = (function() {
     $('ceAviso').textContent = 'Salvando…';
     var codigo = atual.codigo;
     rpc('camada_salvar', { p_camada: codigo, p_geocod: form.geocod, p_dados: dados, p_geojson: g }).then(function(cod) {
+      if (/^proposta:/.test(cod)) {
+        toast('Salvo e enviado para aprovação: ' + (form.geocod ? 'alteração de ' + form.geocod : 'feição nova') + ' só vale para todos depois de aprovada');
+        encerrarForm();
+        return carregarPendentes().then(function() { depoisDeRecarregar(codigo); });
+      }
       toast((form.geocod ? 'Feição ' + cod + ' alterada' : 'Feição ' + cod + ' criada') + ' em ' + atual.nome);
       encerrarForm();
       renderLista();
@@ -360,9 +424,15 @@ var CamadasEdicao = (function() {
   }
 
   function excluir(geocod) {
-    if (!confirm('Excluir ' + geocod + ' de ' + atual.nome + '? Fica uma cópia arquivada (só administradores veem). Feição ligada a obra não pode ser excluída.')) return;
+    var direto = gravaDireto();
+    if (!confirm((direto ? 'Excluir ' : 'Propor a exclusão de ') + geocod + ' de ' + atual.nome + '? ' +
+      (direto ? 'Fica uma cópia arquivada (só administradores veem).' : 'A feição só sai da camada depois de aprovada.') + ' Feição ligada a obra não pode ser excluída.')) return;
     var codigo = atual.codigo;
-    rpc('camada_excluir', { p_camada: codigo, p_geocod: geocod }).then(function() {
+    rpc('camada_excluir', { p_camada: codigo, p_geocod: geocod }).then(function(res) {
+      if (/^proposta:/.test(res || '')) {
+        toast('Exclusão de ' + geocod + ' enviada para aprovação');
+        return carregarPendentes().then(function() { depoisDeRecarregar(codigo); });
+      }
       toast(geocod + ' excluída (cópia guardada)');
       return recarregarCamadaMapa(codigo).then(function() { depoisDeRecarregar(codigo); });
     }).catch(function(e) { toast(e.message, true); });
@@ -400,10 +470,78 @@ var CamadasEdicao = (function() {
     $('ceCamada').disabled = false;
   }
 
+  // ---------- Ver uma proposta no mapa (link do Painel: mapa.html?proposta_camada=<n>) ----------
+  // Desenha o proposto (tracejado laranja) e a versão atual (cinza) e mostra o cartão com Aprovar / Recusar
+  // para quem decide (o banco confere de novo).
+  function verProposta(pid) {
+    var cartao = document.createElement('div');
+    cartao.className = 'ce-proposta';
+    map.getContainer().appendChild(cartao);
+    L.DomEvent.disableClickPropagation(cartao);
+    var camadasNoMapa = [];
+    function limpar() { camadasNoMapa.forEach(function(l) { map.removeLayer(l); }); camadasNoMapa = []; }
+    function render() {
+      return Acesso.cliente.from('camadas_propostas').select('*').eq('pid', pid).maybeSingle().then(function(res) {
+        if (res.error) throw new Error(res.error.message);
+        var p = res.data;
+        if (!p) { cartao.innerHTML = '<b>Proposta de camada nº ' + pid + '</b><p>Não encontrada ou sem permissão para ver.</p>'; return; }
+        limpar();
+        var base = camadaBaseMapa(p.camada), atualF = p.geocod && base ? (base.features || []).find(function(f) { return f.properties.GEOCOD === p.geocod; }) : null;
+        if (atualF && p.situacao === 'pendente') camadasNoMapa.push(L.geoJSON(atualF, { style: { color: '#64748b', weight: 5, opacity: 0.6 }, pointToLayer: function(f, ll) { return L.circleMarker(ll, { radius: 8, color: '#64748b' }); }, interactive: false }).addTo(map));
+        var g = p.acao === 'excluir' ? atualF && atualF.geometry : p.geojson, cor = p.acao === 'excluir' ? '#dc2626' : COR_PENDENTE;
+        if (g) camadasNoMapa.push(L.geoJSON(g, { style: { color: cor, weight: 5, dashArray: '8 6', fillOpacity: 0.12 }, pointToLayer: function(f, ll) { return L.circleMarker(ll, { radius: 10, color: cor, weight: 3, dashArray: '3 3' }); }, interactive: false }).addTo(map));
+        var todos = L.featureGroup(camadasNoMapa);
+        if (todos.getLayers().length) { var bb = todos.getBounds(); if (bb.isValid()) map.fitBounds(bb, { maxZoom: 16, padding: [80, 80] }); }
+        var nomes = [], d = p.dados || {};
+        Object.keys(d).forEach(function(k) { if (d[k]) nomes.push('<div><small>' + esc(k) + '</small> ' + esc(d[k]) + '</div>'); });
+        var decide = p.situacao === 'pendente' && Acesso.podeAprovar(p.area, p.perfil_autor, p.criado_por);
+        cartao.innerHTML = '<div class="ce-topo"><b>' + esc(NOMES[p.camada] || p.camada) + ' · ' + esc(ACAO[p.acao]) + (p.geocod ? ' ' + esc(p.geocod) : '') + '</b>' +
+            '<button type="button" class="ce-fechar" data-fechar title="Fechar">×</button></div>' +
+          '<p class="ce-nota">' + (p.situacao === 'pendente' ? '◷ Aguardando aprovação' : 'Situação: ' + esc(p.situacao)) + ' · enviada em ' + quando(p.criado_em) +
+            (p.perfil_autor ? ' · ' + esc(Acesso.nomePerfil(p.perfil_autor)) : '') + '</p>' +
+          (nomes.join('') || '') + (p.motivo ? '<p class="ce-nota">Motivo: ' + esc(p.motivo) + '</p>' : '') +
+          '<p class="ce-legenda"><i style="border-color:' + cor + '"></i>' + (p.acao === 'excluir' ? 'feição a excluir' : 'desenho proposto') +
+            (atualF && p.acao === 'alterar' ? ' <i class="atual"></i>versão atual' : '') + '</p>' +
+          (decide ? '<textarea class="ce-input" rows="2" placeholder="Motivo (obrigatório para recusar)"></textarea>' +
+            '<div class="ce-linha"><button type="button" class="ce-btn" data-recusar>Recusar</button><button type="button" class="ce-btn ce-primario" data-aprovar>Aprovar</button></div>' : '');
+      });
+    }
+    cartao.addEventListener('click', function(e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      if (b.hasAttribute('data-fechar')) { limpar(); cartao.remove(); return; }
+      var feito = b.hasAttribute('data-aprovar') ? rpc('aprovar_camada', { p_pid: pid, p_forcar: false }).catch(function(err) {
+          if (/CONFLITO/.test(err.message) && confirm(err.message.replace('CONFLITO: ', '') + '.\n\nAprovar mesmo assim? O desenho proposto substitui o atual.')) return rpc('aprovar_camada', { p_pid: pid, p_forcar: true });
+          throw err;
+        })
+        : b.hasAttribute('data-recusar') ? (function() {
+          var m = cartao.querySelector('textarea').value.trim();
+          if (!m) { toast('Escreva o motivo da recusa', true); return null; }
+          return rpc('recusar_camada', { p_pid: pid, p_motivo: m });
+        })() : null;
+      if (!feito) return;
+      feito.then(function(res) {
+        if (res === undefined) return;
+        toast(b.hasAttribute('data-aprovar') ? 'Aprovada: a camada já mostra a versão nova' : 'Proposta recusada');
+        return (typeof recarregarCamadaMapa === 'function' ? recarregarCamadaMapa(cartaoCamada).catch(function() {}) : null);
+      }).then(render).catch(function(err) { toast(err.message, true); });
+    });
+    var cartaoCamada = null;
+    cartao.innerHTML = '<p class="ce-nota">Carregando a proposta…</p>';
+    Acesso.cliente.from('camadas_propostas').select('camada').eq('pid', pid).maybeSingle().then(function(res) {
+      cartaoCamada = res.data && res.data.camada;
+      // A camada precisa estar carregada no mapa para mostrar a versão atual.
+      return cartaoCamada && typeof recarregarCamadaMapa === 'function' && !camadaBaseMapa(cartaoCamada) ? recarregarCamadaMapa(cartaoCamada).catch(function() {}) : null;
+    }).then(render).catch(function(err) { cartao.innerHTML = '<p class="ce-nota">Erro: ' + esc(err.message) + '</p>'; });
+  }
+
   function iniciar() {
     Acesso.pronto.then(function(perfil) {
+      if (typeof map === 'undefined') return;
+      var pid = Number(new URLSearchParams(location.search).get('proposta_camada'));
+      if (pid) setTimeout(function() { verProposta(pid); }, 1500);   // depois do mapa e das camadas iniciais
       camadas = perfil.camadas || [];
-      if (!camadas.length || typeof map === 'undefined') return;
+      if (!camadas.length) return;
       montar();
     });
   }

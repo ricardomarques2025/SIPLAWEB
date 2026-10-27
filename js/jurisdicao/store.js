@@ -1,8 +1,9 @@
 // Camada de dados do modulo Jurisdicao (schema "jurisdicao" do projeto banco-gis), vinda do site do jurisdicao.
-// Login e permissoes sao os do SIPLAWEB (js/acesso.js, area JURISDICAO, 5 niveis).
-// Como na tabela de obras: as edicoes ficam PENDENTES ate "Revisar e salvar" (editor pleno grava; o banco
-// carimba autor/data e guarda o historico) ou "Revisar e enviar" (editor basico: vira proposta em
-// jurisdicao.propostas, que o pleno aprova ou recusa). O basico tambem propoe tramite e registro novo.
+// Login e permissoes sao os do SIPLAWEB (js/acesso.js, area JURISDICAO, perfis).
+// Como na tabela de obras: as edicoes ficam PENDENTES ate "Revisar e salvar" (quem grava direto; o banco
+// carimba autor/data e guarda o historico) ou "Revisar e enviar" (quem propoe: vira proposta em
+// jurisdicao.propostas, decidida por quem aprova o perfil do autor). Tramite, registro novo, exclusao e
+// remocao de tramite tambem viram proposta.
 // Edicao simultanea: toda gravacao confere a "versao" do registro; se outra pessoa gravou antes,
 // o registro e recarregado e a edicao e recusada (nada se perde em silencio).
 
@@ -29,8 +30,8 @@ const Store = (function() {
   }
 
   const usuario = () => Acesso.perfil();
-  // podeEditar: mexe na tabela/ficha e tramita (basico ou pleno); podeGravar: grava direto, aprova, exclui,
-  // remove tramite (pleno); modoProposta: basico, cujo "salvar" vira proposta.
+  // podeEditar: mexe na tabela/ficha, tramita, exclui e remove tramite (quem propoe); podeGravar: grava direto
+  // (admin ou perfil com "gravar"); modoProposta: propoe sem gravar (tudo vira proposta); podeDecidir(p): aprova esta.
   // Linha do tempo (js/linha_tempo.js): { id: situacao|null } da data escolhida; null = hoje. Na data passada
   // a situacao mostrada e a daquela data (null = sem informacao) e nada se edita.
   let visao = null;
@@ -42,6 +43,9 @@ const Store = (function() {
   const podeEditar = () => !visao && Acesso.podePropor('JURISDICAO');
   const podeGravar = () => !visao && Acesso.podeEditar('JURISDICAO');
   const modoProposta = () => podeEditar() && !podeGravar();
+  const podeAprovarAlgo = () => !visao && Acesso.aprovaNaArea('JURISDICAO');
+  const podeDecidir = p => !visao && Acesso.podeAprovar('JURISDICAO', p.perfil_autor, p.criado_por);
+  const podeCamadas = () => !visao && Acesso.podeCamadas('JURISDICAO');
   const eAdmin = () => !!Acesso.perfil() && !!Acesso.perfil().admin;
 
   // ---------- Carga ----------
@@ -244,9 +248,15 @@ const Store = (function() {
     return reg;
   }
 
-  // Vai para a lixeira (o admin pode restaurar).
-  async function excluir(id) {
+  // Vai para a lixeira (o admin pode restaurar). Quem propoe: vira proposta de exclusao (motivo obrigatorio).
+  async function excluir(id, motivo) {
     if (!registros.has(id)) return;
+    if (modoProposta()) {
+      const { error } = await sb.rpc('propor_exclusao', { p_registro: registros.get(id).uid, p_motivo: motivo || '' });
+      if (error) throw traduzir(error);
+      await carregarPropostas();
+      return { proposta: true };
+    }
     try {
       await gravar(id, { excluido_em: new Date().toISOString() });
       registros.delete(id);
@@ -299,12 +309,18 @@ const Store = (function() {
     }
   }
 
-  async function excluirTramite(tid) {
+  async function excluirTramite(tid, motivo) {
+    if (modoProposta()) {
+      const { error } = await sb.rpc('propor_excluir_tramite', { p_tid: tid, p_motivo: motivo || '' });
+      if (error) throw traduzir(error);
+      await carregarPropostas();
+      return { proposta: true };
+    }
     const { error } = await sb.from('tramitacoes').update({ excluido_em: new Date().toISOString() }).eq('tid', tid);
     if (error) throw traduzir(error);
   }
 
-  // ---------- Propostas (editor basico) e decisao (editor pleno) ----------
+  // ---------- Propostas e decisao (quem aprova depende do perfil de quem propos) ----------
   async function carregarPropostas() {
     const desde = new Date(Date.now() - 30 * 864e5).toISOString();
     const { data, error } = await sb.from('propostas').select('*').or('situacao.eq.pendente,decidido_em.gte.' + desde)
@@ -322,7 +338,7 @@ const Store = (function() {
     const { data, error } = await sb.rpc('aprovar_proposta', { p_pid: pid, p_forcar: !!forcar });
     if (error) throw traduzir(error);
     const p = propostas.find(x => x.pid === pid);
-    if (p && p.tipo === 'tramite') await Promise.all((p.registros || []).map(idPorUid).filter(x => x != null).map(recarregarRegistro));
+    if (p && (p.tipo === 'tramite' || p.tipo === 'tramite_exclusao')) await Promise.all((p.registros || []).map(idPorUid).filter(x => x != null).map(recarregarRegistro));
     else if (p && p.tipo === 'nova') await recarregar();
     else { const id = idPorUid(data); if (id != null) await recarregarRegistro(id); }
     await carregarPropostas();
@@ -430,7 +446,7 @@ const Store = (function() {
 
   return {
     rotulo,
-    sessao, usuario, podeEditar, podeGravar, modoProposta, eAdmin,
+    sessao, usuario, podeEditar, podeGravar, modoProposta, podeAprovarAlgo, podeDecidir, podeCamadas, eAdmin,
     carregar, recarregar, recarregarRegistro, lista, obter, definirVisao, visao: () => visao, geometria, nomeUsuario, idadeDados, gravandoAgora,
     atualizar, definirGeometria, pendente, valorAtual, totalPendentes, descartar, descartarCampo, resumoPendentes, salvar,
     criar, excluir, propostas: () => propostas, propostaPendente, carregarPropostas, aprovar, recusar, cancelar, idPorUid,

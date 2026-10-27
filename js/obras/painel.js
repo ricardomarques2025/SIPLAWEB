@@ -6,8 +6,8 @@
 // regras e, se etapa/status mudaram, pede a data do fato para a linha do tempo. Depois de gravar, o mapa e
 // recarregado sem perder o enquadramento. Ficha: dados, linha do tempo (notas, tramitar origem) e historico.
 // Visual: reaproveita as classes da tabela da Jurisdicao (css/jurisdicao_tabela.css, escopo .jur-ui).
-// Niveis (js/acesso.js): visualizador/gerenciador so consultam; editor basico edita, mas "salvar" vira proposta;
-// editor pleno grava direto e decide as propostas em "Aprovações"; excluir, tramitar e notas sao do pleno.
+// Perfis (js/acesso.js): quem propoe (editor basico e pleno) edita, exclui e tramita, mas tudo vira proposta;
+// quem aprova (pleno decide o basico; gerenciador decide os dois) usa "Aprovações"; notas sao diretas para quem propoe.
 
 var ObrasPainel = (function() {
   var ORIGEM = String(new URLSearchParams(location.search).get('origem') || '').toUpperCase();
@@ -23,6 +23,7 @@ var ObrasPainel = (function() {
   var LARGURA_MIN = 30, LARGURA_MAX = 80;
   var ACOES = { criado: 'Cadastrou', editado: 'Editou', tracado: 'Alterou o traçado', tramitou_origem: 'Tramitou de origem', excluido: 'Excluiu', restaurado: 'Restaurou' };
   var EVENTOS = { cadastro: 'Cadastro', situacao: 'Situação', origem: 'Mudança de origem', nota: 'Nota' };
+  var TIPOS_PENDENTES = ['edicao', 'exclusao', 'origem'];   // propostas que marcam a obra com o relógio
 
   var modo = 'fechado';
   var tabelaPronta = null;
@@ -110,7 +111,7 @@ var ObrasPainel = (function() {
           '<button type="button" class="btn btn-primario so-editor" id="obrRevisar" disabled><svg><use href="#o-check"/></svg>Revisar e salvar</button>' +
           '<span class="obr-pendentes" id="obrPendentes" hidden></span>' +
           '<button type="button" class="btn btn-fantasma so-editor" id="obrDescartar" hidden>Descartar</button>' +
-          '<button type="button" class="btn so-editor" id="obrAprovacoes"></button>' +
+          '<button type="button" class="btn" id="obrAprovacoes" hidden></button>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="btn" id="obrExportar" data-exportar><svg><use href="#o-down"/></svg>Excel</button>' +
           '<button type="button" class="btn-icone" id="obrFechar" title="Fechar a tabela e voltar ao mapa"><svg><use href="#o-x"/></svg></button>' +
@@ -135,7 +136,7 @@ var ObrasPainel = (function() {
         '<div class="gaveta-abas"><button type="button" class="ativo" data-aba="dados">Dados</button><button type="button" data-aba="tracado">Traçado</button><button type="button" data-aba="tempo">Linha do tempo</button><button type="button" data-aba="historico">Histórico</button></div>' +
         '<div class="gaveta-corpo" id="obrFichaCorpo"></div>' +
         '<div class="gaveta-rodape">' +
-          '<button type="button" class="btn btn-perigo-fantasma so-editor so-pleno" id="obrExcluir"><svg><use href="#o-trash"/></svg>Excluir</button>' +
+          '<button type="button" class="btn btn-perigo-fantasma so-editor" id="obrExcluir"><svg><use href="#o-trash"/></svg>Excluir</button>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="btn btn-primario" id="obrVerMapa"><svg><use href="#o-pin"/></svg>Ver no mapa</button>' +
         '</div>' +
@@ -225,10 +226,11 @@ var ObrasPainel = (function() {
   }
 
   function contarAprovacoes() {
-    if (!Acesso.podeEditar(ORIGEM)) return;
+    if (!Acesso.aprovaNaArea(ORIGEM)) return;
     var origem = ORIGEM;
-    Acesso.cliente.from('propostas').select('pid', { count: 'exact', head: true }).eq('origem', origem).eq('situacao', 'pendente').then(function(res) {
-      if (!res.error && res.count && !grade && origem === ORIGEM) $('obrAbrirTabela').textContent = 'Abrir tabela de obras · ' + res.count + ' para aprovar';
+    Acesso.cliente.from('propostas').select('pid,perfil_autor,criado_por').eq('origem', origem).eq('situacao', 'pendente').then(function(res) {
+      var n = res.error ? 0 : res.data.filter(function(p) { return Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }).length;
+      if (n && !grade && origem === ORIGEM) $('obrAbrirTabela').textContent = 'Abrir tabela de obras · ' + n + ' para aprovar';
     });
   }
 
@@ -325,7 +327,7 @@ var ObrasPainel = (function() {
     var cols = [{
       title: '', field: '_ficha', width: 40, headerSort: false, frozen: true, hozAlign: 'center', cssClass: 'col-acao',
       formatter: function(cell) {
-        return ObrasStore.propostaPendente(cell.getRow().getData().uid) ? '<span class="obr-relogio" title="Proposta aguardando aprovação">◷</span>'
+        return ObrasStore.propostaPendente(cell.getRow().getData().uid, TIPOS_PENDENTES) ? '<span class="obr-relogio" title="Proposta aguardando aprovação">◷</span>'
           : '<svg style="color:#8a93a3"><use href="#o-split"/></svg>';
       },
       cellClick: function(e, cell) { e.stopPropagation(); abrirFicha(cell.getRow().getData().uid); }
@@ -349,7 +351,7 @@ var ObrasPainel = (function() {
       index: 'uid', height: '100%', layout: 'fitDataFill', columns: cols,
       initialSort: [{ column: 'codigo', dir: 'asc' }], selectableRows: 1, editTriggerEvent: 'dblclick',
       movableColumns: true, placeholder: 'Nenhuma obra com os filtros atuais', columnDefaults: { headerHozAlign: 'left', resizable: true },
-      rowFormatter: function(row) { row.getElement().classList.toggle('em-aprovacao', !!ObrasStore.propostaPendente(row.getData().uid)); }
+      rowFormatter: function(row) { row.getElement().classList.toggle('em-aprovacao', !!ObrasStore.propostaPendente(row.getData().uid, TIPOS_PENDENTES)); }
     });
     grade.on('rowClick', function(e, row) {
       grade.deselectRow(); row.select();
@@ -438,7 +440,7 @@ var ObrasPainel = (function() {
     $('obrRevisaoTitulo').textContent = proposta ? 'Conferir antes de enviar para aprovação' : 'Conferir antes de salvar';
     $('obrConfirmar').lastChild.textContent = proposta ? 'Enviar para aprovação' : 'Confirmar e salvar';
     $('obrRevisaoAviso').textContent = erros ? 'Corrija ' + erros + ' valor(es) em vermelho antes de ' + (proposta ? 'enviar.' : 'salvar.')
-      : proposta ? 'As mudanças só valem depois que o editor pleno aprovar.' : '';
+      : proposta ? 'As mudanças só valem depois de aprovadas.' : '';
     $('obrConfirmar').disabled = erros > 0;
     $('obrDlgRevisao').showModal();
   }
@@ -578,11 +580,15 @@ var ObrasPainel = (function() {
   }
 
   function avisoProposta(r) {
-    var p = ObrasStore.propostaPendente(r.uid);
-    if (!p) return '';
-    return '<div class="obr-aviso-proposta">◷ Proposta de <b>' + esc(ObrasStore.nomeUsuario(p.criado_por) || '—') + '</b> em ' + fmtDataHora(p.criado_em) +
-      ' aguardando aprovação (' + Object.keys(p.mudancas).map(function(c) { return textoMudanca(c).titulo; }).join(', ') + ').' +
-      ' <button type="button" class="link" data-abrir-aprovacoes>Ver</button></div>';
+    return TIPOS_PENDENTES.map(function(tipo) {
+      var p = ObrasStore.propostaPendente(r.uid, [tipo]);
+      if (!p) return '';
+      var oque = tipo === 'exclusao' ? 'de excluir a obra' : tipo === 'origem' ? 'de tramitar para ' + esc(p.mudancas.nova_origem)
+        : '(' + Object.keys(p.mudancas).map(function(c) { return textoMudanca(c).titulo; }).join(', ') + ')';
+      return '<div class="obr-aviso-proposta">◷ Proposta ' + (tipo === 'edicao' ? '' : oque + ' ') + 'de <b>' + esc(ObrasStore.nomeUsuario(p.criado_por) || '—') +
+        '</b> em ' + fmtDataHora(p.criado_em) + ' aguardando aprovação' + (tipo === 'edicao' ? ' ' + oque : '') + '.' +
+        ' <button type="button" class="link" data-abrir-aprovacoes>Ver</button></div>';
+    }).join('');
   }
 
   function campoFicha(c, r) {
@@ -645,7 +651,8 @@ var ObrasPainel = (function() {
   function renderLinhaTempo(r) {
     var corpo = $('obrFichaCorpo');
     var html = '';
-    if (ObrasStore.podeGravar()) {
+    var propondo = ObrasStore.modoProposta();
+    if (ObrasStore.podeAlterar()) {
       html += '<form class="form-tramite" id="obrFormNota"><h4>Registrar nota</h4><div class="form-grade">' +
         '<div class="campo"><label>Data</label><input type="date" name="data" required value="' + hojeIso() + '" max="' + hojeIso() + '"></div>' +
         '<div class="campo"><label>SEI (opcional)</label><input name="sei"></div>' +
@@ -656,8 +663,10 @@ var ObrasPainel = (function() {
         '<div class="campo"><label>Nova origem</label><select name="origem" required id="obrSelOrigem"><option value="">Carregando…</option></select></div>' +
         '<div class="campo"><label>Data</label><input type="date" name="data" required value="' + hojeIso() + '" max="' + hojeIso() + '"></div>' +
         '<div class="campo largo"><label>Motivo</label><textarea name="descricao" rows="2" required></textarea></div></div>' +
-        '<div class="form-tramite-acoes"><span class="dica-tramite">O código ' + esc(r.codigo) + ' não muda; a obra sai desta tabela e vai para a origem escolhida.</span>' +
-        '<button class="btn" type="submit">Tramitar</button></div></form>';
+        '<div class="form-tramite-acoes"><span class="dica-tramite">' + (propondo
+          ? 'Vai para aprovação; quando aprovada, a obra sai desta tabela e vai para a origem escolhida (o código ' + esc(r.codigo) + ' não muda).'
+          : 'O código ' + esc(r.codigo) + ' não muda; a obra sai desta tabela e vai para a origem escolhida.') + '</span>' +
+        '<button class="btn" type="submit">' + (propondo ? 'Enviar para aprovação' : 'Tramitar') + '</button></div></form>';
     }
     html += '<div class="linha-tempo" id="obrLinhaTempo"><div class="vazio">Carregando…</div></div>';
     corpo.innerHTML = html;
@@ -675,8 +684,9 @@ var ObrasPainel = (function() {
       $('obrFormOrigem').addEventListener('submit', function(e) {
         e.preventDefault();
         var d = Object.fromEntries(new FormData(this));
-        if (!confirm('Tramitar ' + r.codigo + ' de ' + ORIGEM + ' para ' + d.origem + '?')) return;
-        ObrasStore.tramitarOrigem([r.uid], d.origem, d.data, d.descricao.trim()).then(function() {
+        if (!confirm((propondo ? 'Propor tramitar ' : 'Tramitar ') + r.codigo + ' de ' + ORIGEM + ' para ' + d.origem + '?')) return;
+        ObrasStore.tramitarOrigem([r.uid], d.origem, d.data, d.descricao.trim()).then(function(res) {
+          if (res && res.proposta) { toast('Tramitação de ' + r.codigo + ' para ' + d.origem + ' enviada para aprovação'); atualizarAprovacoes(); renderFicha(); return; }
           toast(r.codigo + ' tramitada para ' + d.origem);
           fecharFicha(); limparHalo(); recarregarGrade(); return recarregarMapa();
         }).catch(function(err) { toast(err.message, true); });
@@ -732,7 +742,7 @@ var ObrasPainel = (function() {
       '<div class="campo"><label>Data de referência</label><input type="date" name="data_referencia" value="' + hojeIso() + '" max="' + hojeIso() + '" required></div>' +
       '<div class="campo"><label>SEI</label><input name="sei" placeholder="15 dígitos"></div>' +
       '</div><p class="nota">' + (ObrasStore.modoProposta()
-        ? 'A obra entra como proposta: o código e o cadastro saem quando o editor pleno aprovar. O traçado é proposto depois, na ficha.'
+        ? 'A obra entra como proposta: o código e o cadastro saem quando for aprovada. O traçado é proposto depois, na ficha.'
         : 'O código (OB' + String(new Date().getFullYear()).slice(2) + '-…) é gerado pelo banco. Depois de cadastrar, a ficha abre na aba Traçado.') + '</p>';
     $('obrNovaAviso').textContent = '';
     $('obrDlgNova').showModal();
@@ -745,7 +755,7 @@ var ObrasPainel = (function() {
     if (erro) { $('obrNovaAviso').textContent = erro; return; }
     ObrasStore.criar(d).then(function(r) {
       $('obrDlgNova').close();
-      if (r.proposta) { toast('Obra nova enviada para aprovação (o código sai quando o editor pleno aprovar)'); atualizarAprovacoes(); return; }
+      if (r.proposta) { toast('Obra nova enviada para aprovação (o código sai quando for aprovada)'); atualizarAprovacoes(); return; }
       toast('Obra ' + r.codigo + ' cadastrada');
       atualizarLinha(r.uid);
       abaFicha = 'tracado';   // obra nova: o próximo passo é definir o traçado
@@ -758,15 +768,21 @@ var ObrasPainel = (function() {
   var SITUACAO = { pendente: 'Aguardando', aprovada: 'Aprovada', recusada: 'Recusada', cancelada: 'Cancelada' };
   function eu() { var p = Acesso.perfil(); return p && p.user_id; }
 
+  // Aprovador (pleno, gerenciador...): "Aprovações", com as que ele decide; quem só propõe: "Minhas propostas".
   function atualizarAprovacoes() {
     var b = $('obrAprovacoes');
-    if (!b || !ObrasStore.podeAlterar()) return;
-    var pleno = ObrasStore.podeGravar();
-    var pend = ObrasStore.propostas().filter(function(p) { return p.situacao === 'pendente' && (pleno || p.criado_por === eu()); }).length;
-    b.innerHTML = (pleno ? 'Aprovações' : 'Minhas propostas') + (pend ? ' <span class="obr-contagem">' + pend + '</span>' : '');
-    b.classList.toggle('tem-pendente', pleno && pend > 0);
+    if (!b) return;
+    var aprovador = ObrasStore.podeAprovarAlgo();
+    b.hidden = !aprovador && !ObrasStore.podeAlterar();
+    if (b.hidden) return;
+    var pendentes = ObrasStore.propostas().filter(function(p) { return p.situacao === 'pendente'; });
+    var decidir = pendentes.filter(ObrasStore.podeDecidir).length;
+    var minhas = pendentes.filter(function(p) { return p.criado_por === eu(); }).length;
+    var n = aprovador ? decidir : minhas;
+    b.innerHTML = (aprovador ? 'Aprovações' : 'Minhas propostas') + (n ? ' <span class="obr-contagem">' + n + '</span>' : '');
+    b.classList.toggle('tem-pendente', aprovador && decidir > 0);
     var menu = $('obrAbrirTabela');
-    if (menu) menu.textContent = 'Abrir tabela de obras' + (pleno && pend ? ' · ' + pend + ' para aprovar' : '');
+    if (menu) menu.textContent = 'Abrir tabela de obras' + (decidir ? ' · ' + decidir + ' para aprovar' : '');
   }
 
   function abrirAprovacoes() {
@@ -774,13 +790,23 @@ var ObrasPainel = (function() {
     if (!$('obrDlgAprov').open) $('obrDlgAprov').showModal();
   }
 
+  var TIPO_PROPOSTA = { exclusao: 'excluir a obra', origem: 'tramitar para outra origem' };
   function cartaoProposta(p) {
-    var pleno = ObrasStore.podeGravar(), r = p.obra_uid ? ObrasStore.obter(p.obra_uid) : null;
-    var titulo = p.tipo === 'nova' ? (p.situacao === 'aprovada' && r ? esc(r.codigo) + ' · obra nova' : 'Obra nova') : esc(r ? r.codigo : '(obra fora desta origem)');
-    var conflito = p.situacao === 'pendente' && p.tipo === 'edicao' && r && r.versao !== p.versao_base;
+    var decide = p.situacao === 'pendente' && ObrasStore.podeDecidir(p), r = p.obra_uid ? ObrasStore.obter(p.obra_uid) : null;
+    var titulo = p.tipo === 'nova' ? (p.situacao === 'aprovada' && r ? esc(r.codigo) + ' · obra nova' : 'Obra nova')
+      : esc(r ? r.codigo : '(obra fora desta origem)') + (TIPO_PROPOSTA[p.tipo] ? ' · <span class="aprov-tipo">' + TIPO_PROPOSTA[p.tipo] + '</span>' : '');
+    var conflito = p.situacao === 'pendente' && p.tipo !== 'nova' && r && r.versao !== p.versao_base;
     // Antes -> depois so enquanto pendente (depois de decidida, o "antes" atual ja nao e o da epoca).
     var comAntes = p.tipo === 'edicao' && p.situacao === 'pendente' && r;
-    var campos = Object.keys(p.mudancas).map(function(c) {
+    var m = p.mudancas || {};
+    function linha(rotulo, de, para) {
+      return '<div class="rev-campo"><span class="rev-rotulo">' + rotulo + '</span>' + (de == null ? '<span></span><span></span>'
+        : '<span class="de">' + esc(de) + '</span><span class="rev-seta">→</span>') + '<span class="para">' + esc(para) + '</span></div>';
+    }
+    var campos = p.tipo === 'exclusao' ? linha('Motivo', null, m.motivo || '')
+      : p.tipo === 'origem' ? linha('Origem', p.origem, m.nova_origem || '') +
+        linha('Data · motivo', null, fmtData(m.data) + ' · ' + (m.descricao || '') + (m.sei ? ' · SEI ' + m.sei : ''))
+      : Object.keys(m).map(function(c) {
       var geom = c === 'geom' && typeof p.mudancas[c] === 'string' ? ewktParaGeojson(p.mudancas[c]) : p.mudancas[c];
       var t = textoMudanca(c, comAntes ? r[c] : null, geom);
       return '<div class="rev-campo"><span class="rev-rotulo">' + esc(t.titulo) + '</span>' +
@@ -789,7 +815,7 @@ var ObrasPainel = (function() {
     }).join('');
     var acoes = '';
     if (p.situacao === 'pendente') {
-      if (pleno) acoes = '<button type="button" class="btn btn-fantasma" data-recusar="' + p.pid + '">Recusar</button>' +
+      if (decide) acoes = '<button type="button" class="btn btn-fantasma" data-recusar="' + p.pid + '">Recusar</button>' +
         '<button type="button" class="btn btn-primario" data-aprovar="' + p.pid + '"><svg><use href="#o-check"/></svg>Aprovar</button>';
       else if (p.criado_por === eu()) acoes = '<button type="button" class="btn btn-fantasma" data-cancelar="' + p.pid + '">Cancelar proposta</button>';
     }
@@ -799,7 +825,8 @@ var ObrasPainel = (function() {
       (p.motivo ? ' · motivo: ' + esc(p.motivo) : '') + '</div>';
     return '<div class="rev-obra aprov-' + p.situacao + '" data-pid="' + p.pid + '"><div class="rev-cab"><b>' + titulo + '</b> ' +
       esc(String((r && r.descricao) || p.mudancas.descricao || '').slice(0, 90)) + '</div>' +
-      '<div class="aprov-autor">Proposta de <b>' + esc(ObrasStore.nomeUsuario(p.criado_por) || '—') + '</b> em ' + fmtDataHora(p.criado_em) + '</div>' +
+      '<div class="aprov-autor">Proposta de <b>' + esc(ObrasStore.nomeUsuario(p.criado_por) || '—') + '</b>' +
+        (p.perfil_autor ? ' (' + esc(Acesso.nomePerfil(p.perfil_autor)) + ')' : '') + ' em ' + fmtDataHora(p.criado_em) + '</div>' +
       (conflito ? '<div class="aprov-conflito">A obra foi alterada depois desta proposta (versão ' + p.versao_base + ' → ' + r.versao + '). Confira os valores atuais antes de aprovar.</div>' : '') +
       campos + decisao +
       '<div class="aprov-recusa" hidden><textarea rows="2" placeholder="Motivo da recusa (o autor vai ver)"></textarea>' +
@@ -807,14 +834,20 @@ var ObrasPainel = (function() {
       (acoes ? '<div class="aprov-acoes">' + acoes + '</div>' : '') + '</div>';
   }
 
+  // Aparecem as propostas que a pessoa decide e as dela (pendentes e decididas nos últimos 30 dias).
   function renderAprovacoes() {
-    var pleno = ObrasStore.podeGravar();
-    var todas = ObrasStore.propostas().filter(function(p) { return pleno || p.criado_por === eu(); });
-    var pend = todas.filter(function(p) { return p.situacao === 'pendente'; }), dec = todas.filter(function(p) { return p.situacao !== 'pendente'; });
-    $('obrAprovTitulo').textContent = (pleno ? 'Aprovações · ' : 'Minhas propostas · ') + ORIGEM;
+    var aprovador = ObrasStore.podeAprovarAlgo();
+    function minha(p) { return p.criado_por === eu(); }
+    var todas = ObrasStore.propostas().filter(function(p) { return minha(p) || Acesso.podeAprovar(ORIGEM, p.perfil_autor, p.criado_por); });
+    var decidir = todas.filter(function(p) { return p.situacao === 'pendente' && !minha(p); });
+    var minhas = todas.filter(function(p) { return p.situacao === 'pendente' && minha(p); });
+    var dec = todas.filter(function(p) { return p.situacao !== 'pendente'; });
+    $('obrAprovTitulo').textContent = (aprovador ? 'Aprovações · ' : 'Minhas propostas · ') + ORIGEM;
     $('obrAprovCorpo').innerHTML =
-      '<h4 class="aprov-secao">Aguardando decisão (' + pend.length + ')</h4>' +
-      (pend.length ? pend.map(cartaoProposta).join('') : '<div class="vazio">' + (pleno ? 'Nenhuma proposta para aprovar.' : 'Nenhuma proposta sua aguardando.') + '</div>') +
+      (aprovador ? '<h4 class="aprov-secao">Para você decidir (' + decidir.length + ')</h4>' +
+        (decidir.length ? decidir.map(cartaoProposta).join('') : '<div class="vazio">Nenhuma proposta para aprovar.</div>') : '') +
+      (ObrasStore.podeAlterar() || minhas.length ? '<h4 class="aprov-secao">Minhas propostas aguardando (' + minhas.length + ')</h4>' +
+        (minhas.length ? minhas.map(cartaoProposta).join('') : '<div class="vazio">Nenhuma proposta sua aguardando.</div>') : '') +
       (dec.length ? '<h4 class="aprov-secao">Decididas nos últimos 30 dias</h4>' + dec.map(cartaoProposta).join('') : '');
   }
 
@@ -935,7 +968,16 @@ var ObrasPainel = (function() {
     $('obrVerMapa').addEventListener('click', function() { verNoMapa(fichaUid); });
     $('obrExcluir').addEventListener('click', function() {
       var r = ObrasStore.obter(fichaUid);
-      if (!r || !confirm('Excluir a obra ' + r.codigo + '? Ela sai do mapa e da tabela; o administrador pode restaurá-la pelo histórico.')) return;
+      if (!r) return;
+      if (ObrasStore.modoProposta()) {
+        var motivo = prompt('Propor a exclusão da obra ' + r.codigo + '. A exclusão só vale depois de aprovada.\n\nMotivo:');
+        if (motivo === null) return;
+        if (!motivo.trim()) { toast('Informe o motivo da exclusão', true); return; }
+        ObrasStore.excluir(r.uid, motivo.trim()).then(function() { toast('Exclusão de ' + r.codigo + ' enviada para aprovação'); atualizarAprovacoes(); })
+          .catch(function(err) { toast(err.message, true); });
+        return;
+      }
+      if (!confirm('Excluir a obra ' + r.codigo + '? Ela sai do mapa e da tabela; o administrador pode restaurá-la pelo histórico.')) return;
       ObrasStore.excluir(r.uid).then(function() {
         toast('Obra ' + r.codigo + ' excluída'); fecharFicha(); limparHalo(); atualizarLinha(r.uid); return recarregarMapa();
       }).catch(function(err) { toast(err.message, true); });

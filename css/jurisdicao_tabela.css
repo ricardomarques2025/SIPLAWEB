@@ -272,6 +272,7 @@
   50% { opacity: .3; } }
 .jur-ui:not(.admin) .so-admin { display: none !important; }
 .jur-ui.somente-leitura .so-editor { display: none !important; }
+.jur-ui.sem-camadas .so-camadas { display: none !important; }
 .jur-ui .campo select:disabled,.jur-ui .campo input:disabled,.jur-ui .campo textarea:disabled { background: var(--superficie-2); color: var(--texto); opacity: 1; }
 .jur-ui .aviso-form { margin: 0; min-height: 18px; color: var(--perigo); font-size: 12.5px; line-height: 1.45; }
 .jur-ui .link { border: 0; background: transparent; color: var(--primaria); cursor: pointer; padding: 0; font-weight: 500; }

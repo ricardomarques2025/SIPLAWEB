@@ -1,7 +1,7 @@
 // Acesso ao SIPLAWEB: login obrigatorio (Supabase Auth do projeto do ambiente: producao ou homologacao, abaixo).
-// Permissoes por AREA (cada origem + JURISDICAO) no schema acesso do banco, em 5 niveis (cada um inclui os
-// anteriores): visualizador (so ve), gerenciador (+ exporta), editor_basico (+ propoe edicoes que o pleno
-// aprova), editor_pleno (+ grava direto e aprova) e administrador (tudo, em todas as areas);
+// Permissoes por AREA (cada origem + JURISDICAO) no schema acesso do banco: cada area aponta para um PERFIL
+// configuravel (acesso.perfis: exporta, propoe, grava direto, edita camadas, aprova propostas de quais perfis).
+// Iniciais: visualizador, diretor, editor basico, editor pleno e gerenciador; administrador: tudo, em todas as areas;
 // conta nova fica inativa ate o admin liberar. As paginas esperam Acesso.pronto antes de carregar
 // dados. Elementos com data-servico ou data-area de uma area sem acesso sao escondidos (o banco
 // ja nao entrega os dados dela; isso so limpa os menus).
@@ -75,6 +75,13 @@ var Acesso = (function() {
     '.acesso-versao button.depois{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:600}' +
     '.acesso-versao button:disabled{opacity:.7;cursor:wait}' +
     '@media print{.acesso-versao{display:none!important}}' +
+    '.acesso-novidades{border:0;border-radius:14px;padding:0 18px 14px;width:min(520px,calc(100vw - 32px));box-shadow:0 20px 50px rgba(0,0,0,.3);' +
+    'font:13.5px/1.5 Inter,Segoe UI,Arial,sans-serif;color:#1f2937}' +
+    '.acesso-novidades::backdrop{background:rgba(15,23,42,.45)}' +
+    '.acesso-novidades-topo{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e5e7eb}' +
+    '.acesso-novidades-topo button{border:0;background:none;font-size:22px;cursor:pointer;color:#64748b}' +
+    '.acesso-novidades h4{margin:14px 0 4px;font-size:14px}.acesso-novidades h4 small{color:#64748b;font-weight:500;margin-left:6px}' +
+    '.acesso-novidades ul{margin:0;padding-left:18px}' +
     '.acesso-ambiente-homologacao{background:#c2410c}' +
     '.acesso-ambiente-producao{background:#b91c1c}' +
     '@media print{.acesso-ambiente{display:block!important;position:absolute;-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
@@ -247,13 +254,29 @@ var Acesso = (function() {
     });
   }
 
-  var GRAU = { visualizador: 1, gerenciador: 2, editor_basico: 3, editor_pleno: 4 };
-  var NOME_NIVEL = { visualizador: 'visualizador', gerenciador: 'gerenciador', editor_basico: 'editor básico', editor_pleno: 'editor pleno' };
-  function grau(area) { return perfil ? GRAU[perfil.areas[area]] || 0 : 0; }
-  function podeVer(area) { return grau(area) >= 1; }
-  function podeExportar(area) { return grau(area) >= 2; }
-  function podePropor(area) { return grau(area) >= 3; }        // editor basico em diante (o basico so propoe)
-  function podeEditar(area) { return grau(area) >= 4; }        // editor pleno: grava direto e aprova
+  // Perfis (acesso.perfis, supabase/015_perfis.sql): cada area da pessoa aponta para um perfil com chaves liga/desliga.
+  // O banco confere tudo de novo; aqui so decide o que mostrar. Administrador: tudo, em todas as areas.
+  var ADMIN = { nome: 'administrador', exportar: true, propor: true, gravar: true, camadas: true, aprova: [] };
+  function def(area) {
+    if (!perfil) return null;
+    if (perfil.admin) return ADMIN;
+    var codigo = perfil.areas[area];
+    return codigo ? (perfil.perfis || {})[codigo] || null : null;
+  }
+  function nomePerfil(codigo) { var f = perfil && (perfil.perfis || {})[codigo]; return codigo === 'admin' ? 'administrador' : f ? f.nome : codigo || ''; }
+  function podeVer(area) { return !!def(area); }
+  function podeExportar(area) { var f = def(area); return !!(f && f.exportar); }
+  function podePropor(area) { var f = def(area); return !!(f && (f.propor || f.gravar)); }   // edita na tela (vira proposta se nao grava)
+  function podeEditar(area) { var f = def(area); return !!(f && f.gravar); }                // grava direto, sem aprovacao
+  function podeCamadas(area) { var f = def(area); return !!(f && f.camadas); }
+  // Aprova alguma proposta na area / aprova a proposta de quem tem perfilAutor (ninguem aprova a propria).
+  function aprovaNaArea(area) { var f = def(area); return !!(f && (perfil.admin || (f.aprova || []).length)); }
+  function podeAprovar(area, perfilAutor, autor) {
+    if (!perfil || autor === perfil.user_id) return false;
+    if (perfil.admin) return true;
+    var f = def(area);
+    return !!(f && (f.aprova || []).indexOf(perfilAutor || 'editor_basico') !== -1);
+  }
 
   // Exportar/imprimir na pagina atual: a origem aberta, o modulo da jurisdicao (e o caderno) ou, no mapa geral,
   // TODAS as origens que a pessoa ve (o mapa mistura todas). No rodoviario (so camadas de base) basta uma area.
@@ -291,9 +314,9 @@ var Acesso = (function() {
     el.className = 'acesso-usuario' + (alvo ? '' : ' acesso-usuario-flutuante');
     var areas = Object.keys(perfil.areas);
     el.title = perfil.email + (perfil.admin ? ' · administrador' : ' · ' + (areas.length
-      ? areas.map(function(a) { return a + ': ' + (NOME_NIVEL[perfil.areas[a]] || perfil.areas[a]); }).join(', ') : 'sem áreas liberadas'));
-    // Painel (painel.html): a partir de gerenciador em alguma area.
-    var painel = perfil.admin || areas.some(podeExportar);
+      ? areas.map(function(a) { return a + ': ' + nomePerfil(perfil.areas[a]); }).join(', ') : 'sem áreas liberadas'));
+    // Painel (painel.html): quem exporta ou aprova em alguma area.
+    var painel = perfil.admin || areas.some(function(a) { return podeExportar(a) || aprovaNaArea(a); });
     el.innerHTML = '<span></span>' + (painel ? '<a class="acesso-admin" href="painel.html" title="Indicadores, avisos e aprovações">Painel</a>' : '') +
       (perfil.admin ? '<a class="acesso-admin" href="usuarios.html" title="Usuários e permissões">Usuários</a>' : '') +
       '<button type="button">Sair</button>';
@@ -310,8 +333,46 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-10-27.1';
+  var VERSAO_SITE = '2026-10-27.2';
   var conferidaEm = 0, avisoAdiadoAte = 0;
+  // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
+  // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
+  var NOVIDADES = [
+    ['3.0', '27/10/2026', [
+      'Perfis de acesso configuráveis (Painel › Configurações, pelo administrador master); perfil novo: Diretor (vê e exporta).',
+      'Aprovação em dois degraus: o editor pleno aprova o editor básico; o gerenciador aprova os dois, sem editar.',
+      'Excluir, mudar a obra de origem e remover trâmite também passam por aprovação.',
+      'Camadas: as alterações do editor pleno ficam tracejadas, aguardando aprovação, até o gerenciador decidir.',
+      'Painel: quadro "Alterações e aprovações" (kanban) com tudo o que está aguardando ou foi decidido.'
+    ]],
+    ['2.4', '26/10/2026', ['Banco em São Paulo, ambiente de homologação e aviso de versão nova.']]
+  ];
+  function textoVersao() { return 'VER. ' + NOVIDADES[0][0] + ' · ' + NOVIDADES[0][1]; }
+  function mostrarNovidades() {
+    var dlg = $('acessoNovidades');
+    if (!dlg) {
+      dlg = document.createElement('dialog');
+      dlg.id = 'acessoNovidades';
+      dlg.className = 'acesso-novidades';
+      dlg.innerHTML = '<div class="acesso-novidades-topo"><b>Novidades do site</b><button type="button" title="Fechar">×</button></div>' +
+        NOVIDADES.map(function(n) {
+          return '<h4>Versão ' + n[0] + ' <small>' + n[1] + '</small></h4><ul>' + n[2].map(function(t) { var li = document.createElement('li'); li.textContent = t; return li.outerHTML; }).join('') + '</ul>';
+        }).join('');
+      dlg.querySelector('button').addEventListener('click', function() { dlg.close(); });
+      dlg.addEventListener('click', function(e) { if (e.target === dlg) dlg.close(); });
+      document.body.appendChild(dlg);
+    }
+    dlg.showModal();
+  }
+  // Onde a página tiver [data-versao-site] (rodapé do mapa, Painel), escreve a versão; clicar abre as novidades.
+  function mostrarVersao() {
+    document.querySelectorAll('[data-versao-site]').forEach(function(el) {
+      el.textContent = (el.getAttribute('data-versao-site') || '') + textoVersao();
+      el.title = 'Ver as novidades desta versão';
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', mostrarNovidades);
+    });
+  }
 
   function conferirVersao() {
     conferidaEm = Date.now();
@@ -394,6 +455,7 @@ var Acesso = (function() {
   function iniciar() {
     montarTela();
     montarFaixa();
+    mostrarVersao();
     vigiarVersao();
     sb.auth.onAuthStateChange(function(evento) {
       if (evento === 'PASSWORD_RECOVERY') setTimeout(function() { mostrarTela('', false, true); }, 0);
@@ -412,15 +474,21 @@ var Acesso = (function() {
     url: SUPABASE.url,                        // funções do servidor (Edge Functions) usam o mesmo projeto
     ambiente: AMBIENTE,                       // 'producao' | 'homologacao'
     versao: VERSAO_SITE,
+    versaoTexto: textoVersao,                 // "VER. 3.0 · 27/10/2026"
+    mostrarNovidades: mostrarNovidades,
     atualizarSite: atualizarSite,             // botão "Atualizar site" do mapa e aviso de versão nova
     perfil: function() { return perfil; },
     podeVer: podeVer,
     podeExportar: podeExportar,
     podePropor: podePropor,
     podeEditar: podeEditar,
+    podeCamadas: podeCamadas,
+    aprovaNaArea: aprovaNaArea,
+    podeAprovar: podeAprovar,
+    nomePerfil: nomePerfil,
     podeExportarPagina: podeExportarPagina,
     aplicarExportacao: aplicarExportacao,     // modulos que montam botoes depois do login chamam de novo
-    nomeNivel: function(area) { return perfil && perfil.admin ? 'administrador' : NOME_NIVEL[perfil && perfil.areas[area]] || ''; },
+    nomeNivel: function(area) { return perfil && perfil.admin ? 'administrador' : perfil ? nomePerfil(perfil.areas[area]) : ''; },
     registrarEvento: registrarEvento,
     sair: sair
   };

@@ -10,22 +10,28 @@ de jurisdição, os trâmites e o histórico ficam no Supabase, protegidos por l
 ## Usuários e permissões
 
 A permissão é por **área**: cada origem (GME, DOR, FUNDEINFRA…) e a área **JURISDICAO**. Em cada área o usuário
-tem um dos níveis abaixo (cada um inclui os anteriores) ou nenhum acesso. O banco garante as regras; o site só arruma a tela.
+tem um **perfil** (`acesso.perfis`, desde 27/10/2026, `supabase/015_perfis.sql`) ou nenhum acesso. Cada perfil tem chaves
+liga/desliga: **exporta**, **propõe** (edita, mas vira proposta), **grava direto**, **edita camadas** e **aprova as propostas de**
+quais perfis. Só o **administrador master** cria, edita e exclui perfis (Painel › Configurações › Perfis de acesso). O banco
+garante as regras (`acesso.pode`, `acesso.pode_aprovar`); o site só arruma a tela. Perfis iniciais:
 
-| Nível | O que pode |
+| Perfil | O que pode |
 |---|---|
 | Visualizador (`visualizador`) | consulta mapa, tabela e ficha; **não exporta nada** (Excel, CSV, GeoJSON, caderno PDF, impressão do mapa; o Ctrl+P sai só com um aviso) |
-| Gerenciador (`gerenciador`) | + exporta e imprime |
-| Editor básico (`editor_basico`) | + edita dados e traçado e cadastra obra nova, mas tudo vira **proposta** ("Revisar e enviar") que o editor pleno aprova; não exclui, não tramita origem, não registra nota |
-| Editor pleno (`editor_pleno`) | + grava direto, exclui, tramita, registra notas; decide as propostas em **Aprovações** (aprovar, ou recusar com motivo) |
-| Administrador | tudo, em todas as áreas; usuários e restauração de versões |
+| Diretor (`diretor`) | consulta, exporta e imprime; não edita nem aprova |
+| Editor básico (`editor_basico`) | exporta; edita dados e traçado, cadastra, exclui e tramita origem, mas **tudo vira proposta** ("Revisar e enviar"); registra notas |
+| Editor pleno (`editor_pleno`) | o mesmo do básico (também vira proposta, que o **gerenciador** aprova) + **aprova as propostas do básico** + **edita camadas** (alterações também esperam aprovação, `016`) |
+| Gerenciador (`gerenciador`) | exporta; **aprova as propostas do básico e do pleno** (tabelas e camadas); não edita |
+| Administrador | tudo, em todas as áreas, gravando direto; usuários e restauração de versões |
 | Sem a área | a origem some da página inicial e do mapa (cartões, botões, legenda) |
 | Conta inativa | não entra; aparece o aviso para pedir liberação |
 
-- Proposta: fica em `siplaweb.propostas` e é validada na hora (mesmas regras da gravação). Uma pendente por obra; o autor pode
-  refazer ou cancelar a dele. Se a obra mudou depois da proposta, o pleno é avisado antes de aprovar. O histórico registra o
-  pleno como autor e "proposta de Fulano". O autor vê em **Minhas propostas** o que foi aprovado ou recusado (com o motivo).
-- No mapa geral, exportar exige gerenciador em todas as origens que a pessoa vê; no rodoviário, em pelo menos uma área.
+- Proposta: fica em `siplaweb.propostas` (tipos `edicao`, `nova`, `exclusao`, `origem`) e é validada na hora (mesmas regras da
+  gravação); guarda o **perfil de quem propôs** (`perfil_autor`), que define quem decide. **Ninguém aprova a própria.** Uma
+  pendente por obra; o autor pode refazer ou cancelar a dele. Se a obra mudou depois da proposta, quem decide é avisado antes
+  de aprovar. O histórico registra quem aprovou como autor e "proposta de Fulano". O autor vê em **Minhas propostas** o que
+  foi aprovado ou recusado (com o motivo). Notas na linha do tempo são diretas para quem propõe.
+- No mapa geral, exportar exige um perfil que exporta em todas as origens que a pessoa vê; no rodoviário, em pelo menos uma área.
 - **Trecho que não é segmento SRE inteiro vai para a malha complementar** (regra do usuário): na importação a obra recebe o
   desenho e `siplaweb.obra_para_extra_base()` mantém os segmentos SRE percorridos por inteiro e cria um recorte (`TREnnnn`,
   `recorte_de` = segmentos de origem) com o resto. Se alguma obra em linha ainda tiver desenho próprio (`geom`), o mapa o
@@ -42,12 +48,16 @@ tem um dos níveis abaixo (cada um inclui os anteriores) ou nenhum acesso. O ban
   complementar (extra_base), com rodovia e descrição. Botão "Malha complementar" (pleno/admin): lista, ver, excluir; cópias
   arquivadas só para administradores.
 - Na **JURISDICAO** valem as mesmas regras (tabela com pendências + "Revisar e salvar/enviar", fila de Aprovações); lá o
-  editor básico também **propõe trâmite** (só entra na linha do tempo e muda a situação depois de aprovado). Remover trâmite e excluir são do pleno.
+  quem propõe também **propõe trâmite**, **exclusão** e **remoção de trâmite** (só valem depois de aprovados; `jurisdicao.propostas`
+  tipos `tramite`, `exclusao`, `tramite_exclusao`).
 - **Camadas editáveis** (`supabase/014_camadas_editaveis.sql`, `js/camadas_edicao.js`): botão "Editar camadas" no mapa para
   quem pode editar alguma camada. Camadas: `extra_base` (malha complementar, TRE), `geo_lin_base` (linhas genéricas, LIN),
-  `geo_pt_base` (pontos genéricos, PTO) e `geo_pol_base` (áreas de estudo, GEO). Quem edita: administrador; editor pleno
-  (em alguma área) com a camada marcada pelo admin em Painel › Configurações (`acesso.camadas_permissoes`); e, só na
-  extra_base, o editor pleno da JURISDICAO. Criar desenhando (Geoman) ou importando GeoJSON, editar dados e vértices,
+  `geo_pt_base` (pontos genéricos, PTO) e `geo_pol_base` (áreas de estudo, GEO). Quem edita: administrador; perfil que edita
+  camadas (em alguma área) com a camada marcada pelo admin em Painel › Configurações (`acesso.camadas_permissoes`); e, só na
+  extra_base, quem edita camadas na JURISDICAO. **Aprovação (`016_camadas_aprovacao.sql`)**: quem não grava direto salva em
+  `siplaweb.camadas_propostas` e a camada oficial só muda quando alguém que aprova o perfil dele decidir (até lá o desenho
+  aparece tracejado no editor; quem decide abre `mapa.html?proposta_camada=<n>`, link do Painel). Área da proposta: JURISDICAO
+  na extra_base; nas outras, a primeira área em que o perfil da pessoa edita camadas. Criar desenhando (Geoman) ou importando GeoJSON, editar dados e vértices,
   excluir; cada alteração/exclusão vira cópia arquivada (só admin vê); não exclui feição ligada a obra. As três geo_*
   servem de traçado das obras (Ponto → geo_pt_base, que também dá a posição do ponto; Linha → geo_lin_base; Área →
   geo_pol_base) e são lidas do banco por `siplaweb.camada_geojson()` (só no banco; os arquivos `data/extra_base.geojson` e `data/geo_pol_base.geojson` saíram do repositório em 26/10/2026).
@@ -57,7 +67,7 @@ tem um dos níveis abaixo (cada um inclui os anteriores) ou nenhum acesso. O ban
 - **Usuários e permissões:** página `usuarios.html` (link "Usuários" no topo, só para administradores).
   - **Novo usuário:** nome + e-mail → a conta nasce **inativa** com uma **senha provisória** mostrada uma única vez
     (repasse por canal seguro); no primeiro acesso a pessoa é obrigada a criar a própria senha. Depois ative e escolha
-    os níveis por área ("Aplicar a todas as origens" ajuda). "Redefinir senha" gera outra senha provisória.
+    o perfil por área ("Aplicar a todas as origens" ajuda). "Redefinir senha" gera outra senha provisória.
   - **Administrador master** (um só, o dono do sistema): poderes plenos, inclusive sobre outros administradores.
     Só ele cria, promove, rebaixa, edita, desativa ou exclui administradores e exclui contas; ninguém altera o master.
     Administradores comuns gerenciam só usuários comuns (podem desativar, não excluir).
@@ -93,7 +103,7 @@ Para recopiar a produção na homologação: mesmo roteiro de `SIPLAWEB/DADOS/bk
 | Página | Conteúdo |
 |---|---|
 | `index.html` | página inicial (painel): saudação, números do plano, um cartão por origem com o total de empreendimentos e a divisão planejamento/projeto/obra, e os atalhos Mapa geral (mosaico das origens), Mapa rodoviário e Jurisdição |
-| `painel.html` | painel de gestão (link "Painel" no topo, a partir de gerenciador): **Visão geral** = indicadores das origens liberadas (filtro por origem, etapa por origem, status, municípios, atualização dos dados, alterações em 30 dias, jurisdição) + **Avisos e aprovações** (o pleno aprova/recusa ali mesmo; o básico acompanha as dele; o gerenciador vê o que está parado; dados com mais de 90 dias); **Configurações** (só administrador) = quem pode o quê por área e acessos recentes. Código em `js/painel_gestao.js` e `css/painel.css` |
+| `painel.html` | painel de gestão (link "Painel" no topo, para quem exporta ou aprova): **Alterações e aprovações** = kanban (aguardando, aprovadas, recusadas, canceladas nos últimos 30 dias; obras, jurisdição e camadas; o cartão abre a proposta com Aprovar/Recusar); **Visão geral** = indicadores das origens liberadas (filtro por origem, etapa por origem, status, municípios, atualização dos dados, alterações em 30 dias, jurisdição) + **Avisos e aprovações** (o pleno aprova/recusa ali mesmo; o básico acompanha as dele; o gerenciador vê o que está parado; dados com mais de 90 dias); **Configurações** (só administrador) = quem pode o quê por área e acessos recentes. Código em `js/painel_gestao.js` e `css/painel.css` |
 | `index_antigo.html` | página inicial anterior (capa verde), guardada como alternativa |
 | `mapa.html` | o mapa. Entradas: `?origem=DOR`, `?perfil=geral`, `?perfil=rodoviario`, `?modulo=jurisdicao` (`&tabela=cheia` ou `&tabela=dividida` abre a tabela direto) |
 | `jurisdicao_caderno.html` | caderno em PDF da jurisdição (prancha A4 de um registro ou caderno completo) |
@@ -162,7 +172,9 @@ Scripts em `supabase/`:
 | `001_schema.sql` | schema `siplaweb`: tabelas, códigos, validação, auditoria, linha do tempo, RLS |
 | `002_acesso.sql` | schema `acesso` (permissões por área), migração dos perfis, RLS das obras por origem |
 | `003_jurisdicao_no_siplaweb.sql` | regras do `jurisdicao` aceitam também a área JURISDICAO |
-| `004_niveis_aprovacao.sql` | 5 níveis por área, propostas do editor básico e aprovação pelo editor pleno (obras) |
+| `004_niveis_aprovacao.sql` | 5 níveis por área, propostas do editor básico e aprovação pelo editor pleno (obras); substituído pelos perfis de `015` |
+| `015_perfis.sql` | **perfis configuráveis** (`acesso.perfis`, só o master edita), perfil Diretor, aprovação em dois degraus pelo perfil do autor, exclusão/mudança de origem/remoção de trâmite por proposta |
+| `016_camadas_aprovacao.sql` | **camadas com aprovação**: `siplaweb.camadas_propostas`, `aprovar_camada`/`recusar_camada`/`cancelar_camada` |
 | `013_codigo_jurisdicao.sql` | código permanente da jurisdição **AJ26-0001** (contador `AJ`, gerado no cadastro, imutável); existentes numerados na ordem do id. O `id` fica só como chave interna; caderno e pranchas usam Nº sequencial próprio |
 | `012_fase_e_listas_DPJ.sql` | campo **Fase** (lista: Projeto, Anteprojeto, Fase Preparatória) e valores novos: status Obra/Integrada, modalidade Contratado/Interno/Doação/Tare, intervenção Sinalização Viária, fonte Doação (importação DPJ, 23/10/2026) |
 | `011_recortes_extra_base.sql` | regra dos recortes: `siplaweb.obra_para_extra_base()` leva para a malha complementar o que não é segmento SRE inteiro (`recorte_de`) |

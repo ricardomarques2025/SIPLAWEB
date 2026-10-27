@@ -508,7 +508,7 @@ var JurTracado = (function() {
   // ---------- Malha complementar (lista; arquivo de cópias para administradores) ----------
   var destaqueMalha = null;
   function abrirMalhaComplementar() {
-    var pleno = Store.podeGravar(), admin = !!(Acesso.perfil() && Acesso.perfil().admin);
+    var pleno = Store.podeCamadas(), admin = !!(Acesso.perfil() && Acesso.perfil().admin);   // edita camadas: exclui trecho
     var fc = camadaBaseMapa('extra_base') || { features: [] };
     var corpo = $('jtMalhaListaCorpo');
     corpo.innerHTML = '<p class="rev-resumo">' + fc.features.length + ' trechos na malha complementar (extra_base).' +
@@ -524,8 +524,9 @@ var JurTracado = (function() {
       if (ver) mostrarNoMapa(fc.features.find(function(f) { return f.properties.GEOCOD === ver.dataset.malhaVer; }));
       if (verArq) mostrarNoMapa(JSON.parse(decodeURIComponent(verArq.dataset.arquivoVer)));
       if (exc && confirm('Excluir o trecho ' + exc.dataset.malhaExcluir + ' da malha complementar? Ele fica guardado como cópia arquivada (só administradores veem).')) {
-        Acesso.cliente.rpc('extra_base_excluir', { p_geocod: exc.dataset.malhaExcluir }).then(function(res) {
+        Acesso.cliente.rpc('camada_excluir', { p_camada: 'extra_base', p_geocod: exc.dataset.malhaExcluir }).then(function(res) {
           if (res.error) throw new Error(res.error.message);
+          if (/^proposta:/.test(res.data || '')) { api.toast('Exclusão do trecho ' + exc.dataset.malhaExcluir + ' enviada para aprovação'); return; }
           api.toast('Trecho ' + exc.dataset.malhaExcluir + ' excluído (cópia guardada)');
           return recarregarExtraBase();
         }).then(abrirMalhaComplementar).catch(function(err) { api.toast(err.message, true); });

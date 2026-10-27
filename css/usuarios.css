@@ -55,6 +55,7 @@
 .area select.nivel-gerenciador { background: #eff6ff; }
 .area select.nivel-editor_basico { background: #fffbeb; }
 .area select.nivel-editor_pleno { background: #ecfdf3; }
+.area select.nivel-diretor { background: #f5f3ff; }
 .acoes { display: flex; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--linha); flex-wrap: wrap; }
 .acoes .espaco { flex: 1; }
 

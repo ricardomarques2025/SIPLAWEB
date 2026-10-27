@@ -163,3 +163,52 @@ button.pn-linha:hover, button.pn-linha:focus-visible { background: var(--fundo);
   .pn-campos .seta, .pn-campos > span:empty { display: none; }
   .pn-linha-larga { grid-template-columns: minmax(90px, 40%) minmax(0, 1fr); }
 }
+
+/* Perfis configuráveis (015_perfis.sql): selo com a cor do perfil; tabela de edição dos perfis (admin master). */
+.nv-perfil { background: color-mix(in srgb, var(--c) 10%, #fff); color: var(--c); border-color: color-mix(in srgb, var(--c) 30%, #fff); }
+.pn-perfis td { vertical-align: top; }
+.pn-perfis .pn-c { text-align: center; }
+.pn-perfis .pn-in { display: block; width: 100%; min-width: 180px; font: inherit; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 6px; }
+.pn-perfis textarea.pn-in { margin-top: 4px; font-size: 12px; resize: vertical; }
+.pn-perfis .pn-in:disabled { background: transparent; border-color: transparent; padding-left: 0; resize: none; }
+.pn-perfis input.pn-in:disabled { font-weight: 700; }
+.pn-perfis .pn-aprova { min-width: 170px; }
+.pn-perfis .pn-aprova .chk { display: block; font-size: 12px; white-space: nowrap; }
+.pn-perfis .pn-perfil-novo td { background: #f8fafc; }
+
+/* Kanban "Alterações e aprovações": uma coluna por situação; o cartão abre a proposta (decisão só por botão). */
+.pn-aba-cont { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 9px; background: #d97706; color: #fff; font-size: 11px; font-weight: 800; line-height: 18px; text-align: center; }
+.pn-kb-filtros { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 14px; }
+.pn-kb-filtros select, .pn-kb-busca input { height: 34px; border: 1px solid var(--linha); border-radius: 8px; padding: 0 10px; font: inherit; background: #fff; }
+.pn-kb-busca input { width: min(280px, 70vw); }
+.pn-kb-filtros .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.pn-kanban { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 12px; align-items: start; overflow-x: auto; padding-bottom: 6px; }
+.pn-kb-coluna { background: #f6f8f7; border: 1px solid var(--linha); border-radius: 12px; padding: 10px; border-top: 4px solid #94a3b8; min-width: 0; }
+.pn-kb-coluna.pn-kb-pendente { border-top-color: #d97706; }
+.pn-kb-coluna.pn-kb-aprovada { border-top-color: #16a34a; }
+.pn-kb-coluna.pn-kb-recusada { border-top-color: #dc2626; }
+.pn-kb-coluna h4 { margin: 2px 2px 10px; font-size: 13px; display: flex; justify-content: space-between; }
+.pn-kb-coluna h4 span { color: #6b7a70; font-weight: 600; }
+.pn-kb-lista { display: flex; flex-direction: column; gap: 8px; max-height: 70vh; overflow-y: auto; }
+.pn-kb-cartao { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: 3px; background: #fff; border: 1px solid var(--linha); border-radius: 10px;
+  padding: 9px 10px; cursor: pointer; font-size: 12.5px; transition: box-shadow .15s, border-color .15s; }
+.pn-kb-cartao:hover, .pn-kb-cartao:focus-visible { border-color: #9ca3af; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+.pn-kb-cartao.para-mim { border-color: #f59e0b; box-shadow: inset 3px 0 0 #f59e0b; }
+.pn-kb-cartao b { font-size: 13px; line-height: 1.3; }
+.pn-kb-cartao small { color: #6b7a70; font-size: 11.5px; }
+.pn-kb-cab { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.pn-kb-tipo { font-size: 10.5px; font-weight: 700; border-radius: 6px; padding: 1px 6px; background: #eef2f7; color: #475569; }
+.pn-kb-tipo.pn-kb-camadas { background: #f5f3ff; color: #6d28d9; }
+.pn-kb-tipo.pn-kb-jurisdicao { background: #eff6ff; color: #1d4ed8; }
+.pn-kb-meu { font-size: 10.5px; font-weight: 800; color: #92400e; background: #fef3c7; border-radius: 6px; padding: 1px 6px; }
+.pn-kb-sua { font-size: 10.5px; font-weight: 700; color: #166534; background: #dcfce7; border-radius: 6px; padding: 1px 6px; }
+.pn-kb-decide { color: #92400e !important; }
+.pn-kb-conflito { color: #b91c1c !important; font-weight: 700; }
+.pn-dlg { border: 0; border-radius: 14px; padding: 0; width: min(640px, calc(100vw - 32px)); box-shadow: 0 20px 50px rgba(0,0,0,.3); }
+.pn-dlg::backdrop { background: rgba(15,23,42,.45); }
+.pn-dlg-topo { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--linha); }
+.pn-dlg-fechar { border: 0; background: none; font-size: 22px; cursor: pointer; color: #64748b; }
+#dlgPropostaCorpo { padding: 12px 16px 16px; }
+#dlgPropostaCorpo .pn-proposta { border: 0; padding: 0; }
+@media (max-width: 900px) { .pn-kanban { grid-template-columns: repeat(4, 78vw); } }
+.pn-versao { color: #6b7a70; font-size: 11.5px; margin-left: 10px; text-decoration: underline dotted; }

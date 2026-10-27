@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Ctext x=%2712%27 y=%2717.5%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-weight=%27700%27 font-size=%2715%27 fill=%27white%27%3E%3F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/ajuda.css?v=ajd2-20261023" />
+  <link rel="stylesheet" href="css/ajuda.css?v=perfis1-20261027" />
 </head>
 <body>
 <header class="aj-topo">
@@ -46,12 +46,12 @@
     <a href="#obras-editar"><b>Editar uma obra</b><span>Duplo clique, revisar e salvar</span></a>
     <a href="#jurisdicao-tramitacao"><b>Registrar um trâmite</b><span>Nova situação do processo de jurisdição</span></a>
     <a href="#mapa-linha-tempo"><b>Ver a situação numa data passada</b><span>Linha do tempo</span></a>
-    <a href="#aprovacao-propostas"><b>Aprovar propostas</b><span>Fila de aprovações do editor pleno</span></a>
+    <a href="#aprovacao-propostas"><b>Aprovar propostas</b><span>Quem propõe, quem aprova e o quadro de aprovações</span></a>
     <a href="#problemas"><b>Algo não aparece?</b><span>Solução de problemas</span></a>
   </div>
   <h2>Como esta ajuda está organizada</h2>
   <ul>
-    <li><b>Primeiros passos</b>: entrar, página inicial, níveis de acesso e barra superior.</li>
+    <li><b>Primeiros passos</b>: entrar, página inicial, perfis de acesso e barra superior.</li>
     <li><b>Mapa</b>: origens, filtros, camadas, consulta, legenda e linha do tempo.</li>
     <li><b>Ferramentas do mapa</b>: anotações, medição, localizar km, impressão e exportação.</li>
     <li><b>Obras</b>: tabela, ficha, edição, traçado, linha do tempo e histórico.</li>
@@ -90,25 +90,27 @@
   <p>Origens às quais você não tem acesso não aparecem. Se nenhuma aparecer, peça liberação ao administrador.</p>
 </article>
 
-<article id="acesso-niveis" data-cat="Primeiros passos" data-titulo="Níveis de acesso e permissões" data-termos="permissão perfil nível visualizador gerenciador editor básico editor pleno administrador master área exportar não aparece" data-rel="aprovacao-propostas admin-usuarios">
-  <h1>Níveis de acesso e permissões</h1>
-  <p>A permissão é dada <b>por área</b>: cada origem (FUNDEINFRA, DOR, GME…) e a área <b>JURISDICAO</b>. Em cada área você tem um dos níveis abaixo; <b>cada nível inclui tudo o que o anterior pode</b>.</p>
+<article id="acesso-niveis" data-cat="Primeiros passos" data-titulo="Perfis de acesso e permissões" data-termos="permissão perfil nível visualizador diretor gerenciador editor básico editor pleno administrador master área exportar aprovar não aparece" data-rel="aprovacao-propostas admin-usuarios">
+  <h1>Perfis de acesso e permissões</h1>
+  <p>A permissão é dada <b>por área</b>: cada origem (FUNDEINFRA, DOR, GME…) e a área <b>JURISDICAO</b>. Em cada área você tem um <b>perfil</b>. Os perfis iniciais são estes (o administrador master pode criar outros e mudar o que cada um faz, no Painel › Configurações):</p>
   <table>
-    <thead><tr><th>Nível</th><th>O que pode fazer</th></tr></thead>
+    <thead><tr><th>Perfil</th><th>O que pode fazer</th></tr></thead>
     <tbody>
       <tr><td><span class="aj-nivel n1">Visualizador</span></td><td>Consulta mapa, tabela e ficha. <b>Não exporta nada</b> (Excel, CSV, GeoJSON, caderno, PDF do mapa); o Ctrl+P sai só com um aviso.</td></tr>
-      <tr><td><span class="aj-nivel n2">Gerenciador</span></td><td>+ exporta e imprime.</td></tr>
-      <tr><td><span class="aj-nivel n3">Editor básico</span></td><td>+ edita dados e traçado e cadastra registros, mas tudo vira <b>proposta</b> que o editor pleno aprova. Não exclui. Na Jurisdição também <b>propõe trâmites</b>.</td></tr>
-      <tr><td><span class="aj-nivel n4">Editor pleno</span></td><td>+ grava direto, exclui, tramita, registra notas e decide as propostas em <b>Aprovações</b>. Pode também <b>editar camadas</b> que o administrador liberar (veja <a href="#camadas-edicao">Editar camadas</a>).</td></tr>
-      <tr><td><span class="aj-nivel n5">Administrador</span></td><td>Tudo, em todas as áreas; gerencia usuários e pode voltar versões no histórico.</td></tr>
+      <tr><td><span class="aj-nivel n7">Diretor</span></td><td>Consulta, <b>exporta e imprime</b>. Não edita nem aprova.</td></tr>
+      <tr><td><span class="aj-nivel n3">Editor básico</span></td><td>Exporta; edita dados e traçado, cadastra, exclui e tramita, mas <b>tudo vira proposta</b>. Registra notas na linha do tempo.</td></tr>
+      <tr><td><span class="aj-nivel n4">Editor pleno</span></td><td>Tudo o que o básico faz (também vira proposta, que o <b>gerenciador</b> aprova) + <b>aprova as propostas do editor básico</b> + <b>edita camadas</b> (veja <a href="#camadas-edicao">Editar camadas</a>; as alterações também esperam aprovação).</td></tr>
+      <tr><td><span class="aj-nivel n6">Gerenciador</span></td><td>Exporta e <b>aprova as propostas do editor básico e do editor pleno</b> (tabelas e camadas). Não edita.</td></tr>
+      <tr><td><span class="aj-nivel n5">Administrador</span></td><td>Tudo, em todas as áreas, gravando direto; gerencia usuários e pode voltar versões no histórico. O administrador master também cria e edita os perfis.</td></tr>
     </tbody>
   </table>
   <ul>
+    <li><b>Ninguém aprova a própria proposta.</b> Quem decide depende do perfil de quem propôs (na mesma área).</li>
     <li><b>Sem a área</b>: a origem some da página inicial e do mapa (cartões, botões, legenda).</li>
-    <li><b>Mapa geral</b>: para exportar, é preciso ser gerenciador em todas as origens que você vê.</li>
-    <li><b>Mapa rodoviário</b>: basta ser gerenciador em uma área.</li>
+    <li><b>Mapa geral</b>: para exportar, é preciso exportar em todas as origens que você vê.</li>
+    <li><b>Mapa rodoviário</b>: basta exportar em uma área.</li>
   </ul>
-  <div class="aj-nota">Botões que o seu nível não permite simplesmente <b>não aparecem</b> (ex.: Exportar, Revisar e salvar, Aprovações). Se precisar, peça ao administrador.</div>
+  <div class="aj-nota">Botões que o seu perfil não permite simplesmente <b>não aparecem</b> (ex.: Exportar, Revisar e salvar, Aprovações). Se precisar, peça ao administrador.</div>
 </article>
 
 <article id="acesso-barra" data-cat="Primeiros passos" data-titulo="Barra superior" data-termos="topo atualizar site recarregar home ajuda usuários sair cache versão" data-rel="problemas">
@@ -116,7 +118,7 @@
   <table>
     <thead><tr><th>Botão</th><th>Função</th></tr></thead>
     <tbody>
-      <tr><td><b>Seu nome</b></td><td>Mostra quem está conectado; passe o mouse para ver suas áreas e níveis.</td></tr>
+      <tr><td><b>Seu nome</b></td><td>Mostra quem está conectado; passe o mouse para ver suas áreas e perfis.</td></tr>
       <tr><td><b>Usuários</b></td><td>Só para administradores: abre <a href="#admin-usuarios">Usuários e permissões</a>.</td></tr>
       <tr><td><b>Sair</b></td><td>Encerra a sessão.</td></tr>
       <tr><td><b>⟳ Atualizar site</b></td><td>Busca a versão mais recente do site e dos dados, ignorando o cache do navegador. Use quando algo novo não aparecer.</td></tr>
@@ -304,7 +306,7 @@
 
 <article id="ferramentas-impressao" data-cat="Ferramentas do mapa" data-titulo="Imprimir ou salvar o mapa em PDF" data-termos="imprimir impressão PDF salvar mapa formato A4 A3 A0 orientação paisagem retrato margem escala título rótulos" data-rel="ferramentas-exportar acesso-niveis">
   <h1>Imprimir ou salvar o mapa em PDF</h1>
-  <p>No grupo <b>Impressão / PDF</b> do menu esquerdo. <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <p>No grupo <b>Impressão / PDF</b> do menu esquerdo. quem exporta (diretor, editores, gerenciador).</p>
   <table>
     <thead><tr><th>Campo</th><th>Uso</th></tr></thead>
     <tbody>
@@ -327,7 +329,7 @@
 
 <article id="ferramentas-exportar" data-cat="Ferramentas do mapa" data-titulo="Exportar a tabela filtrada (CSV)" data-termos="exportar CSV planilha excel tabela filtrada download baixar" data-rel="obras-tabela jurisdicao-exportar">
   <h1>Exportar a tabela filtrada (CSV)</h1>
-  <p>No grupo <b>Exportação</b> do menu esquerdo, <b>Exportar tabela filtrada</b> baixa um CSV com as obras visíveis (lineares, pontuais e vinculadas a aeródromos) conforme os filtros ativos. <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <p>No grupo <b>Exportação</b> do menu esquerdo, <b>Exportar tabela filtrada</b> baixa um CSV com as obras visíveis (lineares, pontuais e vinculadas a aeródromos) conforme os filtros ativos. quem exporta (diretor, editores, gerenciador).</p>
   <p>Para a planilha completa de uma origem, use o botão <b>Excel</b> da <a href="#obras-tabela">tabela de obras</a>. Para a Jurisdição, veja <a href="#jurisdicao-exportar">Exportar dados da Jurisdição</a>.</p>
 </article>
 
@@ -341,7 +343,7 @@
     <li>Filtros de <b>etapa</b>, <b>status</b> e <b>com/sem traçado</b>; o ícone de funil com ✕ limpa tudo.</li>
     <li><b>Colunas</b>: escolha quais colunas aparecem.</li>
     <li>Clique no título da coluna para ordenar.</li>
-    <li><b>Excel</b>: baixa a planilha da origem (<span class="aj-nivel n2">Gerenciador</span>).</li>
+    <li><b>Excel</b>: baixa a planilha da origem (quem exporta).</li>
     <li>O ícone de alfinete na linha <b>mostra a obra no mapa</b>; o ícone de painel abre a <a href="#obras-ficha">ficha</a>.</li>
     <li>O <b>✕</b> fecha a tabela e volta ao mapa.</li>
   </ul>
@@ -350,7 +352,7 @@
 
 <article id="obras-editar" data-cat="Obras" data-titulo="Editar obras e cadastrar obra nova" data-termos="editar edição duplo clique célula revisar e salvar enviar descartar pendências data do fato nova obra cadastrar conflito" data-rel="aprovacao-propostas obras-tracado">
   <h1>Editar obras e cadastrar obra nova</h1>
-  <p><span class="aj-nivel n3">Editor básico</span> (vira proposta) ou <span class="aj-nivel n4">Editor pleno</span> (grava direto).</p>
+  <p><span class="aj-nivel n3">Editor básico</span> e <span class="aj-nivel n4">Editor pleno</span>: vira proposta (o administrador grava direto).</p>
   <h2>Editar</h2>
   <ol>
     <li>Dê <b>duplo clique</b> na célula e altere o valor. Pode alterar várias células e várias obras.</li>
@@ -377,7 +379,7 @@
       <tr><td><b>Histórico</b></td><td>Cada versão gravada, com autor e data. Veja <a href="#obras-historico">Histórico</a>.</td></tr>
     </tbody>
   </table>
-  <p>Botões: <b>Ver no mapa</b> e <b>Excluir</b> (<span class="aj-nivel n4">Editor pleno</span>).</p>
+  <p>Botões: <b>Ver no mapa</b> e <b>Excluir</b> (editores: vira proposta de exclusão, com motivo).</p>
 </article>
 
 <article id="obras-tracado" data-cat="Obras" data-titulo="Traçado da obra" data-termos="traçado vínculo segmento SRE malha selecionar no mapa shift intervalo ponto coordenada marcar no mapa tipo ponto linha área" data-rel="jurisdicao-tracado glossario">
@@ -394,7 +396,7 @@
 
 <article id="obras-linha-tempo" data-cat="Obras" data-titulo="Notas e tramitação de origem" data-termos="nota registrar nota tramitar origem mudar origem linha do tempo evento SEI" data-rel="mapa-linha-tempo obras-ficha">
   <h1>Notas e tramitação de origem</h1>
-  <p>Na aba <b>Linha do tempo</b> da ficha. <span class="aj-nivel n4">Editor pleno</span>.</p>
+  <p>Na aba <b>Linha do tempo</b> da ficha. Editores: a <b>nota</b> entra na hora; <b>tramitar para outra origem</b> vira proposta.</p>
   <h2>Registrar nota</h2>
   <p>Informe a data, a descrição e, se houver, o SEI. A nota entra na linha do tempo; os dados da obra não mudam.</p>
   <h2>Tramitar para outra origem</h2>
@@ -453,7 +455,7 @@
       <tr><td><b>Histórico</b></td><td>Versões gravadas; o administrador pode voltar uma versão.</td></tr>
     </tbody>
   </table>
-  <p>Botões: <b>Ver no mapa</b>, <b>Prancha</b> (PDF A4 do registro, <span class="aj-nivel n2">Gerenciador</span>) e <b>Excluir</b> (vai para a lixeira; só o administrador restaura; <span class="aj-nivel n4">Editor pleno</span>).</p>
+  <p>Botões: <b>Ver no mapa</b>, <b>Prancha</b> (PDF A4 do registro, quem exporta) e <b>Excluir</b> (vai para a lixeira; só o administrador restaura; <span class="aj-nivel n4">Editor pleno</span>).</p>
 </article>
 
 <article id="jurisdicao-tramitacao" data-cat="Jurisdição" data-titulo="Registrar trâmite" data-termos="trâmite tramitação registrar propor nova situação data processo SEI ato replicar outros trechos mesmo processo remover" data-rel="mapa-linha-tempo aprovacao-propostas">
@@ -466,7 +468,7 @@
     <li>Se o processo tem <b>outros trechos</b>, eles aparecem marcados em “Aplicar também aos outros trechos do processo”: desmarque os que não devem receber o trâmite.</li>
     <li>Clique em <b>Registrar trâmite</b>.</li>
   </ol>
-  <p>O <span class="aj-nivel n3">Editor básico</span> vê <b>Propor trâmite</b>: o trâmite só entra na linha do tempo e muda a situação depois de aprovado. Remover trâmite é do <span class="aj-nivel n4">Editor pleno</span>.</p>
+  <p>Os editores veem <b>Propor trâmite</b>: o trâmite só entra na linha do tempo e muda a situação depois de aprovado. <b>propor remoção</b> (com motivo) tira um trâmite lançado errado, também depois de aprovado.</p>
 </article>
 
 <article id="jurisdicao-tracado" data-cat="Jurisdição" data-titulo="Traçado do trecho de Jurisdição" data-termos="traçado escolher na malha desenhar editar importar geojson nova parte ímã snap UTM latitude longitude fora da malha extra_base" data-rel="jurisdicao-malha obras-tracado">
@@ -483,12 +485,12 @@
 <article id="jurisdicao-malha" data-cat="Jurisdição" data-titulo="Malha complementar (extra_base)" data-termos="malha complementar extra_base TRE trecho recorte cópias arquivadas excluir trecho fora da SRE" data-rel="jurisdicao-tracado glossario">
   <h1>Malha complementar (extra_base)</h1>
   <p>Trechos de rodovia que <b>não são segmentos SRE oficiais inteiros</b>: vias fora da SRE ou recortes de parte de um segmento. Recebem código <code>TRE0043</code>…</p>
-  <p>O botão <b>Malha complementar</b> da tabela da Jurisdição (<span class="aj-nivel n4">Editor pleno</span>) lista os trechos e permite ver no mapa e excluir. Cada alteração ou exclusão guarda uma <b>cópia arquivada</b>, visível só a administradores.</p>
+  <p>O botão <b>Malha complementar</b> da tabela da Jurisdição (quem edita camadas na Jurisdição, como o <span class="aj-nivel n4">Editor pleno</span>) lista os trechos e permite ver no mapa e excluir (a exclusão espera aprovação). Cada alteração ou exclusão guarda uma <b>cópia arquivada</b>, visível só a administradores.</p>
 </article>
 
 <article id="jurisdicao-exportar" data-cat="Jurisdição" data-titulo="Exportar dados da Jurisdição" data-termos="exportar excel xlsx csv geojson qgis filtrados todos planilha download" data-rel="jurisdicao-caderno acesso-niveis">
   <h1>Exportar dados da Jurisdição</h1>
-  <p>Na tabela, botão azul <b>Exportar</b> (canto superior direito). <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <p>Na tabela, botão azul <b>Exportar</b> (canto superior direito). quem exporta (diretor, editores, gerenciador).</p>
   <table>
     <thead><tr><th>Opção</th><th>Gera</th></tr></thead>
     <tbody>
@@ -503,7 +505,7 @@
 
 <article id="jurisdicao-caderno" data-cat="Jurisdição" data-titulo="Caderno e prancha em PDF" data-termos="caderno prancha PDF salvar imprimir A4 capa índice tabela pranchas ano gerar caderno salvar como PDF margens nenhuma" data-rel="jurisdicao-exportar problemas">
   <h1>Caderno e prancha em PDF</h1>
-  <p>O caderno <b>não fica gravado no sistema</b>: o site monta as páginas e você salva o PDF pelo diálogo de impressão do navegador. <span class="aj-nivel n2">Gerenciador</span> ou acima.</p>
+  <p>O caderno <b>não fica gravado no sistema</b>: o site monta as páginas e você salva o PDF pelo diálogo de impressão do navegador. quem exporta (diretor, editores, gerenciador).</p>
   <h2>Caderno completo</h2>
   <ol>
     <li>Abra a <a href="#jurisdicao-tabela">tabela da Jurisdição</a> e clique em <b>Exportar → Caderno completo (PDF)</b>. Abre uma aba nova.</li>
@@ -520,42 +522,54 @@
 <!-- ================================================================ APROVAÇÃO -->
 <article id="aprovacao-propostas" data-cat="Aprovação" data-titulo="Propostas e aprovações" data-termos="proposta aprovação aprovar recusar motivo minhas propostas cancelar pendente editor básico editor pleno conflito" data-rel="acesso-niveis obras-editar">
   <h1>Propostas e aprovações</h1>
-  <h2>Editor básico: enviar proposta</h2>
-  <p>Suas edições, obras/registros novos e trâmites viram <b>propostas</b>: use <b>Revisar e enviar → Enviar para aprovação</b>. Só vale depois que o editor pleno aprovar. Há <b>uma proposta pendente por registro</b>; você pode refazê-la ou cancelá-la.</p>
+  <h2>Quem propõe e quem aprova</h2>
+  <table>
+    <thead><tr><th>Proposta de</th><th>Quem aprova</th></tr></thead>
+    <tbody>
+      <tr><td><span class="aj-nivel n3">Editor básico</span></td><td><span class="aj-nivel n4">Editor pleno</span> ou <span class="aj-nivel n6">Gerenciador</span> (da mesma área)</td></tr>
+      <tr><td><span class="aj-nivel n4">Editor pleno</span></td><td><span class="aj-nivel n6">Gerenciador</span> (da mesma área)</td></tr>
+    </tbody>
+  </table>
+  <p>O administrador aprova tudo. <b>Ninguém aprova a própria proposta.</b> As regras podem ser mudadas pelo administrador master nos perfis.</p>
+  <h2>Enviar proposta</h2>
+  <p>Edições, obras/registros novos, trâmites, <b>exclusões</b>, <b>mudança de origem</b> e <b>remoção de trâmite</b> viram <b>propostas</b>: use <b>Revisar e enviar → Enviar para aprovação</b> (excluir e tramitar pedem o motivo). Só vale depois de aprovada. Há <b>uma proposta pendente por registro</b>; você pode refazê-la ou cancelá-la.</p>
   <p>Em <b>Minhas propostas</b> você acompanha o que está aguardando, o que foi aprovado e o que foi recusado (com o motivo).</p>
-  <h2>Editor pleno: decidir</h2>
+  <h2>Decidir</h2>
   <ol>
-    <li>Clique em <b>Aprovações</b> (o número indica quantas aguardam).</li>
-    <li>Confira o “antes → depois” de cada proposta.</li>
+    <li>Clique em <b>Aprovações</b> na tabela (o número indica quantas cabem a você) ou abra o Painel › <b>Alterações e aprovações</b>.</li>
+    <li>Confira o “antes → depois” de cada proposta (nas camadas, use <b>ver no mapa</b>: o desenho proposto aparece tracejado).</li>
     <li><b>Aprovar</b>, ou <b>Recusar</b> escrevendo o motivo (o autor vai ver).</li>
   </ol>
-  <div class="aj-nota aj-atencao">Se o registro mudou depois da proposta, aparece um aviso de <b>conflito</b> antes de aprovar. No histórico, o pleno fica como autor, com a nota “proposta de Fulano”.</div>
+  <div class="aj-nota aj-atencao">Se o registro mudou depois da proposta, aparece um aviso de <b>conflito</b> antes de aprovar. No histórico, quem aprovou fica como autor, com a nota “proposta de Fulano”.</div>
 </article>
 
 <!-- ================================================================ ADMINISTRAÇÃO -->
 <article id="admin-painel" data-cat="Administração" data-titulo="Painel (indicadores, avisos e aprovações)" data-termos="painel indicadores dashboard resumo gráficos avisos aprovações aprovar recusar propostas paradas dados desatualizados atualização configurações camadas editáveis acessos recentes quem pode o quê" data-rel="aprovacao-propostas camadas-edicao admin-usuarios">
   <h1>Painel</h1>
-  <p>Link <b>Painel</b> na barra superior, a partir de <span class="aj-nivel n2">Gerenciador</span> em alguma área. Os números mostram só as áreas liberadas para você.</p>
+  <p>Link <b>Painel</b> na barra superior, para quem exporta ou aprova em alguma área. Os números mostram só as áreas liberadas para você. Ao lado do seu perfil aparece a <b>versão do site</b>: clique para ver as novidades.</p>
   <h2>Visão geral</h2>
   <ul>
     <li><b>Filtro por origem</b> no topo: vale para todos os números e gráficos (clicar numa barra de "Etapa por origem" também filtra).</li>
     <li><b>Indicadores</b>: empreendimentos, em obra, em projeto, em planejamento, km contratados, municípios atendidos e propostas aguardando.</li>
     <li><b>Gráficos</b>: etapa por origem, status, municípios, atualização dos dados por origem, alterações nos últimos 30 dias e jurisdição por situação. Passe o mouse para ver os valores.</li>
   </ul>
+  <h2>Alterações e aprovações (quadro)</h2>
+  <p>Aba com quatro colunas: <b>Aguardando aprovação</b>, <b>Aprovadas</b>, <b>Recusadas</b> e <b>Canceladas</b> (as decididas, dos últimos 30 dias), juntando obras, jurisdição e camadas. Os cartões que cabem a você aparecem primeiro, marcados <b>para você</b>; cada cartão mostra quem propôs, há quanto tempo e quem decide. Filtre por área, tipo, autor ou <b>Só o que eu decido</b>. Clique no cartão para ver os detalhes e aprovar ou recusar (arrastar não aprova nada).</p>
   <h2>Avisos e aprovações</h2>
   <ul>
-    <li><span class="aj-nivel n4">Editor pleno</span>: <b>Para você aprovar</b>, com antes → depois; aprove ou recuse (com motivo) ali mesmo.</li>
-    <li><span class="aj-nivel n3">Editor básico</span>: <b>Minhas propostas</b>, aguardando, aprovadas ou recusadas.</li>
-    <li><span class="aj-nivel n2">Gerenciador</span>: quantas propostas estão paradas em cada área e desde quando.</li>
+    <li>Quem aprova: <b>Para você aprovar</b>, com antes → depois; aprove ou recuse (com motivo) ali mesmo.</li>
+    <li>Quem propõe: <b>Minhas propostas</b>, aguardando, aprovadas ou recusadas.</li>
+    <li>Quem só acompanha: quantas propostas estão paradas em cada área e desde quando.</li>
     <li>Todos: <b>origens com dados atrasados</b> (amarelo depois de 45 dias, vermelho depois de 90). O aviso fica até a origem atualizar a data de referência.</li>
   </ul>
   <h2>Configurações</h2>
-  <p><span class="aj-nivel n5">Administrador</span>: quadro <b>Quem pode o quê</b> (nível de cada pessoa por área), <b>Camadas editáveis</b> (marque as camadas que cada editor pleno pode editar; grava ao marcar) e <b>Acessos recentes</b>.</p>
+  <p><span class="aj-nivel n5">Administrador</span>: <b>Perfis de acesso</b> (o que cada perfil pode fazer e de quem aprova as propostas; só o administrador master altera, cria ou exclui perfis sem uso), quadro <b>Quem pode o quê</b> (perfil de cada pessoa por área), <b>Camadas editáveis</b> (marque as camadas que cada pessoa com perfil que edita camadas pode editar; grava ao marcar) e <b>Acessos recentes</b>.</p>
 </article>
 
 <article id="camadas-edicao" data-cat="Mapa" data-titulo="Editar camadas no mapa" data-termos="editar camadas desenhar ponto linha polígono área de estudo pontos genéricos linhas genéricas malha complementar geo_pt_base geo_lin_base geo_pol_base importar geojson vértices excluir cópias arquivadas PTO LIN GEO" data-rel="admin-painel jurisdicao-malha obras-tracado">
   <h1>Editar camadas no mapa</h1>
-  <p>Botão <b>Editar camadas</b> no canto inferior direito do mapa. Aparece para o <span class="aj-nivel n4">Editor pleno</span> com camadas liberadas pelo administrador (Painel › Configurações) e para administradores.</p>
+  <p>Botão <b>Editar camadas</b> no canto inferior direito do mapa. Aparece para quem tem perfil que edita camadas (<span class="aj-nivel n4">Editor pleno</span>) com camadas liberadas pelo administrador (Painel › Configurações) e para administradores.</p>
+  <div class="aj-nota aj-atencao"><b>Aprovação:</b> o que o editor pleno salva fica guardado, mas <b>aguardando aprovação</b>: aparece <b>tracejado</b> (laranja; exclusão em vermelho) no editor e só passa a valer para todos depois que o gerenciador aprovar. Até lá vale a versão anterior. Você pode refazer ou <b>cancelar</b> a sua alteração pendente.</div>
   <table>
     <thead><tr><th>Camada</th><th>Para quê</th><th>Código</th></tr></thead>
     <tbody>
@@ -588,7 +602,7 @@
   <ol>
     <li>Clique em <b>Novo usuário</b>, informe nome e e-mail e <b>Criar conta</b>.</li>
     <li>Aparece a <b>senha provisória</b> uma única vez: use <b>Copiar e-mail e senha</b> e repasse por canal seguro.</li>
-    <li>A conta nasce <b>inativa</b>: ative-a e escolha os <b>Níveis por área</b> (<b>Aplicar a todas as origens</b> agiliza).</li>
+    <li>A conta nasce <b>inativa</b>: ative-a e escolha o <b>Perfil por área</b> (<b>Aplicar a todas as origens</b> agiliza).</li>
     <li><b>Salvar alterações</b>. No primeiro acesso a pessoa cria a própria senha.</li>
   </ol>
   <h2>Outras ações</h2>
@@ -621,7 +635,7 @@
     <dt id="g-tramite">Trâmite</dt><dd>Evento de um processo de jurisdição (encaminhamento, parecer, lei…), que pode mudar a situação.</dd>
     <dt id="g-tramitar">Tramitar origem</dt><dd>Passar uma obra para outra origem, mantendo o código.</dd>
     <dt id="g-estadualizacao">Estadualização / Federalização / Municipalização</dt><dd>Tipos de alteração de jurisdição: a rodovia passa a ser do Estado, da União ou do município.</dd>
-    <dt id="g-proposta">Proposta</dt><dd>Alteração do editor básico que aguarda aprovação do editor pleno.</dd>
+    <dt id="g-proposta">Proposta</dt><dd>Alteração de quem propõe (editor básico ou pleno) que aguarda a aprovação de quem aprova aquele perfil.</dd>
     <dt id="g-pendencia">Pendência</dt><dd>Alteração feita na tabela e ainda não gravada (falta “Revisar e salvar”).</dd>
     <dt id="g-prancha">Prancha / Caderno</dt><dd>PDF A4 de um registro de jurisdição / conjunto de capa, índice, tabela e pranchas.</dd>
     <dt id="g-area-influencia">Área de influência / Área de estudo</dt><dd>Faixa ao redor de rodovias e ferrovias / recorte territorial de análise.</dd>
@@ -649,8 +663,8 @@
   <table>
     <thead><tr><th>Situação</th><th>O que fazer</th></tr></thead>
     <tbody>
-      <tr><td>Um botão ou função nova não aparece.</td><td>Clique em <b>⟳ Atualizar site</b> na barra superior (ou <kbd>Ctrl</kbd>+<kbd>F5</kbd>). Se continuar, confira seu nível em <a href="#acesso-niveis">Níveis de acesso</a>.</td></tr>
-      <tr><td>Não aparece Exportar, Prancha ou Salvar mapa em PDF.</td><td>Seu nível nessa área é <b>Visualizador</b>. Peça <b>Gerenciador</b> ao administrador.</td></tr>
+      <tr><td>Um botão ou função nova não aparece.</td><td>Clique em <b>⟳ Atualizar site</b> na barra superior (ou <kbd>Ctrl</kbd>+<kbd>F5</kbd>). Se continuar, confira seu perfil em <a href="#acesso-niveis">Perfis de acesso</a>.</td></tr>
+      <tr><td>Não aparece Exportar, Prancha ou Salvar mapa em PDF.</td><td>Seu perfil nessa área é <b>Visualizador</b>. Peça ao administrador um perfil que exporta (ex.: <b>Diretor</b>).</td></tr>
       <tr><td>Não consigo editar / não vejo Revisar e salvar.</td><td>É preciso ser <b>Editor básico</b> ou acima. Na linha do tempo (data passada) nada é editável: clique em <b>Voltar para hoje</b>.</td></tr>
       <tr><td>“Sua conta ainda não foi liberada”.</td><td>A conta está inativa: fale com o administrador.</td></tr>
       <tr><td>A obra esperada não aparece no mapa.</td><td>Confira origem, filtros e se a obra tem <b>traçado</b> (filtro “Sem traçado” na tabela).</td></tr>
@@ -672,7 +686,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=ver3-20261026"></script>
+<script src="js/acesso.js?v=perfis1-20261027"></script>
 <script src="js/ajuda.js?v=ajd2-20261023"></script>
 </body>
 </html>
