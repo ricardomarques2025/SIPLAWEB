@@ -310,7 +310,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-10-26.4';
+  var VERSAO_SITE = '2026-10-27.1';
   var conferidaEm = 0, avisoAdiadoAte = 0;
 
   function conferirVersao() {
@@ -379,6 +379,16 @@ var Acesso = (function() {
     document.body.appendChild(faixa);
     document.documentElement.classList.add('amb-' + AMBIENTE);
     if (AMBIENTE !== 'producao') document.title = '[HOMOLOGAÇÃO] ' + document.title;
+    // Data da última cópia da produção (tools/homologacao/recopiar_homologacao.ps1); a função só existe na homologação
+    // e o esquema siplaweb só abre depois do login.
+    if (AMBIENTE === 'homologacao') pronto.then(function() { return sb.rpc('homologacao_copia'); }).then(function(r) {
+      var c = r && r.data;
+      if (!c || !c.feita_em) return;
+      var quando = function(v) { var d = new Date(v); return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); };
+      faixa.textContent = c.producao_lida_em ? 'HOMOLOGAÇÃO · dados de ' + quando(c.producao_lida_em)
+        : 'HOMOLOGAÇÃO · restaurada em ' + quando(c.feita_em);
+      faixa.title += '\nÚltima carga em ' + quando(c.feita_em) + ': ' + c.situacao + '.';
+    });
   }
 
   function iniciar() {
