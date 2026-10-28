@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Cpath d=%27M6.5 16.5 17.5 7.5%27 stroke=%27white%27 stroke-width=%272.4%27 stroke-linecap=%27round%27/%3E%3C/svg%3E" />
+  <title>Caderno · Obras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caladea:wght@400;700&display=swap" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/caderno.css?v=cad1-20261028" />
+  <link rel="stylesheet" href="css/obras_caderno.css?v=cad1-20261028" />
+</head>
+<body>
+  <div class="barra-caderno">
+    <a class="voltar" id="voltar" href="mapa.html">← Voltar ao mapa</a>
+    <div class="modos" id="modos">
+      <button data-modo="prancha">Prancha</button>
+      <button data-modo="completo">Caderno completo</button>
+    </div>
+
+    <div class="opcoes" id="opcoesPrancha">
+      <select id="selObra"></select>
+    </div>
+
+    <div class="opcoes" id="opcoesCompleto" hidden>
+      <span class="grupo-opcoes" id="grupoOrigens" title="Origens do caderno, na ordem em que aparecem"></span>
+      <span class="grupo-opcoes">
+        <label><input type="checkbox" name="secao" value="capa" checked> Capa</label>
+        <label><input type="checkbox" name="secao" value="indice" checked> Índice</label>
+        <label><input type="checkbox" name="secao" value="resumo" checked> Resumo</label>
+        <label><input type="checkbox" name="secao" value="planilhas" checked> Planilhas</label>
+        <label><input type="checkbox" name="secao" value="pranchas" checked> Mapas</label>
+      </span>
+      <label class="ano">Título <input type="text" id="titulo" class="titulo"></label>
+      <label class="ano">Ano <input type="number" id="ano" min="2000" max="2100"></label>
+      <button id="btnGerar" class="secundario">Gerar caderno</button>
+    </div>
+
+    <span class="status" id="status"></span>
+    <div class="espaco"></div>
+    <span class="dica">No diálogo de impressão: <b>Salvar como PDF</b> · Margens: <b>Nenhuma</b></span>
+    <span id="acessoUsuario"></span>
+    <button id="btnImprimir" disabled data-exportar>Imprimir / Salvar PDF</button>
+  </div>
+
+  <div id="paginas"></div>
+
+  <!-- Prancha no formato da jurisdição (css/caderno.css); só a tabela do rodapé muda. -->
+  <template id="tplPrancha">
+    <section class="folha prancha">
+      <div class="col-esq">
+        <div class="caixa localizador"><div class="mapa-loc"></div></div>
+        <div class="caixa legenda"></div>
+        <div class="caixa creditos">
+          <img src="img/jurisdicao/logos_prancha.png" alt="DPL · GOINFRA · SEINFRA · Governo de Goiás" />
+          <p>SISTEMA DE COORDENADAS GEODÉSICO: DATUM SIRGAS 2000<br>
+            Dados Vetoriais: ANA, ANTT, DNIT, FUNAI, GOINFRA, IBGE, INCRA, MMA, MUBDG, SIEG e SGP<br>
+            Diretoria de Planejamento - DPL<br>
+            Gerência da Rede Física - PL - GEREF</p>
+        </div>
+      </div>
+      <div class="moldura">
+        <div class="mapa-prancha"></div>
+        <div class="graticula-rotulos"></div>
+        <div class="titulo-mapa"></div>
+        <div class="norte"></div>
+        <div class="escala"></div>
+      </div>
+      <table class="tabela-rodape">
+        <colgroup><col class="c-id"><col class="c-rod"><col class="c-int"><col class="c-tre"><col class="c-ext"><col class="c-sta"><col class="c-fon"><col class="c-pro"><col class="c-con"></colgroup>
+        <thead><tr><th>Nº</th><th>RODOVIA</th><th>INTERVENÇÃO</th><th>TRECHO</th><th>EXT (KM)</th><th>STATUS</th><th>FONTE</th><th>PROCESSO</th><th>CONTRATO</th></tr></thead>
+        <tbody><tr></tr></tbody>
+      </table>
+      <div class="numero-pagina"></div>
+    </section>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/acesso.js?v=cad1-20261028"></script>
+  <script src="js/caderno_mapa.js?v=cad1-20261028"></script>
+  <script src="js/obras/caderno.js?v=cad1-20261028"></script>
+</body>
+</html>

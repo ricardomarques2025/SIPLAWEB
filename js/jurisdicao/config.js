@@ -1,17 +1,6 @@
 // Modulo Jurisdicao do SIPLAWEB: dominios, cores e definicao das colunas (vindo de JURISDICAO/SITE/js/config.js).
 // O acesso ao banco e o login ficam em js/acesso.js. Para mudar rotulos, cores ou a ordem das colunas, comece aqui.
 
-// Camadas de base (os mesmos arquivos do mapa do SIPLAWEB), usadas pelo caderno em PDF.
-const ARQUIVOS = {
-  base: {
-    mascara: 'data/mascara_brasil.geojson',
-    municipios: 'data/municipios.geojson',
-    sre: 'data/sre_base.geojson',
-    snv: 'data/snv_goias.geojson',
-    localidades: 'data/localidades.geojson'
-  }
-};
-
 const TIPOS = {
   'Estadualização': { cor: '#2563eb', curto: 'Estadualização' },
   'Municipalização': { cor: '#ea580c', curto: 'Municipalização' },

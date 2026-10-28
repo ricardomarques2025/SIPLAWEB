@@ -44,6 +44,7 @@
     <a href="#mapa-filtros"><b>Filtrar obras no mapa</b><span>Intervenção, rodovia, SRE, município, região…</span></a>
     <a href="#ferramentas-impressao"><b>Salvar o mapa em PDF</b><span>Formato, escala, título e rótulos</span></a>
     <a href="#obras-editar"><b>Editar uma obra</b><span>Duplo clique, revisar e salvar</span></a>
+    <a href="#obras-caderno"><b>Gerar o caderno de obras em PDF</b><span>Planilhas e um mapa por obra, uma ou mais origens</span></a>
     <a href="#jurisdicao-tramitacao"><b>Registrar um trâmite</b><span>Nova situação do processo de jurisdição</span></a>
     <a href="#mapa-linha-tempo"><b>Ver a situação numa data passada</b><span>Linha do tempo</span></a>
     <a href="#aprovacao-propostas"><b>Aprovar propostas</b><span>Quem propõe, quem aprova e o quadro de aprovações</span></a>
@@ -344,6 +345,7 @@
     <li><b>Colunas</b>: escolha quais colunas aparecem.</li>
     <li>Clique no título da coluna para ordenar.</li>
     <li><b>Excel</b>: baixa a planilha da origem (quem exporta).</li>
+    <li><b>Caderno PDF</b>: planilhas e um mapa por obra, no formato dos cadernos da GOINFRA. Veja <a href="#obras-caderno">Caderno de obras</a>.</li>
     <li>O ícone de alfinete na linha <b>mostra a obra no mapa</b>; o ícone de painel abre a <a href="#obras-ficha">ficha</a>.</li>
     <li>O <b>✕</b> fecha a tabela e volta ao mapa.</li>
   </ul>
@@ -379,7 +381,34 @@
       <tr><td><b>Histórico</b></td><td>Cada versão gravada, com autor e data. Veja <a href="#obras-historico">Histórico</a>.</td></tr>
     </tbody>
   </table>
-  <p>Botões: <b>Ver no mapa</b> e <b>Excluir</b> (editores: vira proposta de exclusão, com motivo).</p>
+  <p>Botões: <b>Ver no mapa</b>, <b>Mapa A4</b> (o mapa da obra em PDF, veja <a href="#obras-caderno">Caderno de obras</a>) e <b>Excluir</b> (editores: vira proposta de exclusão, com motivo).</p>
+</article>
+
+<article id="obras-caderno" data-cat="Obras" data-titulo="Caderno de obras em PDF" data-termos="caderno obras projetos PDF mapa A4 prancha planilha resumo índice capa DOR DPJ origens juntar tesouro fundeinfra tare ifag licitação ETP salvar imprimir" data-rel="obras-tabela jurisdicao-caderno">
+  <h1>Caderno de obras em PDF</h1>
+  <p>Monta o caderno no formato do <i>Caderno de Obras Rodoviárias</i> e do <i>Caderno de Projetos Rodoviários</i> da GOINFRA, com os dados do sistema. Como o da Jurisdição, <b>não fica gravado</b>: você salva o PDF pelo diálogo de impressão. Só para quem exporta na origem.</p>
+  <h2>Caderno completo</h2>
+  <ol>
+    <li>Na <a href="#obras-tabela">tabela de obras</a>, clique em <b>Caderno PDF</b>. Abre uma aba nova com a origem da tabela marcada.</li>
+    <li>Marque as <b>origens</b> que entram no caderno. Com mais de uma, a ordem é a ordem em que você marcou (o número aparece ao lado: 1º, 2º…). Exemplo: DOR e depois DPJ.</li>
+    <li>Escolha as partes (<b>Capa</b>, <b>Índice</b>, <b>Resumo</b>, <b>Planilhas</b>, <b>Mapas</b>), o <b>Título</b> da capa e o <b>Ano</b>.</li>
+    <li>Clique em <b>Gerar caderno</b> e aguarde os mapas (cerca de 1 minuto para DOR + DPJ).</li>
+    <li><b>Imprimir / Salvar PDF</b> → Destino <b>Salvar como PDF</b> · Margens <b>Nenhuma</b>.</li>
+  </ol>
+  <h2>Como o caderno é dividido</h2>
+  <p>Cada origem tem uma divisória, o resumo (quantidade e extensão por seção e por intervenção) e, para cada seção, uma página de título, a <b>planilha</b> e depois os <b>mapas</b> das obras daquela seção:</p>
+  <table>
+    <thead><tr><th>Origem</th><th>Seções</th></tr></thead>
+    <tbody>
+      <tr><td><b>DOR</b></td><td>Em andamento (etapa Obra): Tesouro (com Convênio), TARE, Fundeinfra, IFAG (Associativo-Fundeinfra) · Licitação: Tesouro, Fundeinfra</td></tr>
+      <tr><td><b>DPJ</b></td><td>ETP (fase preparatória), Tesouro – contratados, Tesouro – internos, Fundeinfra, Doação</td></tr>
+      <tr><td>Outras origens</td><td>Uma parte por etapa e, dentro dela, uma seção por fonte</td></tr>
+    </tbody>
+  </table>
+  <p>O <b>ITEM</b> é numerado em sequência dentro de cada origem, na ordem do caderno. Obra sem traçado entra na planilha, mas não tem mapa. Obra que não se encaixa em nenhuma seção aparece em <b>Outras</b>, nada fica de fora.</p>
+  <h2>Mapa de uma obra</h2>
+  <p>Na <a href="#obras-ficha">ficha</a>, botão <b>Mapa A4</b>. O mapa tem o mesmo formato das pranchas da Jurisdição; dá para arrastar e aproximar antes de imprimir. Na página, a lista no alto troca de obra.</p>
+  <div class="aj-nota">Os valores (aprovado e do contrato) dos cadernos da GOINFRA ainda não estão no sistema, por isso não aparecem.</div>
 </article>
 
 <article id="obras-tracado" data-cat="Obras" data-titulo="Traçado da obra" data-termos="traçado vínculo segmento SRE malha selecionar no mapa shift intervalo ponto coordenada marcar no mapa tipo ponto linha área" data-rel="jurisdicao-tracado glossario">
@@ -686,7 +715,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=perfis1-20261027"></script>
+<script src="js/acesso.js?v=cad1-20261028"></script>
 <script src="js/ajuda.js?v=ajd2-20261023"></script>
 </body>
 </html>

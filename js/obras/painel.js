@@ -93,6 +93,7 @@ var ObrasPainel = (function() {
     '<symbol id="o-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>' +
     '<symbol id="o-filter-x" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4-2v-4zM16 16l5 5M21 16l-5 5"/></symbol>' +
     '<symbol id="o-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>' +
+    '<symbol id="o-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/></symbol>' +
     '</svg>';
 
   function montar() {
@@ -114,6 +115,7 @@ var ObrasPainel = (function() {
           '<button type="button" class="btn" id="obrAprovacoes" hidden></button>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="btn" id="obrExportar" data-exportar><svg><use href="#o-down"/></svg>Excel</button>' +
+          '<button type="button" class="btn" id="obrCaderno" data-exportar title="Caderno em PDF: planilhas e um mapa por obra (dá para juntar outras origens)"><svg><use href="#o-book"/></svg>Caderno PDF</button>' +
           '<button type="button" class="btn-icone" id="obrFechar" title="Fechar a tabela e voltar ao mapa"><svg><use href="#o-x"/></svg></button>' +
         '</div>' +
         '<section class="ferramentas">' +
@@ -138,6 +140,7 @@ var ObrasPainel = (function() {
         '<div class="gaveta-rodape">' +
           '<button type="button" class="btn btn-perigo-fantasma so-editor" id="obrExcluir"><svg><use href="#o-trash"/></svg>Excluir</button>' +
           '<div class="espaco"></div>' +
+          '<button type="button" class="btn" id="obrPrancha" data-exportar title="Mapa A4 da obra, no formato do caderno (PDF)"><svg><use href="#o-book"/></svg>Mapa A4</button>' +
           '<button type="button" class="btn btn-primario" id="obrVerMapa"><svg><use href="#o-pin"/></svg>Ver no mapa</button>' +
         '</div>' +
       '</aside>' +
@@ -563,6 +566,7 @@ var ObrasPainel = (function() {
       (etapa ? ' <span class="badge" style="--c:' + (CORES_ETAPA_OBRA[etapa] || '#64748b') + '">' + esc(etapa) + '</span>' : '');
     $('obrFichaTitulo').textContent = ObrasStore.valorAtual(r.uid, 'intervencao') || ObrasStore.valorAtual(r.uid, 'descricao') || r.codigo;
     $('obrVerMapa').disabled = !temTracado(r);
+    $('obrPrancha').disabled = !temTracado(r) || !r.codigo;
     document.querySelectorAll('#obrFicha .gaveta-abas button').forEach(function(b) { b.classList.toggle('ativo', b.dataset.aba === abaFicha); });
     if (abaFicha !== 'tracado') ObrasTracado.encerrar();
     if (abaFicha === 'tracado') return ObrasTracado.render($('obrFichaCorpo'), r, apiTracado);
@@ -645,6 +649,7 @@ var ObrasPainel = (function() {
       atualizarLinha(fichaUid);
       desenharHalo();
       $('obrVerMapa').disabled = !temTracado(ObrasStore.obter(fichaUid));
+      $('obrPrancha').disabled = $('obrVerMapa').disabled || !ObrasStore.obter(fichaUid).codigo;
     }
   };
 
@@ -966,6 +971,16 @@ var ObrasPainel = (function() {
       }).catch(function(err) { toast(err.message, true); });
     });
     $('obrVerMapa').addEventListener('click', function() { verNoMapa(fichaUid); });
+    // Caderno em PDF (obras_caderno.html): o completo da origem aberta e o mapa A4 da obra da ficha (versão gravada).
+    $('obrCaderno').addEventListener('click', function() {
+      if (!Acesso.podeExportar(ORIGEM)) { toast('O caderno (PDF) não está liberado para o seu perfil nesta origem.', true); return; }
+      window.open('obras_caderno.html?modo=completo&origens=' + encodeURIComponent(ORIGEM), '_blank');
+    });
+    $('obrPrancha').addEventListener('click', function() {
+      var r = ObrasStore.obter(fichaUid);
+      if (!Acesso.podeExportar(r.origem || ORIGEM)) { toast('O mapa (PDF) não está liberado para o seu perfil nesta origem.', true); return; }
+      window.open('obras_caderno.html?origens=' + encodeURIComponent(r.origem || ORIGEM) + '&codigo=' + encodeURIComponent(r.codigo), '_blank');
+    });
     $('obrExcluir').addEventListener('click', function() {
       var r = ObrasStore.obter(fichaUid);
       if (!r) return;

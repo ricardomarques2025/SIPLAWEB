@@ -107,6 +107,7 @@ Para recopiar a produção na homologação: mesmo roteiro de `SIPLAWEB/DADOS/bk
 | `index_antigo.html` | página inicial anterior (capa verde), guardada como alternativa |
 | `mapa.html` | o mapa. Entradas: `?origem=DOR`, `?perfil=geral`, `?perfil=rodoviario`, `?modulo=jurisdicao` (`&tabela=cheia` ou `&tabela=dividida` abre a tabela direto) |
 | `jurisdicao_caderno.html` | caderno em PDF da jurisdição (prancha A4 de um registro ou caderno completo) |
+| `obras_caderno.html` | caderno de obras em PDF (28/10/2026): `?origens=DOR,DPJ&modo=completo` (capa, índice e, por origem, divisória, resumo e, por seção, planilha + um mapa por obra) ou `?origens=DOR&codigo=OB26-…` (mapa A4 de uma obra). Seções por origem em `CONFIG_ORIGEM` de `js/obras/caderno.js` (DOR e DPJ como os PDFs da GOINFRA; outras: etapa › fonte). Fundos em `img/obras/` (extraídos de `DADOS/Caderno de Obras Rodoviárias 2027.pdf`). Sem valores R$ (não existem no banco). Abre pelos botões *Caderno PDF* (tabela de obras) e *Mapa A4* (ficha) |
 | `ajuda.html` | Central de Ajuda (botão "?" do mapa, que abre no assunto da tela): índice, pesquisa sem acento, glossário. Cada assunto é um `<article>` em `ajuda.html` (`data-cat`, `data-titulo`, `data-termos` = sinônimos para a pesquisa, `data-rel` = relacionados); a lógica fica em `js/ajuda.js`. Funcionalidade nova → acrescentar ou atualizar o artigo |
 | `manual.html` | só redireciona para `ajuda.html` (o manual antigo está no histórico do git) |
 
@@ -149,7 +150,7 @@ Mesma base do mapa de uma origem, **sem obras**, com os trechos de alteração d
 - O **traçado** ainda é editado no site antigo do jurisdição (ver *Pendências*).
 
 Código em `js/jurisdicao/` (`config`, `indicadores`, `store`, `tabela`, `modulo`, `painel`, `caderno`) e
-`css/jurisdicao*.css`. O CSS da tabela é todo restrito ao contêiner `.jur-ui`, com um reset das regras genéricas
+`css/jurisdicao*.css`. O mapa das pranchas é comum aos dois cadernos (jurisdição e obras): `js/caderno_mapa.js` e `css/caderno.css`. O CSS da tabela é todo restrito ao contêiner `.jur-ui`, com um reset das regras genéricas
 de `css/style.css`. Tabulator e XLSX são carregados só quando a tabela/exportação é usada.
 
 ## Banco de dados (Supabase, projeto `banco-gis-dpl`)

@@ -1,0 +1,88 @@
+/* Caderno de obras: capa, divisorias, titulos de secao, planilhas, resumo e indice no visual dos cadernos da
+   GOINFRA (fundos extraidos do Caderno de Obras Rodoviarias 2027, A3 reduzido para A4, fator ~0,71).
+   A prancha (mapa) e a da jurisdicao: css/caderno.css; aqui so as larguras do rodape dela. */
+
+.barra-caderno .ano input.titulo { width: 260px; }
+.barra-caderno sup.ordem { color: #0f5bd8; font-weight: 700; margin-left: 1px; }
+
+/* Rodape da prancha: larguras fixas (somam 225 mm). */
+.tabela-rodape col.c-id { width: 10mm; }
+.tabela-rodape col.c-rod { width: 18mm; }
+.tabela-rodape col.c-int { width: 24mm; }
+.tabela-rodape col.c-tre { width: 63mm; }
+.tabela-rodape col.c-ext { width: 15mm; }
+.tabela-rodape col.c-sta { width: 30mm; }
+.tabela-rodape col.c-fon { width: 20mm; }
+.tabela-rodape col.c-pro { width: 27mm; }
+.tabela-rodape col.c-con { width: 18mm; }
+.tabela-rodape th { font-size: 6.6pt; }
+.tabela-rodape td:nth-child(1), .tabela-rodape td:nth-child(5), .tabela-rodape td:nth-child(8) { white-space: nowrap; }
+
+/* ---------- Paginas de texto ---------- */
+.ob-capa, .ob-divisoria, .ob-secao, .ob-conteudo { font-family: Cambria, Caladea, Georgia, serif; }
+
+/* Numero da pagina no circulo, como nos cadernos da GOINFRA */
+.ob-numero {
+  position: absolute; left: 50%; bottom: 3.6mm; transform: translateX(-50%);
+  width: 8.5mm; height: 8.5mm; border-radius: 50%; display: grid; place-items: center;
+  background: #40608a; color: #fff; font: 700 8pt Arial, sans-serif;
+}
+.ob-numero:empty { display: none; }
+.ob-numero.claro { background: #f2f2f2; color: #000; box-shadow: 0 0.3mm 1mm rgba(0,0,0,.25); }
+
+.ob-capa { background: url('../img/obras/capa.jpg') center / 100% 100% no-repeat; }
+.ob-capa-titulo {
+  position: absolute; left: 6%; bottom: 5.5%; max-width: 40%;
+  color: #fff; font-weight: 700; font-size: 18pt; line-height: 1.55; letter-spacing: .01em;
+}
+.ob-capa-ano { display: block; font-size: 13pt; opacity: .92; }
+
+.ob-divisoria { background: url('../img/obras/divisoria.jpg') center / 100% 100% no-repeat; }
+.ob-divisoria-titulo {
+  position: absolute; left: 73.6%; top: 27%; transform: translateX(-50%);
+  color: #fff; font-weight: 700; font-size: 18pt; line-height: 1.55; text-align: center; white-space: nowrap;
+}
+
+.ob-secao { background: url('../img/obras/secao.jpg') center / 100% 100% no-repeat; padding: 12mm 0 0 17.5mm; }
+.ob-secao h1, .ob-secao h2 { margin: 0; font-weight: 700; font-size: 18pt; line-height: 1.45; }
+.ob-secao h1 { color: #00a863; }
+.ob-secao h2 { color: #808080; }
+
+.ob-conteudo { padding: 13mm 12mm 0 17.5mm; }
+.ob-logo { position: absolute; right: 13mm; top: 3.5mm; height: 13mm; }
+.ob-h1 { margin: 0 0 4mm; color: #00a863; font-size: 18pt; font-weight: 700; }
+.ob-titulo-tabela { margin: 2mm 0 2mm; color: #00a863; font-size: 10.5pt; font-weight: 700; }
+
+/* Planilha */
+.ob-tabela { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 6.2pt; }
+.ob-tabela th {
+  background: #153c62; color: #fff; font-weight: 700; padding: 0.9mm 0.6mm; line-height: 1.15;
+  border: 0.2mm solid #000; text-align: center; vertical-align: middle;
+}
+.ob-tabela td {
+  border: 0.2mm solid #000; padding: 0.6mm 0.7mm; text-align: center; vertical-align: middle;
+  line-height: 1.2; overflow-wrap: anywhere;
+}
+.ob-tabela td.esq { text-align: center; }
+.ob-tabela tr.total td, .ob-tabela tr.total th { background: #ededed; font-weight: 700; padding: 1.4mm 0.7mm; }
+
+/* Resumo */
+.ob-bloco { margin-bottom: 5mm; break-inside: avoid; }
+.ob-resumo { font-size: 7.6pt; }
+.ob-resumo th, .ob-resumo td { padding: 1mm 1.2mm; }
+.ob-resumo thead th.ob-cab-cinza, .ob-resumo tbody th { background: #d9d9d9; color: #000; }
+.ob-resumo tbody th { text-align: center; font-weight: 700; width: 24%; }
+
+/* Indice: duas colunas, como no caderno da jurisdicao */
+.ob-indice .indice-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14mm; }
+.ob-indice .indice-linha {
+  display: flex; align-items: baseline; gap: 2mm; white-space: nowrap;
+  height: calc(3.95mm * var(--indice-escala, 1)); font-size: calc(7.6pt * var(--indice-escala, 1));
+}
+.ob-indice .indice-linha .id { width: 7mm; font-weight: 700; flex: none; text-align: right; }
+.ob-indice .indice-linha .nome { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.ob-indice .indice-linha .pag { flex: none; text-align: right; min-width: 8mm; }
+.ob-indice .nivel-origem { font-weight: 700; color: #00a863; border-bottom: 0.3mm solid #00a863; }
+.ob-indice .nivel-cap { font-weight: 700; }
+.ob-indice .nivel-sec { font-weight: 700; color: #595959; padding-left: 3mm; }
+.ob-indice .nivel-item { padding-left: 3mm; }

@@ -1,0 +1,141 @@
+/* Cadernos A4 paisagem (jurisdicao_caderno.html e obras_caderno.html): folha, barra, prancha, legenda e mapa.
+   Medidas em mm, derivadas da prancha A3 do modelo (fator ~0,71). O que e de cada caderno fica no CSS dele. */
+@page { size: 297mm 210mm; margin: 0; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+  background: #e5e7eb;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ---------- Barra (so na tela) ---------- */
+.barra-caderno {
+  position: sticky; top: 0; z-index: 5000;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; background: #fff; border-bottom: 1px solid #e3e6eb;
+  font: 13px Inter, system-ui, 'Segoe UI', sans-serif;
+  flex-wrap: wrap; row-gap: 8px;
+}
+.barra-caderno > *, .barra-caderno button { white-space: nowrap; flex-shrink: 0; }
+@media (max-width: 1700px) { .barra-caderno .dica { display: none; } }
+.barra-caderno .voltar { color: #0f5bd8; text-decoration: none; font-weight: 500; }
+.barra-caderno select { height: 32px; border: 1px solid #cfd4dc; border-radius: 8px; padding: 0 8px; max-width: 460px; font: inherit; }
+.barra-caderno button {
+  height: 32px; padding: 0 14px; border: 0; border-radius: 8px; background: #0f5bd8; color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+}
+.barra-caderno button:disabled { opacity: .5; cursor: wait; }
+.barra-caderno button.secundario { background: #fff; color: #0f5bd8; border: 1px solid #0f5bd8; }
+.barra-caderno .modos { display: flex; gap: 2px; padding: 3px; background: #eef0f3; border-radius: 9px; }
+.barra-caderno .modos button { height: 28px; background: transparent; color: #4b5563; font-weight: 500; padding: 0 12px; border-radius: 7px; }
+.barra-caderno .modos button.ativo { background: #fff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.barra-caderno .opcoes { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.barra-caderno .opcoes[hidden] { display: none; }
+.barra-caderno .grupo-opcoes { display: flex; gap: 10px; padding: 4px 10px; border: 1px solid #e3e6eb; border-radius: 8px; }
+.barra-caderno .grupo-opcoes label, .barra-caderno .ano { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.barra-caderno .ano input { width: 64px; height: 28px; border: 1px solid #cfd4dc; border-radius: 6px; padding: 0 6px; font: inherit; }
+.barra-caderno .status { color: #8a93a3; }
+.barra-caderno .status.ok { color: #16a34a; font-weight: 600; }
+.barra-caderno .dica { color: #8a93a3; font-size: 12px; }
+.espaco { flex: 1; }
+
+#paginas { padding: 24px 0; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+
+/* ---------- Folha ---------- */
+.folha {
+  width: 297mm; height: 210mm; position: relative; overflow: hidden;
+  background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,.18);
+}
+
+@media print {
+  body { background: #fff; }
+  .barra-caderno { display: none; }
+  #paginas { padding: 0; gap: 0; display: block; }
+  .folha { box-shadow: none; page-break-after: always; break-after: page; }
+}
+
+/* ---------- Prancha ---------- */
+.caixa { position: absolute; border: 0.35mm solid #000; background: #fff; }
+.col-esq { position: absolute; left: 10mm; top: 7mm; width: 42mm; bottom: 13mm; }
+.localizador { left: 0; top: 0; width: 42mm; height: 36mm; overflow: hidden; }
+.mapa-loc { width: 100%; height: 100%; background: #c8c8c8; }
+.mapa-loc svg { width: 100%; height: 100%; display: block; }
+.loc-rotulos text { font: 700 38px Arial, sans-serif; fill: #666; text-anchor: middle; dominant-baseline: middle; }
+.loc-marca { fill: none; stroke: #e3000f; stroke-width: 9; }
+.legenda { left: 0; top: 38.5mm; width: 42mm; bottom: 30.5mm; padding: 3mm 3mm 2mm; font-size: 6.4pt; }
+.creditos { left: 0; bottom: 0; width: 42mm; height: 28mm; padding: 2mm 1.5mm 1mm; text-align: center; }
+.creditos img { width: 100%; display: block; }
+.creditos p { margin: 1.4mm 0 0; font-size: 3.9pt; line-height: 1.3; }
+
+/* Quadros alinhados como no modelo: o mapa comeca na altura do localizador; mapa e tabela tem as
+   mesmas bordas laterais; a tabela termina junto com os creditos. As coordenadas ficam por fora. */
+.moldura { position: absolute; left: 58mm; top: 7mm; width: 225mm; height: 157mm; }
+.mapa-prancha { position: absolute; inset: 0; border: 0.35mm solid #000; background: #cfd3d6; }
+.graticula-rotulos { position: absolute; inset: 0; pointer-events: none; }
+.graticula-rotulos span { position: absolute; font-size: 5.6pt; white-space: nowrap; }
+.graticula-rotulos .topo { top: -3.6mm; transform: translateX(-50%); }
+.graticula-rotulos .base { bottom: -3.6mm; transform: translateX(-50%); }
+.graticula-rotulos .esq { left: -2.2mm; transform: translate(-50%, -50%) rotate(-90deg); }
+.graticula-rotulos .dir { right: -2.2mm; transform: translate(50%, -50%) rotate(-90deg); }
+
+.titulo-mapa {
+  position: absolute; left: 7.5%; right: 7.5%; top: 1.4mm; height: 11.5mm; z-index: 900;
+  background: #fff; border: 0.3mm solid #555;
+  display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 4mm;
+  font-family: 'Arial Black', Arial, sans-serif; font-weight: 900; font-size: 13.5pt; line-height: 1.1;
+}
+.norte { position: absolute; left: 1.2mm; top: 1.4mm; width: 13mm; height: 13mm; z-index: 900; }
+.norte svg { width: 100%; height: 100%; display: block; }
+.escala {
+  position: absolute; left: 1.2mm; bottom: 1.2mm; z-index: 900;
+  background: #fff; padding: 1.2mm 2.5mm 1.6mm; font-size: 5.6pt;
+}
+.escala .rotulos { position: relative; height: 3mm; }
+.escala .rotulos span { position: absolute; top: 0; transform: translateX(-50%); }
+.escala .barra { display: flex; height: 1.6mm; border: 0.25mm solid #000; }
+.escala .barra i { flex: 1; background: #000; }
+.escala .barra i:nth-child(even) { background: #fff; }
+
+.tabela-rodape {
+  position: absolute; left: 58mm; top: 169mm; width: 225mm; height: 28mm;
+  border-collapse: collapse; table-layout: fixed; font-size: 7.5pt;
+  border: 0.45mm solid #000;
+}
+.tabela-rodape th, .tabela-rodape td { border: 0.3mm solid #000; text-align: center; padding: 0.8mm 1.5mm; vertical-align: middle; overflow: hidden; }
+.tabela-rodape th { font-weight: 700; height: 6.5mm; font-size: 7.2pt; white-space: nowrap; }
+.tabela-rodape td { line-height: 1.28; overflow-wrap: break-word; }
+.numero-pagina { position: absolute; right: 8mm; bottom: 4.5mm; font-size: 6.5pt; }
+
+/* ---------- Legenda ---------- */
+.legenda h3 { margin: 0 0 2mm; font-size: 8.4pt; font-weight: 700; }
+.leg-linha { display: flex; align-items: center; gap: 1.8mm; margin: 0.9mm 0; }
+.leg-linha svg { flex: none; }
+.leg-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2mm; margin-top: 2.4mm; }
+.leg-colunas .cab { font-size: 6.2pt; line-height: 1.25; margin-bottom: 1mm; }
+.leg-colunas .leg-linha { font-size: 5.2pt; margin: 0.45mm 0; }
+.leg-tipo { margin-top: 3mm; }
+.leg-tipo .cab { font-size: 7.4pt; margin-bottom: 1mm; }
+.leg-tipo .leg-linha { font-size: 7.2pt; margin: 1mm 0; }
+.leg-processos { margin-top: 3mm; border: 0.3mm solid #000; text-align: center; font-size: 6.4pt; }
+.leg-processos .cab { border-bottom: 0.3mm solid #000; padding: 0.6mm; }
+.leg-processos .lista { padding: 0.8mm; line-height: 1.35; }
+
+/* ---------- Elementos do mapa ---------- */
+.leaflet-container { font-family: Arial, Helvetica, sans-serif; }
+.rot-localidade {
+  font-size: 6pt; font-weight: 700; color: #fff; white-space: nowrap; text-transform: uppercase;
+  text-shadow: -0.6px -0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px 0.6px 0 #000, 0 0 2px #000;
+}
+.rot-municipio {
+  font-size: 6.4pt; font-style: italic; font-weight: 700; color: #3a3a3a; white-space: nowrap;
+  text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff;
+}
+.rot-estado { font-size: 6pt; color: #8a8a8a; letter-spacing: .08em; white-space: nowrap; }
+.escudo { display: block; overflow: visible; }
+
+/* Prancha ainda na fila do caderno completo */
+.prancha-pendente { display: grid; place-items: center; background: #f4f5f7; }
+.pendente-txt { font: 600 14px Inter, system-ui, sans-serif; color: #8a93a3; }
