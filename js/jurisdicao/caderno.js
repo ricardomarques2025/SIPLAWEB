@@ -163,6 +163,41 @@
     return '<td>' + esc(v == null || v === '' ? '-' : v) + '</td>';
   }
 
+  // Fim da tabela-resumo: observacoes (data = dia em que o caderno e gerado) e fluxo do processo.
+  const ICONES_FLUXO = {
+    lei: '<path d="M16 6h17l7 7v27H16z" fill="#fff" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>' +
+      '<path d="M11 10h17l7 7v27H11z" fill="#fff" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>' +
+      '<path d="M16 23h14M16 28h14M16 33h14M16 38h10" stroke="#000" stroke-width="2"/>',
+    exposicao: '<circle cx="20" cy="19" r="12" fill="none" stroke="#000" stroke-width="3.4"/><path d="m29 28 13 13" stroke="#000" stroke-width="5" stroke-linecap="round"/>',
+    termo: '<path d="M3 18 11 11l7 9-8 7zM45 18l-8-7-7 9 8 7z" fill="#000"/>' +
+      '<path d="M15 19l8-5 6 2 6 3 3 6-8 9-4 2-6-4-8-7z" fill="#fff" stroke="#000" stroke-width="2.2" stroke-linejoin="round"/>' +
+      '<path d="M19 27l4 4M22 24l5 5M26 22l5 5M23 14l-5 7 3 2 5-5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  };
+  const iconeFluxo = nome => ICONES_FLUXO[nome]
+    ? '<svg class="ico-ind" viewBox="0 0 48 48" aria-hidden="true">' + ICONES_FLUXO[nome] + '</svg>'
+    : Indicadores.icone(nome, 48);
+  const PASSOS_FLUXO = [
+    ['lei', 'LEI MUNICIPAL', 'Autorização do município (Art. 3º)'],
+    ['exposicao', 'EXPOSIÇÃO DE MOTIVOS', 'Justificativa de absorção ou doação.'],
+    ['leiEstadual', 'LEI ESTADUAL', 'Aprovação pela ALEGO e sanção do Governador (Art. 6º)'],
+    ['termo', 'TERMO DE REFERÊNCIA', 'Assinatura do Termo e transferência do trecho à GOINFRA (Art. 6º)'],
+    ['extensao', 'PROCESSO CONCLUÍDO', 'Incluída no programa de conservação da malha estadual (Art. 6º)']
+  ];
+  const SETA_FLUXO = '<svg class="fluxo-seta" viewBox="0 0 24 16" aria-hidden="true"><path d="M1 5h13V1l9 7-9 7v-4H1z" fill="#3b6fc4"/></svg>';
+
+  function fluxoProcesso() {
+    const hoje = new Date().toLocaleDateString('pt-BR');
+    return '<div class="fluxo-bloco">' +
+      '<div class="fluxo-obs"><div class="fluxo-obs-cab">OBSERVAÇÕES</div>' +
+        '<p>- Leis específicas por processo.</p>' +
+        '<p>- Informações conforme despachos SEI e legislação vigentes até <b>' + hoje + '</b>.</p></div>' +
+      '<div class="fluxo"><div class="fluxo-titulo">FLUXO DO PROCESSO DE ESTADUALIZAÇÃO E MUNICIPALIZAÇÃO</div>' +
+        PASSOS_FLUXO.map((p, i) => (i ? SETA_FLUXO : '') +
+          '<div class="fluxo-passo">' + iconeFluxo(p[0]) + '<div class="fluxo-num">' + (i + 1) + '</div>' +
+          '<div class="fluxo-nome">' + p[1] + '</div><div class="fluxo-desc">' + p[2] + '</div></div>').join('') +
+      '</div></div>';
+  }
+
   // Distribui as linhas em quantas paginas forem precisas, medindo a altura real de cada uma.
   function montarTabela(lista, ano) {
     const folhas = [];
@@ -187,6 +222,15 @@
         corpo.appendChild(tr);
       }
     });
+    // O quadro final vai logo abaixo da tabela; se nao couber, leva a ultima linha junto para a folha seguinte.
+    corpo.closest('table').insertAdjacentHTML('afterend', fluxoProcesso());
+    if (folha.querySelector('.fluxo-bloco').getBoundingClientRect().bottom > limite && corpo.children.length > 1) {
+      const ultima = corpo.lastElementChild;
+      folha.querySelector('.fluxo-bloco').remove();
+      nova();
+      corpo.appendChild(ultima);
+      corpo.closest('table').insertAdjacentHTML('afterend', fluxoProcesso());
+    }
     return folhas;
   }
 
