@@ -23,7 +23,7 @@ const Tabela = (function() {
       if (v == null || v === '') return '';
       const n = Number(v);
       return '<span class="num">' + (campo === 'extensao_km'
-        ? n.toLocaleString('pt-BR', { maximumFractionDigits: 3 }) : esc(v)) + '</span>';
+        ? n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : esc(v)) + '</span>';
     },
     tipo: function(v) {
       if (!v) return '';
@@ -98,7 +98,7 @@ const Tabela = (function() {
           ? function(e, cell) { return cell.getValue() || ''; } : false,
         bottomCalc: c.campo === 'extensao_km' ? 'sum' : (c.campo === 'codigo' ? 'count' : undefined),
         bottomCalcFormatter: c.campo === 'extensao_km'
-          ? cell => '<b class="num">' + Number(cell.getValue() || 0).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '</b>'
+          ? cell => '<b class="num">' + Number(cell.getValue() || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</b>'
           : undefined
       }, editorDe(c)));
     });
