@@ -116,6 +116,10 @@ body {
 .leg-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2mm; margin-top: 2.4mm; }
 .leg-colunas .cab { font-size: 6.2pt; line-height: 1.25; margin-bottom: 1mm; }
 .leg-colunas .leg-linha { font-size: 5.2pt; margin: 0.45mm 0; }
+.leg-icones { margin-top: 3mm; }
+.leg-icones .cab { font-size: 7.4pt; margin-bottom: 1mm; }
+.leg-icones .leg-linha { font-size: 6.8pt; margin: 0.7mm 0; gap: 2.4mm; }
+.leg-icone { width: 5.2mm; height: 5.2mm; flex: none; display: block; }
 .leg-tipo { margin-top: 3mm; }
 .leg-tipo .cab { font-size: 7.4pt; margin-bottom: 1mm; }
 .leg-tipo .leg-linha { font-size: 7.2pt; margin: 1mm 0; }

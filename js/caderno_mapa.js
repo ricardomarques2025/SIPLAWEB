@@ -70,8 +70,11 @@ var CadernoMapa = (function() {
     }) };
   }
 
-  function recortarBase(base, limites) {
-    const area = limites.pad(1.5);
+  // area = o que o mapa mostra (depois de enquadrado) e mais uma vista de cada lado, para quem afasta o zoom na prancha.
+  // Recortar pelo desenho deixava sem malha e sem localidades as bordas da folha (obra pontual = retangulo de
+  // tamanho zero; trecho leste-oeste = faixa fina).
+  function recortarBase(base, vista) {
+    const area = vista.pad(1);
     return {
       mascara: recortar(base.mascara, area), municipios: recortar(base.municipios, area),
       sre: recortar(base.sre, area), snv: recortar(base.snv, area), localidades: recortar(base.localidades, area)
@@ -216,12 +219,15 @@ var CadernoMapa = (function() {
     const tudo = partes.linhas.flat().concat(partes.pontos);
     const temDesenho = tudo.length > 0;
     const limites = temDesenho ? L.latLngBounds(tudo) : L.geoJSON(base.municipios).getBounds();
-    const b = temDesenho ? recortarBase(base, limites) : base;
 
     const map = L.map(q('.mapa-prancha'), {
       zoomControl: false, attributionControl: false, zoomSnap: 0, zoomDelta: 0.25, wheelPxPerZoomLevel: 120,
       zoomAnimation: false, fadeAnimation: false, markerZoomAnimation: false, inertia: false
     });
+    // Enquadra antes de desenhar: o recorte das camadas de base sai da area que o mapa mostra.
+    if (temDesenho) map.fitBounds(limites, { paddingTopLeft: [50, 75], paddingBottomRight: [50, 40], maxZoom: destaque.zoomMax || 16 });
+    else map.fitBounds(limites);
+    const b = temDesenho ? recortarBase(base, map.getBounds()) : base;
     [['pMascara', 250], ['pMunicipios', 300], ['pGrade', 320], ['pSnv', 350], ['pSre', 360], ['pTrecho', 450], ['pRotulos', 620]]
       .forEach(p => { map.createPane(p[0]).style.zIndex = p[1]; });
 
@@ -254,12 +260,14 @@ var CadernoMapa = (function() {
         });
       }
       partes.pontos.forEach(function(p) {
+        if (destaque.icone) {
+          L.marker(p, { pane: 'pTrecho', interactive: false,
+            icon: L.icon({ iconUrl: destaque.icone, iconSize: [30, 30], iconAnchor: [15, 15], className: 'icone-obra' }) }).addTo(map);
+          return;
+        }
         L.circleMarker(p, { pane: 'pTrecho', interactive: false, radius: 10, stroke: false, fillColor: '#444', fillOpacity: 0.5 }).addTo(map);
         L.circleMarker(p, { pane: 'pTrecho', interactive: false, radius: 7.5, color: e.contorno, weight: 4, opacity: 1, fillColor: e.miolo, fillOpacity: 1 }).addTo(map);
       });
-      map.fitBounds(limites, { paddingTopLeft: [50, 75], paddingBottomRight: [50, 40], maxZoom: destaque.zoomMax || 16 });
-    } else {
-      map.fitBounds(limites);
     }
 
     const localizador = montarLocalizador(q('.mapa-loc'));
@@ -269,7 +277,7 @@ var CadernoMapa = (function() {
     function atualizar() {
       desenharGrade(map, grade, q('.graticula-rotulos'));
       desenharEscala(map, q('.escala'));
-      desenharRotulos(map, rotulos, b);
+      desenharRotulos(map, rotulos, b, partes.pontos);
       localizador.marcar(map.getBounds());
     }
     map.on('moveend', atualizar);
@@ -335,15 +343,18 @@ var CadernoMapa = (function() {
   }
 
   // ---------- Rotulos: escudos, localidades e municipios ----------
-  function desenharRotulos(map, grupo, base) {
+  function desenharRotulos(map, grupo, base, pontosObra) {
     grupo.clearLayers();
     const tam = map.getSize();
     const dentro = p => p.x > 8 && p.y > 8 && p.x < tam.x - 8 && p.y < tam.y - 8;
-    // Areas reservadas: titulo, rosa dos ventos e escala.
+    // Areas reservadas: titulo, rosa dos ventos, escala e o icone (ou bolinha) de cada ponto da obra.
     const caixas = [
       { x: 0, y: 0, w: tam.x, h: 62 },
       { x: 0, y: tam.y - 45, w: tam.x * 0.25, h: 45 }
-    ];
+    ].concat((pontosObra || []).map(function(ll) {
+      const p = map.latLngToContainerPoint(ll);
+      return { x: p.x - 17, y: p.y - 17, w: 34, h: 34 };
+    }));
     const b = map.getBounds().pad(0.05);
 
     // Escudos das rodovias (um por trecho visivel, sem repetir a mesma rodovia muito perto).

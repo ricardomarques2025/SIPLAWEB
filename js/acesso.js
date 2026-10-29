@@ -336,14 +336,15 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-10-28.1';
+  var VERSAO_SITE = '2026-10-29.1';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   var NOVIDADES = [
-    ['3.1', '28/10/2026', [
+    ['3.1', '29/10/2026', [
       'Caderno de obras em PDF (botão "Caderno PDF" da tabela de obras): capa, índice, resumo e, por seção, planilha e um mapa por obra, no formato dos cadernos de obras e de projetos da GOINFRA.',
-      'Dá para juntar origens no mesmo caderno (ex.: DOR e depois DPJ). Na ficha, "Mapa A4" gera o mapa de uma obra.'
+      'Dá para juntar origens no mesmo caderno (ex.: DOR e depois DPJ). Na ficha, "Mapa A4" gera o mapa de uma obra.',
+      'Nos mapas do caderno, obras pontuais com ícone (aeródromo, bueiro, duplicação, pavimentação, ponte, viaduto) e rodovias e localidades em toda a folha.'
     ]],
     ['3.0', '27/10/2026', [
       'Perfis de acesso configuráveis (Painel › Configurações, pelo administrador master); perfil novo: Diretor (vê e exporta).',

@@ -73,6 +73,24 @@
     return e ? e[1] : ESTILO_PADRAO;
   }
 
+  // Icones das obras pontuais (img/obras/icones), pela intervencao; a primeira regra que casa vale.
+  // Obra pontual sem icone continua com a bolinha nas cores do estilo.
+  const ICONES = [
+    [/aer[oó]dromo/i, 'aerodromo', 'Aeródromo'],
+    [/bueiro|\boac\b/i, 'bueiro', 'Bueiro'],
+    [/duplica/i, 'duplicacao', 'Duplicação'],
+    [/paviment/i, 'pavimentacao', 'Pavimentação'],
+    [/viaduto/i, 'viaduto', 'Viaduto'],
+    [/ponte|\boae\b/i, 'ponte', 'Ponte']
+  ];
+  const urlIcone = arq => 'img/obras/icones/' + arq + '.svg';
+  const soPontos = geos => geos.length > 0 && geos.every(g => /Point/.test(g.type));
+  function iconeObra(o, geos) {
+    if (!soPontos(geos)) return null;
+    const i = ICONES.find(x => x[0].test(o.intervencao || ''));
+    return i ? urlIcone(i[1]) : null;
+  }
+
   const fmtKmTabela = n => n == null || n === '' ? '-' : Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const vazio = v => v == null || v === '';
   const cmp = (a, b) => String(a || '').localeCompare(String(b || ''), 'pt-BR', { sensitivity: 'base', numeric: true });
@@ -84,11 +102,13 @@
   }
 
   // ---------- Leitura do banco ----------
+  // Origens que entram no caderno (as demais ficam so no mapa).
+  const ORIGENS_CADERNO = ['DOC', 'DSV', 'FUNDEINFRA', 'DPL', 'DPJ', 'DMA', 'DOR', 'GEREF', 'TARE'];
   let ORIGENS = [];   // [{ codigo, nome }] que a pessoa pode exportar e que tem obras
   async function lerOrigens() {
     const res = await sb.from('origens').select('codigo, nome, ordem').eq('ativa', true).order('ordem');
     if (res.error) throw new Error('Falha ao ler as origens: ' + res.error.message);
-    return res.data.filter(o => Acesso.podeVer(o.codigo) && Acesso.podeExportar(o.codigo));
+    return res.data.filter(o => ORIGENS_CADERNO.includes(o.codigo) && Acesso.podeVer(o.codigo) && Acesso.podeExportar(o.codigo));
   }
 
   async function lerObras(origens) {
@@ -373,10 +393,16 @@
   function legendaHTML(o) {
     const linhaLeg = CadernoMapa.linhaLeg;
     const geos = geometriaObra(o);
-    const soPonto = geos.length > 0 && geos.every(g => /Point/.test(g.type));
+    const soPonto = soPontos(geos);
+    const icone = iconeObra(o, geos);
+    const amostraIcone = url => '<img class="leg-icone" src="' + url + '" alt="">';
     const proc = [o.sei, o.contrato ? 'Contrato ' + o.contrato : ''].filter(Boolean);
-    return CadernoMapa.legendaBase() +
-      '<div class="leg-tipo"><div class="cab">OBRA</div>' + linhaLeg(CadernoMapa.amostraDestaque(estiloObra(o), soPonto), esc(o.intervencao || 'Obra')) + '</div>' +
+    // Obra pontual: bloco com todos os icones (em ordem alfabetica), como na legenda dos cadernos da GOINFRA.
+    const obras = !soPonto ? '' : '<div class="leg-icones"><div class="cab">OBRAS</div>' +
+      ICONES.slice().sort((a, z) => a[2].localeCompare(z[2], 'pt-BR')).map(i => linhaLeg(amostraIcone(urlIcone(i[1])), i[2])).join('') + '</div>';
+    return CadernoMapa.legendaBase() + obras +
+      '<div class="leg-tipo"><div class="cab">OBRA</div>' +
+      linhaLeg(icone ? amostraIcone(icone) : CadernoMapa.amostraDestaque(estiloObra(o), soPonto), esc(o.intervencao || 'Obra')) + '</div>' +
       '<div class="leg-processos"><div class="cab">PROCESSO</div><div class="lista">' + proc.map(esc).join('<br>') + '</div></div>';
   }
 
@@ -395,9 +421,9 @@
 
     const geos = geometriaObra(o);
     const p = CadernoMapa.montarMapa(folha, base, {
-      geometria: geos, estilo: estiloObra(o),
+      geometria: geos, estilo: estiloObra(o), icone: iconeObra(o, geos),
       // Obra curta (ponte, bueiro) aparece com o entorno, sem aproximar demais.
-      zoomMax: geos.every(g => /Point/.test(g.type)) ? 13 : 14
+      zoomMax: soPontos(geos) ? 13 : 14
     });
     p.folha = folha;
     return p;
