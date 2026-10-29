@@ -76,11 +76,11 @@
 /* Indice: duas colunas, como no caderno da jurisdicao */
 .ob-indice .indice-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14mm; }
 .ob-indice .indice-linha {
-  display: flex; align-items: baseline; gap: 2mm; white-space: nowrap;
-  height: calc(3.95mm * var(--indice-escala, 1)); font-size: calc(7.6pt * var(--indice-escala, 1));
+  display: flex; align-items: flex-end; gap: 2mm; line-height: 1.22;
+  padding: calc(0.5mm * var(--indice-escala, 1)) 0; font-size: calc(7.6pt * var(--indice-escala, 1));
 }
-.ob-indice .indice-linha .id { width: 7mm; font-weight: 700; flex: none; text-align: right; }
-.ob-indice .indice-linha .nome { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+.ob-indice .indice-linha .id { width: 7mm; font-weight: 700; flex: none; text-align: right; align-self: flex-start; }
+.ob-indice .indice-linha .nome { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .ob-indice .indice-linha .pag { flex: none; text-align: right; min-width: 8mm; }
 .ob-indice .nivel-origem { font-weight: 700; color: #00a863; border-bottom: 0.3mm solid #00a863; }
 .ob-indice .nivel-cap { font-weight: 700; }

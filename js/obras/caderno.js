@@ -57,15 +57,16 @@
   const FONTES = ['Tesouro', 'Fundeinfra', 'Associativo-Fundeinfra', 'Convênio', 'Tare', 'Doação'];
 
   // Cores por intervencao: destaque no mapa (contorno + miolo, como os tipos da jurisdicao) e fundo da linha na planilha
-  // (as cores dos cadernos da GOINFRA). A primeira regra que casa vale.
+  // (as cores dos cadernos da GOINFRA). A primeira regra que casa vale. Rotulo = item da legenda das obras lineares
+  // (null: tipo que so aparece como ponto).
   const ESTILOS = [
-    [/bueiro|oac/i, { contorno: '#c7f0ff', miolo: '#0891b2', fundo: '#dcefff' }],
-    [/duplica|capacidade/i, { contorno: '#9fe2ff', miolo: '#0a6cff', fundo: '#d9e8ff' }],
-    [/ponte|oae|viaduto|passarela|passagem/i, { contorno: '#ffe0b3', miolo: '#b45309', fundo: '#ead4c0' }],
-    [/paviment|implanta/i, { contorno: '#ffd1f5', miolo: '#c2189b', fundo: '#fae9fc' }],
-    [/restaura|recupera|cbuq|micro/i, { contorno: '#b9ff9f', miolo: '#17b81a', fundo: '#e6f8db' }],
-    [/prad/i, { contorno: '#d9f99d', miolo: '#4d7c0f', fundo: '#b6d6a8' }],
-    [/sinaliza/i, { contorno: '#ede9fe', miolo: '#7c3aed', fundo: '#ede9fe' }]
+    [/bueiro|oac/i, { contorno: '#c7f0ff', miolo: '#0891b2', fundo: '#dcefff' }, null],
+    [/duplica|capacidade/i, { contorno: '#9fe2ff', miolo: '#0a6cff', fundo: '#d9e8ff' }, 'Duplicação'],
+    [/ponte|oae|viaduto|passarela|passagem/i, { contorno: '#ffe0b3', miolo: '#b45309', fundo: '#ead4c0' }, null],
+    [/paviment|implanta/i, { contorno: '#ffd1f5', miolo: '#c2189b', fundo: '#fae9fc' }, 'Pavimentação'],
+    [/restaura|recupera|cbuq|micro/i, { contorno: '#b9ff9f', miolo: '#17b81a', fundo: '#e6f8db' }, 'Restauração'],
+    [/prad/i, { contorno: '#d9f99d', miolo: '#4d7c0f', fundo: '#b6d6a8' }, 'PRAD'],
+    [/sinaliza/i, { contorno: '#ede9fe', miolo: '#7c3aed', fundo: '#ede9fe' }, 'Sinalização']
   ];
   const ESTILO_PADRAO = { contorno: '#e8212b', miolo: '#fff200', fundo: '#fff7d6' };
   function estiloObra(o) {
@@ -74,7 +75,7 @@
   }
 
   // Icones das obras pontuais (img/obras/icones), pela intervencao; a primeira regra que casa vale.
-  // Obra pontual sem icone continua com a bolinha nas cores do estilo.
+  // Obra pontual sem icone fica com a bolinha nas cores padrao ("Outras" na legenda).
   const ICONES = [
     [/aer[oó]dromo/i, 'aerodromo', 'Aeródromo'],
     [/bueiro|\boac\b/i, 'bueiro', 'Bueiro'],
@@ -390,20 +391,18 @@
   }
 
   // ---------- Prancha (formato da jurisdicao) ----------
-  function legendaHTML(o) {
+  // Legenda igual em todas as pranchas: base (localidade, municipio, rodovias) e os tipos de obra, lineares (cores)
+  // e pontuais (icones, em ordem alfabetica, como nos cadernos da GOINFRA).
+  function legendaHTML() {
     const linhaLeg = CadernoMapa.linhaLeg;
-    const geos = geometriaObra(o);
-    const soPonto = soPontos(geos);
-    const icone = iconeObra(o, geos);
     const amostraIcone = url => '<img class="leg-icone" src="' + url + '" alt="">';
-    const proc = [o.sei, o.contrato ? 'Contrato ' + o.contrato : ''].filter(Boolean);
-    // Obra pontual: bloco com todos os icones (em ordem alfabetica), como na legenda dos cadernos da GOINFRA.
-    const obras = !soPonto ? '' : '<div class="leg-icones"><div class="cab">OBRAS</div>' +
-      ICONES.slice().sort((a, z) => a[2].localeCompare(z[2], 'pt-BR')).map(i => linhaLeg(amostraIcone(urlIcone(i[1])), i[2])).join('') + '</div>';
-    return CadernoMapa.legendaBase() + obras +
-      '<div class="leg-tipo"><div class="cab">OBRA</div>' +
-      linhaLeg(icone ? amostraIcone(icone) : CadernoMapa.amostraDestaque(estiloObra(o), soPonto), esc(o.intervencao || 'Obra')) + '</div>' +
-      '<div class="leg-processos"><div class="cab">PROCESSO</div><div class="lista">' + proc.map(esc).join('<br>') + '</div></div>';
+    const lineares = ESTILOS.filter(e => e[2]).map(e => linhaLeg(CadernoMapa.amostraDestaque(e[1], false), e[2]))
+      .concat(linhaLeg(CadernoMapa.amostraDestaque(ESTILO_PADRAO, false), 'Outras'));
+    const pontuais = ICONES.slice().sort((a, z) => a[2].localeCompare(z[2], 'pt-BR')).map(i => linhaLeg(amostraIcone(urlIcone(i[1])), i[2]))
+      .concat(linhaLeg(CadernoMapa.amostraDestaque(ESTILO_PADRAO, true), 'Outras'));
+    return CadernoMapa.legendaBase() +
+      '<div class="leg-obras"><div class="cab">OBRAS LINEARES</div>' + lineares.join('') + '</div>' +
+      '<div class="leg-obras"><div class="cab">OBRAS PONTUAIS</div>' + pontuais.join('') + '</div>';
   }
 
   function montarPrancha(o, base, numero, folhaExistente) {
@@ -412,7 +411,7 @@
     const q = sel => folha.querySelector(sel);
 
     q('.titulo-mapa').textContent = [o.rodovia, o.descricao].filter(Boolean).join(', ');
-    q('.legenda').innerHTML = legendaHTML(o);
+    q('.legenda').innerHTML = legendaHTML();
     q('.tabela-rodape th:nth-child(4)').textContent = (CONFIG_ORIGEM[o.origem] || {}).trecho || 'DESCRIÇÃO';
     q('.tabela-rodape tbody tr').innerHTML = [num(o), o.rodovia, o.intervencao, o.descricao, fmtKm(o.ext_contrato_km), o.status, o.fonte, o.sei, o.contrato]
       .map(v => '<td>' + esc(v) + '</td>').join('');
@@ -420,8 +419,9 @@
     q('.numero-pagina').textContent = numero == null ? '' : numero;
 
     const geos = geometriaObra(o);
+    const icone = iconeObra(o, geos);
     const p = CadernoMapa.montarMapa(folha, base, {
-      geometria: geos, estilo: estiloObra(o), icone: iconeObra(o, geos),
+      geometria: geos, icone: icone, estilo: soPontos(geos) && !icone ? ESTILO_PADRAO : estiloObra(o),
       // Obra curta (ponte, bueiro) aparece com o entorno, sem aproximar demais.
       zoomMax: soPontos(geos) ? 13 : 14
     });
@@ -430,21 +430,48 @@
   }
 
   // ---------- Indice ----------
-  const LINHAS_POR_COLUNA = 37, ENCOLHE_ATE = 0.6;
-  function preencherIndice(folhas, linhas) {
-    const porColuna = Math.max(LINHAS_POR_COLUNA, Math.ceil(linhas.length / (folhas.length * 2)));
-    folhas.forEach(function(f, p) {
-      f.style.setProperty('--indice-escala', (LINHAS_POR_COLUNA / porColuna).toFixed(3));
-      const colunas = [0, 1].map(function(c) {
-        const ini = (p * 2 + c) * porColuna;
-        const parte = linhas.slice(ini, ini + porColuna);
-        return '<div class="indice-coluna">' + parte.map(l => '<div class="indice-linha nivel-' + l.nivel + '">' +
-          (l.num != null ? '<span class="id">' + l.num + '</span>' : '') + '<span class="nome">' + esc(l.texto) + '</span><span class="pag">' + (l.pagina || '') + '</span></div>').join('') + '</div>';
-      }).join('');
-      f.querySelector('.ob-corpo').innerHTML = (p === 0 ? '<h1 class="ob-h1">ÍNDICE</h1>' : '') + '<div class="indice-colunas">' + colunas + '</div>';
-    });
+  // Duas colunas; nome comprido quebra a linha. As linhas enchem cada coluna ate o limite da folha (medido no
+  // navegador). Com poucas folhas a letra encolhe ate ENCOLHE_ATE; se nem assim couber, abre mais uma folha.
+  // As folhas entram antes de "antesDe" (logo depois da capa); o numero da pagina e escrito depois (l.el).
+  const ENCOLHE_ATE = 0.6;
+  function linhaIndice(l) {
+    const d = document.createElement('div');
+    d.className = 'indice-linha nivel-' + l.nivel;
+    d.innerHTML = (l.num != null ? '<span class="id">' + l.num + '</span>' : '') + '<span class="nome">' + esc(l.texto) + '</span><span class="pag"></span>';
+    l.el = d.querySelector('.pag');
+    return d;
   }
-  const paginasIndice = n => Math.max(1, Math.ceil(n / (2 * Math.floor(LINHAS_POR_COLUNA / ENCOLHE_ATE))));
+  function distribuirIndice(linhas, nFolhas, escala, antesDe) {
+    const folhas = [];
+    let i = 0;
+    for (let p = 0; p < nFolhas; p++) {
+      const f = novaFolhaConteudo('ob-indice');
+      $('paginas').insertBefore(f, antesDe);
+      folhas.push(f);
+      f.style.setProperty('--indice-escala', escala.toFixed(2));
+      f.querySelector('.ob-corpo').innerHTML = (p === 0 ? '<h1 class="ob-h1">ÍNDICE</h1>' : '') +
+        '<div class="indice-colunas"><div class="indice-coluna"></div><div class="indice-coluna"></div></div>';
+      const limite = limiteFolha(f);
+      f.querySelectorAll('.indice-coluna').forEach(function(col) {
+        while (i < linhas.length) {
+          const d = col.appendChild(linhaIndice(linhas[i]));
+          if (d.getBoundingClientRect().bottom > limite && col.children.length > 1) { d.remove(); break; }
+          i++;
+        }
+      });
+    }
+    if (i === linhas.length) return folhas;
+    folhas.forEach(f => f.remove());
+    return null;
+  }
+  function montarIndice(linhas, antesDe) {
+    for (let n = 1; ; n++) {
+      for (let escala = 1; escala >= ENCOLHE_ATE - 0.001; escala -= 0.05) {
+        const folhas = distribuirIndice(linhas, n, escala, antesDe);
+        if (folhas) return folhas;
+      }
+    }
+  }
 
   // ---------- Caderno completo ----------
   async function gerarCaderno(base, opcoes) {
@@ -467,10 +494,7 @@
     const marcar = (folha, linha) => { folhasNumeradas.push({ folha: folha, linha: linha }); return folha; };
 
     if (tem('capa')) montarCapa(opcoes.titulo, opcoes.ano);
-    const linhasIndice = tem('indice') ? doc.reduce((n, org) => n + 1 + (tem('resumo') ? 1 : 0) +
-      org.capitulos.reduce((m, c) => m + 1 + c.secoes.filter(s => s.titulo).length + (tem('pranchas') ? c.secoes.reduce((k, s) => k + s.itens.filter(temDesenho).length, 0) : 0), 0), 0) : 0;
-    const folhasIndice = [];
-    for (let i = 0; i < (tem('indice') ? paginasIndice(linhasIndice) : 0); i++) folhasIndice.push(marcar(novaFolhaConteudo('ob-indice')));
+    const aposCapa = $('paginas').children.length;   // o indice entra aqui, depois de montado o resto
 
     const fila = [];
     doc.forEach(function(org, io) {
@@ -515,6 +539,8 @@
       });
     });
 
+    if (tem('indice')) montarIndice(indice, $('paginas').children[aposCapa]).forEach(f => marcar(f));
+
     // Numeracao impressa: a capa nao conta (como no caderno da jurisdicao).
     const desconto = tem('capa') ? 1 : 0;
     const todas = Array.from($('paginas').children);
@@ -526,7 +552,7 @@
       const el = x.folha.querySelector('.ob-numero');
       if (el) el.textContent = pagina;
     });
-    if (folhasIndice.length) preencherIndice(folhasIndice, indice);
+    indice.forEach(function(l) { if (l.el) l.el.textContent = l.pagina || ''; });
 
     // Mapas: alguns ao mesmo tempo, cada um esperando as imagens de satelite.
     let feitas = 0;
