@@ -5502,7 +5502,23 @@ map.addControl(new LogoMapaControl());
     URL.revokeObjectURL(url);
   }
 
+  // GME e GMK usam placas próprias (OAE/ponte e bueiro); as demais origens, as comuns.
+  var PONTOS_PROGRAMA = {
+    GME: { OaeProjeto: 'GmeOaeProjeto', PonteProjeto: 'GmePonteProjeto', OaeObra: 'GmeOaeObra', PonteObra: 'GmePonteObra', BueiroProjeto: 'GmeBueiroProjeto', BueiroObra: 'GmeBueiroObra' },
+    GMK: { OaeProjeto: 'GmkOaeProjeto', PonteProjeto: 'GmkPonteProjeto', OaeObra: 'GmkOaeObra', PonteObra: 'GmkPonteObra', BueiroProjeto: 'GmkBueiroProjeto', BueiroObra: 'GmkBueiroObra' }
+  };
+
   function estiloObraPonto(dados) {
+    var estilo = estiloObraPontoBase(dados);
+    var mapaPrograma = PONTOS_PROGRAMA[origemObraPonto(dados)];
+    if (!mapaPrograma) return estilo;
+    for (var chave in mapaPrograma) {
+      if (OBRAS_PONTOS_INFO[chave] === estilo && OBRAS_PONTOS_INFO[mapaPrograma[chave]]) return OBRAS_PONTOS_INFO[mapaPrograma[chave]];
+    }
+    return estilo;
+  }
+
+  function estiloObraPontoBase(dados) {
     if (dados && dados.__TIPO_PONTO_AERO === 'AERO_OBRA') {
       if (origemObraPonto(dados) === 'DMA') return OBRAS_PONTOS_INFO.Manutencao;
       if (origemObraPonto(dados) === 'DPJ') return OBRAS_PONTOS_INFO.Projeto;
@@ -5999,8 +6015,26 @@ map.addControl(new LogoMapaControl());
       (descricao && descricao !== titulo ? '<div class="po-desc">' + escapeHtml(descricao) + '</div>' : '') +
       selo +
       (campos ? '<dl class="po-campos">' + campos + '</dl>' : '') +
+      botaoAbrirObraPopup(origem, dados.IDCOD) +
       '</div>';
   }
+
+  // Atalho do cartao para a ficha da obra na tabela (como o "Abrir detalhes" da Jurisdicao). So para obras do
+  // banco (codigo OB..) de origens que o usuario pode ver; o clique e tratado em abrirObraDoPopup.
+  function botaoAbrirObraPopup(origem, codigo) {
+    if (!origem || !/^OB\d/.test(String(codigo || ''))) return '';
+    if (!window.Acesso || !Acesso.podeVer || !Acesso.podeVer(origem)) return '';
+    return '<button type="button" class="po-abrir" data-obra-origem="' + escapeHtml(origem) + '" data-obra-codigo="' + escapeHtml(codigo) + '">Abrir na tabela</button>';
+  }
+
+  document.addEventListener('click', function(e) {
+    var b = e.target.closest && e.target.closest('[data-obra-codigo]');
+    if (!b) return;
+    var origem = b.dataset.obraOrigem, codigo = b.dataset.obraCodigo;
+    if (window.ObrasPainel && ObrasPainel.abrirObra) { map.closePopup(); ObrasPainel.abrirObra(origem, codigo); return; }
+    // Mapa sem tabela (geral, rodoviario): abre o mapa da origem em outra aba, ja com a ficha da obra.
+    window.open('mapa.html?origem=' + encodeURIComponent(origem) + '&sidebar=fechada&tabela=dividida&obra=' + encodeURIComponent(codigo), '_blank');
+  });
 
   // Cabecalho do elemento clicado (trecho da malha, aerodromo, municipio) acima dos cartoes.
   function cabecalhoPopup(sup, titulo, linha) {
@@ -7254,11 +7288,11 @@ map.addControl(new LogoMapaControl());
     if (!dadosLista || !dadosLista.length) return null;
     for (var i = 0; i < dadosLista.length; i++) {
       var chave = chaveLegendaObraPonto(dadosLista[i]);
-      if (chave === 'OaeObra' || chave === 'PonteObra' || chave === 'BueiroObra' || chave === 'Obra') return dadosLista[i];
+      if (chave === 'OaeObra' || chave === 'PonteObra' || chave === 'BueiroObra' || chave === 'Obra' || /^Gm[ek](Oae|Ponte|Bueiro)Obra$/.test(chave)) return dadosLista[i];
     }
     for (var j = 0; j < dadosLista.length; j++) {
       var chavePlanejamento = chaveLegendaObraPonto(dadosLista[j]);
-      if (chavePlanejamento === 'OaePlanejamento' || chavePlanejamento === 'OaeProjeto' || chavePlanejamento === 'PonteProjeto' || chavePlanejamento === 'BueiroProjeto' || chavePlanejamento === 'Planejamento') return dadosLista[j];
+      if (chavePlanejamento === 'OaePlanejamento' || chavePlanejamento === 'OaeProjeto' || chavePlanejamento === 'PonteProjeto' || chavePlanejamento === 'BueiroProjeto' || chavePlanejamento === 'Planejamento' || /^Gm[ek](Oae|Ponte|Bueiro)Projeto$/.test(chavePlanejamento)) return dadosLista[j];
     }
     return dadosLista[0];
   }

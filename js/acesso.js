@@ -336,11 +336,15 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-10-29.4';
+  var VERSAO_SITE = '2026-11-04.1';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   var NOVIDADES = [
+    ['3.2', '04/11/2026', [
+      'Popup das obras no mapa: botão "Abrir na tabela", que abre a tabela de obras já na ficha da obra (como o "Abrir detalhes" da Jurisdição). No mapa geral, abre o mapa da origem em outra aba.',
+      'GME e GMK com placas próprias para OAE/ponte e bueiro, em projeto e em obra.'
+    ]],
     ['3.1', '29/10/2026', [
       'Caderno de obras em PDF (botão "Caderno PDF" da tabela de obras): capa, índice, resumo e, por seção, planilha e um mapa por obra, no formato dos cadernos de obras e de projetos da GOINFRA.',
       'Dá para juntar origens no mesmo caderno (ex.: DOR e depois DPJ). Na ficha, "Mapa A4" gera o mapa de uma obra.',

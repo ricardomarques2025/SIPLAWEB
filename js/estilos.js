@@ -358,6 +358,91 @@ const REGRAS_ESTILO = [
       formato: 'losango',
       icone: 'data/placaoaeobra.svg'
     },
+    // Programas Goiás em Movimento (GME e GMK): placas próprias para OAE/ponte e bueiro.
+    GmeOaeProjeto: {
+      label: 'OAE em projeto',
+      classe: 'obra-ponto-oae-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/gmeplacaoaeprojeto.svg'
+    },
+    GmeOaeObra: {
+      label: 'OAE em obra',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/gmeplacaoaeobra.svg'
+    },
+    GmeBueiroProjeto: {
+      label: 'Bueiro em projeto',
+      classe: 'obra-ponto-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/gmeplacabueiroprojeto.svg'
+    },
+    GmeBueiroObra: {
+      label: 'Bueiro em obra',
+      classe: 'obra-ponto-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/gmeplacabueiroobra.svg'
+    },
+    GmkOaeProjeto: {
+      label: 'OAE em projeto',
+      classe: 'obra-ponto-oae-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/gmkplacaoaeprojeto.svg'
+    },
+    GmkOaeObra: {
+      label: 'OAE em obra',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/gmkplacaoaeobra.svg'
+    },
+    GmkBueiroProjeto: {
+      label: 'Bueiro em projeto',
+      classe: 'obra-ponto-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/gmkplacabueiroprojeto.svg'
+    },
+    GmkBueiroObra: {
+      label: 'Bueiro em obra',
+      classe: 'obra-ponto-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/gmkplacabueiroobra.svg'
+    },
+    GmePonteProjeto: {
+      label: 'Ponte em projeto',
+      classe: 'obra-ponto-oae-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/gmeplacaoaeprojeto.svg'
+    },
+    GmePonteObra: {
+      label: 'Ponte em obra',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/gmeplacaoaeobra.svg'
+    },
+    GmkPonteProjeto: {
+      label: 'Ponte em projeto',
+      classe: 'obra-ponto-oae-projeto',
+      cor: '#00ffff',
+      formato: 'quadrado',
+      icone: 'data/gmkplacaoaeprojeto.svg'
+    },
+    GmkPonteObra: {
+      label: 'Ponte em obra',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#fffb00',
+      formato: 'losango',
+      icone: 'data/gmkplacaoaeobra.svg'
+    },
     Padrao: {
       label: 'Outros',
       classe: 'obra-ponto-padrao',
@@ -370,6 +455,8 @@ const REGRAS_ESTILO = [
   const ORDEM_LEGENDA_PONTOS = [
     'OaePlanejamento', 'OaeProjeto', 'OaeObra',
     'PonteProjeto', 'PonteObra', 'BueiroProjeto', 'BueiroObra',
+    'GmeOaeProjeto', 'GmeOaeObra', 'GmePonteProjeto', 'GmePonteObra', 'GmeBueiroProjeto', 'GmeBueiroObra',
+    'GmkOaeProjeto', 'GmkOaeObra', 'GmkPonteProjeto', 'GmkPonteObra', 'GmkBueiroProjeto', 'GmkBueiroObra',
     'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'
   ];
 

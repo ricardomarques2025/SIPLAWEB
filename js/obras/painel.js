@@ -1035,10 +1035,23 @@ var ObrasPainel = (function() {
     montar();
     preencherSeletorOrigem();
     contarAprovacoes();
-    var t = new URLSearchParams(location.search).get('tabela');
-    if (t) definirModo(t === 'dividida' ? 'dividida' : 'cheia');
+    var q = new URLSearchParams(location.search), t = q.get('tabela'), obra = q.get('obra');
+    if (obra) abrirObra(ORIGEM, obra, t === 'cheia' ? 'cheia' : 'dividida');
+    else if (t) definirModo(t === 'dividida' ? 'dividida' : 'cheia');
   });
 
-  return { definirModo: definirModo, abrirFicha: abrirFicha, trocarOrigem: trocarOrigem, origensMudaram: origensMudaram,
+  // Botao "Abrir na tabela" do popup da obra no mapa: troca a origem da tabela se preciso, abre (dividida, se
+  // estava fechada) e mostra a ficha da obra.
+  function abrirObra(origem, codigo, modoAbrir) {
+    if (!trocarOrigem(origem)) return Promise.resolve();
+    var pronto = modo === 'fechado' ? definirModo(modoAbrir || 'dividida') : iniciarTabela();
+    return pronto.then(function() {
+      var r = ObrasStore.lista().find(function(x) { return x.codigo === codigo; });
+      if (r) { abrirFicha(r.uid); if (grade) grade.scrollToRow(r.uid, 'center', false).catch(function() {}); }
+      else toast('Obra ' + codigo + ' não encontrada na tabela de ' + ORIGEM + '.', true);
+    });
+  }
+
+  return { definirModo: definirModo, abrirFicha: abrirFicha, abrirObra: abrirObra, trocarOrigem: trocarOrigem, origensMudaram: origensMudaram,
     origem: function() { return ORIGEM; } };
 })();
