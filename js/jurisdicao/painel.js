@@ -110,10 +110,7 @@ var JurisdicaoPainel = (function() {
         '<section class="resumo" id="jurResumoTabela"></section>' +
         '<section class="ferramentas">' +
           '<label class="busca"><svg><use href="#i-search"/></svg><input id="jurTBusca" type="search" placeholder="Buscar município, rodovia, processo, trecho…" autocomplete="off"></label>' +
-          '<select id="jurTTipo" class="seletor"><option value="">Todos os tipos</option></select>' +
-          '<select id="jurTSituacao" class="seletor"><option value="">Todas as situações</option></select>' +
-          '<select id="jurTGeo" class="seletor"><option value="">Com e sem traçado</option><option value="com">Com traçado</option><option value="sem">Sem traçado</option></select>' +
-          '<button type="button" class="btn btn-fantasma" id="jurTLimpar" title="Limpar filtros"><svg><use href="#i-filter-x"/></svg></button>' +
+          '<button type="button" class="btn btn-fantasma" id="jurTLimpar" title="Limpar a busca e os filtros das colunas"><svg><use href="#i-filter-x"/></svg></button>' +
           '<span class="contador" id="jurTContador"></span>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="btn so-camadas" id="jurMalha" title="Trechos da malha complementar (extra_base)">Malha complementar</button>' +
@@ -154,8 +151,6 @@ var JurisdicaoPainel = (function() {
     Acesso.pronto.then(Acesso.aplicarExportacao);   // antes do login o perfil ainda e nulo e esconderia o Exportar de todos
     JurTracado.montar(ui);
 
-    Object.keys(TIPOS).forEach(function(t) { $('jurTTipo').add(new Option(t, t)); });
-    Object.keys(SITUACOES).forEach(function(s) { $('jurTSituacao').add(new Option(s, s)); });
 
     $('jurAbrirTabela').addEventListener('click', function() { definirModo('cheia'); });
     ligarEventos();
@@ -225,7 +220,8 @@ var JurisdicaoPainel = (function() {
         document.getElementById('jurUi').classList.toggle('somente-leitura', !Store.podeEditar());
         document.getElementById('jurUi').classList.toggle('sem-camadas', !Store.podeCamadas());
         document.getElementById('jurUi').classList.toggle('admin', Store.eAdmin());
-        return Tabela.iniciar({ aoSelecionar: selecionar, aoAbrir: abrirGaveta, aoVerMapa: verNoMapa, aoFiltrar: aoFiltrar });
+        return Tabela.iniciar({ aoSelecionar: selecionar, aoAbrir: abrirGaveta, aoVerMapa: verNoMapa, aoFiltrar: aoFiltrar,
+          aoFiltroCabecalho: function(campo, valor) { Jurisdicao.definirFiltro(campo, valor); } });
       }).then(function() {
         Store.ouvir(aoMudarStore);
         aplicarFiltros();
@@ -296,11 +292,8 @@ var JurisdicaoPainel = (function() {
   function aplicarFiltros() {
     if (!tabelaPronta) return;
     var f = Jurisdicao.filtros();
+    Tabela.sincronizarCabecalho(f);   // tipo, situação e traçado no título das colunas = filtro do módulo
     Tabela.aplicarFiltro(function(r) { return Jurisdicao.atende(Store.obter(r.id) || r); });
-    [['jurTTipo', 'tipo'], ['jurTSituacao', 'situacao'], ['jurTGeo', 'geo']].forEach(function(p) {
-      $(p[0]).value = f[p[1]];
-      $(p[0]).classList.toggle('ativo', !!f[p[1]]);
-    });
     if (document.activeElement !== $('jurTBusca')) $('jurTBusca').value = f.busca;
     Jurisdicao.renderResumo($('jurResumoTabela'), false);
   }
@@ -924,10 +917,7 @@ var JurisdicaoPainel = (function() {
       var v = this.value;
       t = setTimeout(function() { Jurisdicao.definirFiltro('busca', v.trim()); }, 150);
     });
-    [['jurTTipo', 'tipo'], ['jurTSituacao', 'situacao'], ['jurTGeo', 'geo']].forEach(function(p) {
-      $(p[0]).addEventListener('change', function() { Jurisdicao.definirFiltro(p[1], $(p[0]).value); });
-    });
-    $('jurTLimpar').addEventListener('click', function() { Jurisdicao.limparFiltros(); });
+    $('jurTLimpar').addEventListener('click', function() { if (tabelaPronta) Tabela.limparCabecalho(); Jurisdicao.limparFiltros(); });
     $('jurResumoTabela').addEventListener('click', Jurisdicao.cliqueResumo);
     Jurisdicao.ouvir(function(evento, id) {
       if (evento === 'filtros') aplicarFiltros();

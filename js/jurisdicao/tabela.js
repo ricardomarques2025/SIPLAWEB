@@ -8,6 +8,11 @@ const Tabela = (function() {
   let aoAbrir = function() {};
   let aoVerMapa = function() {};
   let aoFiltrar = function() {};
+  let aoFiltroCabecalho = function() {};
+  // Tipo, situação e traçado: o filtro do título é o mesmo filtro do mapa e do painel de indicadores (Jurisdicao.filtros);
+  // os demais campos filtram só a tabela.
+  const GLOBAIS = { tipo: 'tipo', situacao: 'situacao', _geo: 'geo' };
+  const ultimoCabecalho = { tipo: '', situacao: '', _geo: '' };   // só mudança feita no título vira filtro do módulo
   const CHAVE_COLUNAS = 'jurisdicao.colunasOcultas';
 
   function esc(v) {
@@ -61,6 +66,40 @@ const Tabela = (function() {
     return Object.assign(pode, { editor: 'input' });
   }
 
+  // Filtro no título da coluna (js/filtro_cabecalho.js), pelo valor atual (com o que está pendente).
+  function filtroColuna(c) {
+    if (GLOBAIS[c.campo]) {
+      return { headerFilter: 'list', headerFilterPlaceholder: 'Todos', headerFilterFunc: () => true,
+        headerFilterParams: { values: [{ label: '(todos)', value: '' }].concat(c.opcoes.map(v => ({ label: v, value: v }))), clearable: true, autocomplete: true, listOnEmpty: true } };
+    }
+    return FiltroCabecalho.coluna({
+      tipo: c.tipo === 'lista' || c.tipo === 'doc' ? 'lista' : c.tipo === 'numero' ? 'numero' : 'texto',
+      ler: d => Store.valorAtual(d.id, c.campo),
+      exibir: c.tipo === 'doc' ? (v => v == null || v === '' ? '' : Indicadores.textoDoc(v))
+        : c.campo === 'extensao_km' ? (v => v == null || v === '' ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+        : undefined,
+      valores: c.tipo === 'lista' && c.opcoes ? c.opcoes : null,
+      tabela: () => grade
+    });
+  }
+
+  // Filtro do mapa mudou (painel de indicadores, mapa, Limpar): o título das colunas acompanha.
+  function sincronizarCabecalho(f) {
+    if (!grade) return;
+    Object.keys(GLOBAIS).forEach(function(campo) {
+      const atual = grade.getHeaderFilterValue(campo) || '';
+      const alvo = f[GLOBAIS[campo]] || '';
+      ultimoCabecalho[campo] = alvo;
+      if (atual !== alvo) grade.setHeaderFilterValue(campo, alvo);
+    });
+  }
+
+  function limparCabecalho() {
+    if (!grade) return;
+    Object.keys(ultimoCabecalho).forEach(function(k) { ultimoCabecalho[k] = ''; });
+    grade.clearHeaderFilter();
+  }
+
   function colunas() {
     const ocultas = lerOcultas();
     const cols = [{
@@ -69,7 +108,9 @@ const Tabela = (function() {
         : '<svg style="color:#8a93a3"><use href="#i-split"/></svg>',
       cellClick: function(e, cell) { e.stopPropagation(); aoAbrir(cell.getRow().getData().id); }
     }, {
-      title: '', field: '_geo', width: 40, headerSort: false, frozen: true, hozAlign: 'center', cssClass: 'col-acao',
+      title: '', field: '_geo', width: 88, headerSort: false, frozen: true, hozAlign: 'center', cssClass: 'col-acao', headerTooltip: 'Traçado',
+      headerFilter: 'list', headerFilterPlaceholder: 'Todos', headerFilterFunc: () => true,
+      headerFilterParams: { values: [{ label: 'Com traçado', value: 'com' }, { label: 'Sem traçado', value: 'sem' }], clearable: true },
       formatter: function(cell) {
         const temGeo = !!Store.geometria(cell.getRow().getData().id);
         return '<svg class="' + (temGeo ? 'geo-ok' : 'geo-sem') + '"><use href="#i-pin"/></svg>';
@@ -100,7 +141,7 @@ const Tabela = (function() {
         bottomCalcFormatter: c.campo === 'extensao_km'
           ? cell => '<b class="num">' + Number(cell.getValue() || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</b>'
           : undefined
-      }, editorDe(c)));
+      }, filtroColuna(c), editorDe(c)));
     });
     return cols;
   }
@@ -110,6 +151,7 @@ const Tabela = (function() {
     aoAbrir = opcoes.aoAbrir || aoAbrir;
     aoVerMapa = opcoes.aoVerMapa || aoVerMapa;
     aoFiltrar = opcoes.aoFiltrar || aoFiltrar;
+    aoFiltroCabecalho = opcoes.aoFiltroCabecalho || aoFiltroCabecalho;
 
     grade = new Tabulator('#jurGrade', {
       data: Store.lista(),
@@ -140,6 +182,15 @@ const Tabela = (function() {
       if (typeof v === 'string') v = v.trim();
       Store.atualizar(cell.getRow().getData().id, cell.getField(), v);
       cell.getRow().reformat();
+    });
+    // Mudou no título o filtro de tipo, situação ou traçado: vira o filtro do módulo (mapa + indicadores + tabela).
+    grade.on('dataFiltering', function() {
+      Object.keys(GLOBAIS).forEach(function(campo) {
+        const v = grade.getHeaderFilterValue(campo) || '';
+        if (v === ultimoCabecalho[campo]) return;
+        ultimoCabecalho[campo] = v;
+        setTimeout(() => aoFiltroCabecalho(GLOBAIS[campo], v), 0);
+      });
     });
     grade.on('dataFiltered', function(filtros, linhas) {
       aoFiltrar(linhas.map(r => r.getData().id));
@@ -201,5 +252,5 @@ const Tabela = (function() {
 
   function redesenhar() { if (grade) grade.redraw(); }
 
-  return { iniciar, aplicarFiltro, idsFiltrados, dadosFiltrados, atualizarLinha, recarregar, reformatar, selecionar, definirVisivel, colunaVisivel, redesenhar };
+  return { iniciar, aplicarFiltro, sincronizarCabecalho, limparCabecalho, idsFiltrados, dadosFiltrados, atualizarLinha, recarregar, reformatar, selecionar, definirVisivel, colunaVisivel, redesenhar };
 })();

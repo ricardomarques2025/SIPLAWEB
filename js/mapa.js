@@ -112,7 +112,7 @@ function criarMapasBase() {
   return mapas;
 }
 
-// --- MÁSCARA DO BRASIL (Brasil menos Goiás) ---
+// --- MÁSCARA DO BRASIL (os outros estados, data/estados.geojson; sem Goiás) ---
 var mascaraBrasilData = null;
 var mascaraBrasilLayer = null;
 
@@ -9562,7 +9562,7 @@ map.addControl(new LogoMapaControl());
     fetchGeoJSON('data/sre_base.geojson', false),
     fetchGeoJSON('data/snv_goias.geojson', false),
     fetchGeoJSON('data/estados.geojson', false),
-    fetchGeoJSON('data/mascara_brasil.geojson', false),
+    fetchGeoJSON('data/estados.geojson', false),   // máscara: os outros 26 estados (sem Goiás)
     fetchGeoJSON('data/aero.geojson', false),
     carregarCamadaBanco('geo_pol_base', null),
     fetchGeoJSON('data/ferrovias.geojson', false),

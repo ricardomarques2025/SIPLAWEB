@@ -139,6 +139,10 @@ body {
   font-size: 6.4pt; font-style: italic; font-weight: 700; color: #3a3a3a; white-space: nowrap;
   text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff;
 }
+.rot-uf {
+  font-size: 11pt; font-weight: 700; color: #3a3a3a; letter-spacing: .18em; text-align: center; white-space: nowrap;
+  text-shadow: 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #fff;
+}
 .rot-estado { font-size: 6pt; color: #8a8a8a; letter-spacing: .08em; white-space: nowrap; }
 .escudo { display: block; overflow: visible; }
 

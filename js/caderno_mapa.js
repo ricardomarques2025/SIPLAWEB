@@ -8,7 +8,7 @@ var CadernoMapa = (function() {
 
   // Camadas de base (os mesmos arquivos do mapa do SIPLAWEB).
   const ARQUIVOS_BASE = {
-    mascara: 'data/mascara_brasil.geojson',
+    mascara: 'data/estados.geojson',   // os outros 26 estados (sem Goiás), com SIGLA_UF
     municipios: 'data/municipios.geojson',
     sre: 'data/sre_base.geojson',
     snv: 'data/snv_goias.geojson',
@@ -163,6 +163,7 @@ var CadernoMapa = (function() {
     return '<h3>LEGENDA</h3>' +
       linhaLeg('<svg width="12" height="10"><circle cx="6" cy="5" r="3.6" fill="#fff" stroke="#000" stroke-width="1.2"/></svg>', 'LOCALIDADE') +
       linhaLeg('<svg width="12" height="10"><rect x="1" y="1.5" width="10" height="7" fill="#eee" stroke="#000" stroke-width="0.8" stroke-dasharray="2 1.5"/></svg>', 'LIMITE MUNICÍPIO') +
+      linhaLeg(amostraLinha([{ color: '#fff', weight: 3 }, { color: '#333', weight: 1.3 }], 16, 6), 'LIMITE ESTADUAL') +
       '<div class="leg-colunas"><div><div class="cab">RODOVIA<br>ESTADUAL</div>' + est + '</div><div><div class="cab">RODOVIA<br>FEDERAL</div>' + fed + '</div></div>';
   }
 
@@ -240,6 +241,9 @@ var CadernoMapa = (function() {
     satelite.addTo(map);
 
     L.geoJSON(b.mascara, { pane: 'pMascara', interactive: false, style: { stroke: false, fillColor: '#fff', fillOpacity: 0.45 } }).addTo(map);
+    // limite dos estados (inclusive com Goiás): contorno branco + linha escura, acima dos municípios
+    L.geoJSON(b.mascara, { pane: 'pMunicipios', interactive: false, style: { color: '#fff', weight: 3, opacity: 0.9, fill: false } }).addTo(map);
+    L.geoJSON(b.mascara, { pane: 'pMunicipios', interactive: false, style: { color: '#333', weight: 1.3, opacity: 1, fill: false } }).addTo(map);
     L.geoJSON(b.municipios, { pane: 'pMunicipios', interactive: false, style: { color: '#fff', weight: 2.2, opacity: 0.95, fill: false } }).addTo(map);
     L.geoJSON(b.municipios, { pane: 'pMunicipios', interactive: false, style: { color: '#222', weight: 1, dashArray: '3,3', fill: false } }).addTo(map);
     [[b.snv, 'SITUACAO', true, 'pSnv'], [b.sre, 'situacao', false, 'pSre']].forEach(function(c) {
@@ -403,6 +407,44 @@ var CadernoMapa = (function() {
           icon: L.divIcon({ className: '', html: svg, iconSize: [18, 18], iconAnchor: [9, 9] })
         }).addTo(grupo);
       });
+    });
+
+    // Siglas dos estados: onde aparece um limite estadual, a sigla de cada estado visível (e GO do lado de Goiás),
+    // no meio da parte do estado que aparece na folha.
+    const grade = [];
+    for (let gx = 1; gx < 20; gx++) for (let gy = 1; gy < 14; gy++) {
+      const p = L.point(tam.x * gx / 20, tam.y * gy / 14);
+      grade.push({ p: p, ll: map.containerPointToLatLng(p) });
+    }
+    const vistaUF = map.getBounds();
+    const ufs = [];
+    const foraDeGoias = new Set();
+    base.mascara.features.forEach(function(f) {
+      const c = caixaFeicao(f);
+      const bb = L.latLngBounds([c[1], c[0]], [c[3], c[2]]);
+      if (!vistaUF.intersects(bb)) return;
+      const dentroUF = grade.filter(a => bb.contains(a.ll) && pontoNoPoligono(a.ll.lng, a.ll.lat, f.geometry));
+      dentroUF.forEach(a => foraDeGoias.add(a));
+      if (dentroUF.length >= 2) ufs.push({ sigla: f.properties.SIGLA_UF || '', pontos: dentroUF });
+    });
+    if (ufs.length) {
+      const go = grade.filter(a => !foraDeGoias.has(a) && base.municipios.features.some(function(f) {
+        const c = caixaFeicao(f);
+        return a.ll.lng >= c[0] && a.ll.lng <= c[2] && a.ll.lat >= c[1] && a.ll.lat <= c[3] && pontoNoPoligono(a.ll.lng, a.ll.lat, f.geometry);
+      }));
+      if (go.length >= 2) ufs.push({ sigla: 'GO', pontos: go });
+    }
+    if (ufs.length < 2) ufs.length = 0;   // um estado só na folha: não há limite estadual à vista, sem sigla
+    ufs.forEach(function(u) {
+      if (!u.sigla) return;
+      const media = u.pontos.reduce((s, a) => s.add(a.p), L.point(0, 0)).divideBy(u.pontos.length);
+      const w = u.sigla.length * 13 + 8, h = 18;
+      const lugar = u.pontos.map(a => a.p).sort((a, z) => a.distanceTo(media) - z.distanceTo(media))
+        .find(p => p.x - w / 2 > 4 && p.x + w / 2 < tam.x - 4 && !colide(caixas, { x: p.x - w / 2, y: p.y - h / 2, w: w, h: h }));
+      if (!lugar) return;
+      caixas.push({ x: lugar.x - w / 2, y: lugar.y - h / 2, w: w, h: h });
+      L.marker(map.containerPointToLatLng(lugar), { pane: 'pRotulos', interactive: false,
+        icon: L.divIcon({ className: '', html: '<div class="rot-uf">' + esc(u.sigla) + '</div>', iconSize: [w, h], iconAnchor: [w / 2, h / 2] }) }).addTo(grupo);
     });
 
     // Localidades (maiores primeiro).

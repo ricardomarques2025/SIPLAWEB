@@ -120,10 +120,7 @@ var ObrasPainel = (function() {
         '</div>' +
         '<section class="ferramentas">' +
           '<label class="busca"><svg><use href="#o-search"/></svg><input id="obrBusca" type="search" placeholder="Buscar código, descrição, município, SEI…" autocomplete="off"></label>' +
-          '<select id="obrFEtapa" class="seletor"><option value="">Todas as etapas</option></select>' +
-          '<select id="obrFStatus" class="seletor"><option value="">Todos os status</option></select>' +
-          '<select id="obrFTracado" class="seletor"><option value="">Com e sem traçado</option><option value="com">Com traçado</option><option value="sem">Sem traçado</option></select>' +
-          '<button type="button" class="btn btn-fantasma" id="obrLimpar" title="Limpar filtros"><svg><use href="#o-filter-x"/></svg></button>' +
+          '<button type="button" class="btn btn-fantasma" id="obrLimpar" title="Limpar a busca e os filtros das colunas"><svg><use href="#o-filter-x"/></svg></button>' +
           '<span class="contador" id="obrContador"></span>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="btn" id="obrColunas"><svg><use href="#o-cols"/></svg>Colunas</button>' +
@@ -209,7 +206,7 @@ var ObrasPainel = (function() {
     $('obrNovaTitulo').textContent = 'Nova obra · ' + nova;
     $('obrAbrirTabela').textContent = 'Abrir tabela de obras';
     filtros = { busca: '', etapa: '', status: '', tracado: '' };
-    ['obrBusca', 'obrFEtapa', 'obrFStatus', 'obrFTracado'].forEach(function(id) { $(id).value = ''; });
+    $('obrBusca').value = '';
     if (grade) { grade.destroy(); grade = null; }
     tabelaPronta = null;
     // Endereco acompanha (recarregar ou mandar o link abre esta origem).
@@ -325,6 +322,18 @@ var ObrasPainel = (function() {
     return Object.assign(pode, { editor: 'input' });
   }
 
+  // Filtro no título da coluna (js/filtro_cabecalho.js), pelo valor atual (com o que está pendente).
+  function filtroColuna(c) {
+    var listas = ObrasStore.listas();
+    return FiltroCabecalho.coluna({
+      tipo: c.tipo === 'lista' ? 'lista' : c.tipo === 'numero' ? 'numero' : 'texto',
+      ler: function(d) { return ObrasStore.valorAtual(d.uid, c.campo); },
+      exibir: function(v) { return exibir(c, v); },
+      valores: listas[c.campo] && listas[c.campo].length ? listas[c.campo] : null,
+      tabela: function() { return grade; }
+    });
+  }
+
   function criarGrade() {
     var visiveis = colunasVisiveis();
     var cols = [{
@@ -335,7 +344,10 @@ var ObrasPainel = (function() {
       },
       cellClick: function(e, cell) { e.stopPropagation(); abrirFicha(cell.getRow().getData().uid); }
     }, {
-      title: '', field: '_mapa', width: 40, headerSort: false, frozen: true, hozAlign: 'center', cssClass: 'col-acao',
+      title: '', field: '_mapa', width: 88, headerSort: false, frozen: true, hozAlign: 'center', cssClass: 'col-acao', headerTooltip: 'Traçado',
+      headerFilter: 'list', headerFilterPlaceholder: 'Todos',
+      headerFilterParams: { values: [{ label: 'Com traçado', value: 'com' }, { label: 'Sem traçado', value: 'sem' }], clearable: true },
+      headerFilterFunc: function(h, v, d) { return !h || (h === 'com') === temTracado(d); },
       formatter: function(cell) { return '<svg class="' + (temTracado(cell.getRow().getData()) ? 'geo-ok' : 'geo-sem') + '"><use href="#o-pin"/></svg>'; },
       tooltip: function(e, cell) { return temTracado(cell.getRow().getData()) ? 'Ver no mapa' : 'Sem traçado'; },
       cellClick: function(e, cell) { e.stopPropagation(); verNoMapa(cell.getRow().getData().uid); }
@@ -347,7 +359,7 @@ var ObrasPainel = (function() {
         sorter: c.tipo === 'numero' ? 'number' : 'string', headerTooltip: c.titulo,
         tooltip: c.tipo === 'longo' ? function(e, cell) { return ObrasStore.valorAtual(cell.getRow().getData().uid, c.campo) || ''; } : false,
         bottomCalc: c.campo === 'codigo' ? 'count' : undefined
-      }, editorDe(c)));
+      }, filtroColuna(c), editorDe(c)));
     });
     grade = new Tabulator('#obrGrade', {
       data: ObrasStore.lista().map(function(r) { return Object.assign({}, r); }),
@@ -384,15 +396,9 @@ var ObrasPainel = (function() {
   }
 
   // ---------- Filtros ----------
-  function preencherFiltros() {
-    var l = ObrasStore.listas();
-    (l.etapa || []).forEach(function(v) { $('obrFEtapa').add(new Option(v, v)); });
-    (l.status || []).forEach(function(v) { $('obrFStatus').add(new Option(v, v)); });
-  }
+  // Etapa, status, traçado e os demais campos: filtros no título de cada coluna (filtroColuna). Aqui fica só a busca.
+  function preencherFiltros() { /* os filtros de lista montam as opções sozinhos */ }
   function atende(r) {
-    if (filtros.etapa && ObrasStore.valorAtual(r.uid, 'etapa') !== filtros.etapa) return false;
-    if (filtros.status && ObrasStore.valorAtual(r.uid, 'status') !== filtros.status) return false;
-    if (filtros.tracado && (filtros.tracado === 'com') !== temTracado(r)) return false;
     if (filtros.busca) {
       var alvo = semAcento(CAMPOS_OBRA.map(function(c) { return ObrasStore.valorAtual(r.uid, c.campo); }).join(' '));
       if (!semAcento(filtros.busca).split(/\s+/).every(function(t) { return alvo.indexOf(t) !== -1; })) return false;
@@ -402,7 +408,6 @@ var ObrasPainel = (function() {
   function aplicarFiltros() {
     if (!grade) return;
     grade.setFilter(function(d) { return atende(ObrasStore.obter(d.uid) || d); });
-    [['obrFEtapa', 'etapa'], ['obrFStatus', 'status'], ['obrFTracado', 'tracado']].forEach(function(p) { $(p[0]).classList.toggle('ativo', !!filtros[p[1]]); });
     atualizarContador(grade.getDataCount('active'));
   }
   function atualizarContador(n) { $('obrContador').textContent = n + ' de ' + ObrasStore.lista().length + ' obras'; }
@@ -918,12 +923,10 @@ var ObrasPainel = (function() {
     });
     var t = null;
     $('obrBusca').addEventListener('input', function() { clearTimeout(t); var v = this.value; t = setTimeout(function() { filtros.busca = v.trim(); aplicarFiltros(); }, 150); });
-    [['obrFEtapa', 'etapa'], ['obrFStatus', 'status'], ['obrFTracado', 'tracado']].forEach(function(p) {
-      $(p[0]).addEventListener('change', function() { filtros[p[1]] = this.value; aplicarFiltros(); });
-    });
     $('obrLimpar').addEventListener('click', function() {
       filtros = { busca: '', etapa: '', status: '', tracado: '' };
-      ['obrBusca', 'obrFEtapa', 'obrFStatus', 'obrFTracado'].forEach(function(id) { $(id).value = ''; });
+      $('obrBusca').value = '';
+      if (grade) grade.clearHeaderFilter();
       aplicarFiltros();
     });
     $('obrRevisar').addEventListener('click', abrirRevisao);
