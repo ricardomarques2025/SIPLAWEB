@@ -7,7 +7,7 @@
 
 var Hidrografia = (function() {
   var ARQUIVO = 'data/hidro_rodo_goias.geojson?v=20261105-4';
-  var COR = '#1f78c8';
+  var COR = '#4aa8f0';   // azul claro (05/11/2026; antes #1f78c8). Nomes continuam em COR_ROTULO (escuro, para ler)
   var COR_ROTULO = '#1557a0';
   var dados = null, carregando = null, cursos = [];
 
