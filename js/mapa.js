@@ -3015,13 +3015,11 @@ map.addControl(new LogoMapaControl());
       '<div class="popup-sre">' + linhas.join('') + '</div>';
 
     if (lista.length > 1) {
-      var prevalece = lista[0];
+      // em ordem de número (a primeira é a que prevalece), sem etiquetas
       html += '<div class="popup-sre-coin"><div class="psc-titulo">Trecho coincidente (' + lista.length + ' códigos)</div>' +
         lista.map(function(c) {
-          var marca = c === prevalece ? '<span class="psc-prev" title="Prevalece a rodovia de menor número">prevalece</span>' : '';
           var atual = c.codigo === srePrincipal ? ' psc-atual' : '';
-          return '<div class="psc-item' + atual + '"><b>' + escapeHtml(c.rodovia) + '</b> <span class="psc-cod">' + escapeHtml(c.codigo) + '</span>' +
-            (c.federal ? ' <span class="psc-fed">federal</span>' : '') + marca + '</div>';
+          return '<div class="psc-item' + atual + '"><b>' + escapeHtml(c.rodovia) + '</b> <span class="psc-cod">' + escapeHtml(c.codigo) + '</span></div>';
         }).join('') + '</div>';
     }
     return html;
