@@ -336,7 +336,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-05.5';
+  var VERSAO_SITE = '2026-11-05.6';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -349,7 +349,8 @@ var Acesso = (function() {
       'Malha complementar (vicinais) como camada de referência: botão "Malha Complementar", depois da Malha Federal.',
       'Ligada por padrão só no mapa rodoviário; nos outros, botão "Hidrografia" das camadas de referência.',
       'Tabelas de obras e da Jurisdição: filtro em cada coluna, logo abaixo do título (lista, número com >, < ou intervalo, ou texto). A busca geral continua no mesmo lugar.',
-      'Mapa e pranchas dos cadernos com o limite dos estados vizinhos; nas pranchas, a sigla de cada estado aparece quando a folha mostra uma divisa.'
+      'Mapa e pranchas dos cadernos com o limite dos estados vizinhos; nas pranchas, a sigla de cada estado aparece quando a folha mostra uma divisa.',
+      'Pranchas dos cadernos sempre com a hidrografia (cursos d’água com o nome ao longo da linha) e o item na legenda.'
     ]],
     ['3.2', '04/11/2026', [
       'Popup das obras no mapa: botão "Abrir na tabela", que abre a tabela de obras já na ficha da obra (como o "Abrir detalhes" da Jurisdição). No mapa geral, abre o mapa da origem em outra aba.',

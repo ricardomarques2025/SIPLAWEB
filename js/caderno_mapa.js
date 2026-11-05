@@ -42,6 +42,8 @@ var CadernoMapa = (function() {
       j(ARQUIVOS_BASE.mascara), j(ARQUIVOS_BASE.municipios), j(ARQUIVOS_BASE.sre), j(ARQUIVOS_BASE.snv), j(ARQUIVOS_BASE.localidades)
     ]);
     const base = { mascara, municipios, sre, snv, localidades };
+    // Hidrografia (js/hidrografia.js) sempre ligada nas pranchas: o arquivo vem uma vez só, antes da primeira folha.
+    if (window.Hidrografia) await Hidrografia.carregar().catch(e => console.warn('hidrografia nas pranchas:', e));
     prepararLocalizador(base);
     return base;
   }
@@ -164,6 +166,7 @@ var CadernoMapa = (function() {
       linhaLeg('<svg width="12" height="10"><circle cx="6" cy="5" r="3.6" fill="#fff" stroke="#000" stroke-width="1.2"/></svg>', 'LOCALIDADE') +
       linhaLeg('<svg width="12" height="10"><rect x="1" y="1.5" width="10" height="7" fill="#eee" stroke="#000" stroke-width="0.8" stroke-dasharray="2 1.5"/></svg>', 'LIMITE MUNICÍPIO') +
       linhaLeg(amostraLinha([{ color: '#fff', weight: 3 }, { color: '#333', weight: 1.3 }], 16, 6), 'LIMITE ESTADUAL') +
+      (window.Hidrografia ? linhaLeg(amostraLinha([{ color: Hidrografia.COR, weight: 1.8 }], 16, 6), 'CURSO D’ÁGUA') : '') +
       '<div class="leg-colunas"><div><div class="cab">RODOVIA<br>ESTADUAL</div>' + est + '</div><div><div class="cab">RODOVIA<br>FEDERAL</div>' + fed + '</div></div>';
   }
 
@@ -234,10 +237,16 @@ var CadernoMapa = (function() {
 
     // Imagem de satelite com o dobro da densidade (tiles de 256 exibidos a 128 px) para impressao nitida.
     const satelite = L.tileLayer(SATELITE, { tileSize: 128, zoomOffset: 1, maxNativeZoom: 17, maxZoom: 20, crossOrigin: true });
-    const pronto = new Promise(function(resolve) {
+    const imagens = new Promise(function(resolve) {
       const limite = setTimeout(resolve, 30000);
       satelite.once('load', () => { clearTimeout(limite); resolve(); });
     });
+    // Hidrografia: só nas pranchas de obra/trecho (no mapa de Goiás inteiro seriam 30 mil linhas ilegíveis).
+    const hidro = temDesenho && window.Hidrografia
+      ? Hidrografia.camadaPrancha(map, { area: map.getBounds().pad(1), pane: 'pHidrografia', zPane: 330, paneRotulos: 'pHidroRotulos', zRotulos: 600 })
+        .catch(e => console.warn('hidrografia na prancha:', e))
+      : Promise.resolve();
+    const pronto = Promise.all([imagens, hidro]);
     satelite.addTo(map);
 
     L.geoJSON(b.mascara, { pane: 'pMascara', interactive: false, style: { stroke: false, fillColor: '#fff', fillOpacity: 0.45 } }).addTo(map);

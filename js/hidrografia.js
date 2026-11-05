@@ -127,9 +127,11 @@ var Hidrografia = (function() {
   // para os menores; quanto mais perto, mais cursos ganham nome (STRAHLER_MIN por zoom).
   var STRAHLER_MIN = { 9: 6, 10: 5, 11: 3, 12: 2 };   // zoom >= 13: todos; < 9: nenhum
   var RotulosLayer = L.Layer.extend({
+    options: { escala: 1, pane: 'hidrografiaRotulosPane', zPane: 480 },   // escala > 1: canvas mais denso (impressão)
+    initialize: function(opcoes) { L.setOptions(this, opcoes); },
     onAdd: function(map) {
       this._map = map;
-      var pane = garantirPane(map, 'hidrografiaRotulosPane', 480);
+      var pane = garantirPane(map, this.options.pane, this.options.zPane);
       this._canvas = L.DomUtil.create('canvas', 'hidro-rotulos-canvas');
       this._canvas.style.position = 'absolute';
       this._canvas.style.pointerEvents = 'none';
@@ -147,7 +149,7 @@ var Hidrografia = (function() {
     _desenhar: function() {
       var map = this._map, cv = this._canvas;
       if (!map || !cv) return;
-      var tam = map.getSize(), dpr = window.devicePixelRatio || 1;
+      var tam = map.getSize(), dpr = Math.max(window.devicePixelRatio || 1, this.options.escala || 1);
       cv.width = tam.x * dpr; cv.height = tam.y * dpr;
       cv.style.width = tam.x + 'px'; cv.style.height = tam.y + 'px';
       L.DomUtil.setPosition(cv, map.containerPointToLayerPoint([0, 0]));
@@ -350,6 +352,25 @@ var Hidrografia = (function() {
     return grupo;
   }
 
+  // ---------- Pranchas dos cadernos (js/caderno_mapa.js) ----------
+  // Só os cursos da area (a folha e um pouco em volta), em SVG (vetor na impressão), e os nomes num canvas denso.
+  // opcoes: { area: LatLngBounds, pane, zPane (linhas), paneRotulos, zRotulos }
+  function camadaPrancha(map, opcoes) {
+    return carregar().then(function(j) {
+      var a = opcoes.area, w = a.getWest(), e = a.getEast(), s = a.getSouth(), n = a.getNorth();
+      var feats = j.features.filter(function(f) {
+        var c = f._caixa;
+        return c && c[0] <= e && c[2] >= w && c[1] <= n && c[3] >= s && linhasDe(f).length > 0;
+      });
+      var pane = garantirPane(map, opcoes.pane || 'pHidrografia', opcoes.zPane || 330);
+      var geo = L.geoJSON({ type: 'FeatureCollection', features: feats }, { pane: pane, interactive: false,
+        style: function(f) { return estilo(f, map.getZoom()); } });
+      var rot = new RotulosLayer({ escala: 3, pane: opcoes.paneRotulos || 'pHidroRotulos', zPane: opcoes.zRotulos || 600 });
+      map.on('zoomend', function() { geo.setStyle(function(f) { return estilo(f, map.getZoom()); }); });
+      return L.layerGroup([geo, rot]).addTo(map);
+    });
+  }
+
   // Curso d'água sob o clique (até ~7 px): o mais próximo; o trecho cheio ganha do tracejado.
   function consultar(camada, latlng) {
     var map = camada && camada._map;
@@ -439,5 +460,5 @@ var Hidrografia = (function() {
   }
 
   return { criarCamada: criarCamada, consultar: consultar, htmlPopup: htmlPopup, htmlLegenda: htmlLegenda, carregar: carregar,
-    sugerir: sugerir, destacar: destacar };
+    sugerir: sugerir, destacar: destacar, camadaPrancha: camadaPrancha, COR: COR };
 })();
