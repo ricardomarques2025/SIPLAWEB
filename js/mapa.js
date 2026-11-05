@@ -459,6 +459,8 @@ map.addControl(new LogoMapaControl());
   var ferroviasData = null;
   var ferroviasLayer = null;
   var ferroviasFiltroAtivo = false;
+  var hidrografiaLayer = null;
+  var hidrografiaFiltroAtivo = false;
   var sreBaseData = null;
   var sreBaseCoincidenciasIndex = null;
   var extraBaseData = null;
@@ -2590,6 +2592,11 @@ map.addControl(new LogoMapaControl());
       btnFerrovias.classList.toggle('ativo-filtro', ferroviasFiltroAtivo);
       btnFerrovias.setAttribute('aria-pressed', String(ferroviasFiltroAtivo));
     }
+    var btnHidrografia = document.getElementById('toggleHidrografia');
+    if (btnHidrografia) {
+      btnHidrografia.classList.toggle('ativo-filtro', hidrografiaFiltroAtivo);
+      btnHidrografia.setAttribute('aria-pressed', String(hidrografiaFiltroAtivo));
+    }
     var btnAreaInfluencia = document.getElementById('toggleAreaInfluencia');
     if (btnAreaInfluencia) {
       btnAreaInfluencia.classList.toggle('ativo-filtro', areaInfluenciaFiltroAtivo || areaInfluenciaSelecionada);
@@ -3763,6 +3770,41 @@ map.addControl(new LogoMapaControl());
     });
     ferroviasLayer = L.layerGroup([linhaContinua, travessas]).addTo(map);
   }
+
+  // Hidrografia (js/hidrografia.js): data/hidro_rodo_goias.geojson, cursos d'agua ate 2 km das rodovias (tracejado = continua
+  // alem da faixa). Clique: o nome do curso entra no popup do ponto (fonte registrada abaixo).
+  function desenharHidrografia() {
+    var bloco = document.getElementById('blocoLegendaHidrografia');
+    if (bloco) bloco.style.display = hidrografiaFiltroAtivo ? '' : 'none';
+    if (!hidrografiaFiltroAtivo || !window.Hidrografia) {
+      if (hidrografiaLayer && map.hasLayer(hidrografiaLayer)) map.removeLayer(hidrografiaLayer);
+      return;
+    }
+    if (!hidrografiaLayer) hidrografiaLayer = Hidrografia.criarCamada('hidrografiaPane');
+    if (!map.hasLayer(hidrografiaLayer)) hidrografiaLayer.addTo(map);
+    atualizarLegendaHidrografia();
+  }
+
+  function atualizarLegendaHidrografia() {
+    var alvo = document.getElementById('legendaHidrografia');
+    if (alvo && hidrografiaFiltroAtivo && window.Hidrografia) alvo.innerHTML = Hidrografia.htmlLegenda(map.getZoom());
+  }
+  map.on('zoomend', atualizarLegendaHidrografia);
+
+  registrarFontePopupNoPonto(function(latlng) {
+    if (!hidrografiaFiltroAtivo || !hidrografiaLayer || !map.hasLayer(hidrografiaLayer)) return '';
+    var achado = Hidrografia.consultar(hidrografiaLayer, latlng);
+    return achado ? Hidrografia.htmlPopup(achado) : '';
+  });
+
+  // Clique fora de qualquer feicao (as camadas clicaveis ja chamam abrirPopupNoPonto, que inclui a hidrografia).
+  map.on('click', function(e) {
+    if (!hidrografiaFiltroAtivo || !hidrografiaLayer || window.obrasSelecaoTracadoAtiva) return;
+    var alvo = e.originalEvent && e.originalEvent.target;
+    if (alvo && alvo.closest && alvo.closest('.leaflet-interactive, .leaflet-marker-icon')) return;
+    if (medicaoAtiva || (typeof anotacaoFerramenta !== 'undefined' && anotacaoFerramenta)) return;
+    if (Hidrografia.consultar(hidrografiaLayer, e.latlng)) abrirPopupNoPonto(e.latlng, null, null);
+  });
 
   function desenharAreaInfluencia() {
     if (areaInfluenciaLayer) {
@@ -8211,9 +8253,11 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    hidrografiaFiltroAtivo = false;
     bufferFiltroAtivo = false;
     desenharAreaInfluencia();
     desenharFerrovias();
+    desenharHidrografia();
     desenharBuffer();
     atualizarBotoesBase();
     servicoFiltroAtivo = '';
@@ -8336,6 +8380,8 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    hidrografiaFiltroAtivo = false;
+    desenharHidrografia();
     bufferFiltroAtivo = false;
     servicoFiltroAtivo = '';
     preencherIntervencaos();
@@ -8486,6 +8532,8 @@ map.addControl(new LogoMapaControl());
       municipioBaseFiltroAtivo = true;
       areasAmbientaisFiltroAtivo = true;
       areasUrbanasFiltroAtivo = true;
+      hidrografiaFiltroAtivo = true;   // hidrografia: ligada so no mapa rodoviario
+      desenharHidrografia();
       densidadeRotulos = 1;
 
       var controleDensidade = document.getElementById('rotulosDensidade');
@@ -8967,6 +9015,15 @@ map.addControl(new LogoMapaControl());
       ferroviasFiltroAtivo = !ferroviasFiltroAtivo;
       atualizarBotoesBase();
       desenharFerrovias();
+    });
+  }
+
+  var btnToggleHidrografia = document.getElementById('toggleHidrografia');
+  if (btnToggleHidrografia) {
+    btnToggleHidrografia.addEventListener('click', function() {
+      hidrografiaFiltroAtivo = !hidrografiaFiltroAtivo;
+      atualizarBotoesBase();
+      desenharHidrografia();
     });
   }
 

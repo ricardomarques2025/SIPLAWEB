@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=popup-20261022" />
+  <link rel="stylesheet" href="css/style.css?v=hrd1-20261105" />
   <link rel="stylesheet" href="css/jurisdicao.css?v=ext1-20261023" />
   <!-- Tema do mapa: o novo (css/tema_novo.css) e o padrao. mapa.html?tema=antigo mostra o visual anterior e fica
        lembrado neste navegador; ?tema=novo volta ao padrao. -->
@@ -220,6 +220,7 @@
           <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de Influência</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
           <button class="filtro-btn base-btn" id="togglePedagios" type="button" aria-pressed="false">Pedágios</button>
+          <button class="filtro-btn base-btn" id="toggleHidrografia" type="button" aria-pressed="false" title="Cursos d’água que cruzam as rodovias, até 2 km de cada lado">Hidrografia</button>
           <button class="filtro-btn base-btn" id="toggleUnidadesSaude" type="button" aria-pressed="false" data-area="HOSPITAL">Unidades de Saúde</button>
           <button class="filtro-btn base-btn" id="toggleJurisdicao" type="button" aria-pressed="false" data-area="JURISDICAO">Jurisdição</button>
         </div>
@@ -499,6 +500,11 @@
         </div>
       </div>
 
+      <div class="bloco legenda-categoria" id="blocoLegendaHidrografia" style="display: none;">
+        <div class="subtitulo">Hidrografia</div>
+        <div id="legendaHidrografia"></div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaAero" style="display: none;">
         <div class="subtitulo">Aeródromos e Aeroportos</div>
         <div id="legendaAero"></div>
@@ -525,11 +531,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=cad1-20261028"></script>
+<script src="js/acesso.js?v=hrd1-20261105"></script>
 <script src="js/dados_banco.js?v=cam1-20261026"></script>
-<script src="js/estilos.js?v=saude-20261005"></script>
+<script src="js/estilos.js?v=hid1-20261104"></script>
 <script src="js/regioes.js?v=json-20260923"></script>
-<script src="js/mapa.js?v=org2-20261026"></script>
+<script src="js/hidrografia.js?v=hrd1-20261105"></script>
+<script src="js/mapa.js?v=hrd1-20261105"></script>
 <script src="js/unidades_saude.js?v=popup-20261021"></script>
 <script src="js/jurisdicao/config.js?v=cod1-20261023"></script>
 <script src="js/jurisdicao/indicadores.js?v=jur6-20261021"></script>
@@ -541,7 +548,7 @@
 <script src="js/obras/config.js?v=cam1-20261026"></script>
 <script src="js/obras/store.js?v=perfis1-20261027"></script>
 <script src="js/obras/tracado.js?v=dor1-20261023"></script>
-<script src="js/obras/painel.js?v=cad1-20261028"></script>
+<script src="js/obras/painel.js?v=pop1-20261104"></script>
 <script src="js/linha_tempo.js?v=lt3-20261023"></script>
 <script src="js/camadas_edicao.js?v=perfis1-20261027"></script>
 <script src="js/impressao.js?v=niv1-20261022"></script>

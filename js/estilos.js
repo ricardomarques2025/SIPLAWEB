@@ -14,6 +14,8 @@ const MAPA_PANES = {
   bufferPane: 258,
   // Unidades de Saude: abaixo das rodovias e localidades, acima das demais camadas de area.
   unidadesSaudePane: 259,
+  // Hidrografia (tiles de js/hidrografia.js): acima das areas e municipios, abaixo das rodovias.
+  hidrografiaPane: 256,
   snvPane: 260,
   ferroviasPane: 270,
   sreBasePane: 300,
