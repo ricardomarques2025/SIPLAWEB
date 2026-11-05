@@ -459,6 +459,8 @@ map.addControl(new LogoMapaControl());
   var ferroviasData = null;
   var ferroviasLayer = null;
   var ferroviasFiltroAtivo = false;
+  var extraBaseLayer = null;
+  var extraBaseFiltroAtivo = false;
   var hidrografiaLayer = null;
   var hidrografiaFiltroAtivo = false;
   var sreBaseData = null;
@@ -2592,6 +2594,11 @@ map.addControl(new LogoMapaControl());
       btnFerrovias.classList.toggle('ativo-filtro', ferroviasFiltroAtivo);
       btnFerrovias.setAttribute('aria-pressed', String(ferroviasFiltroAtivo));
     }
+    var btnExtraBase = document.getElementById('toggleExtraBase');
+    if (btnExtraBase) {
+      btnExtraBase.classList.toggle('ativo-filtro', extraBaseFiltroAtivo);
+      btnExtraBase.setAttribute('aria-pressed', String(extraBaseFiltroAtivo));
+    }
     var btnHidrografia = document.getElementById('toggleHidrografia');
     if (btnHidrografia) {
       btnHidrografia.classList.toggle('ativo-filtro', hidrografiaFiltroAtivo);
@@ -3769,6 +3776,32 @@ map.addControl(new LogoMapaControl());
       style: { color: '#000000', weight: 6, opacity: 1, dashArray: '1.2, 12', lineCap: 'butt' }
     });
     ferroviasLayer = L.layerGroup([linhaContinua, travessas]).addTo(map);
+  }
+
+  // Malha complementar (extra_base, do banco): camada de referência só para ver; edição continua em "Editar camadas"/Jurisdição.
+  function desenharExtraBase() {
+    if (extraBaseLayer) map.removeLayer(extraBaseLayer);
+    extraBaseLayer = null;
+    var temDados = extraBaseData && extraBaseData.features && extraBaseData.features.length;
+    var legenda = document.getElementById('blocoLegendaExtraBase');
+    if (legenda) legenda.style.display = extraBaseFiltroAtivo && temDados ? '' : 'none';
+    if (!extraBaseFiltroAtivo || !temDados) return;
+    var contorno = L.geoJSON(extraBaseData, { pane: 'sreBasePane', interactive: false, style: { color: '#ffffff', weight: 5, opacity: 0.9 } });
+    var linha = L.geoJSON(extraBaseData, {
+      pane: 'sreBasePane',
+      style: { color: '#8c5a2b', weight: 2.5, opacity: 1 },
+      onEachFeature: function(feature, layer) {
+        vincularPopupComAreaClique(layer, function() {
+          return construirPopupAreaBase(feature, valorSeguro(feature, 'trecho') || 'Malha complementar', [
+            { rotulo: 'Rodovia', nome: 'rodovia' },
+            { rotulo: 'Código', nome: 'GEOCOD' },
+            { rotulo: 'Situação', nome: 'situacao' },
+            { rotulo: 'Extensão (km)', nome: 'EXT_KM' }
+          ]);
+        });
+      }
+    });
+    extraBaseLayer = L.layerGroup([contorno, linha]).addTo(map);
   }
 
   // Hidrografia (js/hidrografia.js): data/hidro_rodo_goias.geojson, cursos d'agua ate 2 km das rodovias (tracejado = continua
@@ -8244,6 +8277,7 @@ map.addControl(new LogoMapaControl());
     desenharAreaInfluencia();
     atualizarLegendasRegionais();
     desenharFerrovias();
+    desenharExtraBase();
     desenharBuffer();
     desenharLocalidades();
     desenharAero();
@@ -8310,10 +8344,12 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    extraBaseFiltroAtivo = false;
     hidrografiaFiltroAtivo = false;
     bufferFiltroAtivo = false;
     desenharAreaInfluencia();
     desenharFerrovias();
+    desenharExtraBase();
     desenharHidrografia();
     desenharBuffer();
     atualizarBotoesBase();
@@ -8438,6 +8474,8 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    extraBaseFiltroAtivo = false;
+    desenharExtraBase();
     hidrografiaFiltroAtivo = false;
     desenharHidrografia();
     bufferFiltroAtivo = false;
@@ -9079,6 +9117,15 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  var btnToggleExtraBase = document.getElementById('toggleExtraBase');
+  if (btnToggleExtraBase) {
+    btnToggleExtraBase.addEventListener('click', function() {
+      extraBaseFiltroAtivo = !extraBaseFiltroAtivo;
+      atualizarBotoesBase();
+      desenharExtraBase();
+    });
+  }
+
   var btnToggleHidrografia = document.getElementById('toggleHidrografia');
   if (btnToggleHidrografia) {
     btnToggleHidrografia.addEventListener('click', function() {
@@ -9257,6 +9304,7 @@ map.addControl(new LogoMapaControl());
     return carregarExtraBase().then(function(fc) {
       extraBaseData = fc;
       if (indicesBaseObras) indicesBaseObras.extra_base = indexarPorGeocod(fc);
+      desenharExtraBase();
       return fc;
     });
   };

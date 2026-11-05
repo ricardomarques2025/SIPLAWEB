@@ -6,7 +6,7 @@
 // Usado pelo mapa (js/mapa.js): camada com rótulos ao longo da linha, legenda, popup do clique e busca por nome.
 
 var Hidrografia = (function() {
-  var ARQUIVO = 'data/hidro_rodo_goias.geojson?v=20261105-3';
+  var ARQUIVO = 'data/hidro_rodo_goias.geojson?v=20261105-4';
   var COR = '#1f78c8';
   var COR_ROTULO = '#1557a0';
   var dados = null, carregando = null, cursos = [];

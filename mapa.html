@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=hrd3-20261105" />
+  <link rel="stylesheet" href="css/style.css?v=hrd4-20261105" />
   <link rel="stylesheet" href="css/jurisdicao.css?v=ext1-20261023" />
   <!-- Tema do mapa: o novo (css/tema_novo.css) e o padrao. mapa.html?tema=antigo mostra o visual anterior e fica
        lembrado neste navegador; ?tema=novo volta ao padrao. -->
@@ -224,6 +224,7 @@
           <button class="filtro-btn base-btn" id="toggleMunicipiosBase" type="button">Municípios</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleSREBase" type="button">Malha Estadual</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleSNV" type="button">Malha Federal</button>
+          <button class="filtro-btn base-btn" id="toggleExtraBase" type="button" aria-pressed="false" title="Trechos fora da malha estadual e federal (vicinais), usados por obras e pela Jurisdição">Malha Complementar</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleLocalidades" type="button">Localidades</button>
           <button class="filtro-btn base-btn ativo-filtro" id="toggleAero" type="button">Aeródromos</button>
           <button class="filtro-btn base-btn" id="toggleAreasAmbientais" type="button">Áreas ambientais</button>
@@ -232,7 +233,7 @@
           <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de Influência</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
           <button class="filtro-btn base-btn" id="togglePedagios" type="button" aria-pressed="false">Pedágios</button>
-          <button class="filtro-btn base-btn" id="toggleHidrografia" type="button" aria-pressed="false" title="Cursos d’água que cruzam as rodovias ou passam junto a obras pontuais, até 2 km de cada lado">Hidrografia</button>
+          <button class="filtro-btn base-btn" id="toggleHidrografia" type="button" aria-pressed="false" title="Cursos d’água que cruzam as rodovias (inclusive a malha complementar) ou passam junto a obras pontuais, até 2 km de cada lado">Hidrografia</button>
           <button class="filtro-btn base-btn" id="toggleUnidadesSaude" type="button" aria-pressed="false" data-area="HOSPITAL">Unidades de Saúde</button>
           <button class="filtro-btn base-btn" id="toggleJurisdicao" type="button" aria-pressed="false" data-area="JURISDICAO">Jurisdição</button>
         </div>
@@ -489,6 +490,17 @@
         <div id="legendaRodFed"></div>
       </div>
 
+      <div class="bloco legenda-categoria" id="blocoLegendaExtraBase" style="display: none;">
+        <div class="subtitulo">Malha Complementar</div>
+        <div class="legenda-item">
+          <svg width="48" height="16" viewBox="0 0 48 16" aria-hidden="true">
+            <path d="M0 8H48" fill="none" stroke="#ffffff" stroke-width="5" />
+            <path d="M0 8H48" fill="none" stroke="#8c5a2b" stroke-width="2.5" />
+          </svg>
+          <span>Trecho complementar</span>
+        </div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaBuffer" style="display: none;">
         <div class="subtitulo">Área de Influência</div>
         <div class="legenda-item">
@@ -543,12 +555,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=hrd3-20261105"></script>
+<script src="js/acesso.js?v=hrd4-20261105"></script>
 <script src="js/dados_banco.js?v=cam1-20261026"></script>
-<script src="js/estilos.js?v=hrd3-20261105"></script>
+<script src="js/estilos.js?v=hrd4-20261105"></script>
 <script src="js/regioes.js?v=json-20260923"></script>
-<script src="js/hidrografia.js?v=hrd3-20261105"></script>
-<script src="js/mapa.js?v=hrd3-20261105"></script>
+<script src="js/hidrografia.js?v=hrd4-20261105"></script>
+<script src="js/mapa.js?v=hrd4-20261105"></script>
 <script src="js/unidades_saude.js?v=popup-20261021"></script>
 <script src="js/jurisdicao/config.js?v=cod1-20261023"></script>
 <script src="js/jurisdicao/indicadores.js?v=jur6-20261021"></script>
