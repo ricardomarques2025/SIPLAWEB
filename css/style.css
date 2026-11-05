@@ -2816,3 +2816,13 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 .filtro-excel .fe-rodape .fe-ok { background: #0f5bd8; border-color: #0f5bd8; color: #fff; font-weight: 600; }
 .filtro-excel .fe-rodape .fe-limpar { color: #6b7280; }
 .tabulator .tabulator-col .tabulator-header-filter:has(.filtro-excel-botao) { text-align: left; margin-top: 2px; }
+
+/* Clique na malha estadual (sre_base): dados do SRE e trechos coincidentes */
+.popup-sre { font-size: 12px; line-height: 1.5; }
+.popup-sre-coin { margin-top: 8px; padding-top: 6px; border-top: 1px solid #e5e7eb; font-size: 12px; line-height: 1.6; }
+.popup-sre-coin .psc-titulo { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+.popup-sre-coin .psc-item { display: flex; align-items: center; gap: 6px; }
+.popup-sre-coin .psc-atual b { text-decoration: underline; }
+.popup-sre-coin .psc-cod { font-family: Consolas, "Courier New", monospace; color: #374151; }
+.popup-sre-coin .psc-fed { font-size: 10px; color: #15803d; border: 1px solid #86efac; border-radius: 3px; padding: 0 4px; }
+.popup-sre-coin .psc-prev { font-size: 10px; font-weight: 700; color: #fff; background: #0f5bd8; border-radius: 3px; padding: 0 5px; }

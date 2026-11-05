@@ -2951,6 +2951,11 @@ map.addControl(new LogoMapaControl());
       .replace(/'/g, '&#39;');
   }
 
+  // Clique na malha estadual (sre_base): dados do trecho SRE e as coincidências (estaduais coin_1/coin_2, federais
+  // coin_f1/coin_f2 e as sobreposições achadas pela geometria). Prevalece a rodovia de menor número (fica no título,
+  // a não ser que o filtro de rodovia/SRE escolha outra).
+  var SITUACOES_SRE = { DUP: 'Duplicada', PAV: 'Pavimentada', EOD: 'Em obras de duplicação', EOP: 'Em obras de pavimentação',
+    IMP: 'Implantada', LEN: 'Leito natural', PLA: 'Planejada' };
   function construirPopupRodoviaBase(feature) {
     var coincidentes = featuresSRESobrepostas(feature);
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
@@ -2958,40 +2963,67 @@ map.addControl(new LogoMapaControl());
     var usarMenorRodoviaComoPrincipal = !rodoviaSelecionada && !sreSelecionado && coincidentes.length > 1;
     var principal = usarMenorRodoviaComoPrincipal && coincidentes[0] && coincidentes[0].feature ? coincidentes[0].feature : feature;
     var p = principal.properties || {};
-    var html = '';
+    var vazio = function(v) { return v === null || v === undefined || String(v).trim() === ''; };
+    var num = function(v, casas) { return Number(v).toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas }); };
     var srePrincipal = nomeSREFeature(principal);
-    var sresCoincidentes = coincidentes
-      .filter(function(item) {
-        return item.sre && item.sre !== srePrincipal;
-      })
-      .map(function(item) {
-        return item.sre;
-      });
+    var rodoviaPrincipal = nomeRodoviaFeature(principal);
 
-    // Ordem específica dos campos
-    var campos = [
-      { chave: 'rodovia', rotulo: 'RODOVIA' },
-      { chave: 'trecho', rotulo: 'TRECHO' },
-      { chave: 'situacao', rotulo: 'SITUAÇÃO' },
-      { chave: 'sre', rotulo: 'SRE' },
-      { chave: 'ext', rotulo: 'EXTENSÃO' }
-    ];
-
-    for (var i = 0; i < campos.length; i++) {
-      var campo = campos[i];
-      var valor = p[campo.chave];
-      if (valor === null || valor === undefined || String(valor).trim() === '') continue;
-      html += '<b>' + escapeHtml(campo.rotulo) + ':</b> ' + escapeHtml(valor);
-      if (campo.chave === 'sre' && sresCoincidentes.length) {
-        html += '<br><b>SREs coincidentes:</b> ' + escapeHtml(sresCoincidentes.join(', '));
+    // Coincidências: o próprio trecho + códigos dos campos coin_* + sobreposição pela geometria (sem repetir código).
+    var lista = [], vistos = {};
+    function incluir(codigo, rodovia, federal) {
+      codigo = String(codigo || '').trim();
+      if (!codigo || vistos[codigo]) return;
+      vistos[codigo] = 1;
+      if (!rodovia) {
+        var m = codigo.match(/^(\d{3})/);
+        rodovia = m ? (federal ? 'BR-' : 'GO-') + m[1] : codigo;
       }
-      html += '<br>';
+      lista.push({ codigo: codigo, rodovia: rodovia, federal: !!federal });
     }
+    [feature, principal].concat(coincidentes.map(function(c) { return c.feature; })).forEach(function(f) {
+      if (!f) return;
+      var q = f.properties || {};
+      incluir(nomeSREFeature(f), nomeRodoviaFeature(f), false);
+      incluir(q.coin_1, '', false);
+      incluir(q.coin_2, '', false);
+      incluir(q.coin_f1, '', true);
+      incluir(q.coin_f2, '', true);
+    });
+    lista.sort(function(a, b) { return compararRodoviasPorMenorValor(a.rodovia, b.rodovia) || (a.federal - b.federal); });
 
-    if (!html) {
-      html = '<b>Rodovia:</b> ' + escapeHtml(rotuloRodoviaCampos(feature));
+    var linhas = [];
+    function linha(rotulo, valor) { if (!vazio(valor)) linhas.push('<div><b>' + escapeHtml(rotulo) + ':</b> ' + escapeHtml(valor) + '</div>'); }
+    var trecho = !vazio(p.inicio) || !vazio(p.fim) ? [p.inicio, p.fim].filter(function(v) { return !vazio(v); }).join(' – ') : p.trecho;
+    linha('Trecho', trecho);
+    var sit = String(p.situacao || '').toUpperCase();
+    linha('Situação', sit ? sit + (SITUACOES_SRE[sit] ? ' – ' + SITUACOES_SRE[sit] : '') : '');
+    linha('Revestimento', p.revest);
+    if (!vazio(p.km_ini) || !vazio(p.km_fim)) linha('Km', num(p.km_ini || 0, 3) + ' a ' + num(p.km_fim || 0, 3));
+    if (!vazio(p.ext)) linha('Extensão', num(p.ext, 2) + ' km');
+    linha('Classe', p.classe);
+    if (!vazio(p.perim_urb)) linha('Perímetro urbano', String(p.perim_urb).toLowerCase() === 's' ? 'Sim' : 'Não');
+    if (!vazio(p.faixa_dom)) linha('Faixa de domínio', p.faixa_dom + ' m' + (vazio(p.decr_faixa) ? '' : ' (Decreto nº ' + String(p.decr_faixa).trim() + ')'));
+    // VMDa - Bi = veículos/dia (dois sentidos); VMDa - Sta = origem do número (LEVANTADO / ESTIMADO)
+    var vmda = String(p.vmda_bi || '').trim(), vmdaSta = String(p.vmda_sta || '').trim().toLowerCase();
+    if (vmda) linha('VMDa', (isNaN(Number(vmda)) ? vmda : Number(vmda).toLocaleString('pt-BR')) + ' veículos/dia' + (vmdaSta ? ' (' + vmdaSta + ')' : ''));
+    linha('Região de manutenção', vazio(p.reg_man) ? '' : String(p.reg_man));
+    linha('Jurisdição', p.jurisdicao);
+
+    var html = '<div class="popup-cabecalho"><div class="pc-sup">Malha estadual · SRE</div>' +
+      '<div class="pc-titulo">' + escapeHtml(rodoviaPrincipal || rotuloRodoviaCampos(principal)) + '</div>' +
+      (srePrincipal ? '<div class="pc-linha">SRE ' + escapeHtml(srePrincipal) + '</div>' : '') + '</div>' +
+      '<div class="popup-sre">' + linhas.join('') + '</div>';
+
+    if (lista.length > 1) {
+      var prevalece = lista[0];
+      html += '<div class="popup-sre-coin"><div class="psc-titulo">Trecho coincidente (' + lista.length + ' códigos)</div>' +
+        lista.map(function(c) {
+          var marca = c === prevalece ? '<span class="psc-prev" title="Prevalece a rodovia de menor número">prevalece</span>' : '';
+          var atual = c.codigo === srePrincipal ? ' psc-atual' : '';
+          return '<div class="psc-item' + atual + '"><b>' + escapeHtml(c.rodovia) + '</b> <span class="psc-cod">' + escapeHtml(c.codigo) + '</span>' +
+            (c.federal ? ' <span class="psc-fed">federal</span>' : '') + marca + '</div>';
+        }).join('') + '</div>';
     }
-
     return html;
   }
 
