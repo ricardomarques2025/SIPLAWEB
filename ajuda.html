@@ -169,7 +169,7 @@
   <div class="aj-nota aj-dica">Para trocar de origem, volte à página inicial (⌂) e escolha outro cartão.</div>
 </article>
 
-<article id="mapa-filtros" data-cat="Mapa" data-titulo="Filtros" data-termos="filtrar pesquisa busca intervenção proposta rodovia SRE situação jurisdição ferrovia localidade município área de influência pedágio região manutenção planejamento área de estudo unidades de saúde auto zoom" data-rel="mapa-origens mapa-camadas">
+<article id="mapa-filtros" data-cat="Mapa" data-titulo="Filtros" data-termos="filtrar pesquisa busca intervenção proposta rodovia SRE situação jurisdição ferrovia localidade município curso d'água rio córrego hidrografia área de influência pedágio região manutenção planejamento área de estudo unidades de saúde auto zoom" data-rel="mapa-origens mapa-camadas">
   <h1>Filtros</h1>
   <p>No grupo <b>Filtros</b> do menu esquerdo. Os filtros são <b>encadeados</b>: ao escolher um, os outros passam a mostrar só as opções compatíveis.</p>
   <table>
@@ -183,6 +183,7 @@
       <tr><td><b>SRE – Situação</b> / <b>SRE – Jurisdição</b></td><td>Marque quais situações (pavimentada, leito natural…) e jurisdições da malha mostrar. <b>Marcar todos</b> volta tudo.</td></tr>
       <tr><td><b>Ferrovia</b></td><td>Escolhe uma ferrovia.</td></tr>
       <tr><td><b>Localidade</b> / <b>Município</b></td><td>Digite parte do nome e escolha uma sugestão. O município fica destacado e o entorno recebe uma máscara.</td></tr>
+      <tr><td><b>Curso d’água</b></td><td>Digite parte do nome do rio ou córrego (sem precisar de acento) e escolha uma sugestão: o curso fica destacado em laranja e o mapa se aproxima. Liga a camada <a href="#mapa-camadas">Hidrografia</a> se estiver desligada. Apagar o texto tira o destaque.</td></tr>
       <tr><td><b>Área de Influência</b></td><td>Faixa ao redor de rodovias e ferrovias.</td></tr>
       <tr><td><b>Pedágios – Tipo / Contrato</b></td><td>Praça física ou Free Flow; contrato ativo ou desativado.</td></tr>
       <tr><td><b>Regiões de Manutenção / de Planejamento</b></td><td>Marque uma ou mais regiões; <b>Limpar seleção</b> desfaz.</td></tr>
@@ -200,12 +201,14 @@
   <div class="aj-nota">Se a pesquisa ficou restrita demais, use <b>Ligar Tudo / Limpar</b>.</div>
 </article>
 
-<article id="mapa-camadas" data-cat="Mapa" data-titulo="Camadas de referência" data-termos="camadas base malha estadual federal municípios localidades aeródromos áreas ambientais urbanas ferrovias pedágios regiões jurisdição referência" data-rel="mapa-legenda mapa-filtros">
+<article id="mapa-camadas" data-cat="Mapa" data-titulo="Camadas de referência" data-termos="camadas base malha estadual federal complementar vicinal extra_base hidrografia curso d'água rio córrego estados municípios localidades aeródromos áreas ambientais urbanas ferrovias pedágios regiões jurisdição referência" data-rel="mapa-legenda mapa-filtros">
   <h1>Camadas de referência</h1>
-  <p>No grupo <b>CAMADAS DE REFERÊNCIA</b>, cada botão liga ou desliga uma camada de apoio. Elas não alteram as obras, só ajudam a interpretar o mapa.</p>
+  <p>No grupo <b>CAMADAS DE REFERÊNCIA</b>, cada botão liga ou desliga uma camada de apoio. Elas não alteram as obras, só ajudam a interpretar o mapa. Fora de Goiás, os outros estados ficam cobertos por uma máscara cinza, com as divisas entre eles.</p>
   <div class="aj-grade">
     <div><b>Malha Estadual</b><span>Rodovias estaduais e segmentos SRE.</span></div>
     <div><b>Malha Federal</b><span>Rodovias federais (SNV).</span></div>
+    <div><b>Malha Complementar</b><span>Vicinais e recortes fora da SRE (extra_base), em marrom. Só consulta; a edição é em <a href="#camadas-edicao">Editar camadas</a> e na <a href="#jurisdicao-malha">Jurisdição</a>.</span></div>
+    <div><b>Hidrografia</b><span>Cursos d’água (base da ANA) que cruzam as rodovias estaduais, federais e a malha complementar, ou passam a até 100 m de uma obra pontual, até 2 km de cada lado. Tracejado = o curso segue além da faixa. Nomes em azul ao longo da linha, sem cobrir as obras; quanto mais perto, mais nomes. Ligada por padrão no mapa rodoviário.</span></div>
     <div><b>Municípios</b><span>Limites municipais.</span></div>
     <div><b>Localidades</b><span>Cidades, distritos e povoados.</span></div>
     <div><b>Aeródromos</b><span>Aeródromos e aeroportos, com obras vinculadas.</span></div>
@@ -218,7 +221,7 @@
   </div>
 </article>
 
-<article id="mapa-consulta" data-cat="Mapa" data-titulo="Consultar obras e pontos no mapa" data-termos="clicar popup detalhes da seleção consulta obra ponto linha aeródromo marcador agrupado cluster áreas que contêm o ponto" data-rel="obras-ficha mapa-interface">
+<article id="mapa-consulta" data-cat="Mapa" data-titulo="Consultar obras e pontos no mapa" data-termos="clicar popup detalhes da seleção consulta obra ponto linha SRE coincidente sobreposto prevalece curso d'água aeródromo marcador agrupado cluster áreas que contêm o ponto" data-rel="obras-ficha mapa-interface">
   <h1>Consultar obras e pontos no mapa</h1>
   <p>Clique em qualquer elemento do mapa. Abre um <b>popup</b> com o que foi clicado (obra, rodovia, localidade, aeródromo, pedágio, trecho de jurisdição, unidade de saúde) e, em seguida, <b>todas as áreas que contêm aquele ponto</b>: município, regiões de manutenção e planejamento, áreas urbanas e ambientais, área de estudo/influência.</p>
   <p>O painel <b>Detalhes da seleção</b>, embaixo, mostra a tabela completa do que foi clicado.</p>
@@ -230,6 +233,8 @@
       <tr><td>Aeródromo</td><td>Dados do aeródromo e obras vinculadas, por origem.</td></tr>
       <tr><td>Marcador com número</td><td>Vários pontos próximos agrupados: aproxime ou clique para abrir.</td></tr>
       <tr><td>Trecho de jurisdição</td><td>Resumo do registro e o botão <b>Abrir detalhes</b> (abre a ficha).</td></tr>
+      <tr><td>Malha estadual (SRE)</td><td>Rodovia e código SRE, início e fim, situação, revestimento, km, extensão, classe, perímetro urbano, faixa de domínio, VMDa, região e jurisdição. Se o trecho é <b>coincidente</b>, lista todas as rodovias sobrepostas com o código (estaduais e federais), em ordem de número: <b>prevalece a rodovia de menor número</b>, que aparece no título.</td></tr>
+      <tr><td>Curso d’água</td><td>Nome, se cruza a rodovia, passa junto a obra ou é continuidade, rodovias que cruza, área de drenagem e ordem.</td></tr>
     </tbody>
   </table>
   <div class="aj-nota aj-dica">Rótulos (escudos de rodovia, nomes de localidade) não respondem ao clique: clique na linha ou no ponto.</div>
@@ -335,13 +340,13 @@
 </article>
 
 <!-- ================================================================ OBRAS -->
-<article id="obras-tabela" data-cat="Obras" data-titulo="Tabela de obras" data-termos="tabela obras abrir tabela empreendimentos buscar código SEI colunas etapa status traçado tela cheia dividida excel" data-rel="obras-editar obras-ficha">
+<article id="obras-tabela" data-cat="Obras" data-titulo="Tabela de obras" data-termos="tabela obras abrir tabela empreendimentos buscar código SEI colunas etapa status traçado filtro funil excel tela cheia dividida excel" data-rel="obras-editar obras-ficha">
   <h1>Tabela de obras</h1>
   <p>Disponível quando o mapa está aberto em <b>uma origem</b>. No menu esquerdo, clique em <b>Abrir tabela de obras</b>.</p>
   <ul>
     <li><b>Tela cheia</b> ou <b>Dividida com o mapa</b>: no modo dividido, arraste a borda para mudar a largura.</li>
     <li><b>Busca</b>: código, descrição, município, SEI…</li>
-    <li>Filtros de <b>etapa</b>, <b>status</b> e <b>com/sem traçado</b>; o ícone de funil com ✕ limpa tudo.</li>
+    <li><b>Filtro em cada coluna</b>, como no Excel: o funil logo abaixo do título abre a lista dos valores daquela coluna, com <b>Pesquisar</b>, <b>(Selecionar tudo)</b> e <b>(Vazias)</b>; marque o que quer ver e clique em <b>OK</b>. O funil fica <b>azul e cheio</b> quando a coluna está filtrada (passe o mouse para ver o filtro). A coluna do alfinete filtra <b>com/sem traçado</b>. O ícone de funil com ✕, ao lado da busca, limpa a busca e todos os filtros.</li>
     <li><b>Colunas</b>: escolha quais colunas aparecem.</li>
     <li>Clique no título da coluna para ordenar.</li>
     <li><b>Excel</b>: baixa a planilha da origem (quem exporta).</li>
@@ -408,6 +413,8 @@
   <p>O <b>ITEM</b> é numerado em sequência dentro de cada origem, na ordem do caderno. Obra sem traçado entra na planilha, mas não tem mapa. Obra que não se encaixa em nenhuma seção aparece em <b>Outras</b>, nada fica de fora.</p>
   <h2>Mapa de uma obra</h2>
   <p>Na <a href="#obras-ficha">ficha</a>, botão <b>Mapa A4</b>. O mapa tem o mesmo formato das pranchas da Jurisdição; dá para arrastar e aproximar antes de imprimir. Na página, a lista no alto troca de obra.</p>
+  <h2>O que aparece no mapa</h2>
+  <p>Imagem de satélite, municípios, rodovias pela situação, localidades, os <b>cursos d’água</b> da camada Hidrografia (nomes ao longo da linha, sem cobrir a obra, as rodovias e os outros nomes; abreviados como <i>Cór.</i> e <i>Rib.</i> quando o nome inteiro não cabe) e o <b>limite dos estados</b>, com a sigla de cada estado quando a folha mostra uma divisa. Obras pontuais aparecem com ícone: viaduto (ciano), ponte (marrom), bueiro (cinza), aeródromo (amarelo).</p>
   <div class="aj-nota">Os valores (aprovado e do contrato) dos cadernos da GOINFRA ainda não estão no sistema, por isso não aparecem.</div>
 </article>
 
@@ -464,7 +471,7 @@
   </ul>
   <h2>Filtros e ações</h2>
   <ul>
-    <li>Busca por município, rodovia, processo ou trecho; filtros de tipo, situação e <b>com/sem traçado</b>.</li>
+    <li>Busca por município, rodovia, processo ou trecho, e o <b>filtro de cada coluna</b> (funil abaixo do título, como no Excel; igual à <a href="#obras-tabela">tabela de obras</a>). Em <b>Tipo</b>, <b>Situação</b> e na coluna do alfinete (com/sem traçado), marcando <b>um valor só</b> o mapa e o painel de indicadores acompanham; com vários, só a tabela filtra.</li>
     <li><b>Malha complementar</b>, <b>Colunas</b> e <b>Novo registro</b>.</li>
     <li>Na linha: ícone de painel abre a <a href="#jurisdicao-ficha">ficha</a>; o alfinete mostra o trecho no mapa.</li>
     <li><b>Duplo clique</b> numa célula edita (mesmo fluxo de <a href="#obras-editar">Editar obras</a>).</li>
@@ -545,6 +552,7 @@
   </ol>
   <h2>Prancha de um registro</h2>
   <p>Na ficha, botão <b>Prancha</b> (ou <b>Exportar → Prancha A4 do registro</b>). Na página que abre, escolha o registro na lista, se quiser outro, e siga os passos 4 e 5.</p>
+  <p>O mapa da prancha é o mesmo do <a href="#obras-caderno">caderno de obras</a>: inclui os cursos d’água e o limite dos estados com as siglas.</p>
   <div class="aj-nota aj-dica">Os botões <b>Prancha</b> e <b>Caderno completo</b>, no alto da página do caderno, alternam entre os dois modos. <b>← Voltar à tabela</b> retorna.</div>
 </article>
 
@@ -715,7 +723,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=hrd12-20261105"></script>
+<script src="js/acesso.js?v=hrd13-20261105"></script>
 <script src="js/ajuda.js?v=ajd2-20261023"></script>
 </body>
 </html>

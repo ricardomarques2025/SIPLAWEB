@@ -129,6 +129,22 @@ O logo do canto do mapa só aparece na impressão/PDF.
 - **Mapa rodoviário** abre com a malha estadual/federal, municípios, áreas e aeródromos; pedágios começam desligados.
 - **Camada de referência Jurisdição** (Camadas de Referência): trechos de jurisdição só para consulta, desligada ao
   abrir, para quem tem a área JURISDICAO.
+- **Máscara fora de Goiás**: `data/estados.geojson` (os outros 26 estados, com `SIGLA_UF`), cinza com as divisas;
+  substituiu `mascara_brasil.geojson` em 05/11/2026 (o arquivo antigo continua no repositório, sem uso).
+- **Malha Complementar** (Camadas de Referência, 05/11/2026): `extra_base` do banco (`extra_base_geojson()`), marrom,
+  só consulta; atualiza sozinha quando um trecho é criado/excluído. Função `desenharExtraBase` em `js/mapa.js`.
+- **Clique na malha estadual** (`construirPopupRodoviaBase`): dados do SRE e o *trecho coincidente* com os códigos
+  sobrepostos (campos `coin_1`/`coin_2` estaduais, `coin_f1`/`coin_f2` federais e a sobreposição pela geometria), em
+  ordem de número; prevalece a rodovia de menor número (fica no título, salvo filtro de rodovia/SRE). Onde há obra, o
+  clique abre o popup da obra (cabeçalho "Trecho da malha").
+- **Hidrografia** (VER. 3.3, 05/11/2026): `js/hidrografia.js` + `data/hidro_rodo_goias.geojson` (≈22 MB, 4 MB
+  compactado; baixado só quando a camada é ligada, na busca ou no caderno). Base BHO da ANA; ver *Camadas de base*.
+  - Linhas em canvas (espessura pela ordem de Strahler); tracejado (`papel = continua_fora`) onde o curso segue além da faixa.
+  - Nomes azuis ao longo da linha (canvas próprio, letra a letra, sem sobreposição; trechos de mesmo nome são
+    emendados): rios maiores a partir do zoom 9, todos do 13; abreviados (Cór., Rib.) quando não cabem; não cobrem
+    as obras (`obstaculos`: panes `servicosPane`, `oaePane`, `markerPane`).
+  - Filtro **Curso d'água** (após Município): sugestões sem acento, destaque laranja e zoom.
+  - Ligada por padrão só no mapa rodoviário.
 
 ## Módulo Jurisdição (`mapa.html?modulo=jurisdicao`)
 
@@ -139,6 +155,10 @@ Mesma base do mapa de uma origem, **sem obras**, com os trechos de alteração d
 - **Barra direita**: painel de indicadores (processos, extensões, finalizados, situação, leis) — clicar em um tipo
   ou situação filtra. Os filtros são um só para mapa, painel e tabela.
 - **Tabela** (como no site antigo do jurisdição): tela cheia (com o painel de indicadores) ou **dividida com o mapa**.
+  - **Filtro em cada coluna** como no Excel (`js/filtro_cabecalho.js`, comum às tabelas de obras e da jurisdição):
+    funil abaixo do título (cheio = filtrando) abre a lista de valores com pesquisa, *(Selecionar tudo)* e *(Vazias)*.
+    Tipo, Situação e a coluna do alfinete (traçado) com **um valor marcado** viram o filtro do módulo (mapa + painel);
+    com vários, só a tabela filtra (`sincronizarCabecalho` em `js/jurisdicao/tabela.js`).
   - No modo dividido a legenda da direita recolhe, a largura da tabela é ajustável arrastando a alça na borda
     (fica salva no navegador) e o trecho selecionado é centralizado no espaço que sobra do mapa.
   - Duplo clique edita a célula (quem tem *editar*); *Novo registro*; *Colunas*; status *Salvo no banco*.
@@ -150,7 +170,11 @@ Mesma base do mapa de uma origem, **sem obras**, com os trechos de alteração d
 - O **traçado** ainda é editado no site antigo do jurisdição (ver *Pendências*).
 
 Código em `js/jurisdicao/` (`config`, `indicadores`, `store`, `tabela`, `modulo`, `painel`, `caderno`) e
-`css/jurisdicao*.css`. O mapa das pranchas é comum aos dois cadernos (jurisdição e obras): `js/caderno_mapa.js` e `css/caderno.css`. O CSS da tabela é todo restrito ao contêiner `.jur-ui`, com um reset das regras genéricas
+`css/jurisdicao*.css`. O mapa das pranchas é comum aos dois cadernos (jurisdição e obras): `js/caderno_mapa.js` e `css/caderno.css`.
+Desde 05/11/2026 a prancha tem o limite dos estados (`data/estados.geojson`) com a sigla de cada estado quando aparece
+uma divisa, e a hidrografia sempre ligada (`Hidrografia.camadaPrancha`: só os cursos da área, em SVG; nomes num canvas
+denso, letra 85%, todos os que couberem, sem cobrir obra, rodovias e os outros rótulos). Ícones das obras pontuais
+(`img/obras/icones/`, caderno de obras): viaduto #01ffff, ponte #91522d, bueiro #aeb8b6, aeródromo #fff701. O CSS da tabela é todo restrito ao contêiner `.jur-ui`, com um reset das regras genéricas
 de `css/style.css`. Tabulator e XLSX são carregados só quando a tabela/exportação é usada.
 
 ## Banco de dados (Supabase, projeto `banco-gis-dpl`)
@@ -214,6 +238,19 @@ Scripts em `supabase/`:
 simplificada pré-calculada em `staging._export_precomputed`; as demais saem completas (parques, áreas urbanas e
 ferrovias, com ~2,5 MB cada, são candidatas a simplificar).
 
+- **`sre_base.geojson`** foi enriquecido em 05/11/2026 com campos de `public.sre_base` (classe, inicio, fim, revest,
+  coin_1, coin_2, coin_f1, coin_f2, federal, perim_urb, faixa_dom, decr_faixa, vmda_bi, vmda_sta), juntados pelo
+  código `sre`. **Ao reexportar, manter esses campos**: o popup do SRE e as coincidências dependem deles.
+- **`estados.geojson`**: os 26 estados sem Goiás (IBGE), máscara do mapa e limite/siglas das pranchas.
+- **`hidro_rodo_goias.geojson`** (hidrografia): gerado fora do banco por
+  `../DADOS/hidrografia/filtrar_bho_cruza.py 2000 todos` a partir de `bho_goias.gpkg` (BHO/ANA). Sementes = cursos que
+  cruzam SRE + SNV + malha complementar (`extra_base.geojson`) e o curso mais próximo (até 100 m) de cada obra
+  pontual (`obras_pontos.geojson`); continuidade a montante pelo mesmo `cocursodag` e a jusante por `nutrjus`;
+  recorte por faixa de 2 km; só os pedaços ligados ao cruzamento; tracejado de 400 m onde sai da faixa.
+  **Antes de regerar, exportar de novo da produção** `extra_base.geojson` e `obras_pontos.geojson` (comandos psql no
+  topo do script/na memória). O arquivo não leva códigos de obras (obras só no banco). Ao trocar o arquivo, subir o
+  `?v=` de `ARQUIVO` em `js/hidrografia.js`.
+
 ## Keepalive
 
 `.github/workflows/supabase-keepalive.yml` roda a cada 6 h com a chave publishable: chama `registrar_acesso()` e
@@ -226,6 +263,9 @@ python -m http.server 8765
 ```
 
 e abrir <http://127.0.0.1:8765/index.html>. Precisa de internet (banco no Supabase) e de um login liberado.
+O `http.server` às vezes recusa conexão quando o mapa pede muitos arquivos juntos (aparece "Store/Jurisdicao/CAMPOS
+is not defined" porque um script não chegou); nesse caso use um servidor com fila maior, por exemplo
+`ThreadingHTTPServer` com `request_queue_size = 256`.
 
 ## Pendências
 
