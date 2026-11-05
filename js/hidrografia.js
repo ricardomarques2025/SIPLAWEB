@@ -6,7 +6,7 @@
 // Usado pelo mapa (js/mapa.js): camada com rótulos ao longo da linha, legenda, popup do clique e busca por nome.
 
 var Hidrografia = (function() {
-  var ARQUIVO = 'data/hidro_rodo_goias.geojson';
+  var ARQUIVO = 'data/hidro_rodo_goias.geojson?v=20261105-3';
   var COR = '#1f78c8';
   var COR_ROTULO = '#1557a0';
   var dados = null, carregando = null, cursos = [];
@@ -420,7 +420,7 @@ var Hidrografia = (function() {
     return n == null || n === '' ? '' : Number(n).toLocaleString('pt-BR', { maximumFractionDigits: casas || 0 });
   }
 
-  var PAPEL = { cruza_rodovia: 'Cruza a rodovia', continuidade: 'Continuidade (até 2 km da rodovia)', continua_fora: 'Segue além da faixa de 2 km' };
+  var PAPEL = { cruza_rodovia: 'Cruza a rodovia', junto_obra: 'Passa junto a obra', continuidade: 'Continuidade (até 2 km da rodovia ou obra)', continua_fora: 'Segue além da faixa de 2 km' };
 
   function htmlPopup(p) {
     var linhas = [['Situação', PAPEL[p.papel] || '']];
