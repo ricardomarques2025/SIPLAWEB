@@ -336,7 +336,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-05.8';
+  var VERSAO_SITE = '2026-11-05.9';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -352,6 +352,7 @@ var Acesso = (function() {
       'Mapa e pranchas dos cadernos com o limite dos estados vizinhos; nas pranchas, a sigla de cada estado aparece quando a folha mostra uma divisa.',
       'Pranchas dos cadernos sempre com a hidrografia (cursos d’água com o nome ao longo da linha) e o item na legenda.',
       'Nomes dos cursos d’água não cobrem as obras (no mapa e nas pranchas) nem os outros nomes da prancha.',
+      'Pranchas: nomes dos cursos d’água com letra menor, em todos os cursos que couberem (abreviados, como Cór. e Rib., quando o nome inteiro não cabe), sem cobrir as rodovias.',
       'Pranchas de obras: ícones de viaduto (ciano), ponte (marrom), bueiro (cinza) e aeródromo (amarelo).'
     ]],
     ['3.2', '04/11/2026', [

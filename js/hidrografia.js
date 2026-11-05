@@ -128,7 +128,8 @@ var Hidrografia = (function() {
   var STRAHLER_MIN = { 9: 6, 10: 5, 11: 3, 12: 2 };   // zoom >= 13: todos; < 9: nenhum
   var RotulosLayer = L.Layer.extend({
     // escala > 1: canvas mais denso (impressão); obstaculos: panes cujo desenho os nomes não podem cobrir (obras etc.)
-    options: { escala: 1, pane: 'hidrografiaRotulosPane', zPane: 480, obstaculos: null },
+    // fonte: fator da letra; todos: nome em todo curso que couber (sem o mínimo de Strahler por zoom) — pranchas
+    options: { escala: 1, pane: 'hidrografiaRotulosPane', zPane: 480, obstaculos: null, fonte: 1, todos: false },
     initialize: function(opcoes) { L.setOptions(this, opcoes); },
     onAdd: function(map) {
       this._map = map;
@@ -160,10 +161,10 @@ var Hidrografia = (function() {
       ctx.clearRect(0, 0, tam.x, tam.y);
       if (!dados) return;
       var z = map.getZoom();
-      if (z < 9) return;
-      var minS = z >= 13 ? 1 : STRAHLER_MIN[Math.floor(z)];
+      if (z < 9 && !this.options.todos) return;
+      var minS = this.options.todos || z >= 13 ? 1 : STRAHLER_MIN[Math.floor(z)];
       var obst = this.options.obstaculos ? gradeObstaculos(map, this.options.obstaculos) : null;
-      desenharRotulos(map, ctx, tam, z, minS, obst);
+      desenharRotulos(map, ctx, tam, z, minS, obst, this.options.fonte || 1);
     }
   });
 
@@ -222,7 +223,7 @@ var Hidrografia = (function() {
     return false;
   }
 
-  function desenharRotulos(map, ctx, tam, z, minS, obst) {
+  function desenharRotulos(map, ctx, tam, z, minS, obst, fator) {
     var vista = map.getBounds().pad(0.05);
     var oeste = vista.getWest(), leste = vista.getEast(), sul = vista.getSouth(), norte = vista.getNorth();
     var cand = cursos.filter(function(cu) {
@@ -236,28 +237,33 @@ var Hidrografia = (function() {
 
     cand.forEach(function(cu) {
       var s = cu.s, p = { nustrahler: s };
-      var tamFonte = (s >= 6 ? 13 : s >= 4 ? 12 : 11) - (z < 12 ? 2 : 0);   // mais afastado: letra menor, cabe mais
+      var tamFonte = ((s >= 6 ? 13 : s >= 4 ? 12 : 11) - (z < 12 ? 2 : 0)) * (fator || 1);   // mais afastado: letra menor, cabe mais
       ctx.font = 'italic ' + (s >= 6 ? '600 ' : '') + tamFonte + 'px "Segoe UI", Arial, sans-serif';
-      var texto = cu.nome;
-      var larg = ctx.measureText(texto).width;
       var desloc = tamFonte * 0.55 + peso(p, z) / 2 + 1;   // distância do texto até o eixo da linha
-      [cu.linha].forEach(function(linha) {
-        // trechos contínuos dentro da tela
-        var trecho = [];
-        var fechar = function() { if (trecho.length > 1) tentarTrecho(trecho); trecho = []; };
-        linha.forEach(function(c) {
-          var pt = map.latLngToContainerPoint([c[1], c[0]]);
-          if (pt.x < margem || pt.y < margem || pt.x > tam.x - margem || pt.y > tam.y - margem) return fechar();
-          trecho.push(pt);
-        });
-        fechar();
+      // trechos contínuos dentro da tela
+      var trechos = [], trecho = [];
+      var fechar = function() { if (trecho.length > 1) trechos.push(trecho); trecho = []; };
+      cu.linha.forEach(function(c) {
+        var pt = map.latLngToContainerPoint([c[1], c[0]]);
+        if (pt.x < margem || pt.y < margem || pt.x > tam.x - margem || pt.y > tam.y - margem) return fechar();
+        trecho.push(pt);
       });
+      fechar();
+      // nome inteiro; se não couber em lugar nenhum, abreviado (Cór., Rib.), como nos mapas impressos
+      var texto, larg, colocou = false;
+      var tentativas = [cu.nome], abrev = abreviar(cu.nome);
+      if (abrev !== cu.nome) tentativas.push(abrev);
+      for (var t = 0; t < tentativas.length && !colocou; t++) {
+        texto = tentativas[t];
+        larg = ctx.measureText(texto).width;
+        trechos.forEach(tentarTrecho);
+      }
 
       function tentarTrecho(bruto) {
-        var sv = suavizar(bruto, Math.max(tamFonte * 1.6, larg * 0.45));
+        var sv = suavizar(bruto, Math.max(tamFonte * 1.6, larg * 0.45, 17));   // mínimo: letra menor não deixa a linha mais sinuosa
         var pts = sv.pts, acum = sv.acum;
         var total = acum[acum.length - 1];
-        if (total < larg + 24) return;
+        if (total < larg + 12) return;
         // Linhas paralelas acima do curso, uma para cada sentido de leitura: as letras são distribuídas sobre elas
         // (espaçamento certo também nas curvas). Calculadas só quando precisar.
         var paralelas = {};
@@ -277,13 +283,13 @@ var Hidrografia = (function() {
         }
         centros.forEach(function(centro) {
           var c = ponto(pts, acum, centro);
-          var outros = porNome[texto] || [];
+          var outros = porNome[cu.nome] || [];
           for (var j = 0; j < outros.length; j++) if (outros[j].distanceTo(c) < ESPACO) return;
           // ler da esquerda para a direita: se a linha vai para a esquerda, usa o sentido contrário
           var sentido = ponto(pts, acum, centro + larg / 2).x < ponto(pts, acum, centro - larg / 2).x ? -1 : 1;
           var par = paralela(sentido), totalPar = par.acum[par.acum.length - 1];
           var centroPar = (sentido > 0 ? centro : total - centro) * totalPar / total;
-          if (colocar(par.pts, par.acum, centroPar)) (porNome[texto] = outros).push(c);
+          if (colocar(par.pts, par.acum, centroPar)) { (porNome[cu.nome] = outros).push(c); colocou = true; }
         });
       }
 
@@ -293,7 +299,7 @@ var Hidrografia = (function() {
         for (var i = 0; i < texto.length; i++) {
           var ch = texto[i], w = ctx.measureText(ch).width;
           var dm = d + w / 2;
-          var lc = Math.max(w / 2, tamFonte * 0.9);       // ângulo medido num trecho maior que a letra (menos ruído)
+          var lc = Math.max(w / 2, tamFonte * 0.9, 10);   // ângulo medido num trecho maior que a letra (menos ruído)
           var p1 = ponto(pts, acum, dm - lc), p2 = ponto(pts, acum, dm + lc);
           var ang = Math.atan2(p2.y - p1.y, p2.x - p1.x);
           if (angAnt != null) {
@@ -332,6 +338,10 @@ var Hidrografia = (function() {
         return true;
       }
     });
+  }
+
+  function abreviar(nome) {
+    return String(nome).replace(/^Córrego /, 'Cór. ').replace(/^Ribeirão /, 'Rib. ').replace(/^Riacho /, 'Rch. ');
   }
 
   // Linha da tela reamostrada a cada 3 px e suavizada (média móvel de raio px para cada lado; maior nos nomes longos):
@@ -425,7 +435,7 @@ var Hidrografia = (function() {
       var geo = L.geoJSON({ type: 'FeatureCollection', features: feats }, { pane: pane, interactive: false,
         style: function(f) { return estilo(f, map.getZoom()); } });
       var rot = new RotulosLayer({ escala: 3, pane: opcoes.paneRotulos || 'pHidroRotulos', zPane: opcoes.zRotulos || 600,
-        obstaculos: opcoes.obstaculos || null });
+        obstaculos: opcoes.obstaculos || null, fonte: opcoes.fonte || 1, todos: !!opcoes.todos });
       map.on('zoomend', function() { geo.setStyle(function(f) { return estilo(f, map.getZoom()); }); });
       return L.layerGroup([geo, rot]).addTo(map);
     });
