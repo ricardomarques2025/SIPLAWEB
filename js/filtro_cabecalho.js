@@ -1,5 +1,5 @@
 // Filtros no título das colunas, como o filtro do Excel (Tabulator headerFilter com editor próprio), usados pelas
-// tabelas de Obras e da Jurisdição. Cada coluna ganha um botão logo abaixo do título ("Todos" quando não filtra);
+// tabelas de Obras e da Jurisdição. Cada coluna ganha um ícone de funil logo abaixo do título (cheio = filtrando);
 // ele abre uma lista com os valores da coluna, caixas de marcar, "(Selecionar tudo)", "(Vazias)" e uma busca.
 // O valor do filtro é a lista dos valores marcados (texto como a célula mostra; VAZIO = células vazias);
 // '' = sem filtro. ler(dados) devolve o valor atual da célula (já com o que está pendente de salvar).
@@ -133,10 +133,11 @@ var FiltroCabecalho = (function() {
         var t = !sel ? 'Todos' : !sel.length ? 'Nenhum'
           : sel.length === 1 ? (sel[0] === VAZIO ? '(Vazias)' : (itens().find(function(i) { return i.valor === sel[0]; }) || { rotulo: sel[0] }).rotulo)
           : sel.length + ' selecionados';
-        botao.innerHTML = '<span></span><i>▾</i>';
-        botao.firstChild.textContent = t;
+        // só o ícone (funil): contorno = sem filtro; cheio e azul = filtrando (o valor fica na dica do mouse)
+        botao.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 3h12l-4.6 5.4v4.4l-2.8 1.4V8.4z"/></svg>';
         botao.classList.toggle('ativo', !!sel);
         botao.title = sel ? 'Filtrando: ' + t : 'Filtrar esta coluna';
+        botao.setAttribute('aria-label', botao.title);
       }
       rotulo();
       botao.addEventListener('mousedown', function(e) { e.stopPropagation(); });

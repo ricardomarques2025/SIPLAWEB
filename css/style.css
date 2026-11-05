@@ -2789,15 +2789,13 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 
 /* ---------- Filtro do título das colunas, como o filtro do Excel (js/filtro_cabecalho.js) ---------- */
 .filtro-excel-botao {
-  display: flex; align-items: center; gap: 4px; width: 100%; box-sizing: border-box; height: 24px; padding: 0 6px;
-  border: 1px solid #cfd5df; border-radius: 4px; background: #fff; color: #6b7280; font: 400 12px inherit; font-family: inherit;
-  cursor: pointer; text-align: left; text-transform: none; letter-spacing: 0;
+  display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 22px; padding: 0; margin: 0;
+  border: 1px solid transparent; border-radius: 4px; background: transparent; color: #8a93a3; cursor: pointer;
 }
-.filtro-excel-botao span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.filtro-excel-botao i { font-style: normal; font-size: 10px; color: #8a93a3; }
-.filtro-excel-botao:hover { border-color: #94a3b8; }
-.filtro-excel-botao.ativo { border-color: #0f5bd8; background: #eaf1ff; color: #0f3d91; font-weight: 600; }
-.filtro-excel-botao.ativo i { color: #0f5bd8; }
+.filtro-excel-botao svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; }
+.filtro-excel-botao:hover { border-color: #cfd5df; background: #fff; color: #4b5563; }
+.filtro-excel-botao.ativo { color: #0f5bd8; background: #eaf1ff; border-color: #9dbcf5; }
+.filtro-excel-botao.ativo svg { fill: currentColor; }
 .filtro-excel {
   position: fixed; z-index: 30000; background: #fff; border: 1px solid #cfd5df; border-radius: 6px;
   box-shadow: 0 8px 24px rgba(15, 23, 42, .18); padding: 8px; font: 13px "Segoe UI", Arial, sans-serif; color: #1f2937;
@@ -2817,3 +2815,4 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 .filtro-excel .fe-rodape button { height: 28px; padding: 0 12px; border: 1px solid #cfd5df; border-radius: 4px; background: #fff; font: inherit; cursor: pointer; }
 .filtro-excel .fe-rodape .fe-ok { background: #0f5bd8; border-color: #0f5bd8; color: #fff; font-weight: 600; }
 .filtro-excel .fe-rodape .fe-limpar { color: #6b7280; }
+.tabulator .tabulator-col .tabulator-header-filter:has(.filtro-excel-botao) { text-align: left; margin-top: 2px; }

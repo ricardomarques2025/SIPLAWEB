@@ -336,7 +336,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-05.7';
+  var VERSAO_SITE = '2026-11-05.8';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -348,7 +348,7 @@ var Acesso = (function() {
       'Obras pontuais (com coordenadas) junto a um curso d’água, até 100 m, contam como cruzamento: o curso entra com a mesma regra das rodovias (2 km em volta da obra). A malha complementar (vicinais) também conta como rodovia.',
       'Malha complementar (vicinais) como camada de referência: botão "Malha Complementar", depois da Malha Federal.',
       'Ligada por padrão só no mapa rodoviário; nos outros, botão "Hidrografia" das camadas de referência.',
-      'Tabelas de obras e da Jurisdição: filtro em cada coluna, logo abaixo do título, como no Excel (lista dos valores com caixas de marcar, pesquisa, selecionar tudo e vazias). A busca geral continua no mesmo lugar.',
+      'Tabelas de obras e da Jurisdição: filtro em cada coluna, logo abaixo do título, como no Excel (ícone de funil, cheio quando a coluna está filtrada; lista dos valores com caixas de marcar, pesquisa, selecionar tudo e vazias). A busca geral continua no mesmo lugar.',
       'Mapa e pranchas dos cadernos com o limite dos estados vizinhos; nas pranchas, a sigla de cada estado aparece quando a folha mostra uma divisa.',
       'Pranchas dos cadernos sempre com a hidrografia (cursos d’água com o nome ao longo da linha) e o item na legenda.',
       'Nomes dos cursos d’água não cobrem as obras (no mapa e nas pranchas) nem os outros nomes da prancha.',
