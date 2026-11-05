@@ -3778,6 +3778,7 @@ map.addControl(new LogoMapaControl());
     if (bloco) bloco.style.display = hidrografiaFiltroAtivo ? '' : 'none';
     if (!hidrografiaFiltroAtivo || !window.Hidrografia) {
       if (hidrografiaLayer && map.hasLayer(hidrografiaLayer)) map.removeLayer(hidrografiaLayer);
+      if (window.Hidrografia) Hidrografia.destacar(map, null);
       return;
     }
     if (!hidrografiaLayer) hidrografiaLayer = Hidrografia.criarCamada('hidrografiaPane');
@@ -3805,6 +3806,62 @@ map.addControl(new LogoMapaControl());
     if (medicaoAtiva || (typeof anotacaoFerramenta !== 'undefined' && anotacaoFerramenta)) return;
     if (Hidrografia.consultar(hidrografiaLayer, e.latlng)) abrirPopupNoPonto(e.latlng, null, null);
   });
+
+  // Busca de curso d'agua pelo nome (filtros, depois do municipio): liga a hidrografia, destaca os trechos com o nome
+  // (halo laranja) e aproxima o mapa deles. Apagar o texto tira o destaque.
+  var indiceSugestaoHidro = -1;
+  function limparBuscaHidrografia() {
+    var busca = document.getElementById('hidroBusca'), sug = document.getElementById('hidroSugestoes');
+    if (busca) busca.value = '';
+    if (sug) { sug.innerHTML = ''; sug.style.display = 'none'; }
+    if (window.Hidrografia) Hidrografia.destacar(map, null);
+  }
+  function selecionarCursoDagua(nome) {
+    var busca = document.getElementById('hidroBusca'), sug = document.getElementById('hidroSugestoes');
+    busca.value = nome;
+    sug.innerHTML = ''; sug.style.display = 'none'; indiceSugestaoHidro = -1;
+    if (!hidrografiaFiltroAtivo) { hidrografiaFiltroAtivo = true; atualizarBotoesBase(); desenharHidrografia(); }
+    Hidrografia.carregar().then(function() {
+      var limites = Hidrografia.destacar(map, nome);
+      if (limites && limites.isValid()) map.fitBounds(limites, { padding: [60, 60], maxZoom: 14 });
+    });
+  }
+  function listarSugestoesHidro(texto) {
+    var sug = document.getElementById('hidroSugestoes');
+    sug.innerHTML = ''; indiceSugestaoHidro = -1;
+    if (!String(texto || '').trim()) { sug.style.display = 'none'; Hidrografia.destacar(map, null); return; }
+    Hidrografia.carregar().then(function() {
+      var encontrados = Hidrografia.sugerir(texto, 10);
+      sug.innerHTML = '';
+      if (!encontrados.length) { sug.style.display = 'none'; return; }
+      encontrados.forEach(function(nome) {
+        var item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.textContent = nome;
+        item.addEventListener('mousedown', function() { selecionarCursoDagua(nome); });
+        sug.appendChild(item);
+      });
+      sug.style.display = 'block';
+    }).catch(function() { sug.style.display = 'none'; });
+  }
+  var campoHidroBusca = document.getElementById('hidroBusca');
+  if (campoHidroBusca && window.Hidrografia) {
+    campoHidroBusca.addEventListener('focus', function() { Hidrografia.carregar().catch(function() {}); });
+    campoHidroBusca.addEventListener('input', function() { listarSugestoesHidro(this.value); });
+    campoHidroBusca.addEventListener('keydown', function(e) {
+      var sug = document.getElementById('hidroSugestoes');
+      var itens = sug.querySelectorAll('.autocomplete-item');
+      if (!itens.length || sug.style.display === 'none') return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); indiceSugestaoHidro = (indiceSugestaoHidro + 1) % itens.length; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); indiceSugestaoHidro = (indiceSugestaoHidro - 1 + itens.length) % itens.length; }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        selecionarCursoDagua(itens[Math.max(0, indiceSugestaoHidro)].textContent);
+        return;
+      }
+      itens.forEach(function(item, i) { item.classList.toggle('ativo', i === indiceSugestaoHidro); });
+    });
+  }
 
   function desenharAreaInfluencia() {
     if (areaInfluenciaLayer) {
@@ -8352,6 +8409,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function limparTudo() {
+    limparBuscaHidrografia();
     document.getElementById('bufferSelect').value = '';
     document.getElementById('ferroviaSelect').value = '';
     document.getElementById('rgPlanSelect').value = '';
@@ -8445,7 +8503,8 @@ map.addControl(new LogoMapaControl());
       'servicoSelect',
       'localidadeSelect',
       'localidadeBusca',
-      'municipioBusca'
+      'municipioBusca',
+      'hidroBusca'
     ];
 
     campos.forEach(function(id) {
@@ -8871,6 +8930,8 @@ map.addControl(new LogoMapaControl());
     if (!isInsideAutocomplete) {
       sugestoesMunicipio.style.display = 'none';
       sugestoesLocalidade.style.display = 'none';
+      var sugestoesHidro = document.getElementById('hidroSugestoes');
+      if (sugestoesHidro) sugestoesHidro.style.display = 'none';
     }
   });
 

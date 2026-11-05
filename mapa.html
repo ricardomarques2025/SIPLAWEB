@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=hrd1-20261105" />
+  <link rel="stylesheet" href="css/style.css?v=hrd2-20261105" />
   <link rel="stylesheet" href="css/jurisdicao.css?v=ext1-20261023" />
   <!-- Tema do mapa: o novo (css/tema_novo.css) e o padrao. mapa.html?tema=antigo mostra o visual anterior e fica
        lembrado neste navegador; ?tema=novo volta ao padrao. -->
@@ -157,6 +157,18 @@
         <select id="municipioSelect">
           <option value="">Todos</option>
         </select>
+
+        <label for="hidroBusca">Curso d’água</label>
+
+        <div class="autocomplete-wrap">
+          <input
+            type="text"
+            id="hidroBusca"
+            placeholder="Digite o nome do rio ou córrego..."
+            autocomplete="off"
+          />
+          <div id="hidroSugestoes" class="autocomplete-list"></div>
+        </div>
 
         <label for="bufferSelect">Área de Influência</label>
         <select id="bufferSelect">
@@ -531,12 +543,12 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=hrd1-20261105"></script>
+<script src="js/acesso.js?v=hrd2-20261105"></script>
 <script src="js/dados_banco.js?v=cam1-20261026"></script>
-<script src="js/estilos.js?v=hid1-20261104"></script>
+<script src="js/estilos.js?v=hrd2-20261105"></script>
 <script src="js/regioes.js?v=json-20260923"></script>
-<script src="js/hidrografia.js?v=hrd1-20261105"></script>
-<script src="js/mapa.js?v=hrd1-20261105"></script>
+<script src="js/hidrografia.js?v=hrd2-20261105"></script>
+<script src="js/mapa.js?v=hrd2-20261105"></script>
 <script src="js/unidades_saude.js?v=popup-20261021"></script>
 <script src="js/jurisdicao/config.js?v=cod1-20261023"></script>
 <script src="js/jurisdicao/indicadores.js?v=jur6-20261021"></script>
