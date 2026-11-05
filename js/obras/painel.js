@@ -326,7 +326,7 @@ var ObrasPainel = (function() {
   function filtroColuna(c) {
     var listas = ObrasStore.listas();
     return FiltroCabecalho.coluna({
-      tipo: c.tipo === 'lista' ? 'lista' : c.tipo === 'numero' ? 'numero' : 'texto',
+      ordemNumerica: c.tipo === 'numero',
       ler: function(d) { return ObrasStore.valorAtual(d.uid, c.campo); },
       exibir: function(v) { return exibir(c, v); },
       valores: listas[c.campo] && listas[c.campo].length ? listas[c.campo] : null,
@@ -343,15 +343,16 @@ var ObrasPainel = (function() {
           : '<svg style="color:#8a93a3"><use href="#o-split"/></svg>';
       },
       cellClick: function(e, cell) { e.stopPropagation(); abrirFicha(cell.getRow().getData().uid); }
-    }, {
+    }, Object.assign({
       title: '', field: '_mapa', width: 88, headerSort: false, frozen: true, hozAlign: 'center', cssClass: 'col-acao', headerTooltip: 'Traçado',
-      headerFilter: 'list', headerFilterPlaceholder: 'Todos',
-      headerFilterParams: { values: [{ label: 'Com traçado', value: 'com' }, { label: 'Sem traçado', value: 'sem' }], clearable: true },
-      headerFilterFunc: function(h, v, d) { return !h || (h === 'com') === temTracado(d); },
+    }, FiltroCabecalho.coluna({
+      ler: function(d) { return temTracado(d) ? 'com' : 'sem'; }, exibir: function(v) { return v; }, semVazio: true,
+      valores: [{ valor: 'com', rotulo: 'Com traçado' }, { valor: 'sem', rotulo: 'Sem traçado' }], tabela: function() { return grade; }
+    }), {
       formatter: function(cell) { return '<svg class="' + (temTracado(cell.getRow().getData()) ? 'geo-ok' : 'geo-sem') + '"><use href="#o-pin"/></svg>'; },
       tooltip: function(e, cell) { return temTracado(cell.getRow().getData()) ? 'Ver no mapa' : 'Sem traçado'; },
       cellClick: function(e, cell) { e.stopPropagation(); verNoMapa(cell.getRow().getData().uid); }
-    }];
+    })];
     CAMPOS_OBRA.forEach(function(c) {
       cols.push(Object.assign({
         title: c.titulo, field: c.campo, width: c.largura, frozen: !!c.fixa, visible: visiveis.indexOf(c.campo) !== -1,

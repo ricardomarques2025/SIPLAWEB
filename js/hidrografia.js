@@ -127,7 +127,8 @@ var Hidrografia = (function() {
   // para os menores; quanto mais perto, mais cursos ganham nome (STRAHLER_MIN por zoom).
   var STRAHLER_MIN = { 9: 6, 10: 5, 11: 3, 12: 2 };   // zoom >= 13: todos; < 9: nenhum
   var RotulosLayer = L.Layer.extend({
-    options: { escala: 1, pane: 'hidrografiaRotulosPane', zPane: 480 },   // escala > 1: canvas mais denso (impressão)
+    // escala > 1: canvas mais denso (impressão); obstaculos: panes cujo desenho os nomes não podem cobrir (obras etc.)
+    options: { escala: 1, pane: 'hidrografiaRotulosPane', zPane: 480, obstaculos: null },
     initialize: function(opcoes) { L.setOptions(this, opcoes); },
     onAdd: function(map) {
       this._map = map;
@@ -161,11 +162,67 @@ var Hidrografia = (function() {
       var z = map.getZoom();
       if (z < 9) return;
       var minS = z >= 13 ? 1 : STRAHLER_MIN[Math.floor(z)];
-      desenharRotulos(map, ctx, tam, z, minS);
+      var obst = this.options.obstaculos ? gradeObstaculos(map, this.options.obstaculos) : null;
+      desenharRotulos(map, ctx, tam, z, minS, obst);
     }
   });
 
-  function desenharRotulos(map, ctx, tam, z, minS) {
+  // Obstáculos (em pixels da tela) numa grade de 32 px: ícones/marcadores pela caixa na tela, linhas e círculos
+  // pela largura do traço (+3 px de folga). Os nomes dos cursos não podem encostar neles.
+  var CEL = 32;
+  function gradeObstaculos(map, panes) {
+    var grade = {}, rc = map.getContainer().getBoundingClientRect(), tam = map.getSize();
+    function por(x0, y0, x1, y1) {
+      if (x1 < 0 || y1 < 0 || x0 > tam.x || y0 > tam.y) return;
+      var b = { x0: x0, y0: y0, x1: x1, y1: y1 };
+      for (var cx = Math.floor(x0 / CEL); cx <= Math.floor(x1 / CEL); cx++) {
+        for (var cy = Math.floor(y0 / CEL); cy <= Math.floor(y1 / CEL); cy++) {
+          var k = cx + ',' + cy; (grade[k] || (grade[k] = [])).push(b);
+        }
+      }
+    }
+    map.eachLayer(function(l) {
+      var pane = (l.options && l.options.pane) || (l._icon ? 'markerPane' : 'overlayPane');
+      if (panes.indexOf(pane) === -1) return;
+      if (l._icon) {
+        var r = l._icon.getBoundingClientRect();
+        if (r.width) por(r.left - rc.left - 2, r.top - rc.top - 2, r.right - rc.left + 2, r.bottom - rc.top + 2);
+        return;
+      }
+      var meia = (l.options.weight || 3) / 2 + 3;
+      if (l._point && l._radius != null) {   // CircleMarker / Circle
+        var c = map.layerPointToContainerPoint(l._point), rr = l._radius + meia;
+        por(c.x - rr, c.y - rr, c.x + rr, c.y + rr);
+        return;
+      }
+      (l._parts || []).forEach(function(parte) {
+        for (var i = 1; i < parte.length; i++) {
+          var a = map.layerPointToContainerPoint(parte[i - 1]), b = map.layerPointToContainerPoint(parte[i]);
+          var n = Math.max(1, Math.ceil(a.distanceTo(b) / 8));
+          for (var k = 0; k <= n; k++) {
+            var x = a.x + (b.x - a.x) * k / n, y = a.y + (b.y - a.y) * k / n;
+            por(x - meia, y - meia, x + meia, y + meia);
+          }
+        }
+      });
+    });
+    return grade;
+  }
+  function bateObstaculo(grade, q) {
+    for (var cx = Math.floor(q.x0 / CEL); cx <= Math.floor(q.x1 / CEL); cx++) {
+      for (var cy = Math.floor(q.y0 / CEL); cy <= Math.floor(q.y1 / CEL); cy++) {
+        var lista = grade[cx + ',' + cy];
+        if (!lista) continue;
+        for (var i = 0; i < lista.length; i++) {
+          var o = lista[i];
+          if (q.x0 < o.x1 && q.x1 > o.x0 && q.y0 < o.y1 && q.y1 > o.y0) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  function desenharRotulos(map, ctx, tam, z, minS, obst) {
     var vista = map.getBounds().pad(0.05);
     var oeste = vista.getWest(), leste = vista.getEast(), sul = vista.getSouth(), norte = vista.getNorth();
     var cand = cursos.filter(function(cu) {
@@ -256,6 +313,7 @@ var Hidrografia = (function() {
         }
         for (var j = 0; j < caixas.length; j++) {
           var q = caixas[j];
+          if (obst && bateObstaculo(obst, q)) return false;
           for (var k = 0; k < ocupadas.length; k++) {
             var o = ocupadas[k];
             if (q.x0 < o.x1 && q.x1 > o.x0 && q.y0 < o.y1 && q.y1 > o.y0) return false;
@@ -327,10 +385,11 @@ var Hidrografia = (function() {
 
   // ---------- Camada do mapa ----------
   // Grupo vazio na hora; as linhas e os rótulos entram quando o arquivo chega. Linhas em canvas (são muitas).
-  function criarCamada(pane) {
+  // opcoes.obstaculos: panes das obras (os nomes dos cursos não as cobrem)
+  function criarCamada(pane, opcoes) {
     var grupo = L.layerGroup();
     var renderer = L.canvas({ pane: pane || 'overlayPane', padding: 0.3 });
-    var geo = null, rotulos = new RotulosLayer();
+    var geo = null, rotulos = new RotulosLayer({ obstaculos: (opcoes && opcoes.obstaculos) || null });
     function restilizar() {
       if (geo && grupo._map) { var z = grupo._map.getZoom(); geo.setStyle(function(f) { return estilo(f, z); }); }
     }
@@ -365,7 +424,8 @@ var Hidrografia = (function() {
       var pane = garantirPane(map, opcoes.pane || 'pHidrografia', opcoes.zPane || 330);
       var geo = L.geoJSON({ type: 'FeatureCollection', features: feats }, { pane: pane, interactive: false,
         style: function(f) { return estilo(f, map.getZoom()); } });
-      var rot = new RotulosLayer({ escala: 3, pane: opcoes.paneRotulos || 'pHidroRotulos', zPane: opcoes.zRotulos || 600 });
+      var rot = new RotulosLayer({ escala: 3, pane: opcoes.paneRotulos || 'pHidroRotulos', zPane: opcoes.zRotulos || 600,
+        obstaculos: opcoes.obstaculos || null });
       map.on('zoomend', function() { geo.setStyle(function(f) { return estilo(f, map.getZoom()); }); });
       return L.layerGroup([geo, rot]).addTo(map);
     });

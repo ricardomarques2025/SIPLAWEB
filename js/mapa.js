@@ -3814,7 +3814,7 @@ map.addControl(new LogoMapaControl());
       if (window.Hidrografia) Hidrografia.destacar(map, null);
       return;
     }
-    if (!hidrografiaLayer) hidrografiaLayer = Hidrografia.criarCamada('hidrografiaPane');
+    if (!hidrografiaLayer) hidrografiaLayer = Hidrografia.criarCamada('hidrografiaPane', { obstaculos: ['servicosPane', 'oaePane', 'markerPane'] });   // nomes não cobrem as obras
     if (!map.hasLayer(hidrografiaLayer)) hidrografiaLayer.addTo(map);
     atualizarLegendaHidrografia();
   }

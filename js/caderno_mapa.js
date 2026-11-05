@@ -243,7 +243,8 @@ var CadernoMapa = (function() {
     });
     // Hidrografia: só nas pranchas de obra/trecho (no mapa de Goiás inteiro seriam 30 mil linhas ilegíveis).
     const hidro = temDesenho && window.Hidrografia
-      ? Hidrografia.camadaPrancha(map, { area: map.getBounds().pad(1), pane: 'pHidrografia', zPane: 330, paneRotulos: 'pHidroRotulos', zRotulos: 600 })
+      ? Hidrografia.camadaPrancha(map, { area: map.getBounds().pad(1), pane: 'pHidrografia', zPane: 330, paneRotulos: 'pHidroRotulos', zRotulos: 600,
+          obstaculos: ['pTrecho', 'pRotulos'] })   // nomes dos cursos não cobrem a obra nem os outros nomes da folha
         .catch(e => console.warn('hidrografia na prancha:', e))
       : Promise.resolve();
     const pronto = Promise.all([imagens, hidro]);

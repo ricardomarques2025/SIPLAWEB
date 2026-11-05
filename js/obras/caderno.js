@@ -84,7 +84,7 @@
     [/viaduto/i, 'viaduto', 'Viaduto'],
     [/ponte|\boae\b/i, 'ponte', 'Ponte']
   ];
-  const urlIcone = arq => 'img/obras/icones/' + arq + '.svg';
+  const urlIcone = arq => 'img/obras/icones/' + arq + '.svg?v=cor1-20261105';   // ?v: troca de cor dos ícones (05/11/2026)
   const soPontos = geos => geos.length > 0 && geos.every(g => /Point/.test(g.type));
   function iconeObra(o, geos) {
     if (!soPontos(geos)) return null;
