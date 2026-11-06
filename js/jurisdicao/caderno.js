@@ -180,7 +180,7 @@
     ['lei', 'LEI MUNICIPAL', 'Autorização do município (Art. 3º)'],
     ['exposicao', 'EXPOSIÇÃO DE MOTIVOS', 'Justificativa de absorção ou doação.'],
     ['leiEstadual', 'LEI ESTADUAL', 'Aprovação pela ALEGO e sanção do Governador (Art. 6º)'],
-    ['termo', 'TERMO DE REFERÊNCIA', 'Assinatura do Termo e transferência do trecho à GOINFRA (Art. 6º)'],
+    ['termo', 'TERMO DE TRANSFERÊNCIA', 'Assinatura do Termo e transferência do trecho à GOINFRA (Art. 6º)'],
     ['extensao', 'PROCESSO CONCLUÍDO', 'Incluída no programa de conservação da malha estadual (Art. 6º)']
   ];
   const SETA_FLUXO = '<svg class="fluxo-seta" viewBox="0 0 24 16" aria-hidden="true"><path d="M1 5h13V1l9 7-9 7v-4H1z" fill="#3b6fc4"/></svg>';
