@@ -343,7 +343,7 @@ var Acesso = (function() {
   var NOVIDADES = [
     ['3.4', '10/11/2026', [
       'FUNDEINFRA passa a ser um filtro: o botão e o cartão FUNDEINFRA mostram as obras da DOR, da DPJ e das demais origens com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra). Cada obra continua na sua origem; com as duas ligadas, o trecho aparece uma vez só.',
-      'Painel › Configurações › Listas de valores (administrador): opções das listas suspensas das obras (etapa, status, intervenção, modalidade, fonte, fase). Incluir, renomear (atualiza as obras que usam o valor), mudar a ordem, desativar e excluir valor sem uso.',
+      'Painel › Configurações › Listas de valores (administrador): opções das listas suspensas das obras (etapa, status, intervenção, modalidade, fonte, fase). Incluir, renomear (atualiza as obras que usam o valor), juntar valores repetidos (\"Juntar com…\"), mudar a ordem, desativar e excluir valor sem uso.',
       'Obras DPJ atualizadas (camadas de 10/11/2026), no padrão da DOR: modalidade Projeto / Anteprojeto / Obra / Obra Integrada; etapa Projeto, Licitação (projeto em licitação) ou Planejamento (estudo técnico preliminar); "Nº na origem" com o código da DPJ (TRC_ / PNT_).'
     ]],
     ['3.3', '05/11/2026', [

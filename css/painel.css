@@ -221,3 +221,4 @@ button.pn-linha:hover, button.pn-linha:focus-visible { background: var(--fundo);
 .pn-listas tr.inativo td:nth-child(4) { opacity: 1; }
 .pn-listas .pn-lista-nova td { background: #f8fafc; }
 #listasCampos small { font-weight: 500; opacity: .7; }
+.pn-listas .pn-juntar { font: inherit; font-size: 12px; max-width: 160px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 3px 4px; background: #fff; }

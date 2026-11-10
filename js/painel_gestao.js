@@ -638,6 +638,8 @@
           '<td class="pn-c">' + num(uso) + '</td>' +
           '<td class="pn-c"><input type="checkbox" data-ativa' + (l.ativo ? ' checked' : '') + ' title="Aparece na lista suspensa"></td>' +
           '<td class="pn-c"><button type="button" class="btn btn-primario" data-salvar-valor hidden>Renomear</button>' +
+          ' <select class="pn-juntar" data-juntar title="As obras passam para o valor escolhido e este sai da lista"><option value="">Juntar com…</option>' +
+          itens.filter(function(o) { return o.valor !== l.valor; }).map(function(o) { return '<option>' + esc(o.valor) + '</option>'; }).join('') + '</select>' +
           (uso ? '' : ' <button type="button" class="btn" data-excluir-valor title="Nenhuma obra usa este valor">Excluir</button>') + '</td></tr>';
       }).join('') +
       '<tr class="pn-lista-nova"><td></td><td><input class="pn-in" data-novo-valor placeholder="Novo valor"></td><td></td><td></td>' +
@@ -685,8 +687,20 @@
       })).then(function() { return carregarListas().then(renderListas); }).catch(falhaLista);
     }
   }
+  // Juntar valores repetidos: as obras com este valor passam para o escolhido; este sai da lista (admin_lista_juntar).
+  function juntarValor(sel) {
+    var de = sel.closest('tr').dataset.valor, para = sel.value, campo = listaCampo, uso = usoLista(campo, de);
+    if (!para) return;
+    if (!confirm('Juntar "' + de + '" com "' + para + '"?\n\n' + (uso ? uso + ' obra(s) passam para "' + para + '" (fica no histórico de cada uma). ' : '') +
+        '"' + de + '" sai da lista.')) { sel.value = ''; return; }
+    var guardar = uso > 0 && confirm('Guardar o texto antigo ("' + de + '") nas observações dessas obras?\n\nOK = guardar · Cancelar = não guardar');
+    sel.disabled = true;
+    sb.rpc('admin_lista_juntar', { p_campo: campo, p_de: de, p_para: para, p_guardar: guardar }).then(dados)
+      .then(function(n) { return depoisDeListar('"' + de + '" juntado com "' + para + '"' + (n ? ' · ' + n + ' obra(s) atualizada(s)' : '')); }).catch(falhaLista);
+  }
   function aoMudarListas(e) {
     var t = e.target, tr = t.closest('tr');
+    if (t.hasAttribute('data-juntar')) { if (e.type === 'change') juntarValor(t); return; }
     if (t.hasAttribute('data-renomear')) {
       tr.querySelector('[data-salvar-valor]').hidden = limparValor(t.value) === tr.dataset.valor;
       return;
@@ -821,7 +835,7 @@
     $('listasCampos').addEventListener('click', function(e) { var b = e.target.closest('[data-lista-campo]'); if (b) { listaCampo = b.dataset.listaCampo; renderListas(); } });
     $('listas').addEventListener('click', aoClicarListas);
     $('listas').addEventListener('input', aoMudarListas);
-    $('listas').addEventListener('change', function(e) { if (e.target.hasAttribute('data-ativa')) aoMudarListas(e); });
+    $('listas').addEventListener('change', function(e) { if (e.target.hasAttribute('data-ativa') || e.target.hasAttribute('data-juntar')) aoMudarListas(e); });
     $('listas').addEventListener('keydown', function(e) {
       if (e.key !== 'Enter') return;
       var b = e.target.closest('tr') && e.target.closest('tr').querySelector(e.target.hasAttribute('data-novo-valor') ? '[data-incluir-valor]' : '[data-salvar-valor]');
