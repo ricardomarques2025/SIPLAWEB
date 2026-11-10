@@ -161,6 +161,7 @@
   <h1>Origens</h1>
   <p>A <b>origem</b> é a área responsável pelo empreendimento: FUNDEINFRA, DOR, DMA, DPJ, DPL, TARE, DOC, DSV, GME, GMK, GMM, GMP. No grupo <b>ORIGEM</b> do menu esquerdo, cada botão liga ou desliga as obras daquela origem; botão verde = ligado.</p>
   <p>A origem controla também a legenda, a exportação, os rótulos e a impressão.</p>
+  <p><b>FUNDEINFRA é um filtro</b> (desde a versão 3.4): o botão mostra as obras das outras origens (DOR, DPJ...) cujo recurso é do Fundeinfra (fonte <i>Fundeinfra</i> ou <i>Associativo-Fundeinfra</i>). A obra continua sendo da sua origem; com FUNDEINFRA e a origem dela ligadas, o trecho aparece uma vez só. A busca <b>Proposta FUNDEINFRA</b> usa o número da proposta dessas obras.</p>
   <h2>Ligar Tudo / Limpar e Desligar Tudo</h2>
   <ul>
     <li><b>Ligar Tudo / Limpar</b>: limpa todos os filtros e volta ao estado em que o mapa foi aberto (só a origem escolhida; no Mapa geral, todas as suas).</li>
@@ -600,7 +601,7 @@
     <li>Todos: <b>origens com dados atrasados</b> (amarelo depois de 45 dias, vermelho depois de 90). O aviso fica até a origem atualizar a data de referência.</li>
   </ul>
   <h2>Configurações</h2>
-  <p><span class="aj-nivel n5">Administrador</span>: <b>Perfis de acesso</b> (o que cada perfil pode fazer e de quem aprova as propostas; só o administrador master altera, cria ou exclui perfis sem uso), quadro <b>Quem pode o quê</b> (perfil de cada pessoa por área), <b>Camadas editáveis</b> (marque as camadas que cada pessoa com perfil que edita camadas pode editar; grava ao marcar) e <b>Acessos recentes</b>.</p>
+  <p><span class="aj-nivel n5">Administrador</span>: <b>Perfis de acesso</b> (o que cada perfil pode fazer e de quem aprova as propostas; só o administrador master altera, cria ou exclui perfis sem uso), <b>Listas de valores</b> (as opções das listas suspensas das obras: etapa, status, intervenção, modalidade, fonte e fase; incluir, renomear, mudar a ordem, desativar e excluir valor sem uso. Renomear troca o valor também nas obras que o usam, com registro no histórico de cada uma; desativar só tira o valor da lista suspensa), quadro <b>Quem pode o quê</b> (perfil de cada pessoa por área), <b>Camadas editáveis</b> (marque as camadas que cada pessoa com perfil que edita camadas pode editar; grava ao marcar) e <b>Acessos recentes</b>.</p>
 </article>
 
 <article id="camadas-edicao" data-cat="Mapa" data-titulo="Editar camadas no mapa" data-termos="editar camadas desenhar ponto linha polígono área de estudo pontos genéricos linhas genéricas malha complementar geo_pt_base geo_lin_base geo_pol_base importar geojson vértices excluir cópias arquivadas PTO LIN GEO" data-rel="admin-painel jurisdicao-malha obras-tracado">
@@ -723,7 +724,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=hrd13-20261105"></script>
+<script src="js/acesso.js?v=fund1-20261110"></script>
 <script src="js/ajuda.js?v=ajd2-20261023"></script>
 </body>
 </html>

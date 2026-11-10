@@ -69,6 +69,7 @@ var DadosBanco = (function() {
   function registroLegado(o) {
     var ponto = o.geom && o.geom.type === 'Point' ? o.geom.coordinates : pontoDaBase(o);
     return {
+      FONTE_FUNDEINFRA: ehFonteFundeinfra(o),
       IDCOD: o.codigo,
       IDCOD_LEGADO: o.idcod_legado,
       IDGRUPO: o.grupo ? o.grupo.codigo : null,
@@ -105,6 +106,13 @@ var DadosBanco = (function() {
     };
   }
 
+  // FUNDEINFRA (10/11/2026): deixa de ser uma camada própria e vira filtro das obras das demais origens (DOR, DPJ...)
+  // cujo recurso é do Fundeinfra. As obras de origem FUNDEINFRA continuam no banco (tabela de obras), mas não vão
+  // para o mapa; o botão FUNDEINFRA mostra as obras marcadas com FONTE_FUNDEINFRA.
+  var FONTES_FUNDEINFRA = ['Fundeinfra', 'Associativo-Fundeinfra'];
+  function ehFonteFundeinfra(o) { return FONTES_FUNDEINFRA.indexOf(o.fonte) !== -1; }
+  function vaiParaOMapa(o) { return o.origem !== 'FUNDEINFRA'; }
+
   function temDesenho(o) { return o.tipo === 'Linha' && o.geom && /LineString/.test(o.geom.type); }
 
   function linksLegado(obras) {
@@ -124,6 +132,7 @@ var DadosBanco = (function() {
       carga = Acesso.pronto.then(function() {
         return Promise.all([buscarObras(), buscarPontosBase()]).then(function(r) { return r[0]; });
       }).then(function(obras) {
+        obras = obras.filter(vaiParaOMapa);
         console.log('Obras carregadas do banco:', obras.length);
         var desenhos = {};
         obras.filter(temDesenho).forEach(function(o) {

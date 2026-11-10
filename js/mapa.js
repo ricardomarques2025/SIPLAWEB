@@ -2214,6 +2214,17 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  // FUNDEINFRA deixou de ser camada própria (10/11/2026): é um filtro das obras com fonte Fundeinfra/Associativo.
+  // A obra continua da sua origem (DOR, DPJ...) e aparece também com o botão FUNDEINFRA ligado.
+  function ehObraFundeinfra(item) {
+    return !!(item && item.FONTE_FUNDEINFRA);
+  }
+
+  // Obra pontual visível com as origens ligadas: a própria origem ou, se for do Fundeinfra, o botão FUNDEINFRA.
+  function origemPontoAtiva(item) {
+    return !!(servicosAtivos[origemObraPonto(item)] || (servicosAtivos.FUNDEINFRA && ehObraFundeinfra(item)));
+  }
+
   function registrosDadosPorUnidade(registros, unidade) {
     var unidadeNormalizada = String(unidade || '').trim().toUpperCase();
     return registros.filter(function(item) {
@@ -2513,7 +2524,8 @@ map.addControl(new LogoMapaControl());
     dadosUnificadosData = registros || [];
     dadosUnificadosPorGrupo = indexarDadosPorGrupo(dadosUnificadosData);
     var linhas = registrosDadosPorTipo(registros, 'Link');
-    obrasFundeinfraData = registrosDadosPorUnidade(linhas, 'FUNDEINFRA');
+    // FUNDEINFRA = filtro: obras das demais origens com recurso do Fundeinfra (js/dados_banco.js, FONTE_FUNDEINFRA).
+    obrasFundeinfraData = linhas.filter(ehObraFundeinfra);
     obrasDorData = registrosDadosPorUnidade(linhas, 'DOR');
     obrasDmaData = registrosDadosPorUnidade(linhas, 'DMA');
     obrasDplData = registrosDadosPorUnidade(linhas, 'DPL');
@@ -3095,14 +3107,15 @@ map.addControl(new LogoMapaControl());
       for (var p = 0; p < obrasPontosData.features.length; p++) {
         var featurePonto = obrasPontosData.features[p];
         var dadosPonto = dadosObrasPontosDaFeature(featurePonto);
-        if (!dadosPonto || origemObraPonto(dadosPonto) !== 'FUNDEINFRA') continue;
+        if (!dadosPonto || !ehObraFundeinfra(dadosPonto)) continue;
         if (dadosPonto && dadosPonto.PROPOSTA !== null && dadosPonto.PROPOSTA !== undefined && String(dadosPonto.PROPOSTA).trim() !== '') {
           adicionarUnico(propostas, String(dadosPonto.PROPOSTA));
         }
       }
     }
 
-    propostas.sort(function(a, b) { return Number(a) - Number(b); });
+    // Propostas no formato da DOR ("018/2023"): ordem pelo número, depois o ano.
+    propostas.sort(function(a, b) { return String(a).localeCompare(String(b), 'pt-BR', { numeric: true }); });
     propostas.forEach(function(p) {
       var opt = document.createElement('option');
       opt.value = p;
@@ -3131,8 +3144,7 @@ map.addControl(new LogoMapaControl());
     function addIntervencaosPontos(lista) {
       for (var i = 0; i < lista.length; i++) {
         var item = lista[i];
-        var origem = origemObraPonto(item);
-        if (respeitarOrigem && !servicosAtivos[origem]) continue;
+        if (respeitarOrigem && !origemPontoAtiva(item)) continue;
         var s = valorFiltroObraPonto(item);
         if (s && servicos.indexOf(s) === -1) servicos.push(s);
       }
@@ -5378,9 +5390,8 @@ map.addControl(new LogoMapaControl());
 
     for (var i = 0; i < todos.length; i++) {
       var item = todos[i];
-      var origem = origemObraPonto(item);
-      if (!servicosAtivos[origem]) continue;
-      if (proposta && (origem !== 'FUNDEINFRA' || String(item.PROPOSTA) !== String(proposta))) continue;
+      if (!origemPontoAtiva(item)) continue;
+      if (proposta && (!ehObraFundeinfra(item) || String(item.PROPOSTA) !== String(proposta))) continue;
       if (servicoFiltroAtivo && valorFiltroObraPonto(item) !== servicoFiltroAtivo) continue;
       filtrados.push(item);
     }
@@ -9495,6 +9506,7 @@ map.addControl(new LogoMapaControl());
       }
       if (registro.MUNICIPIO && !feature.properties.NM_MUN) feature.properties.NM_MUN = registro.MUNICIPIO;
       feature.properties[linkField] = registro.IDCOD;
+      if (registro.FONTE_FUNDEINFRA) feature.properties.LINK_FUND = registro.IDCOD;
     });
     return { type: 'FeatureCollection', features: Object.keys(featuresPorChave).map(function(chave) { return featuresPorChave[chave]; }) };
   }

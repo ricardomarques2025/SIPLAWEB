@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/inicio_painel.css?v=mosaico-20261021" />
   <link rel="stylesheet" href="css/usuarios.css?v=perfis1-20261027" />
-  <link rel="stylesheet" href="css/painel.css?v=perfis1-20261027" />
+  <link rel="stylesheet" href="css/painel.css?v=listas1-20261110" />
 </head>
 <body>
   <header class="topo">
@@ -95,6 +95,14 @@
         <div id="perfis" class="pn-rolagem"></div>
       </article>
       <article class="pn-cartao">
+        <h3>Listas de valores <small>opções das listas suspensas das obras · só o administrador altera</small></h3>
+        <div class="pn-filtros" id="listasCampos"></div>
+        <div id="listas" class="pn-rolagem"></div>
+        <p class="pn-nota">Nas obras, estes campos só aceitam valores da lista (escolhidos na lista suspensa). <b>Renomear</b> troca o valor
+          também em todas as obras que o usam (fica no histórico de cada uma). <b>Ativa</b> desmarcada: o valor sai da lista suspensa, mas as
+          obras que já o usam continuam com ele. <b>Excluir</b> só aparece para valor que nenhuma obra usa. As setas mudam a ordem na lista.</p>
+      </article>
+      <article class="pn-cartao">
         <h3>Quem pode o quê <small>perfil de cada usuário por área · para mudar, use Usuários e permissões</small></h3>
         <div class="pn-legenda pn-legenda-niveis" id="legendaPerfis"></div>
         <div id="matriz" class="pn-rolagem"></div>
@@ -119,9 +127,9 @@
   <div class="toasts" id="toasts"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-  <script src="js/acesso.js?v=hrd13-20261105"></script>
+  <script src="js/acesso.js?v=fund1-20261110"></script>
   <script src="js/obras/config.js?v=cam1-20261026"></script>
   <script src="js/jurisdicao/config.js?v=cod1-20261023"></script>
-  <script src="js/painel_gestao.js?v=perfis1-20261027"></script>
+  <script src="js/painel_gestao.js?v=listas1-20261110"></script>
 </body>
 </html>

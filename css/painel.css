@@ -212,3 +212,12 @@ button.pn-linha:hover, button.pn-linha:focus-visible { background: var(--fundo);
 #dlgPropostaCorpo .pn-proposta { border: 0; padding: 0; }
 @media (max-width: 900px) { .pn-kanban { grid-template-columns: repeat(4, 78vw); } }
 .pn-versao { color: #6b7a70; font-size: 11.5px; margin-left: 10px; text-decoration: underline dotted; }
+
+/* Listas de valores (017_listas_admin.sql): opções das listas suspensas das obras, editadas pelo administrador. */
+.pn-listas .pn-c { text-align: center; white-space: nowrap; }
+.pn-listas .pn-in { width: 100%; min-width: 220px; font: inherit; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 6px; }
+.pn-listas .pn-ordem .btn { padding: 2px 7px; margin: 0 1px; }
+.pn-listas tr.inativo td { opacity: .55; }
+.pn-listas tr.inativo td:nth-child(4) { opacity: 1; }
+.pn-listas .pn-lista-nova td { background: #f8fafc; }
+#listasCampos small { font-weight: 500; opacity: .7; }

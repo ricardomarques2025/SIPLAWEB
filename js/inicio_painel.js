@@ -62,10 +62,15 @@
     return DadosBanco.registros();
   }).then(function(regs) {
     var porOrigem = {}, obra = 0, projeto = 0, atualizado = '';
-    regs.forEach(function(o) {
-      var x = porOrigem[o.UNIDADE] = porOrigem[o.UNIDADE] || { total: 0, Obra: 0, Projeto: 0, Planejamento: 0, outros: 0 };
+    function contar(sigla, o) {
+      var x = porOrigem[sigla] = porOrigem[sigla] || { total: 0, Obra: 0, Projeto: 0, Planejamento: 0, outros: 0 };
       x.total++;
       if (x[o.ETAPA] !== undefined) x[o.ETAPA]++; else x.outros++;
+    }
+    regs.forEach(function(o) {
+      contar(o.UNIDADE, o);
+      // FUNDEINFRA é filtro (fonte do recurso): o cartão conta as obras das outras origens com recurso do Fundeinfra.
+      if (o.FONTE_FUNDEINFRA) contar('FUNDEINFRA', o);
       if (o.ETAPA === 'Obra') obra++;
       if (o.ETAPA === 'Projeto') projeto++;
       if (o.ATUALIZACAO && o.ATUALIZACAO > atualizado) atualizado = o.ATUALIZACAO;

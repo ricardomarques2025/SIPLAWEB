@@ -605,7 +605,98 @@
       return carregarContas().then(renderConfig);
     }).catch(function(err) { b.disabled = false; toast(err.message, true); });
   }
-  function renderConfig() { renderPerfis(); renderMatriz(); renderCamadas(); }
+  function renderConfig() { renderPerfis(); renderListas(); renderMatriz(); renderCamadas(); }
+
+  // ---------- Listas de valores (siplaweb.listas; supabase/017_listas_admin.sql) ----------
+  var LISTAS_CAMPOS = [['etapa', 'Etapa'], ['status', 'Status'], ['intervencao', 'Intervenção'], ['modalidade', 'Modalidade'],
+    ['fonte', 'Fonte do recurso'], ['fase', 'Fase']];
+  var listasAdm = [], listasUso = {}, listaCampo = 'status';
+  function carregarListas() {
+    if (!perfil.admin) return Promise.resolve();
+    return Promise.all([
+      sb.from('listas').select('campo,valor,ordem,ativo').order('campo').order('ordem').then(dados),
+      sb.rpc('listas_uso').then(dados)
+    ]).then(function(r) { listasAdm = r[0]; listasUso = r[1] || {}; });
+  }
+  function itensLista(campo) {
+    return listasAdm.filter(function(l) { return l.campo === campo; }).sort(function(a, b) { return a.ordem - b.ordem || a.valor.localeCompare(b.valor); });
+  }
+  function usoLista(campo, valor) { return (listasUso[campo] || {})[valor] || 0; }
+  function renderListas() {
+    $('listasCampos').innerHTML = '<span class="pn-filtros-rotulo">Campo</span>' + LISTAS_CAMPOS.map(function(c) {
+      return '<button type="button" data-lista-campo="' + c[0] + '"' + (c[0] === listaCampo ? ' class="ativo"' : '') + '>' + esc(c[1]) +
+        ' <small>' + itensLista(c[0]).length + '</small></button>';
+    }).join('');
+    var itens = itensLista(listaCampo);
+    $('listas').innerHTML = '<table class="pn-tabela pn-listas"><thead><tr><th class="pn-c">Ordem</th><th>Valor</th><th class="pn-c">Obras que usam</th>' +
+      '<th class="pn-c">Ativa</th><th></th></tr></thead><tbody>' + itens.map(function(l, i) {
+        var uso = usoLista(l.campo, l.valor);
+        return '<tr data-valor="' + esc(l.valor) + '"' + (l.ativo ? '' : ' class="inativo"') + '>' +
+          '<td class="pn-c pn-ordem"><button type="button" class="btn" data-mover="-1"' + (i ? '' : ' disabled') + ' title="Subir">↑</button>' +
+          '<button type="button" class="btn" data-mover="1"' + (i < itens.length - 1 ? '' : ' disabled') + ' title="Descer">↓</button></td>' +
+          '<td><input class="pn-in" data-renomear value="' + esc(l.valor) + '"></td>' +
+          '<td class="pn-c">' + num(uso) + '</td>' +
+          '<td class="pn-c"><input type="checkbox" data-ativa' + (l.ativo ? ' checked' : '') + ' title="Aparece na lista suspensa"></td>' +
+          '<td class="pn-c"><button type="button" class="btn btn-primario" data-salvar-valor hidden>Renomear</button>' +
+          (uso ? '' : ' <button type="button" class="btn" data-excluir-valor title="Nenhuma obra usa este valor">Excluir</button>') + '</td></tr>';
+      }).join('') +
+      '<tr class="pn-lista-nova"><td></td><td><input class="pn-in" data-novo-valor placeholder="Novo valor"></td><td></td><td></td>' +
+      '<td class="pn-c"><button type="button" class="btn btn-primario" data-incluir-valor>Incluir</button></td></tr></tbody></table>';
+  }
+  function limparValor(v) { return String(v || '').replace(/\s+/g, ' ').trim(); }
+  function depoisDeListar(msg) { toast(msg); return carregarListas().then(renderListas); }
+  function falhaLista(err) { toast(err.message, true); return carregarListas().then(renderListas); }
+  function aoClicarListas(e) {
+    var b = e.target.closest('button');
+    if (!b || b.disabled) return;
+    var tr = b.closest('tr'), valor = tr && tr.dataset.valor, campo = listaCampo;
+    var nomeCampo = LISTAS_CAMPOS.find(function(c) { return c[0] === campo; })[1].toLowerCase();
+    if (b.hasAttribute('data-incluir-valor')) {
+      var novo = limparValor(tr.querySelector('[data-novo-valor]').value);
+      if (!novo) { toast('Escreva o valor', true); return; }
+      var igual = itensLista(campo).find(function(l) { return l.valor.toLowerCase() === novo.toLowerCase(); });
+      if (igual) { toast('Já existe "' + igual.valor + '" na lista', true); return; }
+      var ordem = Math.max.apply(null, itensLista(campo).map(function(l) { return l.ordem; }).concat(0)) + 1;
+      b.disabled = true;
+      return sb.from('listas').insert({ campo: campo, valor: novo, ordem: ordem, ativo: true }).then(dados)
+        .then(function() { return depoisDeListar('"' + novo + '" incluído na lista de ' + nomeCampo); }).catch(falhaLista);
+    }
+    if (b.hasAttribute('data-salvar-valor')) {
+      var para = limparValor(tr.querySelector('[data-renomear]').value);
+      if (!para || para === valor) return;
+      var uso = usoLista(campo, valor);
+      if (!confirm('Renomear "' + valor + '" para "' + para + '"?' + (uso ? '\n\n' + uso + ' obra(s) que usam este valor serão atualizadas (fica no histórico de cada uma).' : ''))) return;
+      b.disabled = true;
+      return sb.rpc('admin_lista_renomear', { p_campo: campo, p_de: valor, p_para: para }).then(dados)
+        .then(function(n) { return depoisDeListar('Renomeado para "' + para + '"' + (n ? ' · ' + n + ' obra(s) atualizada(s)' : '')); }).catch(falhaLista);
+    }
+    if (b.hasAttribute('data-excluir-valor')) {
+      if (!confirm('Excluir "' + valor + '" da lista de ' + nomeCampo + '?')) return;
+      return sb.rpc('admin_lista_excluir', { p_campo: campo, p_valor: valor }).then(dados)
+        .then(function() { return depoisDeListar('"' + valor + '" excluído'); }).catch(falhaLista);
+    }
+    if (b.hasAttribute('data-mover')) {
+      // Renumera o campo inteiro (1, 2, 3...) com o item trocado de lugar; grava só as linhas que mudaram.
+      var itens = itensLista(campo), i = itens.findIndex(function(l) { return l.valor === valor; }), j = i + Number(b.dataset.mover);
+      var tmp = itens[i]; itens[i] = itens[j]; itens[j] = tmp;
+      var mudou = itens.map(function(l, k) { return { l: l, ordem: k + 1 }; }).filter(function(x) { return x.l.ordem !== x.ordem; });
+      return Promise.all(mudou.map(function(x) {
+        return sb.from('listas').update({ ordem: x.ordem }).eq('campo', campo).eq('valor', x.l.valor).then(dados);
+      })).then(function() { return carregarListas().then(renderListas); }).catch(falhaLista);
+    }
+  }
+  function aoMudarListas(e) {
+    var t = e.target, tr = t.closest('tr');
+    if (t.hasAttribute('data-renomear')) {
+      tr.querySelector('[data-salvar-valor]').hidden = limparValor(t.value) === tr.dataset.valor;
+      return;
+    }
+    if (t.hasAttribute('data-ativa')) {
+      var valor = tr.dataset.valor;
+      sb.from('listas').update({ ativo: t.checked }).eq('campo', listaCampo).eq('valor', valor).then(dados)
+        .then(function() { return depoisDeListar('"' + valor + '" ' + (t.checked ? 'volta a aparecer' : 'sai') + ' da lista suspensa'); }).catch(falhaLista);
+    }
+  }
   function renderMatriz() {
     var ativos = contas.filter(function(u) { return u.ativo; }).length;
     $('legendaPerfis').innerHTML = perfisAdm.map(function(f) { return selo(f.codigo) + ' ' + esc(f.nome); }).join(' ') + ' <span class="nv nv-admin">ADM</span> administrador';
@@ -727,6 +818,15 @@
     });
     $('camadasEdicao').addEventListener('change', function(e) { if (e.target.dataset.camadaUser) salvarCamadas(e.target); });
     $('perfis').addEventListener('click', aoClicarPerfis);
+    $('listasCampos').addEventListener('click', function(e) { var b = e.target.closest('[data-lista-campo]'); if (b) { listaCampo = b.dataset.listaCampo; renderListas(); } });
+    $('listas').addEventListener('click', aoClicarListas);
+    $('listas').addEventListener('input', aoMudarListas);
+    $('listas').addEventListener('change', function(e) { if (e.target.hasAttribute('data-ativa')) aoMudarListas(e); });
+    $('listas').addEventListener('keydown', function(e) {
+      if (e.key !== 'Enter') return;
+      var b = e.target.closest('tr') && e.target.closest('tr').querySelector(e.target.hasAttribute('data-novo-valor') ? '[data-incluir-valor]' : '[data-salvar-valor]');
+      if (b && !b.hidden) b.click();
+    });
     $('kanban').addEventListener('click', function(e) { var c = e.target.closest('[data-kb]'); if (c) abrirProposta(c.dataset.kb); });
     $('kbFiltros').addEventListener('input', renderKanban);
     $('kbFiltros').addEventListener('change', renderKanban);
@@ -735,7 +835,7 @@
     // Atalho: painel.html#aprovacoes abre direto o kanban.
     function irKanban() { if (location.hash === '#aprovacoes') document.querySelector('.adm-abas button[data-aba="kanban"]').click(); }
     window.addEventListener('hashchange', irKanban);
-    var carga = Promise.all([carregar(), carregarContas()]);   // a aba Configurações espera por ela
+    var carga = Promise.all([carregar(), carregarContas(), carregarListas()]);   // a aba Configurações espera por ela
     irKanban();   // depois da carga começar: a aba espera por ela
     return carga.then(function() {
       renderFiltros();
