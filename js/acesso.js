@@ -336,7 +336,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-10.01';
+  var VERSAO_SITE = '2026-11-11.01';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -344,7 +344,8 @@ var Acesso = (function() {
     ['3.4', '10/11/2026', [
       'FUNDEINFRA passa a ser um filtro: o botão e o cartão FUNDEINFRA mostram as obras da DOR, da DPJ e das demais origens com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra). Cada obra continua na sua origem; com as duas ligadas, o trecho aparece uma vez só.',
       'Painel › Configurações › Listas de valores (administrador): opções das listas suspensas das obras (etapa, status, intervenção, modalidade, fonte, fase). Incluir, renomear (atualiza as obras que usam o valor), juntar valores repetidos (\"Juntar com…\"), mudar a ordem, desativar e excluir valor sem uso.',
-      'Obras DPJ atualizadas (camadas de 10/11/2026), no padrão da DOR: modalidade Projeto / Anteprojeto / Obra / Obra Integrada; etapa Projeto, Licitação (projeto em licitação) ou Planejamento (estudo técnico preliminar); "Nº na origem" com o código da DPJ (TRC_ / PNT_).'
+      'Obras DPJ atualizadas (camadas de 10/11/2026), no padrão da DOR: modalidade Projeto / Anteprojeto / Obra / Obra Integrada; etapa Projeto, Licitação (projeto em licitação) ou Planejamento (estudo técnico preliminar); "Nº na origem" com o código da DPJ (TRC_ / PNT_).',
+      'Tabela de obras: novas posições das colunas (Nº na origem e Rodovia antes da Descrição, SRE logo depois; Fonte do recurso antes da Etapa) e a Fonte do recurso com cor, como a Etapa.'
     ]],
     ['3.3', '05/11/2026', [
       'Nova camada de referência "Hidrografia": cursos d’água que cruzam as rodovias estaduais e federais, até 2 km de cada lado (base da ANA). Onde o curso continua além da faixa, a linha fica tracejada. Clique para ver o nome, a área de drenagem e as rodovias que cruza.',

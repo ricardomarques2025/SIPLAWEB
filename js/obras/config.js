@@ -10,17 +10,18 @@ var CAMPOS_OBRA = [
   { campo: 'codigo', titulo: 'Código', tipo: 'texto', largura: 112, fixa: true, somenteLeitura: true, comum: true, grupo: 'Identificação' },
   { campo: 'grupo_codigo', titulo: 'Grupo', tipo: 'texto', largura: 96, somenteLeitura: true, grupo: 'Identificação' },
   { campo: 'tipo', titulo: 'Tipo', tipo: 'texto', largura: 74, somenteLeitura: true, comum: true, grupo: 'Identificação' },
-  { campo: 'descricao', titulo: 'Descrição', tipo: 'longo', largura: 320, comum: true, grupo: 'Identificação' },
-  { campo: 'intervencao', titulo: 'Intervenção', tipo: 'lista', largura: 150, comum: true, grupo: 'Identificação' },
   { campo: 'ref', titulo: 'Nº na origem', tipo: 'texto', largura: 96, grupo: 'Identificação' },
+  { campo: 'rodovia', titulo: 'Rodovia', tipo: 'texto', largura: 110, grupo: 'Localização' },
+  { campo: 'descricao', titulo: 'Descrição', tipo: 'longo', largura: 320, comum: true, grupo: 'Identificação' },
+  { campo: 'sre', titulo: 'SRE', tipo: 'texto', largura: 110, grupo: 'Localização' },
+  { campo: 'intervencao', titulo: 'Intervenção', tipo: 'lista', largura: 150, comum: true, grupo: 'Identificação' },
   { campo: 'proposta', titulo: 'Proposta', tipo: 'texto', largura: 90, grupo: 'Identificação' },
   { campo: 'fase', titulo: 'Fase', tipo: 'lista', largura: 140, grupo: 'Situação' },
+  { campo: 'fonte', titulo: 'Fonte do recurso', tipo: 'lista', largura: 150, grupo: 'Contratação' },
   { campo: 'etapa', titulo: 'Etapa', tipo: 'lista', largura: 120, comum: true, grupo: 'Situação' },
   { campo: 'status', titulo: 'Status', tipo: 'lista', largura: 170, comum: true, grupo: 'Situação' },
   { campo: 'data_referencia', titulo: 'Data de referência', tipo: 'data', largura: 130, comum: true, grupo: 'Situação' },
   { campo: 'conclusao', titulo: 'Conclusão prevista', tipo: 'texto', largura: 120, grupo: 'Situação' },
-  { campo: 'rodovia', titulo: 'Rodovia', tipo: 'texto', largura: 110, grupo: 'Localização' },
-  { campo: 'sre', titulo: 'SRE', tipo: 'texto', largura: 110, grupo: 'Localização' },
   { campo: 'municipio', titulo: 'Município', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'localidade', titulo: 'Localidade', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'populacao', titulo: 'População', tipo: 'numero', largura: 100, grupo: 'Localização' },
@@ -29,7 +30,6 @@ var CAMPOS_OBRA = [
   { campo: 'contrato', titulo: 'Contrato', tipo: 'texto', largura: 110, grupo: 'Contratação' },
   { campo: 'empresa', titulo: 'Empresa', tipo: 'texto', largura: 200, grupo: 'Contratação' },
   { campo: 'modalidade', titulo: 'Modalidade', tipo: 'lista', largura: 160, grupo: 'Contratação' },
-  { campo: 'fonte', titulo: 'Fonte do recurso', tipo: 'lista', largura: 150, grupo: 'Contratação' },
   { campo: 'ext_contrato_km', titulo: 'Ext. contrato (km)', tipo: 'numero', largura: 120, grupo: 'Contratação' },
   { campo: 'lote', titulo: 'Lote', tipo: 'texto', largura: 90, grupo: 'Contratação' },
   { campo: 'area_contratada_m2', titulo: 'Área contratada (m²)', tipo: 'numero', largura: 140, grupo: 'Execução' },
@@ -37,6 +37,14 @@ var CAMPOS_OBRA = [
   { campo: 'horas_pagas', titulo: 'Horas pagas', tipo: 'numero', largura: 110, grupo: 'Execução' },
   { campo: 'observacoes', titulo: 'Observações', tipo: 'longo', largura: 260, grupo: 'Execução' }
 ];
+
+// Ordem dos blocos da ficha da obra (independe da ordem das colunas acima).
+var GRUPOS_FICHA_OBRA = ['Identificação', 'Situação', 'Localização', 'Contratação', 'Execução'];
+
+// Selos coloridos na tabela (Etapa e Fonte do recurso); valor fora da lista fica cinza.
+var CORES_FONTE_OBRA = {
+  'Tesouro': '#0f766e', 'Fundeinfra': '#b45309', 'Associativo-Fundeinfra': '#a16207', 'Convênio': '#6d28d9', 'Tare': '#be185d', 'Doação': '#4d7c0f'
+};
 
 var CORES_ETAPA_OBRA = {
   'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'

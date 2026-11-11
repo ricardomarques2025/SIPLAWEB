@@ -306,6 +306,7 @@ var ObrasPainel = (function() {
       var v = ObrasStore.valorAtual(uid, c.campo);
       cell.getElement().classList.toggle('celula-editada', ObrasStore.pendente(uid, c.campo));
       if (c.campo === 'etapa' && v) return '<span class="badge" style="--c:' + (CORES_ETAPA_OBRA[v] || '#64748b') + '">' + esc(v) + '</span>';
+      if (c.campo === 'fonte' && v) return '<span class="badge" style="--c:' + (CORES_FONTE_OBRA[v] || '#64748b') + '">' + esc(v) + '</span>';
       var txt = exibir(c, v);
       return c.tipo === 'numero' ? '<span class="num">' + esc(txt) + '</span>' : esc(txt);
     };
@@ -578,7 +579,7 @@ var ObrasPainel = (function() {
     if (abaFicha === 'tracado') return ObrasTracado.render($('obrFichaCorpo'), r, apiTracado);
     if (abaFicha === 'tempo') return renderLinhaTempo(r);
     if (abaFicha === 'historico') return renderHistorico(r);
-    var grupos = [];
+    var grupos = GRUPOS_FICHA_OBRA.slice();
     CAMPOS_OBRA.forEach(function(c) { if (grupos.indexOf(c.grupo) === -1) grupos.push(c.grupo); });
     var autor = ObrasStore.nomeUsuario(r.atualizado_por);
     $('obrFichaCorpo').innerHTML = avisoProposta(r) + '<div class="carimbo">Última alteração: ' + fmtDataHora(r.atualizado_em) + (autor ? ' · ' + esc(autor) : '') +
