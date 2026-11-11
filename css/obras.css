@@ -90,3 +90,12 @@
   border-radius: 8px; background: #eef8f1; cursor: pointer; }
 .jur-ui .obr-titulo select:focus { outline: 2px solid #1e953833; }
 .jur-ui .obr-titulo select:disabled { cursor: default; opacity: 1; background: #f4f7f5; border-color: #e3e9e5; }
+
+/* "Filtrar o mapa" (11/11/2026): chave liga/desliga ao lado do contador; ligado, o botão do menu esquerdo avisa. */
+.obr-ui .obr-filtrar-mapa { gap: 8px; }
+.obr-ui .obr-chave { position: relative; width: 28px; height: 16px; border-radius: 99px; background: #cbd5e1; transition: background .15s; flex: none; }
+.obr-ui .obr-chave::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: left .15s; }
+.obr-ui .obr-filtrar-mapa.ativo { border-color: #1e9538; color: #14652a; background: #f0fdf4; }
+.obr-ui .obr-filtrar-mapa.ativo .obr-chave { background: #1e9538; }
+.obr-ui .obr-filtrar-mapa.ativo .obr-chave::after { left: 14px; }
+#sidebar-left .obr-abrir-tabela.mapa-filtrado::after { content: 'Mapa filtrado pela tabela'; display: block; margin-top: 3px; font-size: 11px; font-weight: 600; opacity: .9; }

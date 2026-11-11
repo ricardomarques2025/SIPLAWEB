@@ -19,7 +19,23 @@ var DadosBanco = (function() {
   // Com visão, só aparecem as obras que já existiam e com a etapa/status daquela data.
   var visao = null;
 
+  // Tabela de obras com "Filtrar o mapa" ligado (js/obras/painel.js): { origem, codigos: { OB26-...: true } }.
+  // As obras DESSA origem que não estão no filtro da tabela saem do mapa; as das outras origens ficam como estão.
+  var recorte = null;
+
+  function aplicarRecorte(c) {
+    if (!recorte) return c;
+    var fora = {};
+    var registros = c.registros.filter(function(r) {
+      var fica = r.UNIDADE !== recorte.origem || !!recorte.codigos[r.IDCOD];
+      if (!fica) fora[r.IDCOD] = true;
+      return fica;
+    });
+    return { registros: registros, links: c.links.filter(function(l) { return !fora[l.IDCOD]; }) };
+  }
+
   function aplicarVisao(c) {
+    c = aplicarRecorte(c);
     if (!visao) return c;
     var registros = c.registros.filter(function(r) { return visao[r.IDCOD]; }).map(function(r) {
       return Object.assign({}, r, { ETAPA: visao[r.IDCOD][0], STATUS: visao[r.IDCOD][1] });
@@ -150,6 +166,8 @@ var DadosBanco = (function() {
     links: function() { return carregar().then(function(c) { return aplicarVisao(c).links; }); },
     desenhos: function() { return carregar().then(function(c) { return c.desenhos; }); },
     definirVisao: function(v) { visao = v || null; },
+    definirRecorte: function(r) { recorte = r || null; },
+    recorte: function() { return recorte; },
     visao: function() { return visao; },
     // Descarta a copia em memoria; a proxima leitura busca de novo no banco (apos gravacoes).
     recarregar: function() { carga = null; return carregar(); }

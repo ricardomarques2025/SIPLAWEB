@@ -6206,7 +6206,7 @@ map.addControl(new LogoMapaControl());
     var origem = b.dataset.obraOrigem, codigo = b.dataset.obraCodigo;
     if (window.ObrasPainel && ObrasPainel.abrirObra) { map.closePopup(); ObrasPainel.abrirObra(origem, codigo); return; }
     // Mapa sem tabela (geral, rodoviario): abre o mapa da origem em outra aba, ja com a ficha da obra.
-    window.open('mapa.html?origem=' + encodeURIComponent(origem) + '&sidebar=fechada&tabela=dividida&obra=' + encodeURIComponent(codigo), '_blank');
+    window.open('mapa.html?origem=' + encodeURIComponent(origem) + '&tabela=dividida&obra=' + encodeURIComponent(codigo), '_blank');
   });
 
   // Cabecalho do elemento clicado (trecho da malha, aerodromo, municipio) acima dos cartoes.
@@ -8685,7 +8685,9 @@ map.addControl(new LogoMapaControl());
       atualizarTextoDensidadeRotulos();
     }
 
-    if (inicial && params.get('sidebar') === 'fechada') {
+    // Barra esquerda (ORIGEM e filtros): sempre aberta nas origens; só o mapa rodoviário pode abrir com ela recolhida
+    // (11/11/2026, pedido do usuário). Links antigos com "&sidebar=fechada" numa origem abrem com ela aberta.
+    if (inicial && params.get('sidebar') === 'fechada' && perfil === 'rodoviario') {
       definirSidebarRecolhida('sidebar-left', 'sidebar-left-collapsed', botaoSidebarLeft, true);
     }
   }

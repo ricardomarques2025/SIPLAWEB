@@ -26,7 +26,7 @@
   function quantos(n) { return n === 1 ? ROTULO.um : ROTULO.varios; }
 
   $('grade').innerHTML = ORIGENS.map(function(o) {
-    return '<a class="cartao" href="mapa.html?origem=' + o.sigla + '&sidebar=fechada" data-sigla="' + o.sigla + '" data-area="' + o.sigla + '">' +
+    return '<a class="cartao" href="mapa.html?origem=' + o.sigla + '" data-sigla="' + o.sigla + '" data-area="' + o.sigla + '">' +
       '<div class="foto" style="background-image:url(' + o.img + ')"><span class="sigla">' + o.sigla + '</span></div>' +
       '<div class="corpo"><div class="nome">' + o.nome + '</div>' +
       '<div class="total"><b>—</b><span>' + ROTULO.varios + '</span></div><div class="barra"></div></div></a>';

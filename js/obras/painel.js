@@ -34,6 +34,9 @@ var ObrasPainel = (function() {
   var halo = null;
   var legendaRecolhidaPorNos = false;
   var filtros = { busca: '', etapa: '', status: '', tracado: '' };
+  var filtrarMapa = false;     // "Filtrar o mapa": o mapa acompanha a busca e os filtros das colunas (DadosBanco.definirRecorte)
+  var recorteAplicado = '';    // chave do último recorte enviado ao mapa (evita redesenhar à toa)
+  var tempoRecorte = null;
 
   map.createPane('obrasHaloPane').style.zIndex = 515;
 
@@ -122,6 +125,7 @@ var ObrasPainel = (function() {
           '<label class="busca"><svg><use href="#o-search"/></svg><input id="obrBusca" type="search" placeholder="Buscar código, descrição, município, SEI…" autocomplete="off"></label>' +
           '<button type="button" class="btn btn-fantasma" id="obrLimpar" title="Limpar a busca e os filtros das colunas"><svg><use href="#o-filter-x"/></svg></button>' +
           '<span class="contador" id="obrContador"></span>' +
+          '<button type="button" class="btn obr-filtrar-mapa" id="obrFiltrarMapa" aria-pressed="false" title="Ligado: o mapa mostra só as obras que passam na busca e nos filtros das colunas desta tabela (as das outras origens continuam)"><span class="obr-chave" aria-hidden="true"></span>Filtrar o mapa</button>' +
           '<div class="espaco"></div>' +
           '<button type="button" class="btn" id="obrColunas"><svg><use href="#o-cols"/></svg>Colunas</button>' +
           '<button type="button" class="btn btn-primario so-editor" id="obrNova"><svg><use href="#o-plus"/></svg>Nova obra</button>' +
@@ -209,6 +213,7 @@ var ObrasPainel = (function() {
     $('obrBusca').value = '';
     if (grade) { grade.destroy(); grade = null; }
     tabelaPronta = null;
+    if (filtrarMapa) aplicarRecorteMapa(false);   // tira o recorte da origem anterior; a tabela nova aplica o dela
     // Endereco acompanha (recarregar ou mandar o link abre esta origem).
     var url = new URL(location.href);
     url.searchParams.set('origem', nova);
@@ -382,7 +387,7 @@ var ObrasPainel = (function() {
       ObrasStore.definirPendente(cell.getRow().getData().uid, c.campo, v);
       cell.getRow().reformat();
     });
-    grade.on('dataFiltered', function(f, linhas) { atualizarContador(linhas.length); });
+    grade.on('dataFiltered', function(f, linhas) { atualizarContador(linhas.length); agendarRecorteMapa(); });
   }
 
   function atualizarLinha(uid) {
@@ -412,6 +417,46 @@ var ObrasPainel = (function() {
     grade.setFilter(function(d) { return atende(ObrasStore.obter(d.uid) || d); });
     atualizarContador(grade.getDataCount('active'));
   }
+  // ---------- Filtrar o mapa pela tabela ----------
+  // Ligado: as obras desta origem que não passam na busca/filtros das colunas saem do mapa (as demais origens ficam).
+  // Continua valendo com a tabela fechada (o botão "Abrir tabela de obras" avisa); desliga no próprio botão.
+  function agendarRecorteMapa(enquadrar) {
+    clearTimeout(tempoRecorte);
+    tempoRecorte = setTimeout(function() { aplicarRecorteMapa(enquadrar); }, 350);
+  }
+  function aplicarRecorteMapa(enquadrar) {
+    var r = null, chave = '';
+    if (filtrarMapa && grade) {
+      var codigos = {};
+      grade.getData('active').forEach(function(d) { if (d.codigo) codigos[d.codigo] = true; });
+      r = { origem: ORIGEM, codigos: codigos };
+      chave = ORIGEM + '|' + Object.keys(codigos).sort().join(',');
+    }
+    $('obrFiltrarMapa').classList.toggle('ativo', filtrarMapa);
+    $('obrFiltrarMapa').setAttribute('aria-pressed', filtrarMapa ? 'true' : 'false');
+    $('obrAbrirTabela').classList.toggle('mapa-filtrado', !!r);
+    if (chave === recorteAplicado) { if (enquadrar && r) enquadrarRecorte(); return Promise.resolve(); }
+    recorteAplicado = chave;
+    DadosBanco.definirRecorte(r);
+    var redesenhar = typeof recarregarObrasDoMapa === 'function' ? recarregarObrasDoMapa(false) : Promise.resolve();
+    return redesenhar.then(function() { desenharHalo(); if (r && enquadrar !== false) enquadrarRecorte(); });
+  }
+  // Aproxima o mapa das obras filtradas (respeita o "Zoom automático" do mapa e o lado ocupado pela tabela).
+  function enquadrarRecorte() {
+    var auto = document.getElementById('autoZoomToggle');
+    if ((auto && !auto.checked) || !grade || modo === 'cheia') return;
+    var feicoes = [];
+    grade.getData('active').forEach(function(d) { var r = ObrasStore.obter(d.uid); if (r) feicoes = feicoes.concat(feicoesDaObra(r)); });
+    if (!feicoes.length) return;
+    var b = L.geoJSON({ type: 'FeatureCollection', features: feicoes }).getBounds(), mg = margensVisiveis();
+    if (b.isValid()) map.fitBounds(b, { paddingTopLeft: [mg[0] + 40, 40], paddingBottomRight: [mg[1] + 40, 40], maxZoom: 13 });
+  }
+  function alternarFiltroMapa() {
+    filtrarMapa = !filtrarMapa;
+    toast(filtrarMapa ? 'Mapa filtrado pela tabela: ' + (grade ? grade.getDataCount('active') : 0) + ' obra(s) de ' + ORIGEM + '.' : 'Mapa sem o filtro da tabela.');
+    aplicarRecorteMapa(true);
+  }
+
   function atualizarContador(n) { $('obrContador').textContent = n + ' de ' + ObrasStore.lista().length + ' obras'; }
 
   function atualizarPendentes() {
@@ -925,6 +970,7 @@ var ObrasPainel = (function() {
     });
     var t = null;
     $('obrBusca').addEventListener('input', function() { clearTimeout(t); var v = this.value; t = setTimeout(function() { filtros.busca = v.trim(); aplicarFiltros(); }, 150); });
+    $('obrFiltrarMapa').addEventListener('click', alternarFiltroMapa);
     $('obrLimpar').addEventListener('click', function() {
       filtros = { busca: '', etapa: '', status: '', tracado: '' };
       $('obrBusca').value = '';
