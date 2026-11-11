@@ -1093,13 +1093,26 @@ var ObrasPainel = (function() {
 
   // Botao "Abrir na tabela" do popup da obra no mapa: troca a origem da tabela se preciso, abre (dividida, se
   // estava fechada) e mostra a ficha da obra.
+  // 11/11/2026: sem abrir a ficha (a pessoa abre pelo ícone da linha); dividida meio a meio com o mapa, obra
+  // selecionada na tabela e destacada no mapa. A largura escolhida pela pessoa (arrastando a borda) continua salva.
   function abrirObra(origem, codigo, modoAbrir) {
     if (!trocarOrigem(origem)) return Promise.resolve();
     var pronto = modo === 'fechado' ? definirModo(modoAbrir || 'dividida') : iniciarTabela();
     return pronto.then(function() {
+      if (modo === 'dividida') { aplicarLargura(50); setTimeout(function() { if (grade) grade.redraw(); map.invalidateSize(); }, 380); }
       var r = ObrasStore.lista().find(function(x) { return x.codigo === codigo; });
-      if (r) { abrirFicha(r.uid); if (grade) grade.scrollToRow(r.uid, 'center', false).catch(function() {}); }
-      else toast('Obra ' + codigo + ' não encontrada na tabela de ' + ORIGEM + '.', true);
+      if (!r) { toast('Obra ' + codigo + ' não encontrada na tabela de ' + ORIGEM + '.', true); return; }
+      fecharFicha();
+      if (grade) { grade.deselectRow(); grade.selectRow(r.uid); grade.scrollToRow(r.uid, 'center', false).catch(function() {}); }
+      selecionar(r.uid);
+      if (modo === 'dividida') centralizar(450);
+      // Aberta pelo endereço (nova aba): o mapa ainda carrega as camadas; destaca e aproxima quando ficarem prontas.
+      var tentativas = 0;
+      (function esperar() {
+        if (halo || selecionadoUid !== r.uid || ++tentativas > 40) return;
+        if (typeof indicesBaseObrasMapa === 'function' && indicesBaseObrasMapa()) { desenharHalo(); if (modo === 'dividida') centralizar(0); }
+        if (!halo) setTimeout(esperar, 500);
+      })();
     });
   }
 
