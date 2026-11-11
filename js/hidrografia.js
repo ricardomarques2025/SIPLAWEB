@@ -10,6 +10,9 @@ var Hidrografia = (function() {
   var COR = '#4aa8f0';   // azul claro (05/11/2026; antes #1f78c8). Nomes continuam em COR_ROTULO (escuro, para ler)
   var COR_ROTULO = '#1557a0';
   var dados = null, carregando = null, cursos = [];
+  // "Filtrar o mapa" da tabela de atributos: só as feições que passam ficam (e só os nomes delas nos rótulos).
+  var nomesRecorte = null;
+  function passaRecorte(f) { return !window.TabelaCamadas || TabelaCamadas.passa('hidrografia', f); }
 
   function esc(v) {
     return String(v == null ? '' : v).replace(/[&<>"]/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
@@ -32,6 +35,8 @@ var Hidrografia = (function() {
             if (c[0] < x0) x0 = c[0]; if (c[0] > x1) x1 = c[0]; if (c[1] < y0) y0 = c[1]; if (c[1] > y1) y1 = c[1];
           }); });
           f._caixa = [x0, y0, x1, y1];
+          // feição do popup (tabela de atributos, js/tabela_camadas.js); não enumerável: não vira coluna
+          if (f.properties) Object.defineProperty(f.properties, '__feicao', { value: f });
         });
         dados = j;
         cursos = montarCursos(j);
@@ -228,7 +233,7 @@ var Hidrografia = (function() {
     var oeste = vista.getWest(), leste = vista.getEast(), sul = vista.getSouth(), norte = vista.getNorth();
     var cand = cursos.filter(function(cu) {
       var c = cu.caixa;
-      return cu.s >= minS && c[2] >= oeste && c[0] <= leste && c[3] >= sul && c[1] <= norte;
+      return cu.s >= minS && c[2] >= oeste && c[0] <= leste && c[3] >= sul && c[1] <= norte && (!nomesRecorte || nomesRecorte[cu.nome]);
     }).sort(function(a, b) { return b.s - a.s || b.tam - a.tam; });
     var ocupadas = [];                  // caixas já usadas (letras), em coordenadas da tela
     var porNome = {};                   // posições já rotuladas de cada nome (repetição só bem longe)
@@ -410,7 +415,7 @@ var Hidrografia = (function() {
         if (!geo) {
           var z = map.getZoom();
           geo = L.geoJSON(j, { renderer: renderer, interactive: false, style: function(f) { return estilo(f, z); },
-            filter: function(f) { return linhasDe(f).length > 0; } });   // só linhas (um ponto viraria marcador)
+            filter: function(f) { return linhasDe(f).length > 0 && passaRecorte(f); } });   // só linhas (um ponto viraria marcador)
           grupo.addLayer(geo);
           grupo.addLayer(rotulos);
         } else if (rotulos._map) rotulos._desenhar();
@@ -418,6 +423,18 @@ var Hidrografia = (function() {
       }).catch(function(e) { console.warn(e); });
     });
     grupo.on('remove', function(e) { if (e.target && e.target._map) e.target._map.off('zoomend', restilizar); });
+    // Tabela de atributos mudou o recorte: refaz as linhas e os rótulos com as feições que passam.
+    grupo.refiltrar = function() {
+      if (!dados) return;
+      var algum = false, nomes = {};
+      dados.features.forEach(function(f) { if (passaRecorte(f)) { if (f.properties.nome) nomes[f.properties.nome] = 1; } else algum = true; });
+      nomesRecorte = algum ? nomes : null;
+      if (!geo) return;
+      geo.clearLayers();
+      geo.addData(dados);
+      restilizar();
+      if (rotulos._map) rotulos._desenhar();
+    };
     return grupo;
   }
 
@@ -452,6 +469,7 @@ var Hidrografia = (function() {
     var melhor = null, melhorD = tolPx + 0.01;
     dados.features.forEach(function(f) {
       var c = f._caixa;
+      if (!passaRecorte(f)) return;
       if (latlng.lng < c[0] - dx || latlng.lng > c[2] + dx || latlng.lat < c[1] - dy || latlng.lat > c[3] + dy) return;
       linhasDe(f).forEach(function(l) {
         var ant = null;

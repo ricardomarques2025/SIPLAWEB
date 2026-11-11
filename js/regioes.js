@@ -342,7 +342,10 @@ function desenharRegioesBase() {
     var selecao = regioesSelecionadas(tipo === 'manutencao' ? 'rgManSelect' : 'rgPlanSelect');
     if (!dados || (!regioesBaseAtivas[tipo] && !selecao.length)) return;
     var grupo = L.layerGroup();
+    var chaveTabela = 'regioes_' + tipo;   // tabela de atributos (js/tabela_camadas.js)
+    var passa = function(f) { return !window.tcPassaCamada || tcPassaCamada(chaveTabela, f); };
     dados.features.forEach(function(f, i) {
+      if (!passa(f)) return;
       var nome = tipo === 'manutencao' ? String(valorSeguro(f, 'REG')) : f.properties.nome;
       var selecionado = selecao.includes(nome);
       L.geoJSON(f, {
@@ -351,12 +354,13 @@ function desenharRegioesBase() {
         onEachFeature: function(feature, layer) {
           vincularPopupComAreaClique(layer, function() {
             return construirPopupAreaBase(feature,
-              (tipo === 'manutencao' ? 'Região de Manutenção ' : 'Região de Planejamento: ') + nome, []);
+              (tipo === 'manutencao' ? 'Região de Manutenção ' : 'Região de Planejamento: ') + nome, [], chaveTabela);
           });
         }
       }).addTo(grupo);
     });
     dados.features.forEach(function(f) {
+      if (!passa(f)) return;
       if (!f._contornoRegional) f._contornoRegional = contornoRegional(f);
       L.geoJSON(f._contornoRegional, { pane: 'regioesPane', interactive: false, style: { color: '#ffffff', weight: 3, opacity: 1 } }).addTo(grupo);
       L.geoJSON(f._contornoRegional, { pane: 'regioesPane', interactive: false, style: { color: '#888888', weight: 1.5, dashArray: '8, 5, 1, 5' } }).addTo(grupo);

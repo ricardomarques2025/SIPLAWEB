@@ -277,6 +277,7 @@ var ObrasPainel = (function() {
   function definirModo(novo) {
     var anterior = modo;
     if (anterior === 'fechado' && novo !== 'fechado') origensMudaram();   // abre já numa origem ligada no mapa
+    if (novo !== 'fechado' && window.TabelaCamadas) TabelaCamadas.fechar();   // uma tabela por vez (camadas de referência)
     modo = novo;
     var painel = $('obrTabela');
     recolherLegenda(novo === 'dividida');

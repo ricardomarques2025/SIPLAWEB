@@ -336,11 +336,15 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-11.03';
+  var VERSAO_SITE = '2026-11-11.04';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   var NOVIDADES = [
+    ['3.5', '11/11/2026', [
+      'Tabela de atributos das camadas de referência: no popup de um aeródromo, localidade, município, trecho da malha estadual, federal ou complementar, ferrovia, pedágio, área, região ou curso d’água, o botão "Tabela: …" abre a tabela daquela camada, já com a feição clicada selecionada e destacada no mapa.',
+      'Na tabela: busca, filtro tipo Excel em cada coluna, ordenação, exportação para Excel, tela cheia ou dividida com o mapa e o botão "Filtrar o mapa" (o mapa mostra só as feições filtradas; um aviso no alto do mapa permite desfazer). Só consulta: as camadas editáveis continuam em "Editar camadas".'
+    ]],
     ['3.4', '10/11/2026', [
       'FUNDEINFRA passa a ser um filtro: o botão e o cartão FUNDEINFRA mostram as obras da DOR, da DPJ e das demais origens com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra). Cada obra continua na sua origem; com as duas ligadas, o trecho aparece uma vez só.',
       'Painel › Configurações › Listas de valores (administrador): opções das listas suspensas das obras (etapa, status, intervenção, modalidade, fonte, fase). Incluir, renomear (atualiza as obras que usam o valor), juntar valores repetidos (\"Juntar com…\"), mudar a ordem, desativar e excluir valor sem uso.',

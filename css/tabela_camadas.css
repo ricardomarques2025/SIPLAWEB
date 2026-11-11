@@ -1,0 +1,39 @@
+/* Tabela de atributos das camadas de referência (js/tabela_camadas.js, 11/11/2026).
+   A tabela usa o visual da tabela de obras (css/jurisdicao_tabela.css, .jur-ui); aqui só o que é dela. */
+
+/* Botão "Abrir tabela de atributos" no popup da feição */
+.tc-popup-acao { margin-top: 8px; }
+.tc-popup-acao .tc-abrir {
+  height: 28px; padding: 0 10px; border: 1px solid #cfd4dc; border-radius: 7px;
+  background: #fff; font-weight: 600; font-size: 12px; cursor: pointer; color: #111827;
+}
+.tc-popup-acao .tc-abrir:hover { background: #f1f5f9; }
+.tc-popup-acao .tc-abrir { display: inline-flex; align-items: center; gap: 6px; }
+.tc-popup-acao .tc-abrir svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+/* Título: "Camada de referência · Aeródromos" */
+.tc-ui .tc-sup { color: var(--texto-3, #6b7280); font-weight: 500; font-size: 12px; margin-right: 2px; }
+.tc-ui #tcTitulo { font-size: 14px; }
+
+/* Chave "Filtrar o mapa" (mesmo desenho da tabela de obras, css/obras.css) */
+.tc-ui .obr-filtrar-mapa { gap: 8px; }
+.tc-ui .obr-chave { position: relative; width: 28px; height: 16px; border-radius: 99px; background: #cbd5e1; transition: background .15s; flex: none; }
+.tc-ui .obr-chave::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: left .15s; }
+.tc-ui .obr-filtrar-mapa.ativo { border-color: #1e9538; color: #14652a; background: #f0fdf4; }
+.tc-ui .obr-filtrar-mapa.ativo .obr-chave { background: #1e9538; }
+.tc-ui .obr-filtrar-mapa.ativo .obr-chave::after { left: 14px; }
+.tc-ui .col-acao svg.geo-ok { width: 16px; height: 16px; fill: none; stroke: #2563eb; stroke-width: 2; }
+
+/* Aviso no mapa: camada(s) filtrada(s) pela tabela; clique no nome abre a tabela, × mostra a camada inteira */
+.tc-aviso-mapa {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 800; width: max-content; max-width: 90%;
+  display: flex; flex-direction: column; gap: 4px; align-items: center; pointer-events: auto;
+}
+.tc-aviso-mapa[hidden] { display: none; }
+.tc-aviso-item {
+  display: inline-flex; align-items: center; background: #f0fdf4; border: 1px solid #1e9538; border-radius: 99px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.18); font: 600 12px/1 'Inter', system-ui, sans-serif; color: #14652a; overflow: hidden; white-space: nowrap;
+}
+.tc-aviso-item button { border: 0; background: none; color: inherit; font: inherit; cursor: pointer; padding: 6px 10px; }
+.tc-aviso-item .tc-aviso-tirar { border-left: 1px solid #bbf7d0; font-size: 15px; padding: 3px 9px 4px; }
+.tc-aviso-item button:hover { background: #dcfce7; }

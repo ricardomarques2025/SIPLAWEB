@@ -2718,7 +2718,13 @@ map.addControl(new LogoMapaControl());
     return valorSeguro(feature, campo.nome);
   }
 
-  function construirPopupAreaBase(feature, tituloFallback, campos) {
+  // Tabela de atributos das camadas de referência (js/tabela_camadas.js): botão no popup e filtro "Filtrar o mapa".
+  function tcBotao(chave, feature) { return chave && window.TabelaCamadas ? TabelaCamadas.botao(chave, feature) : ''; }
+  function tcPassa(chave, feature) { return !window.TabelaCamadas || TabelaCamadas.passa(chave, feature); }
+  window.tcBotaoCamada = tcBotao;
+  window.tcPassaCamada = tcPassa;
+
+  function construirPopupAreaBase(feature, tituloFallback, campos, camadaTabela) {
     var html = '<b>' + escapeHtml(tituloFallback) + '</b>';
     campos.forEach(function(campo) {
       var valor = valorCampoAreaBase(feature, campo);
@@ -2726,7 +2732,7 @@ map.addControl(new LogoMapaControl());
       if (campo.tipo === 'numero') valor = formatarNumeroPopup(valor, campo.casas || 2);
       html += '<br><b>' + escapeHtml(campo.rotulo) + ':</b> ' + escapeHtml(valor);
     });
-    return html;
+    return html + tcBotao(camadaTabela, feature);
   }
 
   function numeroPrograma(feature, campo) {
@@ -3034,7 +3040,7 @@ map.addControl(new LogoMapaControl());
           return '<div class="psc-item' + atual + '"><b>' + escapeHtml(c.rodovia) + '</b> <span class="psc-cod">' + escapeHtml(c.codigo) + '</span></div>';
         }).join('') + '</div>';
     }
-    return html;
+    return html + tcBotao('sre_base', feature);
   }
 
   function preencherSREs() {
@@ -3580,8 +3586,9 @@ map.addControl(new LogoMapaControl());
     };
 
     // Desenha todos os preenchimentos antes dos contornos para preservar as divisas compartilhadas.
+    var soMunicipios = function(f) { return tcPassa('municipios', f); };
     var preenchimentos = L.geoJSON(municipiosData, {
-      pane: 'municipiosPane',
+      pane: 'municipiosPane', filter: soMunicipios,
       interactive: true,
       style: function(feature) {
         return Object.assign({}, estiloMunicipio(feature), { stroke: false });
@@ -3591,7 +3598,7 @@ map.addControl(new LogoMapaControl());
           return construirPopupAreaBase(feature, 'Município de ' + valorSeguro(feature, 'NM_MUN'), [
             { rotulo: 'Código IBGE', nome: 'CD_MUN' },
             { rotulo: 'Região de Planejamento', nome: 'RG_PLAN' }
-          ]);
+          ], 'municipios');
         });
       }
     });
@@ -3600,12 +3607,12 @@ map.addControl(new LogoMapaControl());
       return;
     }
     var contornosBrancos = L.geoJSON(municipiosData, {
-      pane: 'municipiosPane',
+      pane: 'municipiosPane', filter: soMunicipios,
       interactive: false,
       style: ESTILO_CONTORNO_BRANCO_MUNICIPIOS
     });
     var contornosTracejados = L.geoJSON(municipiosData, {
-      pane: 'municipiosPane',
+      pane: 'municipiosPane', filter: soMunicipios,
       interactive: false,
       style: function(feature) {
         return Object.assign({}, estiloMunicipio(feature), { fill: false });
@@ -3745,7 +3752,7 @@ map.addControl(new LogoMapaControl());
     bufferLayer = null;
     var descricao = document.getElementById('bufferSelect').value;
     var features = bufferData.features.filter(function(feature) {
-      return !descricao || feature.properties.DESCRICAO === descricao;
+      return (!descricao || feature.properties.DESCRICAO === descricao) && tcPassa('area_influencia', feature);
     });
     document.getElementById('blocoLegendaBuffer').style.display = bufferFiltroAtivo && features.length ? '' : 'none';
     if (!bufferFiltroAtivo || !features.length) return;
@@ -3760,7 +3767,7 @@ map.addControl(new LogoMapaControl());
             { rotulo: 'Código', nome: 'IDCOD' },
             { rotulo: 'Base', nome: 'BASE' },
             { rotulo: 'Trecho', nome: 'SRE' }
-          ]);
+          ], 'area_influencia');
         });
       }
     }).addTo(map);
@@ -3794,7 +3801,7 @@ map.addControl(new LogoMapaControl());
     var dadosFiltrados = {
       type: 'FeatureCollection',
       features: (ferroviasData.features || []).filter(function(feature) {
-        return !selecionada || valorSeguro(feature, 'nome') === selecionada;
+        return (!selecionada || valorSeguro(feature, 'nome') === selecionada) && tcPassa('ferrovias', feature);
       })
     };
     var linhaContinua = L.geoJSON(dadosFiltrados, {
@@ -3807,7 +3814,7 @@ map.addControl(new LogoMapaControl());
             { rotulo: 'Situação', nome: 'tip_situac' },
             { rotulo: 'Bitola', nome: 'bitola' },
             { rotulo: 'Município', nome: 'municipio' }
-          ]);
+          ], 'ferrovias');
         });
       }
     });
@@ -3828,9 +3835,10 @@ map.addControl(new LogoMapaControl());
     var legenda = document.getElementById('blocoLegendaExtraBase');
     if (legenda) legenda.style.display = extraBaseFiltroAtivo && temDados ? '' : 'none';
     if (!extraBaseFiltroAtivo || !temDados) return;
-    var contorno = L.geoJSON(extraBaseData, { pane: 'sreBasePane', interactive: false, style: { color: '#ffffff', weight: 5, opacity: 0.9 } });
+    var soExtra = function(f) { return tcPassa('extra_base', f); };
+    var contorno = L.geoJSON(extraBaseData, { pane: 'sreBasePane', interactive: false, filter: soExtra, style: { color: '#ffffff', weight: 5, opacity: 0.9 } });
     var linha = L.geoJSON(extraBaseData, {
-      pane: 'sreBasePane',
+      pane: 'sreBasePane', filter: soExtra,
       style: { color: '#8c5a2b', weight: 2.5, opacity: 1 },
       onEachFeature: function(feature, layer) {
         vincularPopupComAreaClique(layer, function() {
@@ -3839,7 +3847,7 @@ map.addControl(new LogoMapaControl());
             { rotulo: 'Código', nome: 'GEOCOD' },
             { rotulo: 'Situação', nome: 'situacao' },
             { rotulo: 'Extensão (km)', nome: 'EXT_KM' }
-          ]);
+          ], 'extra_base');
         });
       }
     });
@@ -3870,7 +3878,7 @@ map.addControl(new LogoMapaControl());
   registrarFontePopupNoPonto(function(latlng) {
     if (!hidrografiaFiltroAtivo || !hidrografiaLayer || !map.hasLayer(hidrografiaLayer)) return '';
     var achado = Hidrografia.consultar(hidrografiaLayer, latlng);
-    return achado ? Hidrografia.htmlPopup(achado) : '';
+    return achado ? Hidrografia.htmlPopup(achado) + tcBotao('hidrografia', achado.__feicao) : '';
   });
 
   // Clique fora de qualquer feicao (as camadas clicaveis ja chamam abrirPopupNoPonto, que inclui a hidrografia).
@@ -3946,14 +3954,14 @@ map.addControl(new LogoMapaControl());
     if ((!areaInfluenciaFiltroAtivo && !areaInfluenciaSelecionada) || !areaInfluenciaData || !areaInfluenciaData.features) return;
 
     areaInfluenciaLayer = L.geoJSON(areaInfluenciaData, {
-      pane: 'areaInfluenciaPane',
+      pane: 'areaInfluenciaPane', filter: function(f) { return tcPassa('area_estudo', f); },
       interactive: true,
       style: ESTILO_AREA_INFLUENCIA,
       onEachFeature: function(feature, layer) {
         vincularPopupComAreaClique(layer, function() {
           return construirPopupAreaBase(feature, nomeExibicaoAreaInfluencia(feature, 0), [
             { rotulo: 'Área (km²)', nome: 'AREA_KM2', tipo: 'numero', casas: 2 }
-          ]);
+          ], 'area_estudo');
         });
       }
     }).addTo(map);
@@ -3968,7 +3976,7 @@ map.addControl(new LogoMapaControl());
     if (!areasUrbanasFiltroAtivo || !areasUrbanasData || !areasUrbanasData.features) return;
 
     areasUrbanasLayer = L.geoJSON(areasUrbanasData, {
-      interactive: true,
+      interactive: true, filter: function(f) { return tcPassa('areas_urbanas', f); },
       pane: 'areasUrbanasPane',
       style: function() {
         return {
@@ -3987,7 +3995,7 @@ map.addControl(new LogoMapaControl());
             { rotulo: 'Região de Planejamento', nome: 'RG_PLAN' },
             { rotulo: 'População', nome: 'POPULACAO', tipo: 'numero', casas: 0 },
             { rotulo: 'Área (km²)', nome: 'AREA_KM2', tipo: 'numero', casas: 3 }
-          ]);
+          ], 'areas_urbanas');
         });
       }
     }).addTo(map);
@@ -4002,7 +4010,7 @@ map.addControl(new LogoMapaControl());
     if (!areasAmbientaisFiltroAtivo || !areasAmbientaisData || !areasAmbientaisData.features) return;
 
     areasAmbientaisLayer = L.geoJSON(areasAmbientaisData, {
-      interactive: true,
+      interactive: true, filter: function(f) { return tcPassa('areas_ambientais', f); },
       pane: 'areasAmbientaisPane',
       style: function() {
         return {
@@ -4029,7 +4037,7 @@ map.addControl(new LogoMapaControl());
             { rotulo: 'Parque', nome: 'PARQUE' },
             { rotulo: 'Área (ha)', nome: 'AREA_HA', tipo: 'numero', casas: 2 },
             { rotulo: 'Área (km²)', nome: 'AREA_KM2', tipo: 'numero', casas: 2 }
-          ]);
+          ], 'areas_ambientais');
         });
       }
     }).addTo(map);
@@ -4048,7 +4056,7 @@ map.addControl(new LogoMapaControl());
     var featuresFiltradas = localidadesData.features.filter(function(feature) {
       var nome = valorSeguro(feature, 'NOME_ACEN');
       if (localidadeSelecionada && nome !== localidadeSelecionada) return false;
-      return true;
+      return tcPassa('localidades', feature);
     });
 
     // Ordenar por POPULACAO decrescente para priorizar rótulos
@@ -4079,7 +4087,7 @@ map.addControl(new LogoMapaControl());
       });
 
       // Adicionar popup
-      vincularPopupNoPonto(marker, '<b>' + nome + '</b><br>População: ' + populacao.toLocaleString('pt-BR'));
+      vincularPopupNoPonto(marker, '<b>' + nome + '</b><br>População: ' + populacao.toLocaleString('pt-BR') + tcBotao('localidades', feature));
 
       localidadesLayer.addLayer(marker);
 
@@ -4142,7 +4150,7 @@ map.addControl(new LogoMapaControl());
       if (linhas[i][1] === null || linhas[i][1] === undefined || linhas[i][1] === '') continue;
       html += '<br><b>' + escaparHtml(linhas[i][0]) + ':</b> ' + escaparHtml(linhas[i][1]);
     }
-    return html;
+    return html + tcBotao('aero', feature);
   }
 
   function criarIconePedagio() {
@@ -4173,7 +4181,7 @@ map.addControl(new LogoMapaControl());
       if (linhas[i][1] === null || linhas[i][1] === undefined || linhas[i][1] === '') continue;
       html += '<br><b>' + escaparHtml(linhas[i][0]) + ':</b> ' + escaparHtml(linhas[i][1]);
     }
-    return html;
+    return html + tcBotao('pedagios', feature);
   }
 
   function pedagioPassaFiltro(feature) {
@@ -4194,7 +4202,7 @@ map.addControl(new LogoMapaControl());
     pedagiosLayer = L.layerGroup();
 
     pedagiosData.features.forEach(function(feature) {
-      if (!pedagioPassaFiltro(feature)) return;
+      if (!pedagioPassaFiltro(feature) || !tcPassa('pedagios', feature)) return;
 
       var coords = feature.geometry && feature.geometry.coordinates;
       if (!coords || coords.length < 2) return;
@@ -4250,7 +4258,7 @@ map.addControl(new LogoMapaControl());
 
     aeroData.features.forEach(function(feature) {
       var coords = feature.geometry && feature.geometry.coordinates;
-      if (!coords || coords.length < 2) return;
+      if (!coords || coords.length < 2 || !tcPassa('aero', feature)) return;
 
       var tipo = tipoAeroFeature(feature);
       tiposVisiveis[tipo] = true;
@@ -4674,6 +4682,7 @@ map.addControl(new LogoMapaControl());
       if (rodoviaSelecionada && nomeRodoviaFeature(f) !== rodoviaSelecionada) continue;
       if (sreSelecionado && nomeSREFeature(f) !== sreSelecionado) continue;
       if (!featureAtendeFiltrosSREBase(f)) continue;
+      if (!tcPassa('sre_base', f)) continue;
       var s = String(valorSeguro(f, 'situacao') || valorSeguro(f, 'SITUACAO')).toUpperCase();
       if (s === 'DUP') dup.push(f);
       else if (s === 'EOD') eod.push(f);
@@ -4851,14 +4860,14 @@ map.addControl(new LogoMapaControl());
     var sreSelecionado = document.getElementById('sreSelect').value;
 
     var pavLenEop = snvData.features.filter(function(f) {
-      if (!featureAtendeRegioes(f)) return false;
+      if (!featureAtendeRegioes(f) || !tcPassa('snv', f)) return false;
       if (rodoviaSelecionada && nomeRodoviaFeature(f) !== rodoviaSelecionada) return false;
       if (sreSelecionado && nomeSREFeature(f) !== sreSelecionado) return false;
       return String(valorSeguro(f, 'SITUACAO')).toUpperCase() !== 'DUP';
     });
 
     var dup = snvData.features.filter(function(f) {
-      if (!featureAtendeRegioes(f)) return false;
+      if (!featureAtendeRegioes(f) || !tcPassa('snv', f)) return false;
       if (rodoviaSelecionada && nomeRodoviaFeature(f) !== rodoviaSelecionada) return false;
       if (sreSelecionado && nomeSREFeature(f) !== sreSelecionado) return false;
       return String(valorSeguro(f, 'SITUACAO')).toUpperCase() === 'DUP';
@@ -4880,7 +4889,7 @@ map.addControl(new LogoMapaControl());
             '<b>SNV:</b> ' + (p.SNV || '') + '<br>' +
             '<b>Trecho:</b> ' + (p.TRECHO || '') + '<br>' +
             '<b>Extensão (km):</b> ' + (p.EXT_KM || '') + '<br>' +
-            '<b>Situação:</b> ' + (p.SITUACAO || '')
+            '<b>Situação:</b> ' + (p.SITUACAO || '') + tcBotao('snv', feature)
           );
         }
       });
@@ -4922,7 +4931,7 @@ map.addControl(new LogoMapaControl());
             '<b>SNV:</b> ' + (p.SNV || '') + '<br>' +
             '<b>Trecho:</b> ' + (p.TRECHO || '') + '<br>' +
             '<b>Extensão (km):</b> ' + (p.EXT_KM || '') + '<br>' +
-            '<b>Situação:</b> ' + (p.SITUACAO || '')
+            '<b>Situação:</b> ' + (p.SITUACAO || '') + tcBotao('snv', feature)
           );
         }
       });
@@ -9597,6 +9606,58 @@ map.addControl(new LogoMapaControl());
   }
   window.recarregarObrasDoMapa = recarregarObrasDoMapa;
   window.indicesBaseObrasMapa = function() { return indicesBaseObras; };
+
+  // Camadas de referência com tabela de atributos (js/tabela_camadas.js). dados(): a coleção carregada (ou promessa);
+  // ligar(): liga o botão da camada (ao "Filtrar o mapa" com ela desligada); redesenhar(): aplica o recorte da tabela.
+  (function registrarTabelasCamadas() {
+    if (!window.TabelaCamadas) return;
+    var redesenhar = function() { aplicarFiltros({ preservarZoom: true }); };
+    function reg(chave, titulo, dados, ligar, rotulos, ordem) {
+      TabelaCamadas.registrar(chave, { titulo: titulo, dados: dados, rotulos: rotulos || {}, ordem: ordem || [],
+        ocultar: chave === 'sre_base' ? ['sre'] : [], ligar: function() { ligar(); atualizarBotoesBase(); }, redesenhar: redesenhar });
+    }
+    reg('aero', 'Aeródromos', function() { return aeroData; }, function() { aeroFiltroAtivo = true; },
+      { TIPO: 'Tipo', COD: 'Código', NOME: 'Nome', MUNICIPIO: 'Município', ALT_M: 'Altitude (m)', COMP_M: 'Comprimento (m)', LARG_M: 'Largura (m)', REVESTIMENTO: 'Revestimento' },
+      ['NOME', 'TIPO', 'COD', 'MUNICIPIO', 'ALT_M', 'COMP_M', 'LARG_M', 'REVESTIMENTO']);
+    reg('localidades', 'Localidades', function() { return localidadesData; }, function() { localidadeFiltroAtivo = true; },
+      { NOME_ACEN: 'Nome', POPULACAO: 'População', NM_MUN: 'Município', RG_PLAN: 'Região de Planejamento' }, ['NOME_ACEN', 'NM_MUN', 'POPULACAO']);
+    reg('municipios', 'Municípios', function() { return municipiosData; }, function() { municipioBaseFiltroAtivo = true; },
+      { NM_MUN: 'Município', CD_MUN: 'Código IBGE', RG_PLAN: 'Região de Planejamento' }, ['NM_MUN', 'CD_MUN', 'RG_PLAN']);
+    reg('sre_base', 'Malha Estadual (SRE)', function() { return sreBaseData; }, function() { sreBaseFiltroAtivo = true; },
+      { GEOCOD: 'Código SRE', rodovia: 'Rodovia', trecho: 'Trecho', inicio: 'Início', fim: 'Fim', km_ini: 'Km inicial', km_fim: 'Km final', ext: 'Extensão (km)',
+        situacao: 'Situação', revest: 'Revestimento', jurisdicao: 'Jurisdição', classe: 'Classe', reg_man: 'Região de Manutenção', principal: 'Principal',
+        perim_urb: 'Perímetro urbano', faixa_dom: 'Faixa de domínio (m)', decr_faixa: 'Decreto da faixa', federal: 'Federal coincidente',
+        coin_1: 'Coincidente estadual 1', coin_2: 'Coincidente estadual 2', coin_f1: 'Coincidente federal 1', coin_f2: 'Coincidente federal 2',
+        vmda_bi: 'VMDA', vmda_sta: 'VMDA (origem)' },
+      ['GEOCOD', 'rodovia', 'trecho', 'inicio', 'fim', 'km_ini', 'km_fim', 'ext', 'situacao', 'revest', 'jurisdicao', 'classe', 'reg_man']);
+    reg('snv', 'Malha Federal (SNV)', function() { return snvData; }, function() { snvFiltroAtivo = true; },
+      { RODOVIA: 'Rodovia', SNV: 'SNV', TRECHO: 'Trecho', EXT_KM: 'Extensão (km)', SITUACAO: 'Situação' }, ['RODOVIA', 'SNV', 'TRECHO', 'EXT_KM', 'SITUACAO']);
+    reg('extra_base', 'Malha Complementar', function() { return extraBaseData; }, function() { extraBaseFiltroAtivo = true; },
+      { rodovia: 'Rodovia', GEOCOD: 'Código', trecho: 'Trecho', situacao: 'Situação', EXT_KM: 'Extensão (km)' }, ['GEOCOD', 'rodovia', 'trecho', 'situacao', 'EXT_KM']);
+    reg('ferrovias', 'Ferrovias', function() { return ferroviasData; }, function() { ferroviasFiltroAtivo = true; },
+      { nome: 'Nome', sigla: 'Sigla', tip_situac: 'Situação', bitola: 'Bitola', municipio: 'Município' }, ['nome', 'sigla', 'tip_situac', 'bitola', 'municipio']);
+    reg('pedagios', 'Pedágios', function() { return pedagiosData; }, function() { pedagiosFiltroAtivo = true; },
+      { NOME: 'Nome', OPERADOR: 'Operador', RODOVIA: 'Rodovia', KM: 'Km', MUNICIPIO: 'Município', JURISDICAO: 'Jurisdição', TIPO: 'Tipo', CONTRATO: 'Contrato', OBS: 'Observação' },
+      ['NOME', 'OPERADOR', 'RODOVIA', 'KM', 'MUNICIPIO', 'JURISDICAO', 'TIPO', 'CONTRATO', 'OBS']);
+    reg('areas_ambientais', 'Áreas ambientais', function() { return areasAmbientaisData; }, function() { areasAmbientaisFiltroAtivo = true; },
+      { NOME: 'Nome', UNIDADE: 'Unidade', CATEGORIA: 'Categoria', GRUPO: 'Grupo', JURIS: 'Jurisdição', UF: 'UF', MUN: 'Municípios', GESTOR: 'Gestor', ANO_CRIA: 'Criação',
+        CRIA_ATO: 'Ato de criação', REGISTRO: 'Registro', PARQUE: 'Parque', AREA_HA: 'Área (ha)', AREA_KM2: 'Área (km²)' }, ['NOME', 'CATEGORIA', 'GRUPO', 'JURIS', 'MUN']);
+    reg('areas_urbanas', 'Áreas urbanas', function() { return areasUrbanasData; }, function() { areasUrbanasFiltroAtivo = true; },
+      { NOME_ACEN: 'Nome', NM_MUN: 'Município', RG_PLAN: 'Região de Planejamento', POPULACAO: 'População', AREA_KM2: 'Área (km²)' }, ['NOME_ACEN', 'NM_MUN', 'RG_PLAN', 'POPULACAO', 'AREA_KM2']);
+    reg('area_estudo', 'Área de Estudo', function() { return areaInfluenciaData; }, function() { areaInfluenciaFiltroAtivo = true; }, { AREA_KM2: 'Área (km²)' });
+    reg('area_influencia', 'Área de Influência', function() { return bufferData; }, function() { bufferFiltroAtivo = true; },
+      { DESCRICAO: 'Descrição', IDCOD: 'Código', BASE: 'Base', SRE: 'Trecho' }, ['DESCRICAO', 'IDCOD', 'BASE', 'SRE']);
+    reg('regioes_manutencao', 'Regiões de Manutenção', function() { return regioesData; }, function() { regioesBaseAtivas.manutencao = true; }, { REG: 'Região' });
+    reg('regioes_planejamento', 'Regiões de Planejamento', function() { return regioesPlanejamentoData; }, function() { regioesBaseAtivas.planejamento = true; }, { nome: 'Região' });
+    TabelaCamadas.registrar('hidrografia', {
+      titulo: 'Hidrografia', dados: function() { return Hidrografia.carregar(); },
+      rotulos: { nome: 'Nome', papel: 'Situação', rodovias: 'Rodovias', nuareamont: 'Área de drenagem (km²)', nustrahler: 'Ordem (Strahler)' },
+      ordem: ['nome', 'papel', 'rodovias', 'nuareamont', 'nustrahler'],
+      traduzir: { papel: { cruza_rodovia: 'Cruza a rodovia', junto_obra: 'Passa junto a obra', continuidade: 'Continuidade (até 2 km da rodovia ou obra)', continua_fora: 'Segue além da faixa de 2 km' } },
+      ligar: function() { if (!hidrografiaFiltroAtivo) { hidrografiaFiltroAtivo = true; atualizarBotoesBase(); desenharHidrografia(); } },
+      redesenhar: function() { if (hidrografiaLayer && hidrografiaLayer.refiltrar) hidrografiaLayer.refiltrar(); }
+    });
+  })();
 
   Promise.all([
     fetchGeoJSON('data/municipios.geojson', true),
