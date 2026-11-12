@@ -350,7 +350,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-12.07';
+  var VERSAO_SITE = '2026-11-13.01';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -360,11 +360,13 @@ var Acesso = (function() {
     ['3.7', '12/11/2026', [
       'Tabela de obras e tabela das camadas de referência com o mesmo menu Exportar da Jurisdição: Excel com todos ou só os filtrados, CSV, GeoJSON com atributos para o QGIS (obras com o traçado) e, nas obras, o caderno completo e o mapa A4 da obra selecionada. Só aparece para quem exporta.',
       'Filtros: nova opção "Isolar seleção", ao lado do Auto zoom. Ligada (padrão), Rodovia, SRE, Ferrovia, Município, Regiões e Área de Estudo mostram só o que foi escolhido; desligada, o mapa mostra tudo e destaca a escolha em laranja. Fica lembrada no navegador.',
-      'Tabelas de obras e da Jurisdição: o Tab depois de editar uma célula passa para a próxima sem erro.'
+      'Tabelas de obras e da Jurisdição: o Tab depois de editar uma célula passa para a próxima sem erro.',
+      'Clique num lugar sem obra (dentro de um parque, numa área vazia): o popup mostra as camadas ligadas que contêm o ponto (município, área ambiental, área urbana, regiões, área de estudo, raio de saúde, curso d’água). Antes as camadas de cima impediam o clique de chegar às áreas e nada abria.'
     ], [
       'Novo botão Exportar nas tabelas de obras e das camadas, como na Jurisdição: planilha Excel (todas ou só as filtradas), CSV e arquivo para o QGIS.',
       'Nos filtros do mapa, a opção "Isolar seleção": desligada, o mapa continua mostrando tudo e só destaca em laranja a rodovia, o município ou a região escolhida.',
-      'Na tabela, a tecla Tab passa para a próxima célula sem problemas.'
+      'Na tabela, a tecla Tab passa para a próxima célula sem problemas.',
+      'Clicando em qualquer ponto do mapa, mesmo sem obra, você vê o município, o parque ou a área ambiental e as demais camadas ligadas naquele lugar.'
     ]],
     ['3.6', '12/11/2026', [
       'Legenda como filtro: clicar no nome de um item da legenda mostra no mapa só aquele item (clique em outros para somar, de novo para desmarcar; "Mostrar todos" desfaz). Vale para as obras e para as camadas de referência com mais de um item (rodovias estaduais e federais pela situação, aeródromos, regiões, área de influência, unidades de saúde); cada camada filtra só a si mesma.',

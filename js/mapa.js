@@ -3883,13 +3883,23 @@ map.addControl(new LogoMapaControl());
     return achado ? Hidrografia.htmlPopup(achado) + tcBotao('hidrografia', achado.__feicao) : '';
   });
 
-  // Clique fora de qualquer feicao (as camadas clicaveis ja chamam abrirPopupNoPonto, que inclui a hidrografia).
+  // Clique fora de qualquer feição clicável (13/11/2026): abre o popup com TODAS as camadas ativas que contêm o ponto
+  // (município, área ambiental, área urbana, regiões, área de estudo, raio de saúde, curso d'água...). Antes só a
+  // hidrografia respondia aqui, e as camadas de cima (SVG/canvas de outros panes) impediam o clique de chegar às áreas
+  // de baixo: clicar num parque ou numa área sem obra não mostrava nada. As feições clicáveis continuam abrindo o
+  // próprio popup (que já traz as áreas do ponto); o horário do último popup evita abrir dois.
+  var ultimoPopupNoPontoEm = 0;
+  map.on('popupopen', function() { ultimoPopupNoPontoEm = Date.now(); });
   map.on('click', function(e) {
-    if (!hidrografiaFiltroAtivo || !hidrografiaLayer || window.obrasSelecaoTracadoAtiva) return;
+    if (window.obrasSelecaoTracadoAtiva || medicaoAtiva || (typeof anotacaoFerramenta !== 'undefined' && anotacaoFerramenta)) return;
+    if (map.pm && map.pm.globalDrawModeEnabled && map.pm.globalDrawModeEnabled()) return;
     var alvo = e.originalEvent && e.originalEvent.target;
-    if (alvo && alvo.closest && alvo.closest('.leaflet-interactive, .leaflet-marker-icon')) return;
-    if (medicaoAtiva || (typeof anotacaoFerramenta !== 'undefined' && anotacaoFerramenta)) return;
-    if (Hidrografia.consultar(hidrografiaLayer, e.latlng)) abrirPopupNoPonto(e.latlng, null, null);
+    if (alvo && alvo.closest && alvo.closest('path.leaflet-interactive, .leaflet-marker-icon, .leaflet-popup, .leaflet-control')) return;
+    var momento = Date.now();
+    setTimeout(function() {
+      if (ultimoPopupNoPontoEm >= momento - 50) return;   // uma feição já abriu o popup neste clique
+      abrirPopupNoPonto(e.latlng, null, null);
+    }, 0);
   });
 
   // Busca de curso d'agua pelo nome (filtros, depois do municipio): liga a hidrografia, destaca os trechos com o nome
