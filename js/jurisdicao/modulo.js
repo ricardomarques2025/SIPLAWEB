@@ -166,15 +166,20 @@ var Jurisdicao = (function() {
   }
 
   // ---------- Legenda (barra direita) ----------
+  // No módulo, clicar num tipo da legenda filtra o mapa por ele (o mesmo filtro "Tipo" da barra esquerda e do painel;
+  // clicar de novo desmarca). Por isso a legenda conta sem o filtro de tipo: os outros tipos continuam clicáveis.
   function renderLegenda(visiveis) {
     var bloco = $('blocoLegendaJurisdicao');
     if (!bloco) return;
+    var base = MODULO ? Store.lista().filter(function(r) { return atende(r, 'tipo'); }) : visiveis;
     var porTipo = {};
-    visiveis.forEach(function(r) { porTipo[r.tipo] = (porTipo[r.tipo] || 0) + 1; });
+    base.forEach(function(r) { porTipo[r.tipo] = (porTipo[r.tipo] || 0) + 1; });
     var tipos = Indicadores.ORDEM_TIPOS.filter(function(t) { return porTipo[t]; });
     bloco.style.display = tipos.length ? '' : 'none';
     $('legendaJurisdicao').innerHTML = tipos.map(function(t) {
-      return '<div class="legenda-item"><span class="legenda-linha-wrap"><span class="legenda-linha" style="height:5px;background:' + corTipo(t) +
+      var classe = !MODULO ? '' : ' legenda-filtravel' + (filtros.tipo === t ? ' legenda-sel' : filtros.tipo ? ' legenda-apagada' : '');
+      return '<div class="legenda-item' + classe + '"' + (MODULO ? ' data-jur-tipo="' + esc(t) + '" title="Clique para mostrar só este tipo no mapa (clique de novo para desmarcar)"' : '') +
+        '><span class="legenda-linha-wrap"><span class="legenda-linha" style="height:5px;background:' + corTipo(t) +
         ';box-shadow:0 0 0 2px #fff,0 0 0 3px #d1d5db"></span></span><div class="legenda-texto">' + esc(t) + ' (' + porTipo[t] + ')</div></div>';
     }).join('');
   }
@@ -270,6 +275,10 @@ var Jurisdicao = (function() {
     $('jurSituacao').addEventListener('change', function() { definirFiltro('situacao', this.value); });
     $('jurEnquadrar').addEventListener('click', function() { enquadrar(); });
     $('resumoJurisdicao').addEventListener('click', cliqueResumo);
+    $('legendaJurisdicao').addEventListener('click', function(e) {
+      var item = e.target.closest('[data-jur-tipo]');
+      if (item) definirFiltro('tipo', filtros.tipo === item.dataset.jurTipo ? '' : item.dataset.jurTipo);
+    });
     // Botao "Abrir detalhes" do popup do trecho.
     document.addEventListener('click', function(e) {
       var b = e.target.closest('[data-jur-abrir]');
