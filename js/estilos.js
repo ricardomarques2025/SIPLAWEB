@@ -20,6 +20,8 @@ const MAPA_PANES = {
   // Nomes dos cursos d'agua (js/hidrografia.js): acima das rodovias, abaixo das obras.
   hidrografiaRotulosPane: 480,
   snvPane: 260,
+  // Destaque da seleção dos filtros com "Isolar seleção" desligado (js/mapa.js): abaixo das rodovias e das obras.
+  destaqueFiltroPane: 290,
   ferroviasPane: 270,
   sreBasePane: 300,
   servicosPane: 500,

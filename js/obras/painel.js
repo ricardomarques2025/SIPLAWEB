@@ -117,8 +117,21 @@ var ObrasPainel = (function() {
           '<button type="button" class="btn btn-fantasma so-editor" id="obrDescartar" hidden>Descartar</button>' +
           '<button type="button" class="btn" id="obrAprovacoes" hidden></button>' +
           '<div class="espaco"></div>' +
-          '<button type="button" class="btn" id="obrExportar" data-exportar><svg><use href="#o-down"/></svg>Excel</button>' +
-          '<button type="button" class="btn" id="obrCaderno" data-exportar title="Caderno em PDF: planilhas e um mapa por obra (dá para juntar outras origens)"><svg><use href="#o-book"/></svg>Caderno PDF</button>' +
+          // Mesmo menu da tabela da Jurisdição (12/11/2026). data-exportar: some para quem não exporta (Acesso.aplicarExportacao).
+          '<div class="menu" data-exportar>' +
+            '<button type="button" class="btn btn-primario" id="obrExportar" data-obr-menu="obrMenuExportar"><svg><use href="#o-down"/></svg>Exportar</button>' +
+            '<div class="menu-lista direita" id="obrMenuExportar">' +
+              '<div class="menu-rotulo">Planilha</div>' +
+              '<button type="button" data-obr-exp="xlsx">Excel (.xlsx) — todos</button>' +
+              '<button type="button" data-obr-exp="xlsx-filtro">Excel (.xlsx) — filtrados</button>' +
+              '<button type="button" data-obr-exp="csv">CSV</button>' +
+              '<div class="menu-rotulo">Mapa</div>' +
+              '<button type="button" data-obr-exp="geojson">GeoJSON com atributos (QGIS)</button>' +
+              '<div class="menu-rotulo">Caderno</div>' +
+              '<button type="button" id="obrCaderno" title="Planilhas e um mapa por obra (dá para juntar outras origens)">Caderno completo (PDF)</button>' +
+              '<button type="button" data-obr-exp="mapa-a4">Mapa A4 da obra selecionada (PDF)</button>' +
+            '</div>' +
+          '</div>' +
           '<button type="button" class="btn-icone" id="obrFechar" title="Fechar a tabela e voltar ao mapa"><svg><use href="#o-x"/></svg></button>' +
         '</div>' +
         '<section class="ferramentas">' +
@@ -957,17 +970,79 @@ var ObrasPainel = (function() {
   }
 
   // ---------- Exportar ----------
-  function exportar() {
-    if (!Acesso.podeExportar(ORIGEM)) return;   // visualizador nao exporta
-    (window.XLSX ? Promise.resolve() : carregarScript(LIBS.xlsx)).then(function() {
-      var visiveis = CAMPOS_OBRA.filter(function(c) { var col = grade.getColumn(c.campo); return col && col.isVisible(); });
-      var linhas = grade.getData('active').map(function(d) {
-        var o = {}; visiveis.forEach(function(c) { var v = ObrasStore.valorAtual(d.uid, c.campo); o[c.titulo] = v == null ? '' : v; }); return o;
+  // Menu Exportar (como na Jurisdição): Excel com todas as obras da origem (todas as colunas) ou só as filtradas
+  // (colunas visíveis), CSV (todas), GeoJSON com atributos para o QGIS (todas, com o traçado) e os PDFs.
+  function hojeArq() { return new Date().toISOString().slice(0, 10).replace(/-/g, '_'); }
+  function baixarArquivo(nome, conteudo, tipo) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([conteudo], { type: tipo }));
+    a.download = nome;
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+  }
+  function linhasPlanilha(dados, campos) {
+    return dados.map(function(d) {
+      var o = {}; campos.forEach(function(c) { var v = ObrasStore.valorAtual(d.uid, c.campo); o[c.titulo] = v == null ? '' : (typeof v === 'object' ? JSON.stringify(v) : v); }); return o;
+    });
+  }
+  // Traçado de uma obra numa geometria só (Multi*), para o QGIS: linhas juntas, pontos juntos, áreas juntas.
+  function geometriaUnica(feicoes) {
+    var linhas = [], pontos = [], areas = [];
+    feicoes.forEach(function(f) {
+      var g = f.geometry; if (!g) return;
+      if (g.type === 'LineString') linhas.push(g.coordinates);
+      else if (g.type === 'MultiLineString') linhas = linhas.concat(g.coordinates);
+      else if (g.type === 'Point') pontos.push(g.coordinates);
+      else if (g.type === 'MultiPoint') pontos = pontos.concat(g.coordinates);
+      else if (g.type === 'Polygon') areas.push(g.coordinates);
+      else if (g.type === 'MultiPolygon') areas = areas.concat(g.coordinates);
+    });
+    if (linhas.length) return linhas.length === 1 ? { type: 'LineString', coordinates: linhas[0] } : { type: 'MultiLineString', coordinates: linhas };
+    if (areas.length) return areas.length === 1 ? { type: 'Polygon', coordinates: areas[0] } : { type: 'MultiPolygon', coordinates: areas };
+    if (pontos.length) return pontos.length === 1 ? { type: 'Point', coordinates: pontos[0] } : { type: 'MultiPoint', coordinates: pontos };
+    return null;
+  }
+  function exportar(acao) {
+    if (!Acesso.podeExportar(ORIGEM)) { toast('A exportação não está liberada para o seu perfil nesta origem.', true); return; }
+    if (!grade) return;
+    if (acao === 'mapa-a4') {
+      var uid = selecionadoUid || fichaUid, r = uid && ObrasStore.obter(uid);
+      if (!r) { toast('Selecione uma obra na tabela (clique na linha) para gerar o mapa A4.', true); return; }
+      window.open('obras_caderno.html?origens=' + encodeURIComponent(r.origem || ORIGEM) + '&codigo=' + encodeURIComponent(r.codigo), '_blank');
+      return;
+    }
+    if (acao === 'geojson') {
+      var semTracado = 0;
+      var feats = grade.getData().map(function(d) {
+        var props = {};
+        CAMPOS_OBRA.forEach(function(c) { var v = ObrasStore.valorAtual(d.uid, c.campo); if (c.campo !== 'geom') props[c.campo] = v == null ? null : (typeof v === 'object' ? JSON.stringify(v) : v); });
+        props.origem = ORIGEM;
+        var g = geometriaUnica(feicoesDaObra(d));
+        if (!g) semTracado++;
+        return { type: 'Feature', properties: props, geometry: g };
       });
+      baixarArquivo(hojeArq() + '_obras_' + ORIGEM + '_atributos.geojson', JSON.stringify({ type: 'FeatureCollection', features: feats }), 'application/geo+json');
+      Acesso.registrarEvento('exportou', 'GeoJSON de obras ' + ORIGEM + ' (' + feats.length + ')');
+      if (semTracado) toast(semTracado + ' obra(s) sem traçado saíram sem geometria (só os atributos).');
+      return;
+    }
+    (window.XLSX ? Promise.resolve() : carregarScript(LIBS.xlsx)).then(function() {
+      var filtrados = acao === 'xlsx-filtro';
+      var campos = filtrados
+        ? CAMPOS_OBRA.filter(function(c) { var col = grade.getColumn(c.campo); return col && col.isVisible(); })
+        : CAMPOS_OBRA.filter(function(c) { return c.campo !== 'geom'; });
+      var linhas = linhasPlanilha(filtrados ? grade.getData('active') : grade.getData(), campos);
+      var ws = XLSX.utils.json_to_sheet(linhas);
+      if (acao === 'csv') {
+        baixarArquivo(hojeArq() + '_Obras_' + ORIGEM + '.csv', '﻿' + XLSX.utils.sheet_to_csv(ws, { FS: ';' }), 'text/csv;charset=utf-8');
+        Acesso.registrarEvento('exportou', 'CSV de obras ' + ORIGEM + ' (' + linhas.length + ')');
+        return;
+      }
+      ws['!autofilter'] = { ref: ws['!ref'] };
       var wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(linhas), ORIGEM);
-      XLSX.writeFile(wb, new Date().toISOString().slice(0, 10).replace(/-/g, '_') + '_Obras_' + ORIGEM + '.xlsx');
-      Acesso.registrarEvento('exportou', 'Excel de obras ' + ORIGEM + ' (' + linhas.length + ')');
+      XLSX.utils.book_append_sheet(wb, ws, ORIGEM);
+      XLSX.writeFile(wb, hojeArq() + '_Obras_' + ORIGEM + (filtrados ? '_filtradas' : '') + '.xlsx');
+      Acesso.registrarEvento('exportou', 'Excel de obras ' + ORIGEM + ' (' + (filtrados ? 'filtradas' : 'todas') + ', ' + linhas.length + ')');
     }).catch(function(e) { toast(e.message, true); });
   }
 
@@ -993,7 +1068,16 @@ var ObrasPainel = (function() {
       if (!confirm('Descartar ' + ObrasStore.totalPendentes() + ' alteração(ões) pendente(s)?')) return;
       ObrasStore.descartar(); recarregarGrade(); if (fichaUid) renderFicha();
     });
-    $('obrExportar').addEventListener('click', exportar);
+    $('obrExportar').addEventListener('click', function(e) {
+      e.stopPropagation();
+      var m = $('obrMenuExportar'), aberto = m.classList.contains('aberto');
+      document.querySelectorAll('.jur-ui .menu-lista').forEach(function(x) { x.classList.remove('aberto'); });
+      if (!aberto) m.classList.add('aberto');
+    });
+    document.addEventListener('click', function() { $('obrMenuExportar').classList.remove('aberto'); });
+    document.querySelectorAll('[data-obr-exp]').forEach(function(b) {
+      b.addEventListener('click', function() { exportar(b.dataset.obrExp); });
+    });
     $('obrOrigem').addEventListener('change', function() { trocarOrigem(this.value); });
     $('obrOrigem').addEventListener('mousedown', preencherSeletorOrigem);   // ligou/desligou origens por outro caminho
     $('obrAprovacoes').addEventListener('click', abrirAprovacoes);

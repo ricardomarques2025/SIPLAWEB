@@ -95,7 +95,18 @@ var TabelaCamadas = (function() {
             '<button type="button" data-tc-modo="dividida"><svg><use href="#tc-split"/></svg>Dividida com o mapa</button>' +
           '</nav>' +
           '<div class="espaco"></div>' +
-          '<button type="button" class="btn" id="tcExportar" data-exportar><svg><use href="#tc-down"/></svg>Excel</button>' +
+          // Mesmo menu da tabela da Jurisdição (12/11/2026); some para quem não exporta (data-exportar).
+          '<div class="menu" data-exportar>' +
+            '<button type="button" class="btn btn-primario" id="tcExportar"><svg><use href="#tc-down"/></svg>Exportar</button>' +
+            '<div class="menu-lista direita" id="tcMenuExportar">' +
+              '<div class="menu-rotulo">Planilha</div>' +
+              '<button type="button" data-tc-exp="xlsx">Excel (.xlsx) — todos</button>' +
+              '<button type="button" data-tc-exp="xlsx-filtro">Excel (.xlsx) — filtrados</button>' +
+              '<button type="button" data-tc-exp="csv">CSV</button>' +
+              '<div class="menu-rotulo">Mapa</div>' +
+              '<button type="button" data-tc-exp="geojson">GeoJSON com atributos (QGIS)</button>' +
+            '</div>' +
+          '</div>' +
           '<button type="button" class="btn-icone" id="tcFechar" title="Fechar a tabela e voltar ao mapa"><svg><use href="#tc-x"/></svg></button>' +
         '</div>' +
         '<section class="ferramentas">' +
@@ -127,7 +138,14 @@ var TabelaCamadas = (function() {
 
     document.querySelectorAll('[data-tc-modo]').forEach(function(b) { b.addEventListener('click', function() { definirModo(b.dataset.tcModo); }); });
     $('tcFechar').addEventListener('click', fechar);
-    $('tcExportar').addEventListener('click', exportar);
+    $('tcExportar').addEventListener('click', function(e) {
+      e.stopPropagation();
+      var m = $('tcMenuExportar'), aberto = m.classList.contains('aberto');
+      document.querySelectorAll('.jur-ui .menu-lista').forEach(function(x) { x.classList.remove('aberto'); });
+      if (!aberto) m.classList.add('aberto');
+    });
+    document.addEventListener('click', function() { $('tcMenuExportar').classList.remove('aberto'); });
+    document.querySelectorAll('[data-tc-exp]').forEach(function(b) { b.addEventListener('click', function() { exportar(b.dataset.tcExp); }); });
     $('tcFiltrarMapa').addEventListener('click', alternarFiltroMapa);
     var t = null;
     $('tcBusca').addEventListener('input', function() { clearTimeout(t); var v = this.value; t = setTimeout(function() { busca = v.trim(); aplicarBusca(); }, 150); });
@@ -364,18 +382,43 @@ var TabelaCamadas = (function() {
   }
 
   // ---------- Exportar ----------
-  function exportar() {
+  // acao: xlsx (todas as feições, todas as colunas), xlsx-filtro (filtradas, colunas visíveis), csv (todas),
+  // geojson (todas, com geometria e atributos, para o QGIS).
+  function exportar(acao) {
     if (!grade || !atual) return;
-    (window.XLSX ? Promise.resolve() : carregarScript(LIBS.xlsx)).then(function() {
-      var visiveis = colunas.filter(function(c) { var col = grade.getColumn(c.campo); return col && col.isVisible(); });
-      var dados = grade.getData('active').map(function(d) {
-        var o = {}; visiveis.forEach(function(c) { o[c.titulo] = vazio(d[c.campo]) ? '' : d[c.campo]; }); return o;
+    if (window.Acesso && Acesso.podeExportarPagina && !Acesso.podeExportarPagina()) { toast('A exportação não está liberada para o seu perfil.', true); return; }
+    var nome = camadas[atual].titulo;
+    var arquivo = new Date().toISOString().slice(0, 10).replace(/-/g, '_') + '_' + semAcento(nome).replace(/[^a-z0-9]+/g, '_');
+    function registrar(tipo, n) { if (window.Acesso && Acesso.registrarEvento) Acesso.registrarEvento('exportou', tipo + ' da camada ' + nome + ' (' + n + ')'); }
+    function baixar(nomeArq, conteudo, tipo) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([conteudo], { type: tipo }));
+      a.download = nomeArq; a.click();
+      setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+    }
+    if (acao === 'geojson') {
+      var feats = linhas.map(function(f) {
+        var props = {};
+        Object.keys(f.properties).forEach(function(k) { if (k.charAt(0) !== '_') props[k] = f.properties[k]; });
+        return { type: 'Feature', properties: props, geometry: f.geometry || null };
       });
-      var nome = camadas[atual].titulo;
+      baixar(arquivo + '_atributos.geojson', JSON.stringify({ type: 'FeatureCollection', features: feats }), 'application/geo+json');
+      registrar('GeoJSON', feats.length);
+      return;
+    }
+    (window.XLSX ? Promise.resolve() : carregarScript(LIBS.xlsx)).then(function() {
+      var filtrados = acao === 'xlsx-filtro';
+      var cols = filtrados ? colunas.filter(function(c) { var col = grade.getColumn(c.campo); return col && col.isVisible(); }) : colunas;
+      var dados = (filtrados ? grade.getData('active') : grade.getData()).map(function(d) {
+        var o = {}; cols.forEach(function(c) { o[c.titulo] = vazio(d[c.campo]) ? '' : d[c.campo]; }); return o;
+      });
+      var ws = XLSX.utils.json_to_sheet(dados);
+      if (acao === 'csv') { baixar(arquivo + '.csv', '﻿' + XLSX.utils.sheet_to_csv(ws, { FS: ';' }), 'text/csv;charset=utf-8'); registrar('CSV', dados.length); return; }
+      ws['!autofilter'] = { ref: ws['!ref'] };
       var wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dados), nome.replace(/[\\\/?*\[\]:]/g, ' ').slice(0, 31));
-      XLSX.writeFile(wb, new Date().toISOString().slice(0, 10).replace(/-/g, '_') + '_' + semAcento(nome).replace(/[^a-z0-9]+/g, '_') + '.xlsx');
-      if (window.Acesso && Acesso.registrarEvento) Acesso.registrarEvento('exportou', 'Excel da camada ' + nome + ' (' + dados.length + ')');
+      XLSX.utils.book_append_sheet(wb, ws, nome.replace(/[\\\/?*\[\]:]/g, ' ').slice(0, 31));
+      XLSX.writeFile(wb, arquivo + (filtrados ? '_filtrados' : '') + '.xlsx');
+      registrar('Excel', dados.length);
     }).catch(function(e) { toast(e.message, true); });
   }
 

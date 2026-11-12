@@ -8449,7 +8449,101 @@ map.addControl(new LogoMapaControl());
     }
   }
 
+  // --- ISOLAR SELEÇÃO (12/11/2026) ---
+  // Ligado (padrão, como sempre foi): Rodovia, SRE, Ferrovia, Município, Regiões e Área de Estudo escondem o resto.
+  // Desligado: o mapa desenha tudo (os filtros são soltos só durante o desenho) e a seleção ganha um destaque laranja;
+  // o auto zoom continua indo para a seleção e os indicadores e o título continuam seguindo os filtros.
+  var destaqueFiltroLayer = null;
+  function isolarFiltroAtivo() {
+    var t = document.getElementById('isolarFiltroToggle');
+    return !t || t.checked;
+  }
+  (function() {
+    var t = document.getElementById('isolarFiltroToggle');
+    if (!t) return;
+    try { if (localStorage.getItem('siplaweb.isolarFiltro') === '0') t.checked = false; } catch (e) { /* sem armazenamento */ }
+    t.addEventListener('change', function() {
+      try { localStorage.setItem('siplaweb.isolarFiltro', t.checked ? '1' : '0'); } catch (e) { /* ignora */ }
+      aplicarFiltros({ preservarZoom: true });
+    });
+  })();
+
+  function selecaoDosFiltros() {
+    var v = function(id) { var el = document.getElementById(id); return el ? el.value : ''; };
+    return { rodovia: v('rodoviaSelect'), sre: v('sreSelect'), municipio: v('municipioSelect'), ferrovia: v('ferroviaSelect'),
+      rgPlan: regioesSelecionadas('rgPlanSelect'), rgMan: regioesSelecionadas('rgManSelect'), area: areaInfluenciaSelecionada };
+  }
+  function temSelecaoIsolavel(s) {
+    return !!(s.rodovia || s.sre || s.municipio || s.ferrovia || s.rgPlan.length || s.rgMan.length || s.area);
+  }
+  function feicoesDaSelecao(s) {
+    var f = [];
+    function de(colecao, teste) { ((colecao && colecao.features) || []).forEach(function(x) { if (teste(x)) f.push(x); }); }
+    if (s.sre) de(sreBaseData, function(x) { return nomeSREFeature(x) === s.sre; });
+    else if (s.rodovia) {
+      de(sreBaseData, function(x) { return nomeRodoviaFeature(x) === s.rodovia; });
+      de(snvData, function(x) { return nomeRodoviaFeature(x) === s.rodovia; });
+    }
+    if (s.ferrovia) de(ferroviasData, function(x) { return valorSeguro(x, 'nome') === s.ferrovia; });
+    if (s.municipio) de(municipiosData, function(x) { return valorSeguro(x, 'NM_MUN') === s.municipio; });
+    if (s.rgMan.length) f = f.concat(poligonosManutencaoSelecionados());
+    if (s.rgPlan.length) de(regioesPlanejamentoData, function(x) { return s.rgPlan.indexOf(x.properties && x.properties.nome) !== -1; });
+    if (s.area) f = f.concat(featuresAreaInfluenciaSelecionada());
+    return f;
+  }
+  // Solta os filtros de feição só enquanto o mapa é desenhado; devolve como estavam.
+  function soltarSelecao(s) {
+    ['rodoviaSelect', 'sreSelect', 'municipioSelect', 'ferroviaSelect'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+    ['rgPlanSelect', 'rgManSelect'].forEach(function(id) {
+      var el = document.getElementById(id); if (el) Array.from(el.options).forEach(function(o) { o.selected = false; });
+    });
+    areaInfluenciaSelecionada = false;
+  }
+  function devolverSelecao(s) {
+    var put = function(id, val) { var el = document.getElementById(id); if (el) el.value = val; };
+    put('rodoviaSelect', s.rodovia); put('sreSelect', s.sre); put('municipioSelect', s.municipio); put('ferroviaSelect', s.ferrovia);
+    [['rgPlanSelect', s.rgPlan], ['rgManSelect', s.rgMan]].forEach(function(p) {
+      var el = document.getElementById(p[0]); if (el) Array.from(el.options).forEach(function(o) { o.selected = p[1].indexOf(o.value) !== -1; });
+    });
+    areaInfluenciaSelecionada = s.area;
+  }
+  function desenharDestaqueFiltro(feicoes) {
+    if (destaqueFiltroLayer) { map.removeLayer(destaqueFiltroLayer); destaqueFiltroLayer = null; }
+    if (!feicoes || !feicoes.length) return;
+    destaqueFiltroLayer = L.geoJSON({ type: 'FeatureCollection', features: feicoes }, {
+      pane: 'destaqueFiltroPane', interactive: false,
+      style: function(x) {
+        return /Polygon/.test(x.geometry.type)
+          ? { color: '#ea580c', weight: 3.5, opacity: 0.95, fill: true, fillColor: '#fb923c', fillOpacity: 0.12 }
+          : { color: '#f97316', weight: 11, opacity: 0.55, lineCap: 'round', lineJoin: 'round' };
+      }
+    }).addTo(map);
+  }
+
   function aplicarFiltros(opcoes) {
+    opcoes = opcoes || {};
+    var s = selecaoDosFiltros();
+    if (isolarFiltroAtivo() || !temSelecaoIsolavel(s)) {
+      desenharDestaqueFiltro(null);
+      return aplicarFiltrosBase(opcoes);
+    }
+    var feicoes = feicoesDaSelecao(s);
+    soltarSelecao(s);
+    try {
+      aplicarFiltrosBase(Object.assign({}, opcoes, { preservarZoom: true, zoomRegional: false, zoomAreaInfluencia: false }));
+    } finally {
+      devolverSelecao(s);
+    }
+    atualizarIndicadoresProgramaMunicipio(s.municipio);
+    atualizarIndicadoresIntervencaoEOAE(s.municipio);
+    atualizarTituloTopBar();
+    desenharDestaqueFiltro(feicoes);
+    var autoZoomToggle = document.getElementById('autoZoomToggle');
+    if ((!autoZoomToggle || autoZoomToggle.checked) && !opcoes.preservarZoom && feicoes.length) zoomParaSelecao(feicoes);
+  }
+  // --- FIM ISOLAR SELEÇÃO ---
+
+  function aplicarFiltrosBase(opcoes) {
     opcoes = opcoes || {};
     desenharMascaraBrasil();
     atualizarBotoesBase();
@@ -9297,6 +9391,7 @@ map.addControl(new LogoMapaControl());
   document.getElementById('ferroviaSelect').addEventListener('change', function() {
     ferroviasFiltroAtivo = true;
     atualizarBotoesBase();
+    if (!isolarFiltroAtivo()) { aplicarFiltros({}); return; }   // sem isolar: todas as ferrovias + destaque + zoom
     desenharFerrovias();
   });
 

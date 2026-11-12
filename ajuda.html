@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Ctext x=%2712%27 y=%2717.5%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-weight=%27700%27 font-size=%2715%27 fill=%27white%27%3E%3F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-12.06" />
+  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-12.07" />
 </head>
 <body>
 <header class="aj-topo">
@@ -171,13 +171,14 @@
   <div class="aj-nota aj-dica">Para trocar de origem, volte à página inicial (⌂) e escolha outro cartão.</div>
 </article>
 
-<article id="mapa-filtros" data-cat="Mapa" data-titulo="Filtros" data-termos="filtrar pesquisa busca intervenção proposta rodovia SRE situação jurisdição ferrovia localidade município curso d'água rio córrego hidrografia área de influência pedágio região manutenção planejamento área de estudo unidades de saúde auto zoom" data-rel="mapa-origens mapa-camadas">
+<article id="mapa-filtros" data-cat="Mapa" data-titulo="Filtros" data-termos="filtrar isolar seleção destacar destaque laranja pesquisa busca intervenção proposta rodovia SRE situação jurisdição ferrovia localidade município curso d'água rio córrego hidrografia área de influência pedágio região manutenção planejamento área de estudo unidades de saúde auto zoom" data-rel="mapa-origens mapa-camadas">
   <h1>Filtros</h1>
   <p>No grupo <b>Filtros</b> do menu esquerdo. Os filtros são <b>encadeados</b>: ao escolher um, os outros passam a mostrar só as opções compatíveis.</p>
   <table>
     <thead><tr><th>Filtro</th><th>Para que serve</th></tr></thead>
     <tbody>
       <tr><td><b>Auto zoom</b></td><td>Liga/desliga a aproximação automática do mapa ao escolher um filtro.</td></tr>
+      <tr><td><b>Isolar seleção</b></td><td>Ligado (padrão): ao escolher Rodovia, SRE, Ferrovia, Município, Regiões ou Área de Estudo, o mapa mostra <b>só</b> o que foi escolhido. Desligado: o mapa continua mostrando tudo e a escolha fica <b>destacada em laranja</b> (com o Auto zoom ligado, o mapa aproxima dela). A opção fica lembrada no navegador.</td></tr>
       <tr><td><b>Intervenção</b></td><td>Tipo de obra ou serviço (a lista depende das origens ligadas).</td></tr>
       <tr><td><b>Proposta FUNDEINFRA</b></td><td>Localiza as obras de uma proposta; o mapa aproxima o trecho.</td></tr>
       <tr><td><b>Rodovia</b></td><td>Sigla da rodovia (ex.: GO-020). Também é usada em <a href="#ferramentas-km">Localizar km</a>.</td></tr>
@@ -240,6 +241,17 @@
     </tbody>
   </table>
   <div class="aj-nota aj-dica">Rótulos (escudos de rodovia, nomes de localidade) não respondem ao clique: clique na linha ou no ponto.</div>
+</article>
+
+<article id="mapa-tabela-camadas" data-cat="Mapa" data-titulo="Tabela de uma camada de referência" data-termos="tabela atributos camada referência aeródromo localidade município rodovia ferrovia pedágio região área curso d'água exportar excel csv geojson qgis filtrar o mapa" data-rel="mapa-camadas mapa-consulta">
+  <h1>Tabela de uma camada de referência</h1>
+  <p>No popup de um aeródromo, localidade, município, trecho de rodovia (estadual, federal ou complementar), ferrovia, pedágio, área, região ou curso d'água, o botão <b>Tabela: …</b> abre a tabela daquela camada, já com o item clicado selecionado e destacado no mapa. É só consulta: as camadas editáveis continuam em <b>Editar camadas</b>.</p>
+  <ul>
+    <li><b>Busca</b> em todas as colunas e <b>filtro em cada coluna</b> (funil, como no Excel); clique no título para ordenar.</li>
+    <li><b>Tela cheia</b> ou <b>Dividida com o mapa</b>; o alfinete da linha mostra o item no mapa.</li>
+    <li><b>Filtrar o mapa</b>: o mapa mostra só os itens que passam na busca e nos filtros; um aviso no alto do mapa permite desfazer.</li>
+    <li><b>Exportar</b> (só para quem exporta): <b>Excel — todos</b>, <b>Excel — filtrados</b>, <b>CSV</b> e <b>GeoJSON com atributos (QGIS)</b>.</li>
+  </ul>
 </article>
 
 <article id="mapa-legenda" data-cat="Mapa" data-titulo="Legenda" data-termos="legenda cores símbolos painel direito" data-rel="mapa-camadas">
@@ -339,11 +351,11 @@
 <article id="ferramentas-exportar" data-cat="Ferramentas do mapa" data-titulo="Exportar a tabela filtrada (CSV)" data-termos="exportar CSV planilha excel tabela filtrada download baixar" data-rel="obras-tabela jurisdicao-exportar">
   <h1>Exportar a tabela filtrada (CSV)</h1>
   <p>No grupo <b>Exportação</b> do menu esquerdo, <b>Exportar tabela filtrada</b> baixa um CSV com as obras visíveis (lineares, pontuais e vinculadas a aeródromos) conforme os filtros ativos. quem exporta (diretor, editores, gerenciador).</p>
-  <p>Para a planilha completa de uma origem, use o botão <b>Excel</b> da <a href="#obras-tabela">tabela de obras</a>. Para a Jurisdição, veja <a href="#jurisdicao-exportar">Exportar dados da Jurisdição</a>.</p>
+  <p>Para a planilha completa de uma origem, use o menu <b>Exportar</b> da <a href="#obras-tabela">tabela de obras</a>. Para a Jurisdição, veja <a href="#jurisdicao-exportar">Exportar dados da Jurisdição</a>.</p>
 </article>
 
 <!-- ================================================================ OBRAS -->
-<article id="obras-tabela" data-cat="Obras" data-titulo="Tabela de obras" data-termos="tabela obras abrir tabela empreendimentos buscar código SEI colunas etapa status traçado filtro funil excel tela cheia dividida excel" data-rel="obras-editar obras-ficha">
+<article id="obras-tabela" data-cat="Obras" data-titulo="Tabela de obras" data-termos="exportar excel csv geojson qgis mapa a4 tabela obras abrir tabela empreendimentos buscar código SEI colunas etapa status traçado filtro funil excel tela cheia dividida excel" data-rel="obras-editar obras-ficha">
   <h1>Tabela de obras</h1>
   <p>Disponível quando o mapa está aberto em <b>uma origem</b>. No menu esquerdo, clique em <b>Abrir tabela de obras</b>.</p>
   <ul>
@@ -352,8 +364,16 @@
     <li><b>Filtro em cada coluna</b>, como no Excel: o funil logo abaixo do título abre a lista dos valores daquela coluna, com <b>Pesquisar</b>, <b>(Selecionar tudo)</b> e <b>(Vazias)</b>; marque o que quer ver e clique em <b>OK</b>. O funil fica <b>azul e cheio</b> quando a coluna está filtrada (passe o mouse para ver o filtro). A coluna do alfinete filtra <b>com/sem traçado</b>. O ícone de funil com ✕, ao lado da busca, limpa a busca e todos os filtros.</li>
     <li><b>Colunas</b>: escolha quais colunas aparecem.</li>
     <li>Clique no título da coluna para ordenar.</li>
-    <li><b>Excel</b>: baixa a planilha da origem (quem exporta).</li>
-    <li><b>Caderno PDF</b>: planilhas e um mapa por obra, no formato dos cadernos da GOINFRA. Veja <a href="#obras-caderno">Caderno de obras</a>.</li>
+    <li><b>Exportar</b> (botão azul, só para quem exporta), igual ao da Jurisdição:
+      <ul>
+        <li><b>Excel (.xlsx) — todos</b>: todas as obras da origem, com todas as colunas.</li>
+        <li><b>Excel (.xlsx) — filtrados</b>: só as obras que passam na busca e nos filtros das colunas, com as colunas visíveis.</li>
+        <li><b>CSV</b>: todas as obras da origem (separador ponto e vírgula).</li>
+        <li><b>GeoJSON com atributos (QGIS)</b>: todas as obras com o traçado (linha, ponto ou área) e os campos, para abrir em SIG. Obra sem traçado sai só com os campos.</li>
+        <li><b>Caderno completo (PDF)</b>: planilhas e um mapa por obra, no formato dos cadernos da GOINFRA. Veja <a href="#obras-caderno">Caderno de obras</a>.</li>
+        <li><b>Mapa A4 da obra selecionada (PDF)</b>: clique antes na linha da obra.</li>
+      </ul>
+    </li>
     <li>O ícone de alfinete na linha <b>mostra a obra no mapa</b>; o ícone de painel abre a <a href="#obras-ficha">ficha</a>.</li>
     <li>O <b>✕</b> fecha a tabela e volta ao mapa.</li>
   </ul>
@@ -397,7 +417,7 @@
   <p>Monta o caderno no formato do <i>Caderno de Obras Rodoviárias</i> e do <i>Caderno de Projetos Rodoviários</i> da GOINFRA, com os dados do sistema. Como o da Jurisdição, <b>não fica gravado</b>: você salva o PDF pelo diálogo de impressão. Só para quem exporta na origem.</p>
   <h2>Caderno completo</h2>
   <ol>
-    <li>Na <a href="#obras-tabela">tabela de obras</a>, clique em <b>Caderno PDF</b>. Abre uma aba nova com a origem da tabela marcada.</li>
+    <li>Na <a href="#obras-tabela">tabela de obras</a>, clique em <b>Exportar › Caderno completo (PDF)</b>. Abre uma aba nova com a origem da tabela marcada.</li>
     <li>Marque as <b>origens</b> que entram no caderno. Com mais de uma, a ordem é a ordem em que você marcou (o número aparece ao lado: 1º, 2º…). Exemplo: DOR e depois DPJ.</li>
     <li>Escolha as partes (<b>Capa</b>, <b>Índice</b>, <b>Resumo</b>, <b>Planilhas</b>, <b>Mapas</b>), o <b>Título</b> da capa e o <b>Ano</b>.</li>
     <li>Clique em <b>Gerar caderno</b> e aguarde os mapas (cerca de 1 minuto para DOR + DPJ).</li>
@@ -726,7 +746,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=2026-11-12.06"></script>
-<script src="js/ajuda.js?v=2026-11-12.06"></script>
+<script src="js/acesso.js?v=2026-11-12.07"></script>
+<script src="js/ajuda.js?v=2026-11-12.07"></script>
 </body>
 </html>
