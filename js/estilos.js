@@ -24,6 +24,8 @@ const MAPA_PANES = {
   destaqueFiltroPane: 290,
   ferroviasPane: 270,
   sreBasePane: 300,
+  // Sombra única das obras no mesmo trecho (faixas coladas, js/mapa.js): logo abaixo das obras.
+  sombraFaixasPane: 495,
   servicosPane: 500,
   localidadesPane: 550,
   oaePane: 600,

@@ -8106,11 +8106,7 @@ map.addControl(new LogoMapaControl());
           if (c.getLayers) { percorrer(c.getLayers()); return; }
           var p = c.feature && c.feature.properties;
           if (!p || !(p.__OFFSET_N > 1) || !c.setStyle) return;
-          if (c.options.color === '#111827') {   // sombra: uma só, centrada, da largura de todas as faixas
-            if (p.__OFFSET_IDX > 0) c.setStyle({ opacity: 0 });
-            else { c.options.offset = 0; c.setStyle({ weight: p.__OFFSET_N * LARGURA_FAIXA + 5, opacity: 0.3 }); }
-            return;
-          }
+          if (c.options.color === '#111827') { c.setStyle({ opacity: 0 }); return; }   // sombra: uma só, em sombraDasFaixas
           if (c.options.color === '#ffffff') { c.setStyle({ weight: 2 }); return; }   // miolo branco da obra
           c.setStyle({ weight: LARGURA_FAIXA });
         });
@@ -8138,9 +8134,10 @@ map.addControl(new LogoMapaControl());
   function deslocamentoLinha(f) {
     var p = (f && f.properties) || {};
     if (!p.__OFFSET_N || p.__OFFSET_N < 2) return 0;
-    if (MODO_SOBREPOSICAO === 'faixas') return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * LARGURA_FAIXA;
+    var sentido = p.__SENTIDO || 1;
+    if (MODO_SOBREPOSICAO === 'faixas') return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * LARGURA_FAIXA * sentido;
     if (MODO_SOBREPOSICAO !== 'lado' || map.getZoom() < ZOOM_LADO_A_LADO) return 0;
-    return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * ESPACO_LADO_A_LADO;
+    return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * ESPACO_LADO_A_LADO * sentido;
   }
   // Ao cruzar o zoom 11, liga/desliga o deslocamento das linhas já desenhadas (sem redesenhar o mapa).
   var ladoALadoAtivo = null;
@@ -8156,6 +8153,58 @@ map.addControl(new LogoMapaControl());
       });
     })(regraLayers);
   });
+  var ORDEM_ORIGEM_FAIXA = { FUNDEINFRA: 0, DOR: 1, DMA: 2, DPJ: 3, DPL: 4, TARE: 5 };
+  function chaveOrdemFaixa(ob) {
+    return (ORDEM_ORIGEM_FAIXA[ob.origem] != null ? ORDEM_ORIGEM_FAIXA[ob.origem] : 9) + '|' + (ob.estilo.legenda || '') + '|' + (ob.dados.IDCOD || '');
+  }
+  // Os segmentos da malha não foram desenhados todos no mesmo sentido; o deslocamento (esquerda/direita) segue o
+  // sentido do desenho, e as faixas trocavam de lado na emenda ("linhas se contorcendo"). Aqui os trechos que se
+  // encostam pelas pontas recebem um sentido coerente (+1/-1), propagado em cadeia; deslocamentoLinha multiplica.
+  function pontasDaLinha(f) {
+    var g = f && f.geometry;
+    var partes = !g ? null : g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : null;
+    if (!partes || !partes.length || !partes[0].length) return null;
+    var ultima = partes[partes.length - 1];
+    return [partes[0][0], ultima[ultima.length - 1]];
+  }
+  function chavePontoFaixa(c) { return Number(c[0]).toFixed(5) + ',' + Number(c[1]).toFixed(5); }
+  function sentidoDasFaixas(feicoes) {
+    var pontas = feicoes.map(pontasDaLinha), porPonto = {}, sentido = feicoes.map(function() { return 0; });
+    pontas.forEach(function(pp, j) {
+      if (!pp) return;
+      [0, 1].forEach(function(t) { var k = chavePontoFaixa(pp[t]); (porPonto[k] = porPonto[k] || []).push([j, t]); });
+    });
+    pontas.forEach(function(pp, j) {
+      if (sentido[j]) return;
+      if (!pp) { sentido[j] = 1; return; }
+      sentido[j] = (pp[1][0] - pp[0][0]) >= 0 ? 1 : -1;   // começo da cadeia: de oeste para leste
+      var fila = [j];
+      while (fila.length) {
+        var c = fila.shift();
+        [0, 1].forEach(function(t) {
+          (porPonto[chavePontoFaixa(pontas[c][t])] || []).forEach(function(v) {
+            if (sentido[v[0]]) return;
+            // fim com começo = mesmo sentido; fim com fim ou começo com começo = desenhado ao contrário
+            sentido[v[0]] = sentido[c] * (t !== v[1] ? 1 : -1);
+            fila.push(v[0]);
+          });
+        });
+      }
+    });
+    return sentido;
+  }
+  // Sombra única de cada trecho com faixas, numa camada abaixo de todas as obras (se ficasse na camada de uma das
+  // obras, podia cobrir a faixa da outra, desenhada antes).
+  function sombraDasFaixas(grupos) {
+    if (MODO_SOBREPOSICAO !== 'faixas') return null;
+    var feicoes = [];
+    Object.keys(grupos).forEach(function(k) {
+      grupos[k].features.forEach(function(f) { if (f.properties && f.properties.__OFFSET_N > 1 && f.properties.__OFFSET_IDX === 0) feicoes.push(f); });
+    });
+    if (!feicoes.length) return null;
+    return L.geoJSON({ type: 'FeatureCollection', features: feicoes }, { pane: 'sombraFaixasPane', interactive: false,
+      style: function(f) { return { color: '#111827', weight: f.properties.__OFFSET_N * LARGURA_FAIXA + 5, opacity: 0.3, lineCap: 'round', lineJoin: 'round' }; } });
+  }
   function obrasLadoALado(linhas) {
     var fontes = fontesLinhasObras();
     var saida = [];
@@ -8184,9 +8233,13 @@ map.addControl(new LogoMapaControl());
       var k = chaveGeometriaSRE(f) || valorSeguro(f, 'GEOCOD');
       if (k) (porTrecho[k] = porTrecho[k] || []).push(n);
     });
+    var gruposTrecho = [];
     Object.keys(porTrecho).forEach(function(k) {
       var g = porTrecho[k];
       if (g.length < 2) return;
+      // ordem fixa das faixas (origem, tipo, código): a mesma obra fica do mesmo lado em todos os segmentos
+      g.sort(function(a, b) { return chaveOrdemFaixa(obraDe[a]).localeCompare(chaveOrdemFaixa(obraDe[b])); });
+      gruposTrecho.push(g);
       var obras = [], vistos = {};
       g.forEach(function(n) {
         var d = obraDe[n].dados, id = d.IDCOD || ('#' + n);
@@ -8203,6 +8256,8 @@ map.addControl(new LogoMapaControl());
         saida[n] = c;
       });
     });
+    var sentidos = sentidoDasFaixas(gruposTrecho.map(function(g) { return saida[g[0]]; }));
+    gruposTrecho.forEach(function(g, j) { g.forEach(function(n) { saida[n].properties.__SENTIDO = sentidos[j]; }); });
     return saida;
   }
 
@@ -8468,6 +8523,8 @@ map.addControl(new LogoMapaControl());
       camada.addTo(map);
       regraLayers.push(camada);
     });
+    var sombraFaixas = sombraDasFaixas(grupos);
+    if (sombraFaixas) { sombraFaixas.addTo(map); regraLayers.push(sombraFaixas); }
 
     obrasLabelLayer = L.layerGroup();
     var rotulosIncluidos = {};
