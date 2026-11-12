@@ -465,7 +465,7 @@
     ].forEach(function(g) {
       var lista = linhas.filter(g[2]);
       if (!lista.length) return;
-      html += aviso(g[0] === 'atrasada' ? 'grave' : 'atencao', lista.length + ' origem' + (lista.length > 1 ? 'ns' : '') + ' com dados ' + g[1],
+      html += aviso(g[0] === 'atrasada' ? 'grave' : 'atencao', lista.length + (lista.length > 1 ? ' origens' : ' origem') + ' com dados ' + g[1],
         lista.map(function(l) { return '<b>' + esc(l.origem.codigo) + '</b> ' + (l.data ? fmtData(l.data) + ' (' + num(l.dias) + ' dias)' : 'sem data'); }).join(' · ') +
         '. Data de referência há ' + g[3] + '. O aviso fica até a origem atualizar os dados.');
     });
