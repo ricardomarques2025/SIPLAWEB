@@ -336,4 +336,5 @@
 /* Tabela estreita (dividida): botoes do topo sem quebrar texto; o topo quebra em linhas se faltar espaco. */
 .jur-ui .jur-tabela-topo { flex-wrap: wrap; row-gap: 8px; }
 .jur-ui .segmentado button, .jur-ui .pill-status, .jur-ui .jur-tabela-titulo, .jur-ui .btn { white-space: nowrap; }
-.jur-ui .menu-lista [hidden] { display: none !important; }   /* itens do menu escondidos por permissão (ex.: Histórico) */
+.jur-ui .menu-lista [hidden] { display: none !important; }
+.jur-ui .pill-status.arquivo .ponto { background: #94a3b8; }   /* camada de base (arquivo do site), na tabela de camadas */   /* itens do menu escondidos por permissão (ex.: Histórico) */

@@ -117,6 +117,8 @@ var ObrasPainel = (function() {
           '<button type="button" class="btn btn-fantasma so-editor" id="obrDescartar" hidden>Descartar</button>' +
           '<button type="button" class="btn" id="obrAprovacoes" hidden></button>' +
           '<div class="espaco"></div>' +
+          // Situação dos dados, como na Jurisdição (13/11/2026): carregando / salvando / erro / dados do banco; clique recarrega.
+          '<button type="button" class="pill-status salvando" id="obrStatus" title="Recarregar os dados do banco"><span class="ponto"></span><span id="obrTxtStatus">Carregando…</span></button>' +
           // Mesmo menu da tabela da Jurisdição (12/11/2026). data-exportar: some para quem não exporta (Acesso.aplicarExportacao).
           '<div class="menu" data-exportar>' +
             '<button type="button" class="btn btn-primario" id="obrExportar" data-obr-menu="obrMenuExportar"><svg><use href="#o-down"/></svg>Exportar</button>' +
@@ -274,10 +276,38 @@ var ObrasPainel = (function() {
     else if (!recolher && legendaRecolhidaPorNos) { definirSidebarRecolhida('sidebar-right', 'sidebar-right-collapsed', botao, false); legendaRecolhidaPorNos = false; }
   }
 
+  // ---------- Situação dos dados (pílula ao lado do Exportar) ----------
+  // estado: 'carregando' | 'salvando' | 'erro' | 'ok'
+  var estadoDados = 'carregando', erroDados = '';
+  function situacaoDados(estado, erro) {
+    estadoDados = estado; erroDados = erro || '';
+    var el = $('obrStatus'); if (!el) return;
+    var ocupado = estado === 'carregando' || estado === 'salvando';
+    el.classList.toggle('salvando', ocupado);
+    el.classList.toggle('pendente', estado === 'erro');
+    $('obrTxtStatus').textContent = estado === 'carregando' ? 'Carregando…' : estado === 'salvando' ? 'Salvando…' : estado === 'erro' ? 'Erro · recarregar' : 'Dados do banco';
+    el.title = estado === 'erro' ? erroDados + ' (clique para recarregar)' : 'Recarregar os dados do banco';
+  }
+  function recarregarDoBanco() {
+    if (estadoDados === 'carregando' || estadoDados === 'salvando') return;
+    if (ObrasStore.totalPendentes()) { toast('Há alterações pendentes: salve ou descarte antes de recarregar.', true); return; }
+    situacaoDados('carregando');
+    ObrasStore.carregar(ORIGEM).then(function() {
+      recarregarGrade();
+      if (fichaUid) renderFicha();
+      atualizarAprovacoes();
+      situacaoDados('ok');
+      toast('Dados atualizados do banco');
+      return recarregarMapa();
+    }).catch(function(e) { situacaoDados('erro', e.message); toast('Não foi possível recarregar: ' + e.message, true); });
+  }
+
   function iniciarTabela() {
     if (!tabelaPronta) {
       carregarCss(LIBS.tabulatorCss);
+      situacaoDados('carregando');
       tabelaPronta = Promise.all([window.Tabulator ? null : carregarScript(LIBS.tabulatorJs), ObrasStore.carregar(ORIGEM)]).then(function() {
+        situacaoDados('ok');
         $('obrUi').classList.toggle('somente-leitura', !ObrasStore.podeAlterar());
         $('obrUi').classList.toggle('sem-pleno', !ObrasStore.podeGravar());
         atualizarAprovacoes();
@@ -285,7 +315,7 @@ var ObrasPainel = (function() {
         preencherFiltros();
         criarGrade();
         return new Promise(function(resolve) { grade.on('tableBuilt', resolve); });
-      }).then(aplicarFiltros);
+      }).then(aplicarFiltros).catch(function(e) { situacaoDados('erro', e.message); tabelaPronta = null; throw e; });
     }
     return tabelaPronta;
   }
@@ -531,7 +561,9 @@ var ObrasPainel = (function() {
     if ($('obrDataFato') && (!dataFato || dataFato > hojeIso())) { $('obrRevisaoAviso').textContent = 'Informe uma data do fato válida (não pode ser futura).'; return; }
     $('obrConfirmar').disabled = true;
     $('obrRevisaoAviso').textContent = 'Salvando…';
+    situacaoDados('salvando');
     ObrasStore.salvar(dataFato).then(function(res) {
+      situacaoDados('ok');
       $('obrDlgRevisao').close();
       if (res.gravadas.length) toast(res.proposta
         ? res.gravadas.length + (res.gravadas.length === 1 ? ' proposta enviada' : ' propostas enviadas') + ' para aprovação'
@@ -540,7 +572,7 @@ var ObrasPainel = (function() {
       recarregarGrade();
       if (fichaUid) renderFicha();
       return res.proposta ? null : recarregarMapa();
-    }).catch(function(e) { toast('Falha ao salvar: ' + e.message, true); })
+    }).catch(function(e) { situacaoDados('erro', e.message); toast('Falha ao salvar: ' + e.message, true); })
       .then(function() { $('obrConfirmar').disabled = false; atualizarPendentes(); });
   }
 
@@ -1103,6 +1135,7 @@ var ObrasPainel = (function() {
       if (!confirm('Descartar ' + ObrasStore.totalPendentes() + ' alteração(ões) pendente(s)?')) return;
       ObrasStore.descartar(); recarregarGrade(); if (fichaUid) renderFicha();
     });
+    $('obrStatus').addEventListener('click', recarregarDoBanco);
     $('obrExportar').addEventListener('click', function(e) {
       e.stopPropagation();
       var m = $('obrMenuExportar'), aberto = m.classList.contains('aberto');

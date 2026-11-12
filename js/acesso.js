@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.02';
+  var VERSAO_SITE = '2026-11-13.03';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -365,6 +365,7 @@ var Acesso = (function() {
       'Filtros: nova opção "Isolar seleção", ao lado do Auto zoom. Ligada (padrão), Rodovia, SRE, Ferrovia, Município, Regiões e Área de Estudo mostram só o que foi escolhido; desligada, o mapa mostra tudo e destaca a escolha em laranja. Fica lembrada no navegador.',
       'Tabelas de obras e da Jurisdição: o Tab depois de editar uma célula passa para a próxima sem erro.',
       'Exportar › Histórico de alterações (período), nas tabelas de obras e da Jurisdição: planilha Excel com cada alteração gravada entre duas datas (campo, antes, depois, autor, quem propôs), de todos os registros ou só dos filtrados. Para quem edita ou aprova (editor básico, editor pleno, gerenciador, administrador).',
+      'Tabela de obras e tabela das camadas com o indicador "Dados do banco" da Jurisdição: mostra Carregando/Salvando/Erro e, ao clicar, busca os dados de novo no banco. Nas camadas, indica se a camada vem do banco (malha complementar, área de estudo, área de influência) ou é uma camada de base publicada com o site.',
       'Clique num lugar sem obra (dentro de um parque, numa área vazia): o popup mostra as camadas ligadas que contêm o ponto (município, área ambiental, área urbana, regiões, área de estudo, raio de saúde, curso d’água). Antes as camadas de cima impediam o clique de chegar às áreas e nada abria.'
     ], [
       'Novo botão Exportar nas tabelas de obras e das camadas, como na Jurisdição: planilha Excel (todas ou só as filtradas), CSV e arquivo para o QGIS.',

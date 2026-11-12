@@ -9902,6 +9902,12 @@ map.addControl(new LogoMapaControl());
       ligar: function() { if (!hidrografiaFiltroAtivo) { hidrografiaFiltroAtivo = true; atualizarBotoesBase(); desenharHidrografia(); } },
       redesenhar: function() { if (hidrografiaLayer && hidrografiaLayer.refiltrar) hidrografiaLayer.refiltrar(); }
     });
+    // Camadas que vêm do banco (pílula "Dados do banco" da tabela; o clique relê). As demais são arquivos do site.
+    if (TabelaCamadas.fonte) {
+      TabelaCamadas.fonte('extra_base', 'banco', function() { return window.recarregarExtraBase(); });
+      TabelaCamadas.fonte('area_estudo', 'banco', function() { return window.recarregarCamadaMapa('geo_pol_base'); });
+      TabelaCamadas.fonte('area_influencia', 'banco', function() { return recarregarObrasDoMapa(true); });
+    }
   })();
 
   Promise.all([

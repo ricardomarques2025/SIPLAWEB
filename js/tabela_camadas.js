@@ -95,6 +95,9 @@ var TabelaCamadas = (function() {
             '<button type="button" data-tc-modo="dividida"><svg><use href="#tc-split"/></svg>Dividida com o mapa</button>' +
           '</nav>' +
           '<div class="espaco"></div>' +
+          // Origem dos dados (13/11/2026), como a pílula da Jurisdição: "Dados do banco" (clique relê do banco) ou
+          // "Camada de base" (arquivo publicado com o site, atualizado a cada versão).
+          '<button type="button" class="pill-status" id="tcStatus"><span class="ponto"></span><span id="tcTxtStatus"></span></button>' +
           // Mesmo menu da tabela da Jurisdição (12/11/2026); some para quem não exporta (data-exportar).
           '<div class="menu" data-exportar>' +
             '<button type="button" class="btn btn-primario" id="tcExportar"><svg><use href="#tc-down"/></svg>Exportar</button>' +
@@ -138,6 +141,7 @@ var TabelaCamadas = (function() {
 
     document.querySelectorAll('[data-tc-modo]').forEach(function(b) { b.addEventListener('click', function() { definirModo(b.dataset.tcModo); }); });
     $('tcFechar').addEventListener('click', fechar);
+    $('tcStatus').addEventListener('click', recarregarDoBanco);
     $('tcExportar').addEventListener('click', function(e) {
       e.stopPropagation();
       var m = $('tcMenuExportar'), aberto = m.classList.contains('aberto');
@@ -208,10 +212,42 @@ var TabelaCamadas = (function() {
       montarGrade(chave, r[1]);
       return new Promise(function(ok) { grade.on('tableBuilt', ok); });
     });
+    situacao(pronto === undefined ? 'ok' : 'carregando');
     return pronto.then(function() {
       atualizarEstadoFiltro();
+      situacao('ok');
       if (feicao) selecionarFeicao(feicao, true);
-    }).catch(function(e) { toast('Não foi possível abrir a tabela: ' + e.message, true); });
+    }).catch(function(e) { situacao('erro'); toast('Não foi possível abrir a tabela: ' + e.message, true); });
+  }
+
+  // ---------- Origem dos dados (pílula ao lado do Exportar) ----------
+  // fonte(chave, 'banco', recarregar): camada lida do banco (mapa.js registra a malha complementar e as áreas).
+  function fonte(chave, tipo, recarregar) {
+    if (!camadas[chave]) return;
+    camadas[chave].fonte = tipo; camadas[chave].recarregar = recarregar || null;
+  }
+  function situacao(estado) {
+    var el = $('tcStatus'); if (!el || !atual) return;
+    var banco = camadas[atual].fonte === 'banco';
+    el.classList.toggle('salvando', estado === 'carregando');
+    el.classList.toggle('pendente', estado === 'erro');
+    el.classList.toggle('arquivo', !banco && estado !== 'carregando');
+    $('tcTxtStatus').textContent = estado === 'carregando' ? 'Carregando…' : estado === 'erro' ? 'Erro · recarregar' : banco ? 'Dados do banco' : 'Camada de base';
+    el.title = banco ? 'Recarregar os dados do banco' : 'Arquivo publicado com o site; é atualizado a cada nova versão';
+  }
+  function recarregarDoBanco() {
+    var cfg = atual && camadas[atual];
+    if (!cfg) return;
+    if (cfg.fonte !== 'banco' || !cfg.recarregar) { toast('Esta camada vem do arquivo publicado com o site e é atualizada a cada nova versão.'); return; }
+    var chave = atual;
+    situacao('carregando');
+    Promise.resolve(cfg.recarregar()).then(function() { return cfg.dados(); }).then(function(colecao) {
+      if (atual !== chave) return;
+      montarGrade(chave, colecao);
+      return new Promise(function(ok) { grade.on('tableBuilt', ok); }).then(function() {
+        atualizarEstadoFiltro(); situacao('ok'); toast('Dados atualizados do banco');
+      });
+    }).catch(function(e) { situacao('erro'); toast('Não foi possível recarregar: ' + e.message, true); });
   }
 
   function montarGrade(chave, colecao) {
@@ -422,6 +458,6 @@ var TabelaCamadas = (function() {
     }).catch(function(e) { toast(e.message, true); });
   }
 
-  return { registrar: registrar, botao: botao, passa: passa, abrir: abrir, fechar: function() { if (montado && modo !== 'fechado') fechar(); },
+  return { registrar: registrar, fonte: fonte, botao: botao, passa: passa, abrir: abrir, fechar: function() { if (montado && modo !== 'fechado') fechar(); },
     aberta: function() { return montado && modo !== 'fechado'; } };
 })();
