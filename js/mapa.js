@@ -8070,12 +8070,12 @@ map.addControl(new LogoMapaControl());
     return (i != null && lista[i]) || lista[0];
   }
   // Modo de desenho das obras no mesmo trecho (13/11/2026, em teste na homologação):
-  //   'unica'    (padrão): uma linha só, com simbologia própria ("Obras no mesmo trecho"); o popup lista todas;
-  //   'tracejado': trechos alternados de TRACO_SOBREPOSICAO px, cada um com a cor e o estilo da sua obra;
-  //   'lado'     : lado a lado (offset), a partir do zoom 11. Escolha pelo endereço: ?sobreposicao=lado|tracejado.
-  //   'faixas'   (padrão): uma linha só, feita de faixas coladas (uma por obra, com a cor e o estilo dela) e uma
+  //   'unica'    : uma linha só, com simbologia própria ("Obras no mesmo trecho"); o popup lista todas;
+  //   'tracejado' (padrão, escolhido em 13/11/2026): trechos alternados de TRACO_SOBREPOSICAO px, cada um com a cor e o estilo da sua obra;
+  //   'lado'     : lado a lado (offset), a partir do zoom 11. Escolha pelo endereço: ?sobreposicao=lado|faixas|unica.
+  //   'faixas'   : uma linha só, feita de faixas coladas (uma por obra, com a cor e o estilo dela) e uma
   //                sombra única em volta; clicar em qualquer faixa mostra todas as obras do trecho.
-  var MODO_SOBREPOSICAO = (location.search.match(/[?&]sobreposicao=(lado|tracejado|unica)(&|$)/) || [])[1] || 'faixas';
+  var MODO_SOBREPOSICAO = (location.search.match(/[?&]sobreposicao=(lado|faixas|unica)(&|$)/) || [])[1] || 'tracejado';
   var LARGURA_FAIXA = 8;   // px de cada faixa
   var COR_SOBREPOSTAS = '#c026d3';
   var ESTILO_SOBREPOSTAS = { legenda: 'Obras no mesmo trecho', cor: COR_SOBREPOSTAS, tipo_linha: 'SOBREPOSTAS', espessura: 9 };
@@ -8120,10 +8120,7 @@ map.addControl(new LogoMapaControl());
         var p = c.feature && c.feature.properties;
         if (!p || !(p.__OFFSET_N > 1) || !c.setStyle) return;
         var n = p.__OFFSET_N, i = p.__OFFSET_IDX;
-        if (c.options.color === '#111827') {   // sombra: uma só (a da primeira obra), contínua
-          if (i > 0) c.setStyle({ opacity: 0 });
-          return;
-        }
+        if (c.options.color === '#111827') { c.setStyle({ opacity: 0 }); return; }   // sombra: uma só, em sombraDasFaixas
         // traço desta obra e espaço do tamanho dos traços das outras; o deslocamento põe cada obra na sua vez
         c.setStyle({ dashArray: TRACO_SOBREPOSICAO + ' ' + (TRACO_SOBREPOSICAO * (n - 1)), dashOffset: String(-i * TRACO_SOBREPOSICAO), lineCap: 'butt' });
       });
@@ -8196,14 +8193,18 @@ map.addControl(new LogoMapaControl());
   // Sombra única de cada trecho com faixas, numa camada abaixo de todas as obras (se ficasse na camada de uma das
   // obras, podia cobrir a faixa da outra, desenhada antes).
   function sombraDasFaixas(grupos) {
-    if (MODO_SOBREPOSICAO !== 'faixas') return null;
+    if (MODO_SOBREPOSICAO !== 'faixas' && MODO_SOBREPOSICAO !== 'tracejado') return null;
     var feicoes = [];
     Object.keys(grupos).forEach(function(k) {
       grupos[k].features.forEach(function(f) { if (f.properties && f.properties.__OFFSET_N > 1 && f.properties.__OFFSET_IDX === 0) feicoes.push(f); });
     });
     if (!feicoes.length) return null;
     return L.geoJSON({ type: 'FeatureCollection', features: feicoes }, { pane: 'sombraFaixasPane', interactive: false,
-      style: function(f) { return { color: '#111827', weight: f.properties.__OFFSET_N * LARGURA_FAIXA + 5, opacity: 0.3, lineCap: 'round', lineJoin: 'round' }; } });
+      style: function(f) {
+        return MODO_SOBREPOSICAO === 'faixas'
+          ? { color: '#111827', weight: f.properties.__OFFSET_N * LARGURA_FAIXA + 5, opacity: 0.3, lineCap: 'round', lineJoin: 'round' }
+          : { color: '#111827', weight: 14, opacity: 0.24, lineCap: 'round', lineJoin: 'round' };
+      } });
   }
   function obrasLadoALado(linhas) {
     var fontes = fontesLinhasObras();
