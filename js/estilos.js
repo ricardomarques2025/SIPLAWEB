@@ -452,6 +452,49 @@ const REGRAS_ESTILO = [
       formato: 'losango',
       icone: 'data/gmkplacaoaeobra.svg'
     },
+    // Concluídas (13/11/2026): etapa "Obra" com status "Concluído" (js/mapa.js, estiloObraPonto).
+    GmeOaeConcluido: {
+      label: 'OAE concluída',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#16a34a',
+      formato: 'losango',
+      icone: 'data/gmeplacaoaeconcluido.svg'
+    },
+    GmePonteConcluido: {
+      label: 'Ponte concluída',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#16a34a',
+      formato: 'losango',
+      icone: 'data/gmeplacaoaeconcluido.svg'
+    },
+    GmeBueiroConcluido: {
+      label: 'Bueiro concluído',
+      classe: 'obra-ponto-obra',
+      cor: '#16a34a',
+      formato: 'losango',
+      icone: 'data/gmeplacabueiroconcluido.svg'
+    },
+    GmkOaeConcluido: {
+      label: 'OAE concluída',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#16a34a',
+      formato: 'losango',
+      icone: 'data/gmkplacaoaeconcluido.svg'
+    },
+    GmkPonteConcluido: {
+      label: 'Ponte concluída',
+      classe: 'obra-ponto-oae-obra',
+      cor: '#16a34a',
+      formato: 'losango',
+      icone: 'data/gmkplacaoaeconcluido.svg'
+    },
+    GmkBueiroConcluido: {
+      label: 'Bueiro concluído',
+      classe: 'obra-ponto-obra',
+      cor: '#16a34a',
+      formato: 'losango',
+      icone: 'data/gmkplacabueiroconcluido.svg'
+    },
     Padrao: {
       label: 'Outros',
       classe: 'obra-ponto-padrao',
@@ -464,8 +507,10 @@ const REGRAS_ESTILO = [
   const ORDEM_LEGENDA_PONTOS = [
     'OaePlanejamento', 'OaeProjeto', 'OaeObra',
     'PonteProjeto', 'PonteObra', 'BueiroProjeto', 'BueiroObra',
-    'GmeOaeProjeto', 'GmeOaeObra', 'GmePonteProjeto', 'GmePonteObra', 'GmeBueiroProjeto', 'GmeBueiroObra',
-    'GmkOaeProjeto', 'GmkOaeObra', 'GmkPonteProjeto', 'GmkPonteObra', 'GmkBueiroProjeto', 'GmkBueiroObra',
+    'GmeOaeProjeto', 'GmeOaeObra', 'GmeOaeConcluido', 'GmePonteProjeto', 'GmePonteObra', 'GmePonteConcluido',
+    'GmeBueiroProjeto', 'GmeBueiroObra', 'GmeBueiroConcluido',
+    'GmkOaeProjeto', 'GmkOaeObra', 'GmkOaeConcluido', 'GmkPonteProjeto', 'GmkPonteObra', 'GmkPonteConcluido',
+    'GmkBueiroProjeto', 'GmkBueiroObra', 'GmkBueiroConcluido',
     'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'
   ];
 

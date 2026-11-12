@@ -5707,12 +5707,26 @@ map.addControl(new LogoMapaControl());
     GMK: { OaeProjeto: 'GmkOaeProjeto', PonteProjeto: 'GmkPonteProjeto', OaeObra: 'GmkOaeObra', PonteObra: 'GmkPonteObra', BueiroProjeto: 'GmkBueiroProjeto', BueiroObra: 'GmkBueiroObra' }
   };
 
+  // Concluída (13/11/2026): etapa "Obra" com status "Concluído" ganha a placa de concluída do programa.
+  function obraPontoConcluida(dados) {
+    var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
+    var status = String((dados && dados.STATUS) || '').toLowerCase();
+    return etapa.indexOf('obra') >= 0 && status.indexOf('conclu') >= 0;
+  }
+
   function estiloObraPonto(dados) {
     var estilo = estiloObraPontoBase(dados);
     var mapaPrograma = PONTOS_PROGRAMA[origemObraPonto(dados)];
     if (!mapaPrograma) return estilo;
     for (var chave in mapaPrograma) {
-      if (OBRAS_PONTOS_INFO[chave] === estilo && OBRAS_PONTOS_INFO[mapaPrograma[chave]]) return OBRAS_PONTOS_INFO[mapaPrograma[chave]];
+      if (OBRAS_PONTOS_INFO[chave] === estilo && OBRAS_PONTOS_INFO[mapaPrograma[chave]]) {
+        var programa = mapaPrograma[chave];
+        if (/Obra$/.test(programa) && obraPontoConcluida(dados)) {
+          var concluida = OBRAS_PONTOS_INFO[programa.replace(/Obra$/, 'Concluido')];
+          if (concluida) return concluida;
+        }
+        return OBRAS_PONTOS_INFO[programa];
+      }
     }
     return estilo;
   }
