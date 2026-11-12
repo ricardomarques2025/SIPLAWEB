@@ -16,6 +16,7 @@ var Jurisdicao = (function() {
   var halo = null;
   var selecionado = null;
   var referenciaAtiva = false;
+  var tipoReferencia = '';   // fora do módulo (Jurisdição como camada de referência): tipo escolhido na legenda
   var filtros = { tipo: '', situacao: '', geo: '', busca: '' };
   var ouvintes = [];
 
@@ -61,7 +62,8 @@ var Jurisdicao = (function() {
 
   function lista() {
     var todos = Store.lista();
-    return MODULO ? todos.filter(function(r) { return atende(r); }) : todos;
+    if (MODULO) return todos.filter(function(r) { return atende(r); });
+    return tipoReferencia ? todos.filter(function(r) { return r.tipo === tipoReferencia; }) : todos;
   }
 
   function conteudoPopup(r) {
@@ -166,19 +168,21 @@ var Jurisdicao = (function() {
   }
 
   // ---------- Legenda (barra direita) ----------
-  // No módulo, clicar num tipo da legenda filtra o mapa por ele (o mesmo filtro "Tipo" da barra esquerda e do painel;
-  // clicar de novo desmarca). Por isso a legenda conta sem o filtro de tipo: os outros tipos continuam clicáveis.
+  // Clicar num tipo da legenda filtra o mapa por ele (no módulo, o mesmo filtro "Tipo" da barra esquerda e do painel;
+  // como camada de referência, só o desenho; clicar de novo desmarca). A legenda conta sem o filtro de tipo: os
+  // outros tipos continuam clicáveis.
   function renderLegenda(visiveis) {
     var bloco = $('blocoLegendaJurisdicao');
     if (!bloco) return;
-    var base = MODULO ? Store.lista().filter(function(r) { return atende(r, 'tipo'); }) : visiveis;
+    var base = MODULO ? Store.lista().filter(function(r) { return atende(r, 'tipo'); }) : referenciaAtiva ? Store.lista() : [];
+    var escolhido = MODULO ? filtros.tipo : tipoReferencia;
     var porTipo = {};
     base.forEach(function(r) { porTipo[r.tipo] = (porTipo[r.tipo] || 0) + 1; });
     var tipos = Indicadores.ORDEM_TIPOS.filter(function(t) { return porTipo[t]; });
     bloco.style.display = tipos.length ? '' : 'none';
     $('legendaJurisdicao').innerHTML = tipos.map(function(t) {
-      var classe = !MODULO ? '' : ' legenda-filtravel' + (filtros.tipo === t ? ' legenda-sel' : filtros.tipo ? ' legenda-apagada' : '');
-      return '<div class="legenda-item' + classe + '"' + (MODULO ? ' data-jur-tipo="' + esc(t) + '" title="Clique para mostrar só este tipo no mapa (clique de novo para desmarcar)"' : '') +
+      var classe = ' legenda-filtravel' + (escolhido === t ? ' legenda-sel' : escolhido ? ' legenda-apagada' : '');
+      return '<div class="legenda-item' + classe + '" data-jur-tipo="' + esc(t) + '" title="Clique para mostrar só este tipo no mapa (clique de novo para desmarcar)"' +
         '><span class="legenda-linha-wrap"><span class="legenda-linha" style="height:5px;background:' + corTipo(t) +
         ';box-shadow:0 0 0 2px #fff,0 0 0 3px #d1d5db"></span></span><div class="legenda-texto">' + esc(t) + ' (' + porTipo[t] + ')</div></div>';
     }).join('');
@@ -275,10 +279,6 @@ var Jurisdicao = (function() {
     $('jurSituacao').addEventListener('change', function() { definirFiltro('situacao', this.value); });
     $('jurEnquadrar').addEventListener('click', function() { enquadrar(); });
     $('resumoJurisdicao').addEventListener('click', cliqueResumo);
-    $('legendaJurisdicao').addEventListener('click', function(e) {
-      var item = e.target.closest('[data-jur-tipo]');
-      if (item) definirFiltro('tipo', filtros.tipo === item.dataset.jurTipo ? '' : item.dataset.jurTipo);
-    });
     // Botao "Abrir detalhes" do popup do trecho.
     document.addEventListener('click', function(e) {
       var b = e.target.closest('[data-jur-abrir]');
@@ -294,6 +294,15 @@ var Jurisdicao = (function() {
     bloco.innerHTML = '<div class="subtitulo">JURISDIÇÃO</div><div id="legendaJurisdicao"></div>';
     var titulo = $('blocoLegendaTitulo');
     titulo.parentNode.insertBefore(bloco, titulo.nextSibling);
+    // Clicar num tipo da legenda filtra o mapa: no módulo, pelo filtro "Tipo"; como camada de referência, só o desenho.
+    $('legendaJurisdicao').addEventListener('click', function(e) {
+      var item = e.target.closest('[data-jur-tipo]');
+      if (!item) return;
+      var t = item.dataset.jurTipo;
+      if (MODULO) { definirFiltro('tipo', filtros.tipo === t ? '' : t); return; }
+      tipoReferencia = tipoReferencia === t ? '' : t;
+      desenhar();
+    });
   }
 
   function ligarReferencia(ligar) {
