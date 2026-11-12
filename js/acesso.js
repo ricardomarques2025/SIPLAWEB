@@ -353,13 +353,18 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.03';
+  var VERSAO_SITE = '2026-11-13.04';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.8', '13/11/2026', [
+      'Obras no mesmo trecho: quando duas ou mais obras usam o mesmo segmento (da mesma origem ou de origens diferentes), cada uma é desenhada com a sua simbologia, lado a lado, a partir do zoom 11. Antes o mapa ligava só uma obra por origem a cada segmento e a outra ficava escondida (ex.: OB26-01518 Duplicação e OB26-01574 Restauração no TRE0051).'
+    ], [
+      'Quando duas obras passam pelo mesmo trecho de rodovia, agora as duas aparecem lado a lado, cada uma com a sua cor. Aproxime o mapa para ver.'
+    ]],
     ['3.7', '12/11/2026', [
       'Tabela de obras e tabela das camadas de referência com o mesmo menu Exportar da Jurisdição: Excel com todos ou só os filtrados, CSV, GeoJSON com atributos para o QGIS (obras com o traçado) e, nas obras, o caderno completo e o mapa A4 da obra selecionada. Só aparece para quem exporta.',
       'Filtros: nova opção "Isolar seleção", ao lado do Auto zoom. Ligada (padrão), Rodovia, SRE, Ferrovia, Município, Regiões e Área de Estudo mostram só o que foi escolhido; desligada, o mapa mostra tudo e destaca a escolha em laranja. Fica lembrada no navegador.',

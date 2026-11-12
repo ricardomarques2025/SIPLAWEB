@@ -6674,8 +6674,9 @@ map.addControl(new LogoMapaControl());
       }, {
         pane: 'servicosPane',
         interactive: false,
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: '#111827',
             weight: espessura + 5,
             opacity: 0.24,
@@ -6690,8 +6691,9 @@ map.addControl(new LogoMapaControl());
         features: features
       }, {
         pane: 'servicosPane',
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: cor,
             weight: espessura,
             opacity: 0.95,
@@ -6722,8 +6724,9 @@ map.addControl(new LogoMapaControl());
       }, {
         pane: 'servicosPane',
         interactive: false,
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: '#111827',
             weight: pesoBase + 5,
             opacity: 0.24,
@@ -6738,8 +6741,9 @@ map.addControl(new LogoMapaControl());
         features: features
       }, {
         pane: 'servicosPane',
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: cor,
             weight: pesoBase,
             opacity: 0.95,
@@ -6762,8 +6766,9 @@ map.addControl(new LogoMapaControl());
         features: features
       }, {
         pane: 'servicosPane',
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: '#ffffff',
             weight: pesoTopo,
             opacity: 1,
@@ -6794,8 +6799,9 @@ map.addControl(new LogoMapaControl());
       }, {
         pane: 'servicosPane',
         interactive: false,
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: '#111827',
             weight: pesoBase + 5,
             opacity: 0.24,
@@ -6810,8 +6816,9 @@ map.addControl(new LogoMapaControl());
         features: features
       }, {
         pane: 'servicosPane',
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: cor,
             weight: pesoBase,
             opacity: 0.95,
@@ -6834,8 +6841,9 @@ map.addControl(new LogoMapaControl());
         features: features
       }, {
         pane: 'servicosPane',
-        style: function() {
+        style: function(feature) {
           return {
+            offset: deslocamentoLinha(feature),
             color: '#ffffff',
             weight: pesoTopo,
             opacity: 1,
@@ -8005,6 +8013,80 @@ map.addControl(new LogoMapaControl());
     return { total: total, totalCluster: totalCluster, countDor: countDor, countDma: countDma, countDpj: countDpj, legendaDor: legendasDor, legendaDma: legendasDma, legendaDpj: legendasDpj };
   }
 
+  // --- OBRAS SOBREPOSTAS LADO A LADO (13/11/2026) ---
+  // Antes cada trecho mostrava uma obra só por origem (a primeira da lista): numa sobreposição (ex.: OB26-01518
+  // Duplicação e OB26-01574 Restauração no TRE0051) a outra só aparecia desligando a primeira. Agora cada obra do
+  // trecho vira uma linha própria (__DADOS_IDX = qual registro desenhar) e as linhas do mesmo trecho, de qualquer
+  // origem, ficam lado a lado (__OFFSET_IDX/__OFFSET_N -> opção offset do Leaflet.PolylineOffset).
+  var ESPACO_LADO_A_LADO = 11;   // px entre as linhas paralelas (largura das linhas de obra + folga)
+  function copiaFeicaoLinha(f) {
+    return { type: f.type || 'Feature', id: f.id, properties: Object.assign({}, f.properties || {}), geometry: f.geometry };
+  }
+  function escolherDadosLinha(lista, f) {
+    var i = f && f.properties ? f.properties.__DADOS_IDX : null;
+    return (i != null && lista[i]) || lista[0];
+  }
+  // Só a partir do zoom 11: de longe as linhas sinuosas deslocadas se dobram e formam "bolhas"; ali ficam sobrepostas.
+  var ZOOM_LADO_A_LADO = 11;
+  function deslocamentoLinha(f) {
+    var p = (f && f.properties) || {};
+    if (!p.__OFFSET_N || p.__OFFSET_N < 2 || map.getZoom() < ZOOM_LADO_A_LADO) return 0;
+    return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * ESPACO_LADO_A_LADO;
+  }
+  // Ao cruzar o zoom 11, liga/desliga o deslocamento das linhas já desenhadas (sem redesenhar o mapa).
+  var ladoALadoAtivo = null;
+  map.on('zoomend', function() {
+    var ativo = map.getZoom() >= ZOOM_LADO_A_LADO;
+    if (ativo === ladoALadoAtivo) return;
+    ladoALadoAtivo = ativo;
+    (function percorrer(camadas) {
+      camadas.forEach(function(c) {
+        if (c.getLayers) { percorrer(c.getLayers()); return; }
+        if (c.setOffset && c.feature && c.feature.properties && c.feature.properties.__OFFSET_N > 1) c.setOffset(deslocamentoLinha(c.feature));
+      });
+    })(regraLayers);
+  });
+  function obrasLadoALado(linhas) {
+    var fontes = {
+      DOR: [dadosDorDaFeatureFiltrados, estiloDor], DMA: [dadosDmaDaFeatureFiltrados, estiloDma],
+      DPL: [dadosDplDaFeatureFiltrados, estiloDpl], DPJ: [dadosDpjDaFeatureFiltrados, estiloDpj],
+      TARE: [dadosTareDaFeatureFiltrados, estiloTare]
+    };
+    var saida = [];
+    linhas.forEach(function(f) {
+      var o = origemIntervencaoFeature(f), fonte = fontes[o];
+      if (!fonte || !servicosAtivos[o]) { saida.push(f); return; }
+      var vistos = {}, indices = [];
+      fonte[0](f, servicoFiltroAtivo, '').forEach(function(d, i) {
+        var id = (d && d.IDCOD) || ('#' + i);
+        if (vistos[id]) return;
+        vistos[id] = true;
+        if (passaFiltroLegenda(o, fonte[1](d).legenda)) indices.push(i);
+      });
+      if (indices.length < 2) {
+        if (indices.length === 1 && indices[0] !== 0) { var u = copiaFeicaoLinha(f); u.properties.__DADOS_IDX = indices[0]; saida.push(u); }
+        else saida.push(f);
+        return;
+      }
+      indices.forEach(function(i) { var c = copiaFeicaoLinha(f); c.properties.__DADOS_IDX = i; saida.push(c); });
+    });
+    var porTrecho = {};
+    saida.forEach(function(f, n) {
+      var k = chaveGeometriaSRE(f) || valorSeguro(f, 'GEOCOD');
+      if (k) (porTrecho[k] = porTrecho[k] || []).push(n);
+    });
+    Object.keys(porTrecho).forEach(function(k) {
+      var g = porTrecho[k];
+      if (g.length < 2) return;
+      g.forEach(function(n, i) {
+        var c = copiaFeicaoLinha(saida[n]);
+        c.properties.__OFFSET_IDX = i; c.properties.__OFFSET_N = g.length;
+        saida[n] = c;
+      });
+    });
+    return saida;
+  }
+
     function desenharLinhasEPontos(featuresMunicipios) {
     limparCamadasRegras();
 
@@ -8135,6 +8217,8 @@ map.addControl(new LogoMapaControl());
     linhasBase.sort(function(a, b) {
       return ordemOrigensLineares[origemIntervencaoFeature(a)] - ordemOrigensLineares[origemIntervencaoFeature(b)];
     });
+    var linhasOriginais = linhasBase;   // contadores das origens continuam por trecho
+    linhasBase = obrasLadoALado(linhasBase);
 
         var grupos = {};
     var servicosVisiveis = {};
@@ -8164,27 +8248,27 @@ map.addControl(new LogoMapaControl());
         chaveId = 'FUND_' + String(linkFund) + '_' + k;
         origemDados = 'FUNDEINFRA';
       } else if (origemPreferida === 'DOR' && linkDor && dadosDorDaFeature(feat) && servicosAtivos.DOR) {
-        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDorDaFeature(feat);
+        dados = escolherDadosLinha(dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDorDaFeature(feat);
         estilo = estiloDor(dados);
         chaveId = 'DOR_' + String(linkDor) + '_' + k;
         origemDados = 'DOR';
       } else if (origemPreferida === 'DMA' && linkDma && dadosDmaDaFeature(feat) && servicosAtivos.DMA) {
-        dados = dadosDmaDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDmaDaFeature(feat);
+        dados = escolherDadosLinha(dadosDmaDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDmaDaFeature(feat);
         estilo = estiloDma(dados);
         chaveId = 'DMA_' + String(linkDma) + '_' + k;
         origemDados = 'DMA';
       } else if (origemPreferida === 'DPL' && linkDpl && dadosDplDaFeature(feat) && servicosAtivos.DPL) {
-        dados = dadosDplDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDplDaFeature(feat);
+        dados = escolherDadosLinha(dadosDplDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDplDaFeature(feat);
         estilo = estiloDpl(dados);
         chaveId = 'DPL_' + String(linkDpl) + '_' + k;
         origemDados = 'DPL';
       } else if (origemPreferida === 'DPJ' && linkDpj && dadosDpjDaFeature(feat) && servicosAtivos.DPJ) {
-        dados = dadosDpjDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDpjDaFeature(feat);
+        dados = escolherDadosLinha(dadosDpjDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDpjDaFeature(feat);
         estilo = estiloDpj(dados);
         chaveId = 'DPJ_' + String(linkDpj) + '_' + k;
         origemDados = 'DPJ';
       } else if (origemPreferida === 'TARE' && linkTare && dadosTareDaFeature(feat) && servicosAtivos.TARE) {
-        dados = dadosTareDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosTareDaFeature(feat);
+        dados = escolherDadosLinha(dadosTareDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosTareDaFeature(feat);
         estilo = estiloTare(dados);
         chaveId = 'TARE_' + String(linkTare) + '_' + k;
         origemDados = 'TARE';
@@ -8195,27 +8279,27 @@ map.addControl(new LogoMapaControl());
         chaveId = 'FUND_' + String(linkFund) + '_' + k;
         origemDados = 'FUNDEINFRA';
       } else if (linkDor && dadosDorDaFeature(feat)) {
-        dados = dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDorDaFeature(feat);
+        dados = escolherDadosLinha(dadosDorDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDorDaFeature(feat);
         estilo = estiloDor(dados);
         chaveId = 'DOR_' + String(linkDor) + '_' + k;
         origemDados = 'DOR';
       } else if (linkDma && dadosDmaDaFeature(feat)) {
-        dados = dadosDmaDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDmaDaFeature(feat);
+        dados = escolherDadosLinha(dadosDmaDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDmaDaFeature(feat);
         estilo = estiloDma(dados);
         chaveId = 'DMA_' + String(linkDma) + '_' + k;
         origemDados = 'DMA';
       } else if (linkDpl && dadosDplDaFeature(feat)) {
-        dados = dadosDplDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDplDaFeature(feat);
+        dados = escolherDadosLinha(dadosDplDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDplDaFeature(feat);
         estilo = estiloDpl(dados);
         chaveId = 'DPL_' + String(linkDpl) + '_' + k;
         origemDados = 'DPL';
       } else if (linkDpj && dadosDpjDaFeature(feat)) {
-        dados = dadosDpjDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosDpjDaFeature(feat);
+        dados = escolherDadosLinha(dadosDpjDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosDpjDaFeature(feat);
         estilo = estiloDpj(dados);
         chaveId = 'DPJ_' + String(linkDpj) + '_' + k;
         origemDados = 'DPJ';
       } else if (linkTare && dadosTareDaFeature(feat)) {
-        dados = dadosTareDaFeatureFiltrados(feat, servicoFiltroAtivo, '')[0] || dadosTareDaFeature(feat);
+        dados = escolherDadosLinha(dadosTareDaFeatureFiltrados(feat, servicoFiltroAtivo, ''), feat) || dadosTareDaFeature(feat);
         estilo = estiloTare(dados);
         chaveId = 'TARE_' + String(linkTare) + '_' + k;
         origemDados = 'TARE';
@@ -8282,27 +8366,27 @@ map.addControl(new LogoMapaControl());
         origemRotulo = 'FUNDEINFRA';
         linkRotulo = linkFundRotulo;
       } else if (origemPreferidaRotulo === 'DOR' && linkDorRotulo && dadosDorDaFeature(featRotulo) && servicosAtivos.DOR) {
-        dadosRotulo = dadosDorDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosDorDaFeature(featRotulo);
+        dadosRotulo = escolherDadosLinha(dadosDorDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, ''), featRotulo) || dadosDorDaFeature(featRotulo);
         estiloRotulo = estiloDor(dadosRotulo);
         origemRotulo = 'DOR';
         linkRotulo = linkDorRotulo;
       } else if (origemPreferidaRotulo === 'DMA' && linkDmaRotulo && dadosDmaDaFeature(featRotulo) && servicosAtivos.DMA) {
-        dadosRotulo = dadosDmaDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosDmaDaFeature(featRotulo);
+        dadosRotulo = escolherDadosLinha(dadosDmaDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, ''), featRotulo) || dadosDmaDaFeature(featRotulo);
         estiloRotulo = estiloDma(dadosRotulo);
         origemRotulo = 'DMA';
         linkRotulo = linkDmaRotulo;
       } else if (origemPreferidaRotulo === 'DPL' && linkDplRotulo && dadosDplDaFeature(featRotulo) && servicosAtivos.DPL) {
-        dadosRotulo = dadosDplDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosDplDaFeature(featRotulo);
+        dadosRotulo = escolherDadosLinha(dadosDplDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, ''), featRotulo) || dadosDplDaFeature(featRotulo);
         estiloRotulo = estiloDpl(dadosRotulo);
         origemRotulo = 'DPL';
         linkRotulo = linkDplRotulo;
       } else if (origemPreferidaRotulo === 'DPJ' && linkDpjRotulo && dadosDpjDaFeature(featRotulo) && servicosAtivos.DPJ) {
-        dadosRotulo = dadosDpjDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosDpjDaFeature(featRotulo);
+        dadosRotulo = escolherDadosLinha(dadosDpjDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, ''), featRotulo) || dadosDpjDaFeature(featRotulo);
         estiloRotulo = estiloDpj(dadosRotulo);
         origemRotulo = 'DPJ';
         linkRotulo = linkDpjRotulo;
       } else if (origemPreferidaRotulo === 'TARE' && linkTareRotulo && dadosTareDaFeature(featRotulo) && servicosAtivos.TARE) {
-        dadosRotulo = dadosTareDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, '')[0] || dadosTareDaFeature(featRotulo);
+        dadosRotulo = escolherDadosLinha(dadosTareDaFeatureFiltrados(featRotulo, servicoFiltroAtivo, ''), featRotulo) || dadosTareDaFeature(featRotulo);
         estiloRotulo = estiloTare(dadosRotulo);
         origemRotulo = 'TARE';
         linkRotulo = linkTareRotulo;
@@ -8328,8 +8412,8 @@ map.addControl(new LogoMapaControl());
     var countDpl = 0;
     var countDpj = 0;
     var countTare = 0;
-    for (var ci = 0; ci < linhasBase.length; ci++) {
-      var origemContador = origemIntervencaoFeature(linhasBase[ci]);
+    for (var ci = 0; ci < linhasOriginais.length; ci++) {
+      var origemContador = origemIntervencaoFeature(linhasOriginais[ci]);
       if (origemContador === 'FUNDEINFRA') countFund++;
       else if (origemContador === 'DOR') countDor++;
       else if (origemContador === 'DMA') countDma++;
@@ -8337,12 +8421,12 @@ map.addControl(new LogoMapaControl());
       else if (origemContador === 'DPJ') countDpj++;
       else if (origemContador === 'TARE') countTare++;
       else {
-        if (valorSeguro(linhasBase[ci], 'LINK_FUND')) countFund++;
-        if (valorSeguro(linhasBase[ci], 'LINK_DOR')) countDor++;
-        if (valorSeguro(linhasBase[ci], 'LINK_DMA')) countDma++;
-        if (valorSeguro(linhasBase[ci], 'LINK_DPL')) countDpl++;
-        if (valorSeguro(linhasBase[ci], 'LINK_DPJ')) countDpj++;
-        if (valorSeguro(linhasBase[ci], 'LINK_TARE')) countTare++;
+        if (valorSeguro(linhasOriginais[ci], 'LINK_FUND')) countFund++;
+        if (valorSeguro(linhasOriginais[ci], 'LINK_DOR')) countDor++;
+        if (valorSeguro(linhasOriginais[ci], 'LINK_DMA')) countDma++;
+        if (valorSeguro(linhasOriginais[ci], 'LINK_DPL')) countDpl++;
+        if (valorSeguro(linhasOriginais[ci], 'LINK_DPJ')) countDpj++;
+        if (valorSeguro(linhasOriginais[ci], 'LINK_TARE')) countTare++;
       }
     }
     document.getElementById('countOAE').textContent = countFund;
@@ -9748,6 +9832,13 @@ map.addControl(new LogoMapaControl());
       if (!baseFeature || !baseFeature.geometry) return;
       var chave = vinculo.BASE + '|' + vinculo.GEOCOD;
       var feature = featuresPorChave[chave];
+      // Outra obra da MESMA origem neste segmento (13/11/2026): antes o campo de vínculo (ex.: LINK_DPJ) era
+      // sobrescrito e só uma das obras ficava no mapa. Agora ela ganha uma feição própria no mesmo traçado, e as
+      // linhas do trecho ficam lado a lado (obrasLadoALado).
+      if (feature && feature.properties[linkField] && feature.properties[linkField] !== registro.IDCOD) {
+        chave = chave + '#' + registro.IDCOD;
+        feature = featuresPorChave[chave];
+      }
       if (!feature) {
         var bp = baseFeature.properties || {};
         var props = {
