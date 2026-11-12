@@ -253,6 +253,7 @@
       var estilo = CATEGORIAS[categoria];
       var div = document.createElement('div');
       div.className = 'legenda-item';
+      div.setAttribute('data-leg', 'saude|' + categoria);
       div.innerHTML = '<span class="legenda-unidade-saude-amostra" style="border-color:' + estilo.cor +
         ';background:' + estilo.cor + '"></span><div class="legenda-texto">' + estilo.rotulo + '</div>';
       alvo.appendChild(div);
@@ -279,10 +280,11 @@
       unidadesVisiveis().slice().sort(function(a, b) {
         return ORDEM_CATEGORIAS.indexOf(b.categoria) - ORDEM_CATEGORIAS.indexOf(a.categoria);
       }).forEach(function(u) {
+        if (categoriasDesenhadas.indexOf(u.categoria) === -1) categoriasDesenhadas.push(u.categoria);
+        if (window.legendaPassaCamada && !legendaPassaCamada('saude', u.categoria)) return;   // filtro pela legenda
         var chave = u.categoria + '|' + u.latlng.lat + '|' + u.latlng.lng;
         if (desenhados[chave]) { desenhados[chave].push(u); return; }
         var doCirculo = desenhados[chave] = [u];
-        if (categoriasDesenhadas.indexOf(u.categoria) === -1) categoriasDesenhadas.push(u.categoria);
         var estilo = CATEGORIAS[u.categoria];
         var circulo = L.circle(u.latlng, {
           pane: 'unidadesSaudePane',
@@ -375,6 +377,8 @@
     limparFiltro();
     desenhar();
   });
+
+  document.addEventListener('legenda-filtro', function() { if (camadaAtiva) desenhar(); });   // filtro pela legenda (js/mapa.js)
 
   document.getElementById('toggleUnidadesSaude').addEventListener('click', function() {
     unidadeIsolada = null;

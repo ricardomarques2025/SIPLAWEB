@@ -3753,7 +3753,8 @@ map.addControl(new LogoMapaControl());
     bufferLayer = null;
     var descricao = document.getElementById('bufferSelect').value;
     var features = bufferData.features.filter(function(feature) {
-      return (!descricao || feature.properties.DESCRICAO === descricao) && tcPassa('area_influencia', feature);
+      return (!descricao || feature.properties.DESCRICAO === descricao) && tcPassa('area_influencia', feature) &&
+        passaFiltroLegenda('area_influencia', ESTILOS_AREA_ESTUDO[feature.properties.BASE] ? feature.properties.BASE : 'sre_base');
     });
     document.getElementById('blocoLegendaBuffer').style.display = bufferFiltroAtivo && features.length ? '' : 'none';
     if (!bufferFiltroAtivo || !features.length) return;
@@ -4263,6 +4264,7 @@ map.addControl(new LogoMapaControl());
 
       var tipo = tipoAeroFeature(feature);
       tiposVisiveis[tipo] = true;
+      if (!passaFiltroLegenda('aero', tipo)) return;
 
       var marker = L.marker([coords[1], coords[0]], {
         pane: 'aeroPane',
@@ -4297,6 +4299,7 @@ map.addControl(new LogoMapaControl());
       if (!tiposVisiveis[item[0]]) return;
       var div = document.createElement('div');
       div.className = 'legenda-item';
+      div.setAttribute('data-leg', 'aero|' + item[0]);
       div.innerHTML =
         '<span class="legenda-aero-simbolo"><img class="aero-simbolo" src="data/' +
         (item[0] === 'aeroporto' ? 'aeroporto.svg' : 'aerodromo.svg') +
@@ -4676,6 +4679,7 @@ map.addControl(new LogoMapaControl());
 
     var rodoviaSelecionada = document.getElementById('rodoviaSelect').value;
     var sreSelecionado = document.getElementById('sreSelect').value;
+    var visLegenda = {};
 
     for (var i = 0; i < sreBaseData.features.length; i++) {
       var f = sreBaseData.features[i];
@@ -4685,6 +4689,9 @@ map.addControl(new LogoMapaControl());
       if (!featureAtendeFiltrosSREBase(f)) continue;
       if (!tcPassa('sre_base', f)) continue;
       var s = String(valorSeguro(f, 'situacao') || valorSeguro(f, 'SITUACAO')).toUpperCase();
+      if (['DUP', 'EOD', 'EOP', 'PAV', 'IMP', 'LEN', 'PLA'].indexOf(s) < 0) s = 'PAV';
+      visLegenda[s] = true;   // a legenda mostra tudo o que existe; o mapa, só o que passa no filtro da legenda
+      if (!passaFiltroLegenda('sre_base', s)) continue;
       if (s === 'DUP') dup.push(f);
       else if (s === 'EOD') eod.push(f);
       else if (s === 'EOP') eop.push(f);
@@ -4807,15 +4814,7 @@ map.addControl(new LogoMapaControl());
     sreBaseLabelLayer.addTo(map);
     atualizarVisibilidadeRotulosSRE();
 
-    var vis = {};
-    if (dup.length) vis.DUP = true;
-    if (pav.length) vis.PAV = true;
-    if (eod.length) vis.EOD = true;
-    if (eop.length) vis.EOP = true;
-    if (imp.length) vis.IMP = true;
-    if (len.length) vis.LEN = true;
-    if (pla.length) vis.PLA = true;
-    return vis;
+    return visLegenda;
   }
 
     function desenharSNV() {
@@ -4873,6 +4872,19 @@ map.addControl(new LogoMapaControl());
       if (sreSelecionado && nomeSREFeature(f) !== sreSelecionado) return false;
       return String(valorSeguro(f, 'SITUACAO')).toUpperCase() === 'DUP';
     });
+
+    // legenda com tudo o que existe; o mapa só com o que passa no filtro da legenda
+    function codigoLegendaSnv(f) {
+      var s = String(valorSeguro(f, 'SITUACAO')).toUpperCase();
+      return ['DUP', 'LEN', 'EOP'].indexOf(s) >= 0 ? s : 'PAV';
+    }
+    var visLegenda = {};
+    dup.concat(pavLenEop).forEach(function(f) { visLegenda[codigoLegendaSnv(f)] = true; });
+    if (filtroLegendaAtivo('snv')) {
+      var passaSnv = function(f) { return passaFiltroLegenda('snv', codigoLegendaSnv(f)); };
+      dup = dup.filter(passaSnv);
+      pavLenEop = pavLenEop.filter(passaSnv);
+    }
 
     var grupo = L.layerGroup();
 
@@ -4976,13 +4988,7 @@ map.addControl(new LogoMapaControl());
     snvLabelLayer.addTo(map);
     atualizarVisibilidadeRotulosSRE();
 
-    var vis = {};
-    if (dup.length) vis.DUP = true;
-    pavLenEop.forEach(function(f) {
-      var s = String(valorSeguro(f, 'SITUACAO')).toUpperCase();
-      if (s) vis[s] = true;
-    });
-    return vis;
+    return visLegenda;
   }
 
   function comparar(valorFeature, comparador, valorRegra) {
@@ -6864,19 +6870,34 @@ map.addControl(new LogoMapaControl());
     '</span>';
   }
 
-  // --- FILTRO PELA LEGENDA (teste): clicar num item da legenda das origens mostra só ele no mapa;
-  // clicar em outros soma; clicar de novo desmarca. Chave = ORIGEM|nome da legenda (linhas) ou ORIGEM|P:rótulo (pontos).
+  // --- FILTRO PELA LEGENDA: clicar num item da legenda mostra só ele no mapa; clicar em outros soma; clicar de novo
+  // desmarca. Cada GRUPO filtra só a si mesmo: as origens de obras formam um grupo (FUNDEINFRA, DOR, ... GMP) e cada
+  // camada de referência com mais de um item é outro (rodovias estaduais, federais, aeródromos, regiões, área de
+  // influência, unidades de saúde). Chave = PREFIXO|item; obras: ORIGEM|nome da legenda (linhas) ou ORIGEM|P:rótulo
+  // (pontos); camadas: camada|código (data-leg posto por quem desenha a legenda).
   var filtroLegendaSel = {};
+  var ORIGENS_LEGENDA = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP'];
   var LEGENDAS_FILTRAVEIS = {
     legendaIntervencaos: 'FUNDEINFRA', legendaDor: 'DOR', legendaDma: 'DMA', legendaDpl: 'DPL', legendaDpj: 'DPJ',
     legendaTare: 'TARE', legendaDoc: 'DOC', legendaDsv: 'DSV', legendaGme: 'GME', legendaGmk: 'GMK'
   };
 
-  function filtroLegendaAtivo() { return Object.keys(filtroLegendaSel).length > 0; }
+  function grupoLegenda(prefixo) { return ORIGENS_LEGENDA.indexOf(prefixo) >= 0 ? 'obras' : prefixo; }
+  function grupoDaChaveLegenda(chave) { return grupoLegenda(String(chave).split('|')[0]); }
 
-  function passaFiltroLegenda(origem, chave) {
-    return !filtroLegendaAtivo() || !!filtroLegendaSel[origem + '|' + chave];
+  function filtroLegendaAtivo(grupo) {
+    var chaves = Object.keys(filtroLegendaSel || {});
+    if (!grupo) return chaves.length > 0;
+    for (var i = 0; i < chaves.length; i++) if (grupoDaChaveLegenda(chaves[i]) === grupo) return true;
+    return false;
   }
+
+  // prefixo = origem da obra (FUNDEINFRA, DOR, ...) ou chave da camada (sre_base, snv, aero, ...)
+  function passaFiltroLegenda(prefixo, chave) {
+    if (!filtroLegendaSel || !Object.keys(filtroLegendaSel).length) return true;
+    return !filtroLegendaAtivo(grupoLegenda(prefixo)) || !!filtroLegendaSel[prefixo + '|' + chave];
+  }
+  window.legendaPassaCamada = passaFiltroLegenda;
 
   function origemLegendaObraPonto(item) {
     var o = origemObraPonto(item);
@@ -6888,9 +6909,9 @@ map.addControl(new LogoMapaControl());
     return 'P:' + (info ? info.label : '');
   }
 
-  // Depois de desenhar: marca os itens das legendas como clicáveis e realça os escolhidos.
-  function prepararLegendasFiltraveis() {
-    var presentes = 0;
+  // Marca os itens clicáveis e realça os escolhidos. comLimpeza: grupo com escolha que sumiu da legenda (camada
+  // desligada, outro filtro...) volta a mostrar tudo.
+  function prepararLegendasFiltraveis(comLimpeza) {
     Object.keys(LEGENDAS_FILTRAVEIS).forEach(function(id) {
       var alvo = document.getElementById(id);
       if (!alvo) return;
@@ -6899,15 +6920,23 @@ map.addControl(new LogoMapaControl());
         if (!item.classList.contains('legenda-item')) return;
         var ponto = item.querySelector('.legenda-ponto-simbolo');
         var texto = ponto ? 'P:' + (item.querySelector('.legenda-texto') || item).textContent.trim() : item.textContent.trim();
-        var chave = origem + '|' + texto;
-        item.setAttribute('data-leg', chave);
-        item.title = 'Clique para filtrar o mapa por este item (clique de novo para desmarcar)';
-        var sel = !!filtroLegendaSel[chave];
-        if (sel) presentes++;
-        item.classList.add('legenda-filtravel');
-        item.classList.toggle('legenda-sel', sel);
-        item.classList.toggle('legenda-apagada', filtroLegendaAtivo() && !sel);
+        if (item.getAttribute('data-leg') !== origem + '|' + texto) item.setAttribute('data-leg', origem + '|' + texto);
       });
+    });
+    var presentes = {};
+    document.querySelectorAll('#sidebar-right-content .legenda-item[data-leg]').forEach(function(item) {
+      var chave = item.getAttribute('data-leg');
+      var grupo = grupoDaChaveLegenda(chave);
+      var sel = !!filtroLegendaSel[chave];
+      var bloco = item.closest('.bloco');
+      var visivel = !bloco || bloco.style.display !== 'none';   // não usar offsetParent: a barra pode estar recolhida
+      if (sel && visivel) presentes[grupo] = true;
+      if (!item.classList.contains('legenda-filtravel')) {
+        item.classList.add('legenda-filtravel');
+        item.title = 'Clique para mostrar só este item no mapa (clique de novo para desmarcar)';
+      }
+      item.classList.toggle('legenda-sel', sel);
+      item.classList.toggle('legenda-apagada', !sel && filtroLegendaAtivo(grupo));
     });
     var botao = document.getElementById('legendaMostrarTodos');
     if (!botao) {
@@ -6918,16 +6947,23 @@ map.addControl(new LogoMapaControl());
         botao.id = 'legendaMostrarTodos';
         botao.className = 'legenda-mostrar-todos';
         botao.textContent = 'Mostrar todos';
-        botao.addEventListener('click', function() { filtroLegendaSel = {}; aplicarFiltros({ preservarZoom: true }); });
+        botao.addEventListener('click', function() { filtroLegendaSel = {}; redesenharPorLegenda(); });
         titulo.appendChild(botao);
       }
     }
     if (botao) botao.hidden = !filtroLegendaAtivo();
-    // nenhum item escolhido continua na legenda (origem desligada, outro filtro...): volta a mostrar tudo
-    if (filtroLegendaAtivo() && !presentes) {
-      filtroLegendaSel = {};
-      setTimeout(function() { aplicarFiltros({ preservarZoom: true }); }, 0);
+    if (comLimpeza) {
+      var mudou = false;
+      Object.keys(filtroLegendaSel).forEach(function(chave) {
+        if (!presentes[grupoDaChaveLegenda(chave)]) { delete filtroLegendaSel[chave]; mudou = true; }
+      });
+      if (mudou) redesenharPorLegenda();
     }
+  }
+
+  function redesenharPorLegenda() {
+    aplicarFiltros({ preservarZoom: true });
+    document.dispatchEvent(new CustomEvent('legenda-filtro'));   // camadas desenhadas fora do aplicarFiltros (unidades de saúde)
   }
 
   document.addEventListener('click', function(e) {
@@ -6936,8 +6972,19 @@ map.addControl(new LogoMapaControl());
     var chave = item.getAttribute('data-leg');
     if (filtroLegendaSel[chave]) delete filtroLegendaSel[chave];
     else filtroLegendaSel[chave] = true;
-    aplicarFiltros({ preservarZoom: true });
+    redesenharPorLegenda();
   });
+
+  // As legendas são refeitas a cada desenho (e algumas fora do aplicarFiltros: zoom, hidrografia, saúde).
+  (function() {
+    var alvo = document.getElementById('sidebar-right-content');
+    if (!alvo || !window.MutationObserver) return;
+    var espera = null;
+    new MutationObserver(function() {
+      clearTimeout(espera);
+      espera = setTimeout(function() { prepararLegendasFiltraveis(true); }, 80);
+    }).observe(alvo, { childList: true, subtree: true });
+  })();
   // --- FIM FILTRO PELA LEGENDA ---
 
   function renderizarLegendaIntervencaos(legendasVisiveis) {
@@ -7046,7 +7093,7 @@ map.addControl(new LogoMapaControl());
     var bloco = alvo.closest('.bloco');
     var estilo = ORIGENS_MUNICIPAIS[origem];
     alvo.innerHTML = total ?
-      '<div class="legenda-item"><span class="legenda-linha-wrap">' +
+      '<div class="legenda-item" data-leg="' + origem + '|municipal"><span class="legenda-linha-wrap">' +
         '<span class="legenda-contorno-municipio" style="border-color:' + estilo.color + ';background:' + (estilo.fill ? corComOpacidade(estilo.fillColor || estilo.color, estilo.fillOpacity) : '#ffffff') + ';"></span>' +
       '</span><div class="legenda-texto">' + escapeHtml(estilo.label) + ' (' + total + ')</div></div>' : '';
     bloco.style.display = total ? '' : 'none';
@@ -7266,6 +7313,7 @@ map.addControl(new LogoMapaControl());
       var info = ROD_EST_INFO[s];
       var item = document.createElement('div');
       item.className = 'legenda-item';
+      item.setAttribute('data-leg', 'sre_base|' + s);
       item.innerHTML = criarLegendaLinha(info.tipo, info.cor) + '<div class="legenda-texto">' + info.label + '</div>';
       alvo.appendChild(item);
     }
@@ -7292,6 +7340,7 @@ map.addControl(new LogoMapaControl());
       var info = ROD_FED_INFO[s];
       var item = document.createElement('div');
       item.className = 'legenda-item';
+      item.setAttribute('data-leg', 'snv|' + s);
       item.innerHTML = criarLegendaLinha(info.tipo, info.cor) + '<div class="legenda-texto">' + info.label + '</div>';
       alvo.appendChild(item);
     }
@@ -7843,7 +7892,7 @@ map.addControl(new LogoMapaControl());
     ['GMP', 'GMM'].forEach(function(origem) {
       var features = municipiosComOrigem(origem, featuresMunicipios);
       totais[origem] = features.length;
-      if (!features.length) return;
+      if (!features.length || !passaFiltroLegenda(origem, 'municipal')) return;
       var camada = L.geoJSON({ type: 'FeatureCollection', features: features }, {
         pane: 'origensMunicipaisPane',
         style: function() { return Object.assign({}, ORIGENS_MUNICIPAIS[origem]); },

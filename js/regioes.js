@@ -297,6 +297,7 @@ function atualizarLegendasRegionais() {
       var estilo = estiloPreenchimentoRegiao(i, selecionado, selecao);
       var item = document.createElement('div');
       item.className = 'legenda-item';
+      item.setAttribute('data-leg', 'regioes_' + tipo + '|' + nome);   // filtro pela legenda (js/mapa.js)
       var amostra = document.createElement('span');
       amostra.className = 'legenda-regiao-amostra';
       var preenchimento = document.createElement('span');
@@ -343,7 +344,11 @@ function desenharRegioesBase() {
     if (!dados || (!regioesBaseAtivas[tipo] && !selecao.length)) return;
     var grupo = L.layerGroup();
     var chaveTabela = 'regioes_' + tipo;   // tabela de atributos (js/tabela_camadas.js)
-    var passa = function(f) { return !window.tcPassaCamada || tcPassaCamada(chaveTabela, f); };
+    var passa = function(f) {
+      var nomeF = tipo === 'manutencao' ? String(valorSeguro(f, 'REG')) : f.properties.nome;
+      return (!window.tcPassaCamada || tcPassaCamada(chaveTabela, f)) &&
+        (!window.legendaPassaCamada || legendaPassaCamada(chaveTabela, nomeF));
+    };
     dados.features.forEach(function(f, i) {
       if (!passa(f)) return;
       var nome = tipo === 'manutencao' ? String(valorSeguro(f, 'REG')) : f.properties.nome;

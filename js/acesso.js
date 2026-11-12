@@ -336,13 +336,13 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-12.01';
+  var VERSAO_SITE = '2026-11-12.02';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   var NOVIDADES = [
     ['3.6', '12/11/2026', [
-      'Legenda como filtro: clicar no nome de um item da legenda das origens mostra no mapa só aquele item (clique em outros para somar, de novo para desmarcar; "Mostrar todos" desfaz).',
+      'Legenda como filtro: clicar no nome de um item da legenda mostra no mapa só aquele item (clique em outros para somar, de novo para desmarcar; "Mostrar todos" desfaz). Vale para as obras e para as camadas de referência com mais de um item (rodovias estaduais e federais pela situação, aeródromos, regiões, área de influência, unidades de saúde); cada camada filtra só a si mesma.',
       'Os outros estados, fora de Goiás, aparecem num cinza mais claro.'
     ]],
     ['3.5', '11/11/2026', [
