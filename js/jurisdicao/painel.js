@@ -103,6 +103,9 @@ var JurisdicaoPainel = (function() {
               '<div class="menu-rotulo">Caderno</div>' +
               '<button type="button" data-jur-acao="caderno-completo">Caderno completo (PDF)</button>' +
               '<button type="button" data-jur-acao="caderno">Prancha A4 do registro (PDF)</button>' +
+              // Histórico: só para quem edita ou aprova na JURISDICAO (Acesso.podeExportarHistorico)
+              '<div class="menu-rotulo" data-jur-hist>Histórico</div>' +
+              '<button type="button" data-jur-acao="historico" data-jur-hist>Histórico de alterações (período)…</button>' +
             '</div>' +
           '</div>' +
           '<button type="button" class="btn-icone" id="jurFecharTabela" title="Fechar a tabela e voltar ao mapa"><svg><use href="#i-x"/></svg></button>' +
@@ -865,7 +868,39 @@ var JurisdicaoPainel = (function() {
     xlsxPronto.then(fn).catch(function(e) { toast(e.message, true); });
   }
 
+  function exportarHistorico() {
+    if (!Acesso.podeExportarHistorico('JURISDICAO')) { toast('O histórico de alterações é para quem edita ou aprova na Jurisdição.', true); return; }
+    var titulos = {};
+    CAMPOS.forEach(function(c) { titulos[c.campo] = c.titulo; });
+    Object.assign(titulos, { geom: 'Traçado', data_tramite: 'Data do trâmite', descricao: 'Descrição do trâmite', processo_sei: 'Processo SEI' });
+    HistoricoExport.abrir({
+      titulo: 'Jurisdição', arquivo: 'Jurisdicao', totalFiltrados: Tabela.idsFiltrados().length,
+      linhas: function(ini, fim, soFiltrados) {
+        var filtrados = {};
+        if (soFiltrados) Tabela.idsFiltrados().forEach(function(id) { filtrados[id] = true; });
+        return HistoricoExport.lerPeriodo(function() {
+          return Acesso.cliente.schema('jurisdicao').from('historico')
+            .select('hid,quando,usuario_nome,acao,tabela,registro_uid,registro_id,campos,antes,depois,proposto_por_nome');
+        }, ini, fim).then(function(hist) {
+          var linhas = [];
+          hist.forEach(function(h) {
+            if (soFiltrados && !filtrados[h.registro_id]) return;
+            var r = h.registro_id != null ? Store.obter(h.registro_id) : null;
+            var desc = r ? [r.rodovia, r.municipios].filter(Boolean).join(' — ') : (h.depois ? [h.depois.rodovia, h.depois.municipios].filter(Boolean).join(' — ') : '');
+            linhas = linhas.concat(HistoricoExport.expandir(h, {
+              codigo: r ? Store.rotulo(r.id) : (h.depois && h.depois.codigo) || (h.registro_id != null ? '#' + h.registro_id : ''),
+              descricao: desc, prefixoAcao: h.tabela === 'tramitacoes' ? 'Trâmite: ' : '',
+              titulo: function(c) { return titulos[c] || c; }
+            }));
+          });
+          return linhas;
+        });
+      }
+    });
+  }
+
   function exportar(acao) {
+    if (acao === 'historico') { exportarHistorico(); return; }
     if (!Acesso.podeExportar('JURISDICAO')) return;   // visualizador nao exporta
     if (acao === 'exp-xlsx' || acao === 'exp-xlsx-filtro') {
       comXlsx(function() {
@@ -931,6 +966,8 @@ var JurisdicaoPainel = (function() {
         e.stopPropagation();
         var m = $(b.dataset.jurMenu);
         var aberto = m.classList.contains('aberto');
+        var hist = Acesso.podeExportarHistorico('JURISDICAO');
+        m.querySelectorAll('[data-jur-hist]').forEach(function(el) { el.hidden = !hist; });
         document.querySelectorAll('.jur-ui .menu-lista').forEach(function(x) { x.classList.remove('aberto'); });
         if (!aberto) m.classList.add('aberto');
       });

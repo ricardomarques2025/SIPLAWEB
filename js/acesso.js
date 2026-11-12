@@ -285,6 +285,9 @@ var Acesso = (function() {
   function podeCamadas(area) { var f = def(area); return !!(f && f.camadas); }
   // Aprova alguma proposta na area / aprova a proposta de quem tem perfilAutor (ninguem aprova a propria).
   function aprovaNaArea(area) { var f = def(area); return !!(f && (perfil.admin || (f.aprova || []).length)); }
+  // Exportar o histórico de alterações (13/11/2026): quem participa da edição na área (propõe, grava ou aprova):
+  // editor básico, editor pleno, gerenciador e administrador; não o visualizador nem o diretor.
+  function podeExportarHistorico(area) { return podePropor(area) || aprovaNaArea(area); }
   function podeAprovar(area, perfilAutor, autor) {
     if (!perfil || autor === perfil.user_id) return false;
     if (perfil.admin) return true;
@@ -350,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.01';
+  var VERSAO_SITE = '2026-11-13.02';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -361,11 +364,13 @@ var Acesso = (function() {
       'Tabela de obras e tabela das camadas de referência com o mesmo menu Exportar da Jurisdição: Excel com todos ou só os filtrados, CSV, GeoJSON com atributos para o QGIS (obras com o traçado) e, nas obras, o caderno completo e o mapa A4 da obra selecionada. Só aparece para quem exporta.',
       'Filtros: nova opção "Isolar seleção", ao lado do Auto zoom. Ligada (padrão), Rodovia, SRE, Ferrovia, Município, Regiões e Área de Estudo mostram só o que foi escolhido; desligada, o mapa mostra tudo e destaca a escolha em laranja. Fica lembrada no navegador.',
       'Tabelas de obras e da Jurisdição: o Tab depois de editar uma célula passa para a próxima sem erro.',
+      'Exportar › Histórico de alterações (período), nas tabelas de obras e da Jurisdição: planilha Excel com cada alteração gravada entre duas datas (campo, antes, depois, autor, quem propôs), de todos os registros ou só dos filtrados. Para quem edita ou aprova (editor básico, editor pleno, gerenciador, administrador).',
       'Clique num lugar sem obra (dentro de um parque, numa área vazia): o popup mostra as camadas ligadas que contêm o ponto (município, área ambiental, área urbana, regiões, área de estudo, raio de saúde, curso d’água). Antes as camadas de cima impediam o clique de chegar às áreas e nada abria.'
     ], [
       'Novo botão Exportar nas tabelas de obras e das camadas, como na Jurisdição: planilha Excel (todas ou só as filtradas), CSV e arquivo para o QGIS.',
       'Nos filtros do mapa, a opção "Isolar seleção": desligada, o mapa continua mostrando tudo e só destaca em laranja a rodovia, o município ou a região escolhida.',
       'Na tabela, a tecla Tab passa para a próxima célula sem problemas.',
+      'Quem edita ou aprova pode exportar o histórico de alterações de um período: o que mudou, quando, o valor antes e depois e quem fez.',
       'Clicando em qualquer ponto do mapa, mesmo sem obra, você vê o município, o parque ou a área ambiental e as demais camadas ligadas naquele lugar.'
     ]],
     ['3.6', '12/11/2026', [
@@ -607,6 +612,7 @@ var Acesso = (function() {
     podeEditar: podeEditar,
     podeCamadas: podeCamadas,
     aprovaNaArea: aprovaNaArea,
+    podeExportarHistorico: podeExportarHistorico,
     podeAprovar: podeAprovar,
     nomePerfil: nomePerfil,
     podeExportarPagina: podeExportarPagina,

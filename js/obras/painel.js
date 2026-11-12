@@ -130,6 +130,9 @@ var ObrasPainel = (function() {
               '<div class="menu-rotulo">Caderno</div>' +
               '<button type="button" id="obrCaderno" title="Planilhas e um mapa por obra (dá para juntar outras origens)">Caderno completo (PDF)</button>' +
               '<button type="button" data-obr-exp="mapa-a4">Mapa A4 da obra selecionada (PDF)</button>' +
+              // Histórico: só para quem participa da edição na origem (Acesso.podeExportarHistorico; ver mostrarHistorico)
+              '<div class="menu-rotulo" data-obr-hist>Histórico</div>' +
+              '<button type="button" data-obr-exp="historico" data-obr-hist>Histórico de alterações (período)…</button>' +
             '</div>' +
           '</div>' +
           '<button type="button" class="btn-icone" id="obrFechar" title="Fechar a tabela e voltar ao mapa"><svg><use href="#o-x"/></svg></button>' +
@@ -1005,6 +1008,38 @@ var ObrasPainel = (function() {
   function exportar(acao) {
     if (!Acesso.podeExportar(ORIGEM)) { toast('A exportação não está liberada para o seu perfil nesta origem.', true); return; }
     if (!grade) return;
+    if (acao === 'historico') {
+      if (!Acesso.podeExportarHistorico(ORIGEM)) { toast('O histórico de alterações é para quem edita ou aprova nesta origem.', true); return; }
+      var origem = ORIGEM;
+      HistoricoExport.abrir({
+        titulo: 'Obras ' + origem, arquivo: 'Obras_' + origem, totalFiltrados: grade.getData('active').length,
+        linhas: function(ini, fim, soFiltrados) {
+          var uids = {};
+          (soFiltrados ? grade.getData('active') : grade.getData()).forEach(function(d) { uids[d.uid] = true; });
+          var titulos = {};
+          CAMPOS_OBRA.forEach(function(c) { titulos[c.campo] = c.titulo; });
+          Object.assign(titulos, { vinculos: 'Traçado (vínculos)', geom: 'Traçado (desenho)', origem: 'Origem', grupo_uid: 'Grupo' });
+          return HistoricoExport.lerPeriodo(function() {
+            return Acesso.cliente.from('historico')
+              .select('hid,quando,usuario_nome,acao,tabela,registro_uid,codigo,campos,antes,depois,proposto_por_nome').eq('tabela', 'obras');
+          }, ini, fim).then(function(hist) {
+            var linhas = [];
+            hist.forEach(function(h) {
+              // da origem: obra que está na tabela; excluída (não está mais na tabela): pela origem guardada no histórico
+              var daOrigem = uids[h.registro_uid] || (!soFiltrados && h.depois && h.depois.origem === origem && !ObrasStore.obter(h.registro_uid));
+              if (!daOrigem) return;
+              var r = ObrasStore.obter(h.registro_uid);
+              linhas = linhas.concat(HistoricoExport.expandir(h, {
+                codigo: h.codigo || (r && r.codigo), descricao: (r && r.descricao) || (h.depois && h.depois.descricao),
+                titulo: function(c) { return titulos[c] || c; }
+              }));
+            });
+            return linhas;
+          });
+        }
+      });
+      return;
+    }
     if (acao === 'mapa-a4') {
       var uid = selecionadoUid || fichaUid, r = uid && ObrasStore.obter(uid);
       if (!r) { toast('Selecione uma obra na tabela (clique na linha) para gerar o mapa A4.', true); return; }
@@ -1071,6 +1106,8 @@ var ObrasPainel = (function() {
     $('obrExportar').addEventListener('click', function(e) {
       e.stopPropagation();
       var m = $('obrMenuExportar'), aberto = m.classList.contains('aberto');
+      var hist = Acesso.podeExportarHistorico(ORIGEM);   // a origem da tabela pode ter mudado
+      m.querySelectorAll('[data-obr-hist]').forEach(function(el) { el.hidden = !hist; });
       document.querySelectorAll('.jur-ui .menu-lista').forEach(function(x) { x.classList.remove('aberto'); });
       if (!aberto) m.classList.add('aberto');
     });
