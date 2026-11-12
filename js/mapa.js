@@ -6647,6 +6647,7 @@ map.addControl(new LogoMapaControl());
 
     function construirPopupLinha(feature) {
       var p = feature.properties || {};
+      if (p.__OBRAS_TRECHO) return construirPopupSobrepostas(feature);
       var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
       var dadosFund = dadosFundeinfraDaFeatureFiltrado(feature, propostaSelecionada);
       var dadosDorTodos = servicosAtivos.DOR ? dadosDorDaFeatureFiltrados(feature, servicoFiltroAtivo, '') : [];
@@ -6868,7 +6869,7 @@ map.addControl(new LogoMapaControl());
   // Obras no mesmo trecho (simbologia única): base magenta com contas brancas; o popup lista todas as obras.
   function construirPopupSobrepostas(feature) {
     var p = feature.properties || {};
-    var obras = p.__SOBREPOSTAS || [];
+    var obras = p.__SOBREPOSTAS || p.__OBRAS_TRECHO || [];
     var ext = valorExtensaoKmFeature(feature);
     var sre = p.sre || p.SRE;
     var cabecalho = cabecalhoPopup(
@@ -8072,7 +8073,10 @@ map.addControl(new LogoMapaControl());
   //   'unica'    (padrão): uma linha só, com simbologia própria ("Obras no mesmo trecho"); o popup lista todas;
   //   'tracejado': trechos alternados de TRACO_SOBREPOSICAO px, cada um com a cor e o estilo da sua obra;
   //   'lado'     : lado a lado (offset), a partir do zoom 11. Escolha pelo endereço: ?sobreposicao=lado|tracejado.
-  var MODO_SOBREPOSICAO = (location.search.match(/[?&]sobreposicao=(lado|tracejado)(&|$)/) || [])[1] || 'unica';
+  //   'faixas'   (padrão): uma linha só, feita de faixas coladas (uma por obra, com a cor e o estilo dela) e uma
+  //                sombra única em volta; clicar em qualquer faixa mostra todas as obras do trecho.
+  var MODO_SOBREPOSICAO = (location.search.match(/[?&]sobreposicao=(lado|tracejado|unica)(&|$)/) || [])[1] || 'faixas';
+  var LARGURA_FAIXA = 8;   // px de cada faixa
   var COR_SOBREPOSTAS = '#c026d3';
   var ESTILO_SOBREPOSTAS = { legenda: 'Obras no mesmo trecho', cor: COR_SOBREPOSTAS, tipo_linha: 'SOBREPOSTAS', espessura: 9 };
   // origem, registro e estilo que a linha desenha (o mesmo que o laço principal escolhe)
@@ -8096,6 +8100,23 @@ map.addControl(new LogoMapaControl());
   }
   var TRACO_SOBREPOSICAO = 18;
   function ajustarSobreposicao(grupo) {
+    if (MODO_SOBREPOSICAO === 'faixas') {
+      (function percorrer(camadas) {
+        camadas.forEach(function(c) {
+          if (c.getLayers) { percorrer(c.getLayers()); return; }
+          var p = c.feature && c.feature.properties;
+          if (!p || !(p.__OFFSET_N > 1) || !c.setStyle) return;
+          if (c.options.color === '#111827') {   // sombra: uma só, centrada, da largura de todas as faixas
+            if (p.__OFFSET_IDX > 0) c.setStyle({ opacity: 0 });
+            else { c.options.offset = 0; c.setStyle({ weight: p.__OFFSET_N * LARGURA_FAIXA + 5, opacity: 0.3 }); }
+            return;
+          }
+          if (c.options.color === '#ffffff') { c.setStyle({ weight: 2 }); return; }   // miolo branco da obra
+          c.setStyle({ weight: LARGURA_FAIXA });
+        });
+      })(grupo.getLayers ? grupo.getLayers() : [grupo]);
+      return;
+    }
     if (MODO_SOBREPOSICAO !== 'tracejado') return;
     (function percorrer(camadas) {
       camadas.forEach(function(c) {
@@ -8116,13 +8137,15 @@ map.addControl(new LogoMapaControl());
   var ZOOM_LADO_A_LADO = 11;
   function deslocamentoLinha(f) {
     var p = (f && f.properties) || {};
-    if (MODO_SOBREPOSICAO !== 'lado') return 0;
-    if (!p.__OFFSET_N || p.__OFFSET_N < 2 || map.getZoom() < ZOOM_LADO_A_LADO) return 0;
+    if (!p.__OFFSET_N || p.__OFFSET_N < 2) return 0;
+    if (MODO_SOBREPOSICAO === 'faixas') return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * LARGURA_FAIXA;
+    if (MODO_SOBREPOSICAO !== 'lado' || map.getZoom() < ZOOM_LADO_A_LADO) return 0;
     return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * ESPACO_LADO_A_LADO;
   }
   // Ao cruzar o zoom 11, liga/desliga o deslocamento das linhas já desenhadas (sem redesenhar o mapa).
   var ladoALadoAtivo = null;
   map.on('zoomend', function() {
+    if (MODO_SOBREPOSICAO !== 'lado') return;
     var ativo = map.getZoom() >= ZOOM_LADO_A_LADO;
     if (ativo === ladoALadoAtivo) return;
     ladoALadoAtivo = ativo;
@@ -8172,6 +8195,7 @@ map.addControl(new LogoMapaControl());
       g.forEach(function(n, i) {
         var c = copiaFeicaoLinha(saida[n]);
         c.properties.__OFFSET_IDX = i; c.properties.__OFFSET_N = g.length;
+        if (MODO_SOBREPOSICAO === 'faixas' && obras.length > 1) c.properties.__OBRAS_TRECHO = obras;   // popup com todas
         if (MODO_SOBREPOSICAO === 'unica' && obras.length > 1) {
           if (i === 0) c.properties.__SOBREPOSTAS = obras;   // esta desenha o trecho com a simbologia única
           else c.properties.__SOBREPOSTA_OCULTA = true;      // as outras só entram na legenda e nos contadores
