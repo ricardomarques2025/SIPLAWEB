@@ -88,8 +88,12 @@ no local, `?banco=producao` usa a produção) e mostra a faixa do ambiente; o ke
 
 **Para publicar uma mudança:**
 1. Testar no local (homologação). Script de banco novo (`supabase/0xx`): aplicar primeiro na homologação.
-2. Trocar a versão do site: `VERSAO_SITE` em `js/acesso.js` **e** `versao.json` com o mesmo valor novo (ex.: `2026-10-27.1`),
-   e o `?v=` dos arquivos mudados nas páginas.
+2. Trocar a versão do site: `python tools/versao_site.py AAAA-MM-DD.NN` (na pasta SITE; `tools/` fica só no computador).
+   Troca de uma vez `VERSAO_SITE` em `js/acesso.js`, `versao.json` e o `?v=` de **todos** os scripts e estilos nas
+   páginas. Sem o `?v=` novo o navegador continua com os arquivos antigos e o "Atualizar agora" não basta (só Ctrl+F5).
+   Mudança relevante: subir o número em `NOVIDADES` (`js/acesso.js`) com a lista técnica **e** o resumo de boas-vindas
+   (4º item: frases curtas, sem termos técnicos). Esse resumo aparece num popup, uma vez por navegador, ao entrar no
+   mapa ou no Painel depois do login.
 3. `git push homolog main` → testar em https://ricardomarques2025.github.io/SIPLAWEB_HOMOLOG/.
 4. Com o OK: script no banco de produção e `git push origin main`.
 
