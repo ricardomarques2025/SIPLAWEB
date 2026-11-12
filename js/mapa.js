@@ -6865,6 +6865,48 @@ map.addControl(new LogoMapaControl());
       return L.layerGroup([sombra, base, topo]);
     }
   
+  // Obras no mesmo trecho (simbologia única): base magenta com contas brancas; o popup lista todas as obras.
+  function construirPopupSobrepostas(feature) {
+    var p = feature.properties || {};
+    var obras = p.__SOBREPOSTAS || [];
+    var ext = valorExtensaoKmFeature(feature);
+    var sre = p.sre || p.SRE;
+    var cabecalho = cabecalhoPopup(
+      'Obras no mesmo trecho' + (sre ? ' · SRE ' + sre : ''),
+      p.RODOVIA || p.rodovia || 'Rodovia',
+      [valorTrechoFeature(feature), valorExibicao(ext) !== '' ? Number(ext).toLocaleString('pt-BR') + ' km' : ''].filter(Boolean).join(' · ')
+    );
+    return cabecalho + contagemObrasPopup(obras.length, 'neste trecho') +
+      obras.map(function(d) { return cartaoObraPopup(d, { ocultar: ['RODOVIA'] }); }).join('');
+  }
+  function construirLayerSobrepostas(features) {
+    var fc = { type: 'FeatureCollection', features: features };
+    function interagir(feature, layer) {
+      var n = (feature.properties.__SOBREPOSTAS || []).length;
+      vincularPopupComAreaClique(layer, construirPopupSobrepostas(feature));
+      layer.bindTooltip(n + ' obras neste trecho — clique para ver', { sticky: true, direction: 'top', opacity: 0.95 });
+      layer.on('click', function() { piscarFeatureClicada(feature); atualizarPainelInferior(feature); });
+    }
+    var sombra = L.geoJSON(fc, { pane: 'servicosPane', interactive: false,
+      style: function() { return { color: '#111827', weight: 14, opacity: 0.28, lineCap: 'round', lineJoin: 'round' }; } });
+    var base = L.geoJSON(fc, { pane: 'servicosPane', onEachFeature: interagir,
+      style: function() { return { color: COR_SOBREPOSTAS, weight: 9, opacity: 0.95, lineCap: 'round', lineJoin: 'round' }; } });
+    var contas = L.geoJSON(fc, { pane: 'servicosPane', onEachFeature: interagir,
+      style: function() { return { color: '#ffffff', weight: 4, opacity: 1, dashArray: '1 9', lineCap: 'round', lineJoin: 'round' }; } });
+    return L.layerGroup([sombra, base, contas]);
+  }
+  function renderizarLegendaSobrepostas(mostrar) {
+    var alvo = document.getElementById('legendaSobrepostas'); if (!alvo) return;
+    alvo.innerHTML = mostrar
+      ? '<div class="legenda-item" title="Duas ou mais obras usam o mesmo trecho. Clique na linha do mapa para ver todas.">' +
+        '<span class="legenda-linha-wrap"><span class="legenda-linha-dup-base" style="height:6px;background:' + COR_SOBREPOSTAS + ';"></span>' +
+        '<span class="legenda-linha-dup-miolo" style="height:0;background:transparent;border-top:3px dotted #fff;"></span></span>' +
+        '2 ou mais obras (clique na linha)</div>'
+      : '';
+    var bloco = alvo.closest('.bloco');
+    if (bloco) bloco.style.display = mostrar ? '' : 'none';
+  }
+
   function criarLegendaLinha(tipo, cor) {
     if (tipo === 'dup') {
       return '<span class="legenda-linha-wrap">' +
@@ -8027,10 +8069,31 @@ map.addControl(new LogoMapaControl());
     return (i != null && lista[i]) || lista[0];
   }
   // Modo de desenho das obras no mesmo trecho (13/11/2026, em teste na homologação):
-  //   'tracejado' (padrão): as linhas ficam sobre o mesmo traçado, em trechos alternados de TRACO_SOBREPOSICAO px,
-  //                cada trecho com a cor e o estilo da sua obra (dashArray/dashOffset; sombra só da primeira);
-  //   'lado'     : lado a lado (offset), a partir do zoom 11. Escolha pelo endereço: ?sobreposicao=lado.
-  var MODO_SOBREPOSICAO = /[?&]sobreposicao=lado(&|$)/.test(location.search) ? 'lado' : 'tracejado';
+  //   'unica'    (padrão): uma linha só, com simbologia própria ("Obras no mesmo trecho"); o popup lista todas;
+  //   'tracejado': trechos alternados de TRACO_SOBREPOSICAO px, cada um com a cor e o estilo da sua obra;
+  //   'lado'     : lado a lado (offset), a partir do zoom 11. Escolha pelo endereço: ?sobreposicao=lado|tracejado.
+  var MODO_SOBREPOSICAO = (location.search.match(/[?&]sobreposicao=(lado|tracejado)(&|$)/) || [])[1] || 'unica';
+  var COR_SOBREPOSTAS = '#c026d3';
+  var ESTILO_SOBREPOSTAS = { legenda: 'Obras no mesmo trecho', cor: COR_SOBREPOSTAS, tipo_linha: 'SOBREPOSTAS', espessura: 9 };
+  // origem, registro e estilo que a linha desenha (o mesmo que o laço principal escolhe)
+  function obraDaLinha(f) {
+    var o = origemIntervencaoFeature(f);
+    if (o === 'FUNDEINFRA') {
+      var df = dadosFundeinfraDaFeature(f);
+      return df ? { origem: o, dados: df, estilo: estiloFundeinfra(df) } : null;
+    }
+    var fonte = fontesLinhasObras()[o];
+    if (!fonte) return null;
+    var d = escolherDadosLinha(fonte[0](f, servicoFiltroAtivo, ''), f);
+    return d ? { origem: o, dados: d, estilo: fonte[1](d) } : null;
+  }
+  function fontesLinhasObras() {
+    return {
+      DOR: [dadosDorDaFeatureFiltrados, estiloDor], DMA: [dadosDmaDaFeatureFiltrados, estiloDma],
+      DPL: [dadosDplDaFeatureFiltrados, estiloDpl], DPJ: [dadosDpjDaFeatureFiltrados, estiloDpj],
+      TARE: [dadosTareDaFeatureFiltrados, estiloTare]
+    };
+  }
   var TRACO_SOBREPOSICAO = 18;
   function ajustarSobreposicao(grupo) {
     if (MODO_SOBREPOSICAO !== 'tracejado') return;
@@ -8071,11 +8134,7 @@ map.addControl(new LogoMapaControl());
     })(regraLayers);
   });
   function obrasLadoALado(linhas) {
-    var fontes = {
-      DOR: [dadosDorDaFeatureFiltrados, estiloDor], DMA: [dadosDmaDaFeatureFiltrados, estiloDma],
-      DPL: [dadosDplDaFeatureFiltrados, estiloDpl], DPJ: [dadosDpjDaFeatureFiltrados, estiloDpj],
-      TARE: [dadosTareDaFeatureFiltrados, estiloTare]
-    };
+    var fontes = fontesLinhasObras();
     var saida = [];
     linhas.forEach(function(f) {
       var o = origemIntervencaoFeature(f), fonte = fontes[o];
@@ -8094,17 +8153,29 @@ map.addControl(new LogoMapaControl());
       }
       indices.forEach(function(i) { var c = copiaFeicaoLinha(f); c.properties.__DADOS_IDX = i; saida.push(c); });
     });
-    var porTrecho = {};
+    var porTrecho = {}, obraDe = {};
     saida.forEach(function(f, n) {
+      var ob = obraDaLinha(f);
+      if (!ob || !passaFiltroLegenda(ob.origem, ob.estilo.legenda)) return;   // a que não aparece não conta
+      obraDe[n] = ob;
       var k = chaveGeometriaSRE(f) || valorSeguro(f, 'GEOCOD');
       if (k) (porTrecho[k] = porTrecho[k] || []).push(n);
     });
     Object.keys(porTrecho).forEach(function(k) {
       var g = porTrecho[k];
       if (g.length < 2) return;
+      var obras = [], vistos = {};
+      g.forEach(function(n) {
+        var d = obraDe[n].dados, id = d.IDCOD || ('#' + n);
+        if (!vistos[id]) { vistos[id] = true; obras.push(d); }
+      });
       g.forEach(function(n, i) {
         var c = copiaFeicaoLinha(saida[n]);
         c.properties.__OFFSET_IDX = i; c.properties.__OFFSET_N = g.length;
+        if (MODO_SOBREPOSICAO === 'unica' && obras.length > 1) {
+          if (i === 0) c.properties.__SOBREPOSTAS = obras;   // esta desenha o trecho com a simbologia única
+          else c.properties.__SOBREPOSTA_OCULTA = true;      // as outras só entram na legenda e nos contadores
+        }
         saida[n] = c;
       });
     });
@@ -8252,6 +8323,7 @@ map.addControl(new LogoMapaControl());
     var servicosVisiveisDpj = {};
     var servicosVisiveisTare = {};
     var idsUnicos = {};
+    var haObrasSobrepostas = false;
 
         for (var k = 0; k < linhasBase.length; k++) {
       var feat = linhasBase[k];
@@ -8346,6 +8418,8 @@ map.addControl(new LogoMapaControl());
       }
       // a legenda acima registra tudo (para poder clicar nos outros itens); o mapa só desenha o que passa no filtro
       if (!passaFiltroLegenda(origemDados, estilo.legenda)) continue;
+      if (feat.properties && feat.properties.__SOBREPOSTA_OCULTA) { idsUnicos[chaveId] = true; continue; }
+      if (feat.properties && feat.properties.__SOBREPOSTAS) { estilo = ESTILO_SOBREPOSTAS; haObrasSobrepostas = true; }
       var chave = estilo.legenda + '|' + estilo.cor + '|' + estilo.tipo_linha;
       if (!grupos[chave]) grupos[chave] = { features: [], estilo: estilo };
       grupos[chave].features.push(feat);
@@ -8355,7 +8429,9 @@ map.addControl(new LogoMapaControl());
     Object.keys(grupos).forEach(function(chave) {
       var grupo = grupos[chave];
       var camada;
-      if (grupo.estilo.tipo_linha === 'COM LINHA BRANCA') {
+      if (grupo.estilo.tipo_linha === 'SOBREPOSTAS') {
+        camada = construirLayerSobrepostas(grupo.features);
+      } else if (grupo.estilo.tipo_linha === 'COM LINHA BRANCA') {
         camada = construirLayerLinhaBranca(grupo.features, grupo.estilo.cor, grupo.estilo.espessura);
       } else if (grupo.estilo.tipo_linha === 'COM LINHA BRANCA DOR') {
         camada = construirLayerLinhaBranca(grupo.features, grupo.estilo.cor, grupo.estilo.espessura);
@@ -8476,6 +8552,7 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaDpj(servicosVisiveisDpj, Object.assign({}, resultadoObrasPontos.legendaDpj, resultadoObrasAero.legendaDpj));
     renderizarLegendaDpl(servicosVisiveisDpl, resultadoObrasPontos.legendaDpl);
     renderizarLegendaTare(servicosVisiveisTare);
+    renderizarLegendaSobrepostas(haObrasSobrepostas);
     renderizarLegendaDoc(resultadoObrasPontos.legendaDoc);
     renderizarLegendaDsv(resultadoObrasPontos.legendaDsv);
     renderizarLegendaGme(resultadoObrasPontos.legendaGme);
