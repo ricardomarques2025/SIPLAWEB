@@ -87,6 +87,8 @@ var Acesso = (function() {
     '.acesso-bv-topo small{display:block;opacity:.85;font-size:12px;letter-spacing:.04em;text-transform:uppercase}' +
     '.acesso-bv-topo b{display:block;font-size:19px;margin-top:2px}' +
     '.acesso-bv-corpo{padding:16px 22px 6px}.acesso-bv-corpo p{margin:0 0 8px;color:#475569}' +
+    '.acesso-bv-ajuda{margin:10px 0 0!important;padding:10px 12px;background:#f0fdf4;border-radius:8px;color:#14532d!important}' +
+    '.acesso-bv-ajuda a{color:#15803d;font-weight:600}' +
     '.acesso-bv-corpo ul{list-style:none;padding:0;margin:0}' +
     '.acesso-bv-corpo li{position:relative;padding:8px 0 8px 26px;border-bottom:1px solid #f1f5f9}.acesso-bv-corpo li:last-child{border-bottom:0}' +
     '.acesso-bv-corpo li:before{content:"\\2713";position:absolute;left:2px;top:8px;color:#16a34a;font-weight:700}' +
@@ -348,7 +350,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-12.03';
+  var VERSAO_SITE = '2026-11-12.04';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -430,13 +432,15 @@ var Acesso = (function() {
   // Boas-vindas da versão nova: ao entrar num módulo (mapa, Painel) depois do login, uma vez por navegador e por
   // número de versão (NOVIDADES[0][0]), com o resumo simples da versão (NOVIDADES[0][3]).
   var CHAVE_BOAS_VINDAS = 'siplaweb.boasVindasVersao';
+  // ?boasvindas=1 no endereço mostra de novo (lido ao carregar, antes que a página troque o endereço)
+  var FORCAR_BOAS_VINDAS = /[?&]boasvindas=1(&|$)/.test(location.search);
   function mostrarBoasVindas() {
     var atual = NOVIDADES[0];
     if (!atual[3] || !atual[3].length || $('acessoBoasVindas')) return;
     if (!/(^|\/)(mapa|painel)\.html$/.test(location.pathname)) return;
     var vista = '';
     try { vista = localStorage.getItem(CHAVE_BOAS_VINDAS) || ''; } catch (e) { /* sem armazenamento: mostra */ }
-    if (vista === atual[0]) return;
+    if (vista === atual[0] && !FORCAR_BOAS_VINDAS) return;
     var dlg = document.createElement('dialog');
     dlg.id = 'acessoBoasVindas';
     dlg.className = 'acesso-novidades acesso-boasvindas';
@@ -450,9 +454,14 @@ var Acesso = (function() {
     var lista = document.createElement('ul');
     atual[3].forEach(function(t) { var li = document.createElement('li'); li.textContent = t; lista.appendChild(li); });
     corpo.appendChild(lista);
+    var ajuda = document.createElement('p');
+    ajuda.className = 'acesso-bv-ajuda';
+    ajuda.innerHTML = 'Precisa de ajuda? <a href="ajuda.html#inicio" target="_blank" rel="noopener">Clique aqui para começar.</a>';
+    ajuda.querySelector('a').addEventListener('click', function() { fechar(); });
+    corpo.appendChild(ajuda);
     var acoes = document.createElement('div');
     acoes.className = 'acesso-bv-acoes';
-    acoes.innerHTML = '<a data-todas>Ver todas as novidades</a><button type="button" data-ok>Entendi</button>';
+    acoes.innerHTML = '<a data-todas>Ver todas as novidades</a><button type="button" data-ok autofocus>Entendi</button>';
     dlg.append(topo, corpo, acoes);
     function fechar() {
       try { localStorage.setItem(CHAVE_BOAS_VINDAS, atual[0]); } catch (e) { /* ignora */ }
