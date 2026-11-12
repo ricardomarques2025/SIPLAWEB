@@ -8026,10 +8026,34 @@ map.addControl(new LogoMapaControl());
     var i = f && f.properties ? f.properties.__DADOS_IDX : null;
     return (i != null && lista[i]) || lista[0];
   }
+  // Modo de desenho das obras no mesmo trecho (13/11/2026, em teste na homologação):
+  //   'tracejado' (padrão): as linhas ficam sobre o mesmo traçado, em trechos alternados de TRACO_SOBREPOSICAO px,
+  //                cada trecho com a cor e o estilo da sua obra (dashArray/dashOffset; sombra só da primeira);
+  //   'lado'     : lado a lado (offset), a partir do zoom 11. Escolha pelo endereço: ?sobreposicao=lado.
+  var MODO_SOBREPOSICAO = /[?&]sobreposicao=lado(&|$)/.test(location.search) ? 'lado' : 'tracejado';
+  var TRACO_SOBREPOSICAO = 18;
+  function ajustarSobreposicao(grupo) {
+    if (MODO_SOBREPOSICAO !== 'tracejado') return;
+    (function percorrer(camadas) {
+      camadas.forEach(function(c) {
+        if (c.getLayers) { percorrer(c.getLayers()); return; }
+        var p = c.feature && c.feature.properties;
+        if (!p || !(p.__OFFSET_N > 1) || !c.setStyle) return;
+        var n = p.__OFFSET_N, i = p.__OFFSET_IDX;
+        if (c.options.color === '#111827') {   // sombra: uma só (a da primeira obra), contínua
+          if (i > 0) c.setStyle({ opacity: 0 });
+          return;
+        }
+        // traço desta obra e espaço do tamanho dos traços das outras; o deslocamento põe cada obra na sua vez
+        c.setStyle({ dashArray: TRACO_SOBREPOSICAO + ' ' + (TRACO_SOBREPOSICAO * (n - 1)), dashOffset: String(-i * TRACO_SOBREPOSICAO), lineCap: 'butt' });
+      });
+    })(grupo.getLayers ? grupo.getLayers() : [grupo]);
+  }
   // Só a partir do zoom 11: de longe as linhas sinuosas deslocadas se dobram e formam "bolhas"; ali ficam sobrepostas.
   var ZOOM_LADO_A_LADO = 11;
   function deslocamentoLinha(f) {
     var p = (f && f.properties) || {};
+    if (MODO_SOBREPOSICAO !== 'lado') return 0;
     if (!p.__OFFSET_N || p.__OFFSET_N < 2 || map.getZoom() < ZOOM_LADO_A_LADO) return 0;
     return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * ESPACO_LADO_A_LADO;
   }
@@ -8340,6 +8364,7 @@ map.addControl(new LogoMapaControl());
       } else {
         camada = construirLayerNormal(grupo.features, grupo.estilo.cor, grupo.estilo.espessura);
       }
+      ajustarSobreposicao(camada);
       camada.addTo(map);
       regraLayers.push(camada);
     });
