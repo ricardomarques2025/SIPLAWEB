@@ -590,7 +590,7 @@ var JurisdicaoPainel = (function() {
       erroStatus = extra;
       toast(extra, true);
     } else if (evento === 'pendentes') {
-      if (id != null) Tabela.atualizarLinha(id);
+      if (id != null) Tabela.atualizarLinha(id, true);   // pendência: depois do Tab/Enter da tabela (ver tabela.js)
       if (id != null && id === gavetaId) atualizarCampoGaveta(extra);
       atualizarPendentes();
     } else if (evento === 'propostas') {

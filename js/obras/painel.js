@@ -386,8 +386,17 @@ var ObrasPainel = (function() {
       if (c.tipo === 'numero') v = v === '' || v == null ? null : Number(String(v).replace(',', '.'));
       if (typeof v === 'string') v = v.trim();
       ObrasStore.definirPendente(cell.getRow().getData().uid, c.campo, v);
-      cell.getRow().reformat();
+      reformatarQuandoLivre(cell.getRow());
     });
+    // Redesenha a linha (amarelo da pendência) só depois que o Tabulator termina o Tab/Enter: o reformat imediato
+    // trocava as células da linha enquanto o Tab abria o editor da próxima, e o Tabulator dava erro (12/11/2026).
+    // Se a pessoa estiver editando outra célula, espera terminar.
+    function reformatarQuandoLivre(row) {
+      setTimeout(function tentar() {
+        if (document.querySelector('#obrGrade .tabulator-cell.tabulator-editing')) { setTimeout(tentar, 250); return; }
+        try { row.reformat(); } catch (e) { /* linha saiu da tabela (filtro, troca de origem) */ }
+      }, 0);
+    }
     grade.on('dataFiltered', function(f, linhas) { atualizarContador(linhas.length); agendarRecorteMapa(); });
   }
 

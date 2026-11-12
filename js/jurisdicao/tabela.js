@@ -184,8 +184,7 @@ const Tabela = (function() {
       let v = cell.getValue();
       if (c && c.tipo === 'numero') v = v === '' || v == null ? null : Number(String(v).replace(',', '.'));
       if (typeof v === 'string') v = v.trim();
-      Store.atualizar(cell.getRow().getData().id, cell.getField(), v);
-      cell.getRow().reformat();
+      Store.atualizar(cell.getRow().getData().id, cell.getField(), v);   // emite 'pendentes' -> atualizarLinha
     });
     // Mudou no título o filtro de tipo, situação ou traçado: vira o filtro do módulo (mapa + indicadores + tabela).
     grade.on('dataFiltering', function() {
@@ -216,12 +215,22 @@ const Tabela = (function() {
     return grade.getData('active');
   }
 
-  function atualizarLinha(id) {
-    const reg = Store.obter(id);
-    const row = grade.getRow(id);
-    if (!reg) { if (row) row.delete(); return; }
-    if (row) { row.update({ ...reg }); row.reformat(); }
-    else grade.addRow({ ...reg }, true);
+  // adiar = true (edição na própria tabela): atualiza a linha só depois que o Tabulator termina o Tab/Enter. Mexer na
+  // linha na hora trocava as células enquanto o Tab abria o editor da próxima, e o Tabulator dava erro (12/11/2026).
+  // Com uma célula em edição, espera terminar. Nos demais casos (gravou, recarregou) continua imediato.
+  function atualizarLinha(id, adiar) {
+    function fazer() {
+      const reg = Store.obter(id);
+      const row = grade.getRow(id);
+      if (!reg) { if (row) row.delete(); return; }
+      if (row) { row.update({ ...reg }); row.reformat(); }
+      else grade.addRow({ ...reg }, true);
+    }
+    if (!adiar) { fazer(); return; }
+    setTimeout(function tentar() {
+      if (grade.element.querySelector('.tabulator-cell.tabulator-editing')) { setTimeout(tentar, 250); return; }
+      fazer();
+    }, 0);
   }
 
   function recarregar() {
