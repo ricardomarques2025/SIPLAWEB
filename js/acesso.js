@@ -353,13 +353,22 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.12';
+  var VERSAO_SITE = '2026-11-13.13';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.9', '13/11/2026', [
+      'Obras no mesmo trecho em tracejado alternado: as linhas ficam sobre o mesmo traçado, em traços que se alternam, cada um com a cor e o estilo da sua obra, em qualquer zoom (substitui o lado a lado da 3.8); sombra única por baixo; o popup de qualquer delas lista todas as obras do trecho.',
+      'Jurisdição: clicar num tipo da legenda (Estadualização, Federalização, Municipalização) mostra só ele no mapa — no módulo, é o mesmo filtro Tipo da barra esquerda; nos outros mapas, com a Jurisdição ligada como camada de referência, filtra só o desenho dela.',
+      'GME e GMK: placas próprias para ponte/OAE e bueiro concluídos (etapa Obra com status Concluído), também na legenda.'
+    ], [
+      'Quando duas obras passam pelo mesmo trecho de rodovia, a linha alterna as cores das duas. Clique nela para ver todas as obras do trecho.',
+      'Na Jurisdição, clique num tipo da legenda para ver só ele no mapa.',
+      'No GME e no GMK, pontes e bueiros concluídos ganharam placa própria.'
+    ]],
     ['3.8', '13/11/2026', [
       'Obras no mesmo trecho: quando duas ou mais obras usam o mesmo segmento (da mesma origem ou de origens diferentes), cada uma é desenhada com a sua simbologia, lado a lado, a partir do zoom 11. Antes o mapa ligava só uma obra por origem a cada segmento e a outra ficava escondida (ex.: OB26-01518 Duplicação e OB26-01574 Restauração no TRE0051).'
     ], [

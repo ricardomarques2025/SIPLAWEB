@@ -6691,7 +6691,6 @@ map.addControl(new LogoMapaControl());
         interactive: false,
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: '#111827',
             weight: espessura + 5,
             opacity: 0.24,
@@ -6708,7 +6707,6 @@ map.addControl(new LogoMapaControl());
         pane: 'servicosPane',
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: cor,
             weight: espessura,
             opacity: 0.95,
@@ -6741,7 +6739,6 @@ map.addControl(new LogoMapaControl());
         interactive: false,
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: '#111827',
             weight: pesoBase + 5,
             opacity: 0.24,
@@ -6758,7 +6755,6 @@ map.addControl(new LogoMapaControl());
         pane: 'servicosPane',
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: cor,
             weight: pesoBase,
             opacity: 0.95,
@@ -6783,7 +6779,6 @@ map.addControl(new LogoMapaControl());
         pane: 'servicosPane',
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: '#ffffff',
             weight: pesoTopo,
             opacity: 1,
@@ -6816,7 +6811,6 @@ map.addControl(new LogoMapaControl());
         interactive: false,
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: '#111827',
             weight: pesoBase + 5,
             opacity: 0.24,
@@ -6833,7 +6827,6 @@ map.addControl(new LogoMapaControl());
         pane: 'servicosPane',
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: cor,
             weight: pesoBase,
             opacity: 0.95,
@@ -6858,7 +6851,6 @@ map.addControl(new LogoMapaControl());
         pane: 'servicosPane',
         style: function(feature) {
           return {
-            offset: deslocamentoLinha(feature),
             color: '#ffffff',
             weight: pesoTopo,
             opacity: 1,
@@ -6880,10 +6872,10 @@ map.addControl(new LogoMapaControl());
       return L.layerGroup([sombra, base, topo]);
     }
   
-  // Obras no mesmo trecho (simbologia única): base magenta com contas brancas; o popup lista todas as obras.
+  // Obras no mesmo trecho (tracejado alternado): o popup de qualquer uma lista todas as obras do trecho.
   function construirPopupSobrepostas(feature) {
     var p = feature.properties || {};
-    var obras = p.__SOBREPOSTAS || p.__OBRAS_TRECHO || [];
+    var obras = p.__OBRAS_TRECHO || [];
     var ext = valorExtensaoKmFeature(feature);
     var sre = p.sre || p.SRE;
     var cabecalho = cabecalhoPopup(
@@ -6894,34 +6886,6 @@ map.addControl(new LogoMapaControl());
     return cabecalho + contagemObrasPopup(obras.length, 'neste trecho') +
       obras.map(function(d) { return cartaoObraPopup(d, { ocultar: ['RODOVIA'] }); }).join('');
   }
-  function construirLayerSobrepostas(features) {
-    var fc = { type: 'FeatureCollection', features: features };
-    function interagir(feature, layer) {
-      var n = (feature.properties.__SOBREPOSTAS || []).length;
-      vincularPopupComAreaClique(layer, construirPopupSobrepostas(feature));
-      layer.bindTooltip(n + ' obras neste trecho — clique para ver', { sticky: true, direction: 'top', opacity: 0.95 });
-      layer.on('click', function() { piscarFeatureClicada(feature); atualizarPainelInferior(feature); });
-    }
-    var sombra = L.geoJSON(fc, { pane: 'servicosPane', interactive: false,
-      style: function() { return { color: '#111827', weight: 14, opacity: 0.28, lineCap: 'round', lineJoin: 'round' }; } });
-    var base = L.geoJSON(fc, { pane: 'servicosPane', onEachFeature: interagir,
-      style: function() { return { color: COR_SOBREPOSTAS, weight: 9, opacity: 0.95, lineCap: 'round', lineJoin: 'round' }; } });
-    var contas = L.geoJSON(fc, { pane: 'servicosPane', onEachFeature: interagir,
-      style: function() { return { color: '#ffffff', weight: 4, opacity: 1, dashArray: '1 9', lineCap: 'round', lineJoin: 'round' }; } });
-    return L.layerGroup([sombra, base, contas]);
-  }
-  function renderizarLegendaSobrepostas(mostrar) {
-    var alvo = document.getElementById('legendaSobrepostas'); if (!alvo) return;
-    alvo.innerHTML = mostrar
-      ? '<div class="legenda-item" title="Duas ou mais obras usam o mesmo trecho. Clique na linha do mapa para ver todas.">' +
-        '<span class="legenda-linha-wrap"><span class="legenda-linha-dup-base" style="height:6px;background:' + COR_SOBREPOSTAS + ';"></span>' +
-        '<span class="legenda-linha-dup-miolo" style="height:0;background:transparent;border-top:3px dotted #fff;"></span></span>' +
-        '2 ou mais obras (clique na linha)</div>'
-      : '';
-    var bloco = alvo.closest('.bloco');
-    if (bloco) bloco.style.display = mostrar ? '' : 'none';
-  }
-
   function criarLegendaLinha(tipo, cor) {
     if (tipo === 'dup') {
       return '<span class="legenda-linha-wrap">' +
@@ -8070,12 +8034,15 @@ map.addControl(new LogoMapaControl());
     return { total: total, totalCluster: totalCluster, countDor: countDor, countDma: countDma, countDpj: countDpj, legendaDor: legendasDor, legendaDma: legendasDma, legendaDpj: legendasDpj };
   }
 
-  // --- OBRAS SOBREPOSTAS LADO A LADO (13/11/2026) ---
+  // --- OBRAS NO MESMO TRECHO: TRACEJADO ALTERNADO (VER. 3.9, 13/11/2026) ---
   // Antes cada trecho mostrava uma obra só por origem (a primeira da lista): numa sobreposição (ex.: OB26-01518
   // Duplicação e OB26-01574 Restauração no TRE0051) a outra só aparecia desligando a primeira. Agora cada obra do
   // trecho vira uma linha própria (__DADOS_IDX = qual registro desenhar) e as linhas do mesmo trecho, de qualquer
-  // origem, ficam lado a lado (__OFFSET_IDX/__OFFSET_N -> opção offset do Leaflet.PolylineOffset).
-  var ESPACO_LADO_A_LADO = 11;   // px entre as linhas paralelas (largura das linhas de obra + folga)
+  // origem, se alternam em traços de TRACO_SOBREPOSICAO px sobre o mesmo traçado, cada traço com a cor e o estilo da
+  // sua obra (__OFFSET_IDX/__OFFSET_N -> dashArray/dashOffset); sombra única por baixo (sombraDasFaixas) e popup
+  // com todas as obras do trecho (__OBRAS_TRECHO). Testados e descartados na homologação: lado a lado (offset),
+  // faixas coladas e linha única magenta.
+  var TRACO_SOBREPOSICAO = 18;
   function copiaFeicaoLinha(f) {
     return { type: f.type || 'Feature', id: f.id, properties: Object.assign({}, f.properties || {}), geometry: f.geometry };
   }
@@ -8083,16 +8050,13 @@ map.addControl(new LogoMapaControl());
     var i = f && f.properties ? f.properties.__DADOS_IDX : null;
     return (i != null && lista[i]) || lista[0];
   }
-  // Modo de desenho das obras no mesmo trecho (13/11/2026, em teste na homologação):
-  //   'unica'    : uma linha só, com simbologia própria ("Obras no mesmo trecho"); o popup lista todas;
-  //   'tracejado' (padrão, escolhido em 13/11/2026): trechos alternados de TRACO_SOBREPOSICAO px, cada um com a cor e o estilo da sua obra;
-  //   'lado'     : lado a lado (offset), a partir do zoom 11. Escolha pelo endereço: ?sobreposicao=lado|faixas|unica.
-  //   'faixas'   : uma linha só, feita de faixas coladas (uma por obra, com a cor e o estilo dela) e uma
-  //                sombra única em volta; clicar em qualquer faixa mostra todas as obras do trecho.
-  var MODO_SOBREPOSICAO = (location.search.match(/[?&]sobreposicao=(lado|faixas|unica)(&|$)/) || [])[1] || 'tracejado';
-  var LARGURA_FAIXA = 8;   // px de cada faixa
-  var COR_SOBREPOSTAS = '#c026d3';
-  var ESTILO_SOBREPOSTAS = { legenda: 'Obras no mesmo trecho', cor: COR_SOBREPOSTAS, tipo_linha: 'SOBREPOSTAS', espessura: 9 };
+  function fontesLinhasObras() {
+    return {
+      DOR: [dadosDorDaFeatureFiltrados, estiloDor], DMA: [dadosDmaDaFeatureFiltrados, estiloDma],
+      DPL: [dadosDplDaFeatureFiltrados, estiloDpl], DPJ: [dadosDpjDaFeatureFiltrados, estiloDpj],
+      TARE: [dadosTareDaFeatureFiltrados, estiloTare]
+    };
+  }
   // origem, registro e estilo que a linha desenha (o mesmo que o laço principal escolhe)
   function obraDaLinha(f) {
     var o = origemIntervencaoFeature(f);
@@ -8105,29 +8069,12 @@ map.addControl(new LogoMapaControl());
     var d = escolherDadosLinha(fonte[0](f, servicoFiltroAtivo, ''), f);
     return d ? { origem: o, dados: d, estilo: fonte[1](d) } : null;
   }
-  function fontesLinhasObras() {
-    return {
-      DOR: [dadosDorDaFeatureFiltrados, estiloDor], DMA: [dadosDmaDaFeatureFiltrados, estiloDma],
-      DPL: [dadosDplDaFeatureFiltrados, estiloDpl], DPJ: [dadosDpjDaFeatureFiltrados, estiloDpj],
-      TARE: [dadosTareDaFeatureFiltrados, estiloTare]
-    };
+  // ordem fixa das obras no trecho (origem, tipo, código)
+  var ORDEM_ORIGEM_FAIXA = { FUNDEINFRA: 0, DOR: 1, DMA: 2, DPJ: 3, DPL: 4, TARE: 5 };
+  function chaveOrdemFaixa(ob) {
+    return (ORDEM_ORIGEM_FAIXA[ob.origem] != null ? ORDEM_ORIGEM_FAIXA[ob.origem] : 9) + '|' + (ob.estilo.legenda || '') + '|' + (ob.dados.IDCOD || '');
   }
-  var TRACO_SOBREPOSICAO = 18;
   function ajustarSobreposicao(grupo) {
-    if (MODO_SOBREPOSICAO === 'faixas') {
-      (function percorrer(camadas) {
-        camadas.forEach(function(c) {
-          if (c.getLayers) { percorrer(c.getLayers()); return; }
-          var p = c.feature && c.feature.properties;
-          if (!p || !(p.__OFFSET_N > 1) || !c.setStyle) return;
-          if (c.options.color === '#111827') { c.setStyle({ opacity: 0 }); return; }   // sombra: uma só, em sombraDasFaixas
-          if (c.options.color === '#ffffff') { c.setStyle({ weight: 2 }); return; }   // miolo branco da obra
-          c.setStyle({ weight: LARGURA_FAIXA });
-        });
-      })(grupo.getLayers ? grupo.getLayers() : [grupo]);
-      return;
-    }
-    if (MODO_SOBREPOSICAO !== 'tracejado') return;
     (function percorrer(camadas) {
       camadas.forEach(function(c) {
         if (c.getLayers) { percorrer(c.getLayers()); return; }
@@ -8140,85 +8087,16 @@ map.addControl(new LogoMapaControl());
       });
     })(grupo.getLayers ? grupo.getLayers() : [grupo]);
   }
-  // Só a partir do zoom 11: de longe as linhas sinuosas deslocadas se dobram e formam "bolhas"; ali ficam sobrepostas.
-  var ZOOM_LADO_A_LADO = 11;
-  function deslocamentoLinha(f) {
-    var p = (f && f.properties) || {};
-    if (!p.__OFFSET_N || p.__OFFSET_N < 2) return 0;
-    var sentido = p.__SENTIDO || 1;
-    if (MODO_SOBREPOSICAO === 'faixas') return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * LARGURA_FAIXA * sentido;
-    if (MODO_SOBREPOSICAO !== 'lado' || map.getZoom() < ZOOM_LADO_A_LADO) return 0;
-    return (p.__OFFSET_IDX - (p.__OFFSET_N - 1) / 2) * ESPACO_LADO_A_LADO * sentido;
-  }
-  // Ao cruzar o zoom 11, liga/desliga o deslocamento das linhas já desenhadas (sem redesenhar o mapa).
-  var ladoALadoAtivo = null;
-  map.on('zoomend', function() {
-    if (MODO_SOBREPOSICAO !== 'lado') return;
-    var ativo = map.getZoom() >= ZOOM_LADO_A_LADO;
-    if (ativo === ladoALadoAtivo) return;
-    ladoALadoAtivo = ativo;
-    (function percorrer(camadas) {
-      camadas.forEach(function(c) {
-        if (c.getLayers) { percorrer(c.getLayers()); return; }
-        if (c.setOffset && c.feature && c.feature.properties && c.feature.properties.__OFFSET_N > 1) c.setOffset(deslocamentoLinha(c.feature));
-      });
-    })(regraLayers);
-  });
-  var ORDEM_ORIGEM_FAIXA = { FUNDEINFRA: 0, DOR: 1, DMA: 2, DPJ: 3, DPL: 4, TARE: 5 };
-  function chaveOrdemFaixa(ob) {
-    return (ORDEM_ORIGEM_FAIXA[ob.origem] != null ? ORDEM_ORIGEM_FAIXA[ob.origem] : 9) + '|' + (ob.estilo.legenda || '') + '|' + (ob.dados.IDCOD || '');
-  }
-  // Os segmentos da malha não foram desenhados todos no mesmo sentido; o deslocamento (esquerda/direita) segue o
-  // sentido do desenho, e as faixas trocavam de lado na emenda ("linhas se contorcendo"). Aqui os trechos que se
-  // encostam pelas pontas recebem um sentido coerente (+1/-1), propagado em cadeia; deslocamentoLinha multiplica.
-  function pontasDaLinha(f) {
-    var g = f && f.geometry;
-    var partes = !g ? null : g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : null;
-    if (!partes || !partes.length || !partes[0].length) return null;
-    var ultima = partes[partes.length - 1];
-    return [partes[0][0], ultima[ultima.length - 1]];
-  }
-  function chavePontoFaixa(c) { return Number(c[0]).toFixed(5) + ',' + Number(c[1]).toFixed(5); }
-  function sentidoDasFaixas(feicoes) {
-    var pontas = feicoes.map(pontasDaLinha), porPonto = {}, sentido = feicoes.map(function() { return 0; });
-    pontas.forEach(function(pp, j) {
-      if (!pp) return;
-      [0, 1].forEach(function(t) { var k = chavePontoFaixa(pp[t]); (porPonto[k] = porPonto[k] || []).push([j, t]); });
-    });
-    pontas.forEach(function(pp, j) {
-      if (sentido[j]) return;
-      if (!pp) { sentido[j] = 1; return; }
-      sentido[j] = (pp[1][0] - pp[0][0]) >= 0 ? 1 : -1;   // começo da cadeia: de oeste para leste
-      var fila = [j];
-      while (fila.length) {
-        var c = fila.shift();
-        [0, 1].forEach(function(t) {
-          (porPonto[chavePontoFaixa(pontas[c][t])] || []).forEach(function(v) {
-            if (sentido[v[0]]) return;
-            // fim com começo = mesmo sentido; fim com fim ou começo com começo = desenhado ao contrário
-            sentido[v[0]] = sentido[c] * (t !== v[1] ? 1 : -1);
-            fila.push(v[0]);
-          });
-        });
-      }
-    });
-    return sentido;
-  }
-  // Sombra única de cada trecho com faixas, numa camada abaixo de todas as obras (se ficasse na camada de uma das
-  // obras, podia cobrir a faixa da outra, desenhada antes).
+  // Sombra única de cada trecho sobreposto, numa camada abaixo de todas as obras (se ficasse na camada de uma das
+  // obras, podia cobrir os traços da outra, desenhada antes).
   function sombraDasFaixas(grupos) {
-    if (MODO_SOBREPOSICAO !== 'faixas' && MODO_SOBREPOSICAO !== 'tracejado') return null;
     var feicoes = [];
     Object.keys(grupos).forEach(function(k) {
       grupos[k].features.forEach(function(f) { if (f.properties && f.properties.__OFFSET_N > 1 && f.properties.__OFFSET_IDX === 0) feicoes.push(f); });
     });
     if (!feicoes.length) return null;
     return L.geoJSON({ type: 'FeatureCollection', features: feicoes }, { pane: 'sombraFaixasPane', interactive: false,
-      style: function(f) {
-        return MODO_SOBREPOSICAO === 'faixas'
-          ? { color: '#111827', weight: f.properties.__OFFSET_N * LARGURA_FAIXA + 5, opacity: 0.3, lineCap: 'round', lineJoin: 'round' }
-          : { color: '#111827', weight: 14, opacity: 0.24, lineCap: 'round', lineJoin: 'round' };
-      } });
+      style: function() { return { color: '#111827', weight: 14, opacity: 0.24, lineCap: 'round', lineJoin: 'round' }; } });
   }
   function obrasLadoALado(linhas) {
     var fontes = fontesLinhasObras();
@@ -8248,13 +8126,10 @@ map.addControl(new LogoMapaControl());
       var k = chaveGeometriaSRE(f) || valorSeguro(f, 'GEOCOD');
       if (k) (porTrecho[k] = porTrecho[k] || []).push(n);
     });
-    var gruposTrecho = [];
     Object.keys(porTrecho).forEach(function(k) {
       var g = porTrecho[k];
       if (g.length < 2) return;
-      // ordem fixa das faixas (origem, tipo, código): a mesma obra fica do mesmo lado em todos os segmentos
       g.sort(function(a, b) { return chaveOrdemFaixa(obraDe[a]).localeCompare(chaveOrdemFaixa(obraDe[b])); });
-      gruposTrecho.push(g);
       var obras = [], vistos = {};
       g.forEach(function(n) {
         var d = obraDe[n].dados, id = d.IDCOD || ('#' + n);
@@ -8263,16 +8138,10 @@ map.addControl(new LogoMapaControl());
       g.forEach(function(n, i) {
         var c = copiaFeicaoLinha(saida[n]);
         c.properties.__OFFSET_IDX = i; c.properties.__OFFSET_N = g.length;
-        if (MODO_SOBREPOSICAO === 'faixas' && obras.length > 1) c.properties.__OBRAS_TRECHO = obras;   // popup com todas
-        if (MODO_SOBREPOSICAO === 'unica' && obras.length > 1) {
-          if (i === 0) c.properties.__SOBREPOSTAS = obras;   // esta desenha o trecho com a simbologia única
-          else c.properties.__SOBREPOSTA_OCULTA = true;      // as outras só entram na legenda e nos contadores
-        }
+        if (obras.length > 1) c.properties.__OBRAS_TRECHO = obras;   // popup com todas as obras do trecho
         saida[n] = c;
       });
     });
-    var sentidos = sentidoDasFaixas(gruposTrecho.map(function(g) { return saida[g[0]]; }));
-    gruposTrecho.forEach(function(g, j) { g.forEach(function(n) { saida[n].properties.__SENTIDO = sentidos[j]; }); });
     return saida;
   }
 
@@ -8417,7 +8286,6 @@ map.addControl(new LogoMapaControl());
     var servicosVisiveisDpj = {};
     var servicosVisiveisTare = {};
     var idsUnicos = {};
-    var haObrasSobrepostas = false;
 
         for (var k = 0; k < linhasBase.length; k++) {
       var feat = linhasBase[k];
@@ -8512,8 +8380,6 @@ map.addControl(new LogoMapaControl());
       }
       // a legenda acima registra tudo (para poder clicar nos outros itens); o mapa só desenha o que passa no filtro
       if (!passaFiltroLegenda(origemDados, estilo.legenda)) continue;
-      if (feat.properties && feat.properties.__SOBREPOSTA_OCULTA) { idsUnicos[chaveId] = true; continue; }
-      if (feat.properties && feat.properties.__SOBREPOSTAS) { estilo = ESTILO_SOBREPOSTAS; haObrasSobrepostas = true; }
       var chave = estilo.legenda + '|' + estilo.cor + '|' + estilo.tipo_linha;
       if (!grupos[chave]) grupos[chave] = { features: [], estilo: estilo };
       grupos[chave].features.push(feat);
@@ -8523,9 +8389,7 @@ map.addControl(new LogoMapaControl());
     Object.keys(grupos).forEach(function(chave) {
       var grupo = grupos[chave];
       var camada;
-      if (grupo.estilo.tipo_linha === 'SOBREPOSTAS') {
-        camada = construirLayerSobrepostas(grupo.features);
-      } else if (grupo.estilo.tipo_linha === 'COM LINHA BRANCA') {
+      if (grupo.estilo.tipo_linha === 'COM LINHA BRANCA') {
         camada = construirLayerLinhaBranca(grupo.features, grupo.estilo.cor, grupo.estilo.espessura);
       } else if (grupo.estilo.tipo_linha === 'COM LINHA BRANCA DOR') {
         camada = construirLayerLinhaBranca(grupo.features, grupo.estilo.cor, grupo.estilo.espessura);
@@ -8648,7 +8512,6 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaDpj(servicosVisiveisDpj, Object.assign({}, resultadoObrasPontos.legendaDpj, resultadoObrasAero.legendaDpj));
     renderizarLegendaDpl(servicosVisiveisDpl, resultadoObrasPontos.legendaDpl);
     renderizarLegendaTare(servicosVisiveisTare);
-    renderizarLegendaSobrepostas(haObrasSobrepostas);
     renderizarLegendaDoc(resultadoObrasPontos.legendaDoc);
     renderizarLegendaDsv(resultadoObrasPontos.legendaDsv);
     renderizarLegendaGme(resultadoObrasPontos.legendaGme);
