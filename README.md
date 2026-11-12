@@ -204,6 +204,7 @@ Scripts em `supabase/`:
 | `004_niveis_aprovacao.sql` | 5 níveis por área, propostas do editor básico e aprovação pelo editor pleno (obras); substituído pelos perfis de `015` |
 | `015_perfis.sql` | **perfis configuráveis** (`acesso.perfis`, só o master edita), perfil Diretor, aprovação em dois degraus pelo perfil do autor, exclusão/mudança de origem/remoção de trâmite por proposta |
 | `016_camadas_aprovacao.sql` | **camadas com aprovação**: `siplaweb.camadas_propostas`, `aprovar_camada`/`recusar_camada`/`cancelar_camada` |
+| `018_fecha_leitura_anonima.sql` | sem leitura anônima das tabelas antigas `dados`/`obras_links`; `export_geojson` só para as camadas de base públicas (12/11/2026) |
 | `013_codigo_jurisdicao.sql` | código permanente da jurisdição **AJ26-0001** (contador `AJ`, gerado no cadastro, imutável); existentes numerados na ordem do id. O `id` fica só como chave interna; caderno e pranchas usam Nº sequencial próprio |
 | `012_fase_e_listas_DPJ.sql` | campo **Fase** (lista: Projeto, Anteprojeto, Fase Preparatória) e valores novos: status Obra/Integrada, modalidade Contratado/Interno/Doação/Tare, intervenção Sinalização Viária, fonte Doação (importação DPJ, 23/10/2026) |
 | `011_recortes_extra_base.sql` | regra dos recortes: `siplaweb.obra_para_extra_base()` leva para a malha complementar o que não é segmento SRE inteiro (`recorte_de`) |
