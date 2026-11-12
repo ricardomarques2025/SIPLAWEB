@@ -2824,3 +2824,12 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 .popup-sre-coin .psc-item { display: flex; align-items: center; gap: 6px; }
 .popup-sre-coin .psc-atual b { text-decoration: underline; }
 .popup-sre-coin .psc-cod { font-family: Consolas, "Courier New", monospace; color: #374151; }
+
+/* ---------- Filtro pela legenda das origens (clicar no item filtra o mapa) ---------- */
+#sidebar-right-content .legenda-filtravel { cursor: pointer; border-radius: 4px; padding: 2px 4px; margin-left: -4px; transition: background .12s, opacity .12s; }
+#sidebar-right-content .legenda-filtravel:hover { background: #eef2f7; }
+#sidebar-right-content .legenda-filtravel.legenda-sel { background: #e0ecff; box-shadow: inset 0 0 0 1px #93b4e8; font-weight: 600; }
+#sidebar-right-content .legenda-filtravel.legenda-apagada { opacity: .4; }
+#sidebar-right-content .legenda-filtravel.legenda-apagada:hover { opacity: .75; }
+.legenda-mostrar-todos { margin-top: 6px; padding: 3px 10px; font-size: 12px; border: 1px solid #93b4e8; background: #fff; color: #1d4ed8; border-radius: 4px; cursor: pointer; }
+.legenda-mostrar-todos:hover { background: #e0ecff; }

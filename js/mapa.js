@@ -122,7 +122,8 @@ function desenharMascaraBrasil() {
 
   var municipioSelecionado = document.getElementById('municipioSelect') ? document.getElementById('municipioSelect').value : '';
   var filtroEspacialSelecionado = !!(municipioSelecionado || temFiltroGeografico());
-  var corMascara = filtroEspacialSelecionado ? '#d9d9d9' : '#808080';
+  // sem filtro: cinza #a6a6a6 (30% mais claro que o #808080 de antes)
+  var corMascara = filtroEspacialSelecionado ? '#d9d9d9' : '#a6a6a6';
 
   mascaraBrasilLayer = L.geoJSON(mascaraBrasilData, {
     pane: 'limitesBasePane',
@@ -6863,6 +6864,82 @@ map.addControl(new LogoMapaControl());
     '</span>';
   }
 
+  // --- FILTRO PELA LEGENDA (teste): clicar num item da legenda das origens mostra só ele no mapa;
+  // clicar em outros soma; clicar de novo desmarca. Chave = ORIGEM|nome da legenda (linhas) ou ORIGEM|P:rótulo (pontos).
+  var filtroLegendaSel = {};
+  var LEGENDAS_FILTRAVEIS = {
+    legendaIntervencaos: 'FUNDEINFRA', legendaDor: 'DOR', legendaDma: 'DMA', legendaDpl: 'DPL', legendaDpj: 'DPJ',
+    legendaTare: 'TARE', legendaDoc: 'DOC', legendaDsv: 'DSV', legendaGme: 'GME', legendaGmk: 'GMK'
+  };
+
+  function filtroLegendaAtivo() { return Object.keys(filtroLegendaSel).length > 0; }
+
+  function passaFiltroLegenda(origem, chave) {
+    return !filtroLegendaAtivo() || !!filtroLegendaSel[origem + '|' + chave];
+  }
+
+  function origemLegendaObraPonto(item) {
+    var o = origemObraPonto(item);
+    return ['DOC', 'DSV', 'GME', 'GMK', 'DOR', 'DMA', 'DPL', 'DPJ'].indexOf(o) >= 0 ? o : 'FUNDEINFRA';
+  }
+
+  function chaveLegendaPontoFiltro(item) {
+    var info = OBRAS_PONTOS_INFO[chaveLegendaObraPonto(item)];
+    return 'P:' + (info ? info.label : '');
+  }
+
+  // Depois de desenhar: marca os itens das legendas como clicáveis e realça os escolhidos.
+  function prepararLegendasFiltraveis() {
+    var presentes = 0;
+    Object.keys(LEGENDAS_FILTRAVEIS).forEach(function(id) {
+      var alvo = document.getElementById(id);
+      if (!alvo) return;
+      var origem = LEGENDAS_FILTRAVEIS[id];
+      Array.prototype.forEach.call(alvo.children, function(item) {
+        if (!item.classList.contains('legenda-item')) return;
+        var ponto = item.querySelector('.legenda-ponto-simbolo');
+        var texto = ponto ? 'P:' + (item.querySelector('.legenda-texto') || item).textContent.trim() : item.textContent.trim();
+        var chave = origem + '|' + texto;
+        item.setAttribute('data-leg', chave);
+        item.title = 'Clique para filtrar o mapa por este item (clique de novo para desmarcar)';
+        var sel = !!filtroLegendaSel[chave];
+        if (sel) presentes++;
+        item.classList.add('legenda-filtravel');
+        item.classList.toggle('legenda-sel', sel);
+        item.classList.toggle('legenda-apagada', filtroLegendaAtivo() && !sel);
+      });
+    });
+    var botao = document.getElementById('legendaMostrarTodos');
+    if (!botao) {
+      var titulo = document.getElementById('blocoLegendaTitulo');
+      if (titulo) {
+        botao = document.createElement('button');
+        botao.type = 'button';
+        botao.id = 'legendaMostrarTodos';
+        botao.className = 'legenda-mostrar-todos';
+        botao.textContent = 'Mostrar todos';
+        botao.addEventListener('click', function() { filtroLegendaSel = {}; aplicarFiltros({ preservarZoom: true }); });
+        titulo.appendChild(botao);
+      }
+    }
+    if (botao) botao.hidden = !filtroLegendaAtivo();
+    // nenhum item escolhido continua na legenda (origem desligada, outro filtro...): volta a mostrar tudo
+    if (filtroLegendaAtivo() && !presentes) {
+      filtroLegendaSel = {};
+      setTimeout(function() { aplicarFiltros({ preservarZoom: true }); }, 0);
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    var item = e.target.closest && e.target.closest('#sidebar-right-content .legenda-item[data-leg]');
+    if (!item) return;
+    var chave = item.getAttribute('data-leg');
+    if (filtroLegendaSel[chave]) delete filtroLegendaSel[chave];
+    else filtroLegendaSel[chave] = true;
+    aplicarFiltros({ preservarZoom: true });
+  });
+  // --- FIM FILTRO PELA LEGENDA ---
+
   function renderizarLegendaIntervencaos(legendasVisiveis) {
     var alvo = document.getElementById('legendaIntervencaos'); if(!alvo) return;
     var bloco = document.getElementById('legendaIntervencaos').closest('.bloco');
@@ -7684,6 +7761,11 @@ map.addControl(new LogoMapaControl());
         else tiposVisiveis[tipoLegenda] = true;
       }
 
+      if (filtroLegendaAtivo()) {
+        dadosFiltrados = dadosFiltrados.filter(function(it) { return passaFiltroLegenda(origemLegendaObraPonto(it), chaveLegendaPontoFiltro(it)); });
+        if (!dadosFiltrados.length) continue;
+      }
+
       var dados = dadosPrincipalObraPonto(dadosFiltrados);
 
       var marker = L.marker([coords[1], coords[0]], {
@@ -7819,6 +7901,7 @@ map.addControl(new LogoMapaControl());
           legendasDpj[tipoLegenda] = true;
           countDpj++;
         }
+        if (!passaFiltroLegenda(origem, chaveLegendaPontoFiltro(dados))) continue;
 
         var marker = L.marker([coords[1], coords[0]], {
           pane: 'oaePane',
@@ -7844,6 +7927,7 @@ map.addControl(new LogoMapaControl());
         total++;
       }
 
+      if (!markersAero.length) continue;   // todos fora do filtro da legenda
       var proxy = L.marker([coords[1], coords[0]], {
         pane: 'oaePane',
         interactive: false,
@@ -8080,9 +8164,6 @@ map.addControl(new LogoMapaControl());
         continue;
       }
 
-      var chave = estilo.legenda + '|' + estilo.cor + '|' + estilo.tipo_linha;
-      if (!grupos[chave]) grupos[chave] = { features: [], estilo: estilo };
-      grupos[chave].features.push(feat);
       if (origemDados === 'FUNDEINFRA') {
         servicosVisiveis[estilo.legenda] = estilo.cor;
       } else if (origemDados === 'DMA') {
@@ -8096,6 +8177,11 @@ map.addControl(new LogoMapaControl());
       } else if (origemDados === 'DOR') {
         servicosVisiveisDor[estilo.legenda] = estilo;
       }
+      // a legenda acima registra tudo (para poder clicar nos outros itens); o mapa só desenha o que passa no filtro
+      if (!passaFiltroLegenda(origemDados, estilo.legenda)) continue;
+      var chave = estilo.legenda + '|' + estilo.cor + '|' + estilo.tipo_linha;
+      if (!grupos[chave]) grupos[chave] = { features: [], estilo: estilo };
+      grupos[chave].features.push(feat);
       idsUnicos[chaveId] = true;
     }
 
@@ -8164,6 +8250,7 @@ map.addControl(new LogoMapaControl());
       }
 
       if (!dadosRotulo || !estiloRotulo) continue;
+      if (!passaFiltroLegenda(origemRotulo, estiloRotulo.legenda)) continue;
 
       var chaveRotulo = origemRotulo + '|' + String(linkRotulo) + '|' + String(dadosRotulo.PROPOSTA || '') + '|' + String(dadosRotulo.INTERVENCAO || '');
       if (rotulosIncluidos[chaveRotulo]) continue;
@@ -8230,6 +8317,7 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaOAE({});
     renderizarLegendaRodEst(situacoesEstVisiveis);
     renderizarLegendaRodFed(situacoesFedVisiveis);
+    prepararLegendasFiltraveis();
   }
     function atualizarPainelInferior(feature) {
       var propostaSelecionada = document.getElementById('propostaSelect') ? document.getElementById('propostaSelect').value : '';
@@ -8404,6 +8492,7 @@ map.addControl(new LogoMapaControl());
     desenharBuffer();
     atualizarBotoesBase();
     servicoFiltroAtivo = '';
+    filtroLegendaSel = {};
     preencherIntervencaos();
 
     var btnOAEOff = document.getElementById('toggleOAE');
@@ -8530,6 +8619,7 @@ map.addControl(new LogoMapaControl());
     desenharHidrografia();
     bufferFiltroAtivo = false;
     servicoFiltroAtivo = '';
+    filtroLegendaSel = {};
     preencherIntervencaos();
 
     var btnOAEOn = document.getElementById('toggleOAE');
@@ -8603,6 +8693,7 @@ map.addControl(new LogoMapaControl());
 
     programaAtivo = '';
     servicoFiltroAtivo = '';
+    filtroLegendaSel = {};
     resetarBotoesPrograma();
   }
 
