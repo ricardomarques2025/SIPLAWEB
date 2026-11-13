@@ -19,7 +19,7 @@ var ObrasPainel = (function() {
     xlsx: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
   };
   var CHAVE_LARGURA = 'siplaweb.obras.larguraTabela';
-  function chaveColunas() { return 'siplaweb.obras.colunas.' + ORIGEM; }
+  function chaveColunas() { return 'siplaweb.obras.colunas.v2.' + ORIGEM; }   // v2 (13/11/2026): ID, Tipo e valores ocultos por padrão
   var LARGURA_MIN = 30, LARGURA_MAX = 80;
   var ACOES = { criado: 'Cadastrou', editado: 'Editou', tracado: 'Alterou o traçado', tramitou_origem: 'Tramitou de origem', excluido: 'Excluiu', restaurado: 'Restaurou' };
   var EVENTOS = { cadastro: 'Cadastro', situacao: 'Situação', origem: 'Mudança de origem', nota: 'Nota' };
@@ -345,6 +345,7 @@ var ObrasPainel = (function() {
   function colunasVisiveisPadrao() {
     var lista = ObrasStore.lista();
     return CAMPOS_OBRA.filter(function(c) {
+      if (c.oculta) return false;
       return c.comum || lista.some(function(r) { return r[c.campo] !== null && r[c.campo] !== undefined && r[c.campo] !== ''; });
     }).map(function(c) { return c.campo; });
   }

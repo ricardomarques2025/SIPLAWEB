@@ -9,11 +9,13 @@
 // Ordem e nomes como na planilha de obras da DOR (13/11/2026): ID, Proposta, Fase, Rodovia, Intervenção, Trecho,
 // Extensão (km), Status, Valor aprovado, Valor do contrato, Fonte, Processo, Contrato, Previsão de conclusão; os demais depois.
 // moeda: número em R$ (tabela, ficha, exportação).
+// oculta: fora da tabela até a pessoa ligar em "Colunas" (continua na ficha, no caderno e na exportação completa).
+//   ID (ref) é só referência de ordenação da planilha (muda a cada versão dela); Tipo e valores servem aos cadernos.
 var CAMPOS_OBRA = [
   { campo: 'codigo', titulo: 'Código', tipo: 'texto', largura: 112, fixa: true, somenteLeitura: true, comum: true, grupo: 'Identificação' },
   { campo: 'grupo_codigo', titulo: 'Grupo', tipo: 'texto', largura: 96, somenteLeitura: true, grupo: 'Identificação' },
-  { campo: 'tipo', titulo: 'Tipo', tipo: 'texto', largura: 74, somenteLeitura: true, comum: true, grupo: 'Identificação' },
-  { campo: 'ref', titulo: 'ID', tipo: 'texto', largura: 70, grupo: 'Identificação' },
+  { campo: 'tipo', titulo: 'Tipo', tipo: 'texto', largura: 74, somenteLeitura: true, comum: true, oculta: true, grupo: 'Identificação' },
+  { campo: 'ref', titulo: 'ID', tipo: 'texto', largura: 70, oculta: true, grupo: 'Identificação' },
   { campo: 'proposta', titulo: 'Proposta', tipo: 'texto', largura: 90, grupo: 'Identificação' },
   { campo: 'fase', titulo: 'Fase', tipo: 'lista', largura: 110, grupo: 'Situação' },
   { campo: 'rodovia', titulo: 'Rodovia', tipo: 'texto', largura: 110, grupo: 'Localização' },
@@ -22,8 +24,8 @@ var CAMPOS_OBRA = [
   { campo: 'ext_contrato_km', titulo: 'Extensão (km)', tipo: 'numero', largura: 110, grupo: 'Contratação' },
   { campo: 'etapa', titulo: 'Etapa', tipo: 'lista', largura: 120, comum: true, grupo: 'Situação' },
   { campo: 'status', titulo: 'Status', tipo: 'lista', largura: 170, comum: true, grupo: 'Situação' },
-  { campo: 'valor_aprovado', titulo: 'Valor aprovado', tipo: 'numero', moeda: true, largura: 150, grupo: 'Contratação' },
-  { campo: 'valor_contrato', titulo: 'Valor do contrato', tipo: 'numero', moeda: true, largura: 150, grupo: 'Contratação' },
+  { campo: 'valor_aprovado', titulo: 'Valor aprovado', tipo: 'numero', moeda: true, largura: 150, oculta: true, grupo: 'Contratação' },
+  { campo: 'valor_contrato', titulo: 'Valor do contrato', tipo: 'numero', moeda: true, largura: 150, oculta: true, grupo: 'Contratação' },
   { campo: 'fonte', titulo: 'Fonte', tipo: 'lista', largura: 150, grupo: 'Contratação' },
   { campo: 'sei', titulo: 'Processo', tipo: 'sei', largura: 150, comum: true, grupo: 'Contratação' },
   { campo: 'contrato', titulo: 'Contrato', tipo: 'texto', largura: 110, grupo: 'Contratação' },

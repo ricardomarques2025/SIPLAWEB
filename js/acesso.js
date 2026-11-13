@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.17';
+  var VERSAO_SITE = '2026-11-13.18';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -362,13 +362,13 @@ var Acesso = (function() {
   var NOVIDADES = [
     ['3.11', '13/11/2026', [
       'Campos das obras com os nomes e na ordem da planilha da DOR: ID, Proposta, Fase, Rodovia, Intervenção, Trecho, Extensão (km), Status, Valor aprovado, Valor do contrato, Fonte, Processo, Contrato, Previsão de conclusão (tabela, ficha, popup e exportações; vale para todas as origens).',
-      'Novos campos Valor aprovado e Valor do contrato (R$), também no caderno quando a origem tem valores (script 019).',
+      'Novos campos Valor aprovado e Valor do contrato (R$), também no caderno quando a origem tem valores (script 019). Na tabela, ID, Tipo e os valores ficam ocultos até ligar em "Colunas" (o ID é só a ordem da planilha, usada no caderno).',
       'Intervenção: Bueiro passa a ser OAC; Ponte e Viaduto passam a ser OAE, em todas as origens. O nome antigo ficou nas Observações; placas, ícones e legenda seguem a nova regra.',
       'DOR atualizada pela planilha de 13/11: ID, Fase (Obra/Integrada), Modalidade com o bloco da planilha (Tesouro, TARE, Fundeinfra, IFAG, Licitação Tesouro, Licitação Fundeinfra), valores, status, contrato e previsão.',
       'Status como na planilha: "Em execução" passa a ser "Em andamento" em todas as origens (também na linha do tempo) e entra "Publicado" (licitações da DOR) (script 020).'
     ], [
       'As colunas das obras agora têm os mesmos nomes e a mesma ordem da planilha de obras.',
-      'Novos campos: Valor aprovado e Valor do contrato.',
+      'Novos campos: Valor aprovado e Valor do contrato (na tabela, ligue em "Colunas" para ver).',
       'Bueiro agora se chama OAC; ponte e viaduto, OAE. O nome antigo ficou nas Observações.',
       'O status "Em execução" agora se chama "Em andamento", e as licitações publicadas aparecem como "Publicado".'
     ]],
