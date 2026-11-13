@@ -358,8 +358,8 @@
         ' em ' + fmtDataHora(p.criado_em) + '</div>' +
       (d.conflito ? '<div class="pn-conflito">Foi alterado depois desta proposta (versão ' + p.versao_base + ' → ' + x.atual.versao + '). Confira os valores atuais antes de aprovar.</div>' : '') +
       '<div class="pn-campos">' + d.campos.map(function(c) {
-        return '<span class="pn-campo">' + esc(c[0]) + '</span>' + (c[1] != null ? '<span class="de">' + esc(c[1]) + '</span><span class="seta">→</span>' : '<span></span><span></span>') +
-          '<span class="para">' + esc(c[2]) + '</span>';
+        return '<span class="pn-campo">' + esc(c[0]) + '</span>' + (c[1] != null ? '<span class="de">' + esc(c[1]) + '</span><span class="seta">→</span>' : '') +
+          '<span class="para' + (c[1] != null ? '' : ' larga') + '">' + esc(c[2]) + '</span>';
       }).join('') + '</div>' + decisao +
       '<div class="pn-recusa" hidden><textarea rows="2" placeholder="Motivo da recusa (o autor vai ver)"></textarea>' +
       '<button type="button" class="btn btn-perigo" data-confirmar-recusa="' + chave + '">Confirmar recusa</button></div>' +
