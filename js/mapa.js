@@ -6191,8 +6191,7 @@ map.addControl(new LogoMapaControl());
     { chave: 'EMPRESA', rotulo: 'Empresa' },
     { chave: 'MODALIDADE', rotulo: 'Modalidade' },
     { chave: 'FONTE', rotulo: 'Fonte' },
-    { chave: 'VALOR_APROVADO', rotulo: 'Valor aprovado', moeda: true },
-    { chave: 'VALOR_CONTRATO', rotulo: 'Valor do contrato', moeda: true },
+    // Valor aprovado e do contrato: não aparecem no popup (pedido do usuário, 13/11/2026); só na ficha e nos cadernos.
     { chave: 'CONCLUSAO', rotulo: 'Previsão de conclusão' },
     { chave: 'RODOVIA', rotulo: 'Rodovia' },
     { chave: 'MUNICIPIO', rotulo: 'Município' },
