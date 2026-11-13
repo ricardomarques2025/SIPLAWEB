@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.23';
+  var VERSAO_SITE = '2026-11-13.24';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -361,7 +361,7 @@ var Acesso = (function() {
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
     ['3.12', '13/11/2026', [
-      'Camada de referência Polo Goiânia: trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023), GO-020, GO-060, GO-070 e GO-080 (dois trechos), 572,9 km, montados a partir da malha SRE atual. Faixa colorida por trecho, legenda que filtra, popup com início, fim, extensões e situação, e tabela de atributos.'
+      'Camada de referência Polo Goiânia: trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023), GO-020, GO-060, GO-070 e GO-080 (dois trechos), 572,9 km, montados a partir da malha SRE atual. Faixa colorida por trecho, legenda que filtra, popup com início, fim, extensões e situação, e tabela de atributos. Clicando na rodovia (ou numa obra) por cima da faixa, o popup também traz o trecho do Polo.'
     ], [
       'Nova camada de referência: Polo Goiânia, com os 572,9 km de rodovias estaduais do projeto de concessão da ANTT.'
     ]],

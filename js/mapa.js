@@ -3882,21 +3882,41 @@ map.addControl(new LogoMapaControl());
         return { color: CORES_POLO_GOIANIA[valorSeguro(f, 'GEOCOD')] || '#7c3aed', weight: 14, opacity: 0.55, lineCap: 'round', lineJoin: 'round' };
       },
       onEachFeature: function(feature, layer) {
-        vincularPopupComAreaClique(layer, function() {
-          return construirPopupAreaBase(feature, 'Polo Goiânia · ' + valorSeguro(feature, 'trecho'), [
-            { rotulo: 'Início', nome: 'inicio' },
-            { rotulo: 'Fim', nome: 'fim' },
-            { rotulo: 'Extensão no convênio (km)', nome: 'ext_convenio', tipo: 'numero' },
-            { rotulo: 'Extensão na malha SRE (km)', nome: 'ext_sre', tipo: 'numero' },
-            { rotulo: 'SRE inicial (malha atual)', nome: 'sre_inicio' },
-            { rotulo: 'SRE final (malha atual)', nome: 'sre_fim' },
-            { rotulo: 'Instrumento', nome: 'convenio' },
-            { rotulo: 'Situação', nome: 'situacao' }
-          ], 'polo_goiania');
-        });
+        vincularPopupComAreaClique(layer, function() { return popupPoloGoiania(feature); });
       }
     }).addTo(map);
   }
+  function popupPoloGoiania(feature) {
+    return construirPopupAreaBase(feature, 'Polo Goiânia · ' + valorSeguro(feature, 'trecho'), [
+      { rotulo: 'Início', nome: 'inicio' },
+      { rotulo: 'Fim', nome: 'fim' },
+      { rotulo: 'Extensão no convênio (km)', nome: 'ext_convenio', tipo: 'numero' },
+      { rotulo: 'Extensão na malha SRE (km)', nome: 'ext_sre', tipo: 'numero' },
+      { rotulo: 'SRE inicial (malha atual)', nome: 'sre_inicio' },
+      { rotulo: 'SRE final (malha atual)', nome: 'sre_fim' },
+      { rotulo: 'Instrumento', nome: 'convenio' },
+      { rotulo: 'Situação', nome: 'situacao' }
+    ], 'polo_goiania');
+  }
+  // A faixa do Polo fica por baixo das rodovias: clicando no segmento SRE (ou em obra, localidade...) por cima dela, o
+  // popup também traz o trecho do Polo que passa a até 10 px do clique (13/11/2026).
+  registrarFontePopupNoPonto(function(latlng) {
+    if (!poloGoianiaFiltroAtivo || !poloGoianiaLayer || !map.hasLayer(poloGoianiaLayer)) return '';
+    var alvo = map.latLngToLayerPoint(latlng), achados = [];
+    poloGoianiaLayer.eachLayer(function(camada) {
+      var linhas = camada.getLatLngs();
+      if (linhas.length && !Array.isArray(linhas[0])) linhas = [linhas];
+      var perto = linhas.some(function(linha) {
+        for (var i = 1; i < linha.length; i++) {
+          var a = map.latLngToLayerPoint(linha[i - 1]), b = map.latLngToLayerPoint(linha[i]);
+          if (L.LineUtil.pointToSegmentDistance(alvo, a, b) <= 10) return true;
+        }
+        return false;
+      });
+      if (perto) achados.push(popupPoloGoiania(camada.feature));
+    });
+    return achados.join('</section><section class="popup-area-sobreposta">');
+  });
 
   // Malha complementar (extra_base, do banco): camada de referência só para ver; edição continua em "Editar camadas"/Jurisdição.
   function desenharExtraBase() {
