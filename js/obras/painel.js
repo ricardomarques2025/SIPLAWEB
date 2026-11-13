@@ -480,14 +480,23 @@ var ObrasPainel = (function() {
     clearTimeout(tempoRecorte);
     tempoRecorte = setTimeout(function() { aplicarRecorteMapa(enquadrar); }, 350);
   }
+  // Valores marcados no filtro da coluna Município (sem "(Vazias)"); [] = sem filtro nessa coluna.
+  function municipiosDoFiltro() {
+    if (!grade) return [];
+    var f = grade.getHeaderFilters().filter(function(h) { return h.field === 'municipio'; })[0];
+    return f && Array.isArray(f.value) ? f.value.filter(function(v) { return v !== FiltroCabecalho.VAZIO; }) : [];
+  }
   function aplicarRecorteMapa(enquadrar) {
-    var r = null, chave = '';
+    var r = null, chave = '', muns = [];
     if (filtrarMapa && grade) {
       var codigos = {};
       grade.getData('active').forEach(function(d) { if (d.codigo) codigos[d.codigo] = true; });
       r = { origem: ORIGEM, codigos: codigos };
-      chave = ORIGEM + '|' + Object.keys(codigos).sort().join(',');
+      muns = municipiosDoFiltro();
+      chave = ORIGEM + '|' + Object.keys(codigos).sort().join(',') + '|' + muns.slice().sort().join(';');
     }
+    // Municípios do filtro ficam claros e os outros escurecem (só com "Filtrar o mapa" ligado).
+    if (typeof destacarMunicipiosTabela === 'function') destacarMunicipiosTabela(muns.length ? muns : null);
     $('obrFiltrarMapa').classList.toggle('ativo', filtrarMapa);
     $('obrFiltrarMapa').setAttribute('aria-pressed', filtrarMapa ? 'true' : 'false');
     $('obrAbrirTabela').classList.toggle('mapa-filtrado', !!r);
@@ -503,8 +512,12 @@ var ObrasPainel = (function() {
     if ((auto && !auto.checked) || !grade || modo === 'cheia') return;
     var feicoes = [];
     grade.getData('active').forEach(function(d) { var r = ObrasStore.obter(d.uid); if (r) feicoes = feicoes.concat(feicoesDaObra(r)); });
-    if (!feicoes.length) return;
-    var b = L.geoJSON({ type: 'FeatureCollection', features: feicoes }).getBounds(), mg = margensVisiveis();
+    // Com filtro na coluna Município, o zoom enquadra os municípios escolhidos inteiros (e as obras).
+    var bMun = typeof destacarMunicipiosTabela === 'function' && municipiosDoFiltro().length ? destacarMunicipiosTabela(municipiosDoFiltro()) : null;
+    if (!feicoes.length && !bMun) return;
+    var b = feicoes.length ? L.geoJSON({ type: 'FeatureCollection', features: feicoes }).getBounds() : L.latLngBounds(bMun.getSouthWest(), bMun.getNorthEast());
+    if (bMun) b.extend(bMun);
+    var mg = margensVisiveis();
     if (b.isValid()) map.fitBounds(b, { paddingTopLeft: [mg[0] + 40, 40], paddingBottomRight: [mg[1] + 40, 40], maxZoom: 13 });
   }
   function alternarFiltroMapa() {

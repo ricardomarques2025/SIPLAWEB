@@ -353,13 +353,18 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.14';
+  var VERSAO_SITE = '2026-11-13.15';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.10', '13/11/2026', [
+      'Tabela de obras com "Filtrar o mapa" ligado e filtro na coluna Município: os municípios escolhidos ficam como estão, os demais escurecem e o mapa se aproxima deles (respeita o Zoom automático). Células com mais de um município ("A / B", "A, B", "A e B") destacam todos.'
+    ], [
+      'Na tabela de obras, filtre a coluna Município e ligue "Filtrar o mapa": os municípios escolhidos ficam em destaque e o mapa se aproxima deles.'
+    ]],
     ['3.9', '13/11/2026', [
       'Obras no mesmo trecho em tracejado alternado: as linhas ficam sobre o mesmo traçado, em traços que se alternam, cada um com a cor e o estilo da sua obra, em qualquer zoom (substitui o lado a lado da 3.8); sombra única por baixo; o popup de qualquer delas lista todas as obras do trecho.',
       'Jurisdição: clicar num tipo da legenda (Estadualização, Federalização, Municipalização) mostra só ele no mapa — no módulo, é o mesmo filtro Tipo da barra esquerda; nos outros mapas, com a Jurisdição ligada como camada de referência, filtra só o desenho dela.',

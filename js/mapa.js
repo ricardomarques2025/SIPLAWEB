@@ -2092,6 +2092,9 @@ map.addControl(new LogoMapaControl());
   var localidadeFiltroAtivo = true;
   var aeroFiltroAtivo = true;
   var municipioBaseFiltroAtivo = true;
+  // Tabela de obras com "Filtrar o mapa" e filtro na coluna Município: nomes (normalizados) que ficam claros;
+  // os demais municípios escurecem (window.destacarMunicipiosTabela, chamado por js/obras/painel.js).
+  var municipiosDestaqueTabela = null;
   var areasAmbientaisFiltroAtivo = false;
   var areasUrbanasFiltroAtivo = false;
   var areaInfluenciaFiltroAtivo = false;
@@ -3517,7 +3520,8 @@ map.addControl(new LogoMapaControl());
     var municipioSelecionadoFiltro = document.getElementById('municipioSelect').value;
     var rgSelecionadaFiltro = regioesSelecionadas('rgPlanSelect');
 
-    if (!municipioBaseFiltroAtivo && !municipioSelecionadoFiltro && !rgSelecionadaFiltro.length) {
+    var destaqueTabela = municipiosDestaqueTabela && municipiosDestaqueTabela.size ? municipiosDestaqueTabela : null;
+    if (!municipioBaseFiltroAtivo && !municipioSelecionadoFiltro && !rgSelecionadaFiltro.length && !destaqueTabela) {
       municipiosLayer = null;
       return;
     }
@@ -3555,6 +3559,14 @@ map.addControl(new LogoMapaControl());
             fillColor: corPastelMunicipio(feature),
             fillOpacity: 1
           };
+        }
+
+        // Filtro da coluna Município na tabela de obras: os escolhidos ficam como estão, os outros escurecem.
+        if (destaqueTabela) {
+          if (destaqueTabela.has(normalizar(nome).trim())) {
+            return { color: '#555555', weight: 2.2, dashArray: '8, 5, 1, 5', fillColor: '#ffffff', fillOpacity: 0 };
+          }
+          return { color: '#888888', weight: 1, dashArray: '8, 5, 1, 5', fillColor: '#374151', fillOpacity: 0.42 };
         }
 
         if (!haSelecao) {
@@ -10003,6 +10015,28 @@ map.addControl(new LogoMapaControl());
   }
   window.recarregarObrasDoMapa = recarregarObrasDoMapa;
   window.indicesBaseObrasMapa = function() { return indicesBaseObras; };
+
+  // Destaque dos municípios pela tabela de obras (filtro da coluna Município com "Filtrar o mapa").
+  // nomes: valores marcados no filtro (uma célula pode ter mais de um município: "A / B", "A, B", "A e B")
+  // ou null para tirar. Devolve os limites dos municípios encontrados (para o zoom) ou null.
+  window.destacarMunicipiosTabela = function(nomes) {
+    var conj = new Set();
+    (nomes || []).forEach(function(v) {
+      String(v || '').split(/\s*[,;\/]\s*|\s+-\s+|\s+e\s+/i).forEach(function(t) {
+        t = normalizar(t).trim();
+        if (t) conj.add(t);
+      });
+    });
+    var antes = municipiosDestaqueTabela ? Array.from(municipiosDestaqueTabela).sort().join('|') : '';
+    municipiosDestaqueTabela = conj.size ? conj : null;
+    if (!municipiosData) return null;
+    if (antes !== Array.from(conj).sort().join('|')) desenharMunicipiosBase(municipiosFiltrados());
+    if (!conj.size) return null;
+    var achados = municipiosData.features.filter(function(f) { return conj.has(normalizar(valorSeguro(f, 'NM_MUN')).trim()); });
+    if (!achados.length) return null;
+    var b = L.geoJSON({ type: 'FeatureCollection', features: achados }).getBounds();
+    return b.isValid() ? b : null;
+  };
 
   // Camadas de referência com tabela de atributos (js/tabela_camadas.js). dados(): a coleção carregada (ou promessa);
   // ligar(): liga o botão da camada (ao "Filtrar o mapa" com ela desligada); redesenhar(): aplica o recorte da tabela.
