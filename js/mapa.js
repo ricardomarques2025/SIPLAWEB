@@ -5743,6 +5743,9 @@ map.addControl(new LogoMapaControl());
     return estilo;
   }
 
+  // Estudo Técnico Preliminar (ETP da DPJ, 13/11/2026) aparece no mapa como planejamento.
+  function ehEtapaPlanejamento(etapa) { return /planejamento|estudo t[eé]cnico/.test(etapa); }
+
   function estiloObraPontoBase(dados) {
     if (dados && dados.__TIPO_PONTO_AERO === 'AERO_OBRA') {
       if (origemObraPonto(dados) === 'DMA') return OBRAS_PONTOS_INFO.Manutencao;
@@ -5762,11 +5765,11 @@ map.addControl(new LogoMapaControl());
       if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.PonteObra;
     }
     if (tipoObraPonto(dados) === 'OAE') {
-      if (etapa.indexOf('planejamento') >= 0) return OBRAS_PONTOS_INFO.OaePlanejamento;
+      if (ehEtapaPlanejamento(etapa)) return OBRAS_PONTOS_INFO.OaePlanejamento;
       if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.OaeProjeto;
       if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.OaeObra;
     }
-    if (etapa.indexOf('planejamento') >= 0) return OBRAS_PONTOS_INFO.Planejamento;
+    if (ehEtapaPlanejamento(etapa)) return OBRAS_PONTOS_INFO.Planejamento;
     if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.Projeto;
     if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.Obra;
     return OBRAS_PONTOS_INFO.Padrao;
@@ -5788,7 +5791,7 @@ map.addControl(new LogoMapaControl());
       else if (servico.indexOf('amplia') >= 0) cor = '#ff7bbd';
       else if (servico.indexOf('reforma') >= 0) cor = '#14b8a6';
 
-      if (servico.indexOf('revitaliza') >= 0 && etapa.indexOf('planejamento') >= 0) tipoLinha = 'COM LINHA BRANCA DOR';
+      if (servico.indexOf('revitaliza') >= 0 && ehEtapaPlanejamento(etapa)) tipoLinha = 'COM LINHA BRANCA DOR';
       // Em licitação: mesma cor da intervenção, com tracejado branco (ainda não é obra em execução).
       if (etapa.indexOf('licita') >= 0) tipoLinha = 'COM LINHA BRANCA TRACEJADA';
 
@@ -5807,7 +5810,7 @@ map.addControl(new LogoMapaControl());
   function estiloDpl(dados) {
     var estilo = estiloDor(dados);
     var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
-    if (etapa.indexOf('planejamento') >= 0) estilo.tipo_linha = 'COM LINHA BRANCA TRACEJADA';
+    if (ehEtapaPlanejamento(etapa)) estilo.tipo_linha = 'COM LINHA BRANCA TRACEJADA';
     return estilo;
   }
 
@@ -6181,7 +6184,7 @@ map.addControl(new LogoMapaControl());
   // Linha superior (origem, codigo, proposta), intervencao como titulo, descricao, selo de etapa/status
   // e so os campos preenchidos numa grade rotulo/valor.
   var CORES_ETAPA_POPUP = {
-    'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'
+    'Estudo Técnico Preliminar': '#c98a0c', 'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'
   };
   var CAMPOS_CARTAO_OBRA = [
     { chave: 'FASE', rotulo: 'Fase' },

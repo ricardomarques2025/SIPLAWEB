@@ -44,6 +44,7 @@
       fase: { titulo: 'FASE', valor: o => o.fase },
       trecho: 'TRECHO',
       valores: false,
+      ordem: 'municipio',
       capitulos: [
         { titulo: 'PROJETOS RODOVIÁRIOS EM ANDAMENTO', planilha: 'RELAÇÃO DE PROJETOS RODOVIÁRIOS EM ANDAMENTO', secoes: [
           { titulo: 'ETP - TESOURO', filtro: modalidade('ETP TESOURO') },
@@ -59,7 +60,7 @@
     }
   };
   // Origem sem configuracao: um capitulo por etapa (nesta ordem) e uma secao por fonte.
-  const ETAPAS = [['Planejamento', 'PLANEJAMENTO'], ['Projeto', 'PROJETOS'], ['Licitação', 'LICITAÇÕES'], ['Obra', 'OBRAS'],
+  const ETAPAS = [['Estudo Técnico Preliminar', 'ESTUDOS TÉCNICOS PRELIMINARES'], ['Planejamento', 'PLANEJAMENTO'], ['Projeto', 'PROJETOS'], ['Licitação', 'LICITAÇÕES'], ['Obra', 'OBRAS'],
     ['Integrada', 'OBRAS INTEGRADAS'], ['Manutenção', 'MANUTENÇÃO']];
   const FONTES = ['Tesouro', 'Fundeinfra', 'Associativo-Fundeinfra', 'Convênio', 'Tare', 'Doação'];
 
@@ -169,7 +170,11 @@
   const temDesenho = o => geometriaObra(o).length > 0;
 
   // ---------- Estrutura: origem > capitulo > secao > obras ----------
-  function ordenarItens(itens) {
+  // ordem 'municipio' (DPJ, 13/11/2026: o ID guarda o código TRC_/PNT_ do trecho): município, rodovia, trecho;
+  // senão pelo ID numérico (ordem da planilha) e depois intervenção, rodovia, trecho.
+  function ordenarItens(itens, cfg) {
+    if (cfg && cfg.ordem === 'municipio') return itens.slice().sort((a, z) => cmp(a.municipio, z.municipio) ||
+      cmp(a.rodovia, z.rodovia) || cmp(a.descricao, z.descricao) || cmp(a.codigo, z.codigo));
     const num = o => /^\d+$/.test(String(o.ref || '').trim()) ? Number(o.ref) : Infinity;
     return itens.slice().sort((a, z) => (num(a) - num(z)) || cmp(a.intervencao, z.intervencao) ||
       cmp(a.rodovia, z.rodovia) || cmp(a.descricao, z.descricao) || cmp(a.codigo, z.codigo));
@@ -232,7 +237,7 @@
       const cfg = CONFIG_ORIGEM[cod] || {};
       const caps = capitulosDaOrigem(cod, obras.filter(o => o.origem === cod));
       let n = 0;
-      caps.forEach(c => c.secoes.forEach(s => { s.itens = ordenarItens(s.itens); s.itens.forEach(o => NUMERO.set(o.codigo, ++n)); }));
+      caps.forEach(c => c.secoes.forEach(s => { s.itens = ordenarItens(s.itens, cfg); s.itens.forEach(o => NUMERO.set(o.codigo, ++n)); }));
       return { codigo: cod, titulo: cfg.titulo || ('OBRAS · ' + String(origem.nome).toUpperCase()), cfg: cfg, capitulos: caps,
         obras: caps.flatMap(c => c.secoes.flatMap(s => s.itens)) };
     }).filter(o => o.obras.length);

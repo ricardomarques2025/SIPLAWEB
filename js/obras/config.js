@@ -54,7 +54,7 @@ var CORES_FONTE_OBRA = {
 };
 
 var CORES_ETAPA_OBRA = {
-  'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'
+  'Estudo Técnico Preliminar': '#c98a0c', 'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'
 };
 
 // Regras checadas antes de gravar (as mesmas do gatilho siplaweb.validar_obra no banco).

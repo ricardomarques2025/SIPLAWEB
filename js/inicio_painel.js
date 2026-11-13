@@ -65,7 +65,8 @@
     function contar(sigla, o) {
       var x = porOrigem[sigla] = porOrigem[sigla] || { total: 0, Obra: 0, Projeto: 0, Planejamento: 0, outros: 0 };
       x.total++;
-      if (x[o.ETAPA] !== undefined) x[o.ETAPA]++; else x.outros++;
+      var e = o.ETAPA === 'Estudo Técnico Preliminar' ? 'Planejamento' : o.ETAPA;   // ETP conta como planejamento
+      if (x[e] !== undefined) x[e]++; else x.outros++;
     }
     regs.forEach(function(o) {
       contar(o.UNIDADE, o);

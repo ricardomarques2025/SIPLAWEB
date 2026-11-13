@@ -125,7 +125,8 @@
   function obrasFiltradas() { return filtro ? obras.filter(function(o) { return o.origem === filtro; }) : obras; }
 
   // ---------- Resumo ----------
-  function grupoEtapa(e) { return e === 'Planejamento' || e === 'Projeto' || e === 'Obra' ? e : 'outros'; }
+  function grupoEtapa(e) { if (e === 'Estudo Técnico Preliminar') return 'Planejamento';   // ETP conta como planejamento
+    return e === 'Planejamento' || e === 'Projeto' || e === 'Obra' ? e : 'outros'; }
 
   function renderResumo() {
     var lista = obrasFiltradas();
