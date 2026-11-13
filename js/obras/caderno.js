@@ -19,6 +19,7 @@
   // ---------- Secoes por origem ----------
   const fonte = re => o => re.test(o.fonte || '');
   const TESOURO = fonte(/^(tesouro|convênio)$/i);
+  const modalidade = v => o => (o.modalidade || '') === v;
   const CONFIG_ORIGEM = {
     DOR: {
       titulo: 'OBRAS RODOVIÁRIAS',
@@ -37,17 +38,22 @@
         ] }
       ]
     },
+    // Seções = blocos da planilha da DPJ (modalidade, desde 13/11/2026: dpj_projetos_a0_10-2026.xlsx); sem colunas de valor.
     DPJ: {
       titulo: 'PROJETOS RODOVIÁRIOS',
       fase: { titulo: 'FASE', valor: o => o.fase },
-      trecho: 'DESCRIÇÃO',
+      trecho: 'TRECHO',
+      valores: false,
       capitulos: [
         { titulo: 'PROJETOS RODOVIÁRIOS EM ANDAMENTO', planilha: 'RELAÇÃO DE PROJETOS RODOVIÁRIOS EM ANDAMENTO', secoes: [
-          { titulo: 'ETP', filtro: o => /preparat/i.test(o.fase || '') },
-          { titulo: 'TESOURO – CONTRATADOS', filtro: o => TESOURO(o) && o.modalidade !== 'Interno' },
-          { titulo: 'TESOURO – INTERNOS', filtro: o => TESOURO(o) && o.modalidade === 'Interno' },
-          { titulo: 'FUNDEINFRA', filtro: fonte(/fundeinfra/i) },
-          { titulo: 'DOAÇÃO', filtro: fonte(/doa/i) }
+          { titulo: 'ETP - TESOURO', filtro: modalidade('ETP TESOURO') },
+          { titulo: 'ETP - FUNDEINFRA', filtro: modalidade('ETP FUNDEINFRA') },
+          { titulo: 'ETP - TARE', filtro: modalidade('ETP TARE') },
+          { titulo: 'TESOURO – CONTRATADOS', filtro: modalidade('TESOURO CONTRATADO') },
+          { titulo: 'TESOURO – INTERNOS', filtro: modalidade('TESOURO INTERNO') },
+          { titulo: 'FUNDEINFRA', filtro: modalidade('FUNDEINFRA') },
+          { titulo: 'LICITAÇÃO - FUNDEINFRA', filtro: modalidade('LICITAÇÃO FUNDEINFRA') },
+          { titulo: 'DOAÇÃO', filtro: modalidade('DOAÇÃO') }
         ] }
       ]
     }
@@ -294,8 +300,8 @@
     if (!CONFIG_ORIGEM[org.codigo] && tem('municipio')) cols.push({ t: 'MUNICÍPIO', v: o => o.municipio, w: 11 });
     if (tem('ext_contrato_km')) cols.push({ t: 'EXTENSÃO (km)', v: o => fmtKmTabela(o.ext_contrato_km), w: 6.5, ext: true });
     cols.push({ t: 'STATUS', v: o => o.status, w: 9 });
-    if (tem('valor_aprovado')) cols.push({ t: 'VALOR APROVADO', v: o => fmtReais(o.valor_aprovado), w: 9 });
-    if (tem('valor_contrato')) cols.push({ t: 'VALOR DO CONTRATO', v: o => fmtReais(o.valor_contrato), w: 9 });
+    if (cfg.valores !== false && tem('valor_aprovado')) cols.push({ t: 'VALOR APROVADO', v: o => fmtReais(o.valor_aprovado), w: 9 });
+    if (cfg.valores !== false && tem('valor_contrato')) cols.push({ t: 'VALOR DO CONTRATO', v: o => fmtReais(o.valor_contrato), w: 9 });
     if (tem('fonte')) cols.push({ t: 'FONTE', v: o => o.fonte, w: 7.5 });
     cols.push({ t: 'PROCESSO', v: o => o.sei, w: 10.5 });
     if (tem('contrato')) cols.push({ t: 'CONTRATO', v: o => o.contrato, w: 7.5 });

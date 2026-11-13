@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.20';
+  var VERSAO_SITE = '2026-11-13.21';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -365,12 +365,14 @@ var Acesso = (function() {
       'Novos campos Valor aprovado e Valor do contrato (R$), também no caderno quando a origem tem valores (script 019). Na tabela, ID, Tipo e os valores ficam ocultos até ligar em "Colunas" (o ID é só a ordem da planilha, usada no caderno). Os valores não aparecem no popup do mapa.',
       'Intervenção: Bueiro passa a ser OAC; Ponte e Viaduto passam a ser OAE, em todas as origens. O nome antigo ficou nas Observações; placas, ícones e legenda seguem a nova regra.',
       'DOR atualizada pela planilha de 13/11: ID, Fase (Obra/Integrada), Modalidade com o bloco da planilha (Tesouro, TARE, Fundeinfra, IFAG, Licitação Tesouro, Licitação Fundeinfra), valores, status, contrato e previsão.',
-      'Status como na planilha: "Em execução" passa a ser "Em andamento" em todas as origens (também na linha do tempo) e entra "Publicado" (licitações da DOR) (script 020).'
+      'Status como na planilha: "Em execução" passa a ser "Em andamento" em todas as origens (também na linha do tempo) e entra "Publicado" (licitações da DOR) (script 020).',
+      'DPJ atualizada pela planilha dpj_projetos_a0_10-2026: Fase (Projeto, Anteprojeto, Obra, Integrada), Status (Fase Preparatória, Em andamento), Modalidade com o bloco (ETP Tesouro, ETP Fundeinfra, ETP TARE, Tesouro Contratado, Tesouro Interno, Fundeinfra, Licitação Fundeinfra, Doação) e valores; o caderno da DPJ separa as seções por esses blocos (script 021).'
     ], [
       'As colunas das obras agora têm os mesmos nomes e a mesma ordem da planilha de obras.',
       'Novos campos: Valor aprovado e Valor do contrato (na tabela, ligue em "Colunas" para ver).',
       'Bueiro agora se chama OAC; ponte e viaduto, OAE. O nome antigo ficou nas Observações.',
-      'O status "Em execução" agora se chama "Em andamento", e as licitações publicadas aparecem como "Publicado".'
+      'O status "Em execução" agora se chama "Em andamento", e as licitações publicadas aparecem como "Publicado".',
+      'Projetos da DPJ atualizados pela planilha de outubro, com o caderno separado pelos mesmos blocos.'
     ]],
     ['3.10', '13/11/2026', [
       'Tabela de obras com "Filtrar o mapa" ligado e filtro na coluna Município: os municípios escolhidos ficam como estão, os demais escurecem e o mapa se aproxima deles (respeita o Zoom automático). Células com mais de um município ("A / B", "A, B", "A e B") destacam todos.'
