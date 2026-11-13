@@ -23,6 +23,8 @@ const MAPA_PANES = {
   // Destaque da seleção dos filtros com "Isolar seleção" desligado (js/mapa.js): abaixo das rodovias e das obras.
   destaqueFiltroPane: 290,
   ferroviasPane: 270,
+  // Polo Goiânia (concessão ANTT): faixa colorida por baixo das rodovias, acima das ferrovias.
+  poloGoianiaPane: 285,
   sreBasePane: 300,
   // Sombra única das obras no mesmo trecho (faixas coladas, js/mapa.js): logo abaixo das obras.
   sombraFaixasPane: 495,

@@ -460,6 +460,10 @@ map.addControl(new LogoMapaControl());
   var ferroviasData = null;
   var ferroviasLayer = null;
   var ferroviasFiltroAtivo = false;
+  // Polo Goiânia (13/11/2026): trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023),
+  // montados da sre_base (SIPLAWEB/DADOS/polo_goiania/gerar_polo_goiania.sql). O arquivo é lido só quando a camada é ligada.
+  var poloGoianiaData = null, poloGoianiaLayer = null, poloGoianiaFiltroAtivo = false, poloGoianiaCarga = null;
+  var CORES_POLO_GOIANIA = { POLO01: '#7c3aed', POLO02: '#0891b2', POLO03: '#db2777', POLO04: '#65a30d', POLO05: '#ca8a04' };
   var extraBaseLayer = null;
   var extraBaseFiltroAtivo = false;
   var hidrografiaLayer = null;
@@ -2610,6 +2614,11 @@ map.addControl(new LogoMapaControl());
       btnFerrovias.classList.toggle('ativo-filtro', ferroviasFiltroAtivo);
       btnFerrovias.setAttribute('aria-pressed', String(ferroviasFiltroAtivo));
     }
+    var btnPolo = document.getElementById('togglePoloGoiania');
+    if (btnPolo) {
+      btnPolo.classList.toggle('ativo-filtro', poloGoianiaFiltroAtivo);
+      btnPolo.setAttribute('aria-pressed', String(poloGoianiaFiltroAtivo));
+    }
     var btnExtraBase = document.getElementById('toggleExtraBase');
     if (btnExtraBase) {
       btnExtraBase.classList.toggle('ativo-filtro', extraBaseFiltroAtivo);
@@ -3839,6 +3848,54 @@ map.addControl(new LogoMapaControl());
       style: { color: '#000000', weight: 6, opacity: 1, dashArray: '1.2, 12', lineCap: 'butt' }
     });
     ferroviasLayer = L.layerGroup([linhaContinua, travessas]).addTo(map);
+  }
+
+  function carregarPoloGoiania() {
+    if (!poloGoianiaCarga) poloGoianiaCarga = fetchGeoJSON('data/polo_goiania.geojson', false).then(function(d) { poloGoianiaData = d; return d; });
+    return poloGoianiaCarga;
+  }
+  function desenharPoloGoiania() {
+    if (poloGoianiaLayer) map.removeLayer(poloGoianiaLayer);
+    poloGoianiaLayer = null;
+    var bloco = document.getElementById('blocoLegendaPoloGoiania');
+    if (bloco) bloco.style.display = poloGoianiaFiltroAtivo && poloGoianiaData ? '' : 'none';
+    if (!poloGoianiaFiltroAtivo) return;
+    if (!poloGoianiaData) { carregarPoloGoiania().then(function(d) { if (d && poloGoianiaFiltroAtivo) desenharPoloGoiania(); }); return; }
+    var feicoes = poloGoianiaData.features || [];
+    var leg = document.getElementById('legendaPoloGoiania');
+    if (leg && !leg.childElementCount) {
+      var total = feicoes.reduce(function(s, f) { return s + (Number(valorSeguro(f, 'ext_sre')) || 0); }, 0);
+      leg.innerHTML = feicoes.map(function(f) {
+        var cod = valorSeguro(f, 'GEOCOD');
+        return '<div class="legenda-item" data-leg="polo_goiania|' + escapeHtml(cod) + '"><svg width="48" height="16" viewBox="0 0 48 16" aria-hidden="true">' +
+          '<path d="M0 8H48" stroke="' + (CORES_POLO_GOIANIA[cod] || '#7c3aed') + '" stroke-width="9" stroke-opacity="0.5" fill="none"/>' +
+          '<path d="M0 8H48" stroke="#cc0000" stroke-width="1.5" fill="none"/></svg>' +
+          '<span>' + escapeHtml(valorSeguro(f, 'trecho')) + ' · ' + formatarNumeroPopup(valorSeguro(f, 'ext_sre'), 2) + ' km</span></div>';
+      }).join('') + '<div class="legenda-nota-polo">Total ' + formatarNumeroPopup(total, 1) + ' km · Convênio de Delegação nº 08/2023</div>';
+    }
+    var dados = { type: 'FeatureCollection', features: feicoes.filter(function(f) {
+      return tcPassa('polo_goiania', f) && passaFiltroLegenda('polo_goiania', valorSeguro(f, 'GEOCOD'));
+    }) };
+    poloGoianiaLayer = L.geoJSON(dados, {
+      pane: 'poloGoianiaPane',
+      style: function(f) {
+        return { color: CORES_POLO_GOIANIA[valorSeguro(f, 'GEOCOD')] || '#7c3aed', weight: 14, opacity: 0.55, lineCap: 'round', lineJoin: 'round' };
+      },
+      onEachFeature: function(feature, layer) {
+        vincularPopupComAreaClique(layer, function() {
+          return construirPopupAreaBase(feature, 'Polo Goiânia · ' + valorSeguro(feature, 'trecho'), [
+            { rotulo: 'Início', nome: 'inicio' },
+            { rotulo: 'Fim', nome: 'fim' },
+            { rotulo: 'Extensão no convênio (km)', nome: 'ext_convenio', tipo: 'numero' },
+            { rotulo: 'Extensão na malha SRE (km)', nome: 'ext_sre', tipo: 'numero' },
+            { rotulo: 'SRE inicial (malha atual)', nome: 'sre_inicio' },
+            { rotulo: 'SRE final (malha atual)', nome: 'sre_fim' },
+            { rotulo: 'Instrumento', nome: 'convenio' },
+            { rotulo: 'Situação', nome: 'situacao' }
+          ], 'polo_goiania');
+        });
+      }
+    }).addTo(map);
   }
 
   // Malha complementar (extra_base, do banco): camada de referência só para ver; edição continua em "Editar camadas"/Jurisdição.
@@ -8731,6 +8788,7 @@ map.addControl(new LogoMapaControl());
     desenharAreaInfluencia();
     atualizarLegendasRegionais();
     desenharFerrovias();
+    desenharPoloGoiania();
     desenharExtraBase();
     desenharBuffer();
     desenharLocalidades();
@@ -8798,11 +8856,13 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    poloGoianiaFiltroAtivo = false;
     extraBaseFiltroAtivo = false;
     hidrografiaFiltroAtivo = false;
     bufferFiltroAtivo = false;
     desenharAreaInfluencia();
     desenharFerrovias();
+    desenharPoloGoiania();
     desenharExtraBase();
     desenharHidrografia();
     desenharBuffer();
@@ -8929,6 +8989,8 @@ map.addControl(new LogoMapaControl());
     areasUrbanasFiltroAtivo = false;
     areaInfluenciaFiltroAtivo = false;
     ferroviasFiltroAtivo = false;
+    poloGoianiaFiltroAtivo = false;
+    desenharPoloGoiania();
     extraBaseFiltroAtivo = false;
     desenharExtraBase();
     hidrografiaFiltroAtivo = false;
@@ -9577,6 +9639,15 @@ map.addControl(new LogoMapaControl());
     });
   }
 
+  var btnTogglePolo = document.getElementById('togglePoloGoiania');
+  if (btnTogglePolo) {
+    btnTogglePolo.addEventListener('click', function() {
+      poloGoianiaFiltroAtivo = !poloGoianiaFiltroAtivo;
+      atualizarBotoesBase();
+      desenharPoloGoiania();
+    });
+  }
+
   var btnToggleExtraBase = document.getElementById('toggleExtraBase');
   if (btnToggleExtraBase) {
     btnToggleExtraBase.addEventListener('click', function() {
@@ -10073,6 +10144,11 @@ map.addControl(new LogoMapaControl());
       { rodovia: 'Rodovia', GEOCOD: 'Código', trecho: 'Trecho', situacao: 'Situação', EXT_KM: 'Extensão (km)' }, ['GEOCOD', 'rodovia', 'trecho', 'situacao', 'EXT_KM']);
     reg('ferrovias', 'Ferrovias', function() { return ferroviasData; }, function() { ferroviasFiltroAtivo = true; },
       { nome: 'Nome', sigla: 'Sigla', tip_situac: 'Situação', bitola: 'Bitola', municipio: 'Município' }, ['nome', 'sigla', 'tip_situac', 'bitola', 'municipio']);
+    reg('polo_goiania', 'Polo Goiânia (ANTT)', function() { return poloGoianiaData || carregarPoloGoiania(); }, function() { poloGoianiaFiltroAtivo = true; },
+      { trecho: 'Trecho', rodovia: 'Rodovia', inicio: 'Início', fim: 'Fim', ext_convenio: 'Extensão no convênio (km)', ext_sre: 'Extensão na malha SRE (km)',
+        km_ini: 'Km inicial', km_fim: 'Km final', sre_inicio: 'SRE inicial', sre_fim: 'SRE final', sre_inicio_convenio: 'SRE inicial (convênio, 2023)',
+        sre_fim_convenio: 'SRE final (convênio, 2023)', n_segmentos: 'Segmentos SRE', segmentos: 'Segmentos', convenio: 'Instrumento', situacao: 'Situação' },
+      ['trecho', 'rodovia', 'inicio', 'fim', 'ext_convenio', 'ext_sre', 'sre_inicio', 'sre_fim', 'situacao']);
     reg('pedagios', 'Pedágios', function() { return pedagiosData; }, function() { pedagiosFiltroAtivo = true; },
       { NOME: 'Nome', OPERADOR: 'Operador', RODOVIA: 'Rodovia', KM: 'Km', MUNICIPIO: 'Município', JURISDICAO: 'Jurisdição', TIPO: 'Tipo', CONTRATO: 'Contrato', OBS: 'Observação' },
       ['NOME', 'OPERADOR', 'RODOVIA', 'KM', 'MUNICIPIO', 'JURISDICAO', 'TIPO', 'CONTRATO', 'OBS']);

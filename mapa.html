@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026-11-13.22" />
-  <link rel="stylesheet" href="css/jurisdicao.css?v=2026-11-13.22" />
+  <link rel="stylesheet" href="css/style.css?v=2026-11-13.23" />
+  <link rel="stylesheet" href="css/jurisdicao.css?v=2026-11-13.23" />
   <!-- Tema do mapa: o novo (css/tema_novo.css) e o padrao. mapa.html?tema=antigo mostra o visual anterior e fica
        lembrado neste navegador; ?tema=novo volta ao padrao. -->
   <script>
@@ -24,12 +24,12 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
-  <link rel="stylesheet" href="css/tema_novo.css?v=2026-11-13.22" />
-  <link rel="stylesheet" href="css/jurisdicao_tabela.css?v=2026-11-13.22" />
-  <link rel="stylesheet" href="css/obras.css?v=2026-11-13.22" />
-  <link rel="stylesheet" href="css/tabela_camadas.css?v=2026-11-13.22" />
-  <link rel="stylesheet" href="css/linha_tempo.css?v=2026-11-13.22" />
-  <link rel="stylesheet" href="css/camadas_edicao.css?v=2026-11-13.22" />
+  <link rel="stylesheet" href="css/tema_novo.css?v=2026-11-13.23" />
+  <link rel="stylesheet" href="css/jurisdicao_tabela.css?v=2026-11-13.23" />
+  <link rel="stylesheet" href="css/obras.css?v=2026-11-13.23" />
+  <link rel="stylesheet" href="css/tabela_camadas.css?v=2026-11-13.23" />
+  <link rel="stylesheet" href="css/linha_tempo.css?v=2026-11-13.23" />
+  <link rel="stylesheet" href="css/camadas_edicao.css?v=2026-11-13.23" />
  </head>
 <body>
 <header id="topbar">
@@ -238,6 +238,7 @@
           <button class="filtro-btn base-btn" id="toggleAreaInfluencia" type="button" aria-pressed="false">Área de Estudo</button>
           <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de Influência</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
+          <button class="filtro-btn base-btn" id="togglePoloGoiania" type="button" aria-pressed="false" title="Trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023): GO-020, GO-060, GO-070 e GO-080, 572,9 km">Polo Goiânia</button>
           <button class="filtro-btn base-btn" id="togglePedagios" type="button" aria-pressed="false">Pedágios</button>
           <button class="filtro-btn base-btn" id="toggleHidrografia" type="button" aria-pressed="false" title="Cursos d’água que cruzam as rodovias (inclusive a malha complementar) ou passam junto a obras pontuais, até 2 km de cada lado">Hidrografia</button>
           <button class="filtro-btn base-btn" id="toggleUnidadesSaude" type="button" aria-pressed="false" data-area="HOSPITAL">Unidades de Saúde</button>
@@ -530,6 +531,11 @@
         </div>
       </div>
 
+      <div class="bloco legenda-categoria" id="blocoLegendaPoloGoiania" style="display: none;">
+        <div class="subtitulo">Polo Goiânia (ANTT)</div>
+        <div id="legendaPoloGoiania"></div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaHidrografia" style="display: none;">
         <div class="subtitulo">Hidrografia</div>
         <div id="legendaHidrografia"></div>
@@ -561,31 +567,31 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=2026-11-13.22"></script>
-<script src="js/dados_banco.js?v=2026-11-13.22"></script>
-<script src="js/estilos.js?v=2026-11-13.22"></script>
-<script src="js/tabela_camadas.js?v=2026-11-13.22"></script>
-<script src="js/historico_export.js?v=2026-11-13.22"></script>
-<script src="js/regioes.js?v=2026-11-13.22"></script>
-<script src="js/hidrografia.js?v=2026-11-13.22"></script>
-<script src="js/mapa.js?v=2026-11-13.22"></script>
-<script src="js/unidades_saude.js?v=2026-11-13.22"></script>
-<script src="js/filtro_cabecalho.js?v=2026-11-13.22"></script>
-<script src="js/jurisdicao/config.js?v=2026-11-13.22"></script>
-<script src="js/jurisdicao/indicadores.js?v=2026-11-13.22"></script>
-<script src="js/jurisdicao/store.js?v=2026-11-13.22"></script>
-<script src="js/jurisdicao/tabela.js?v=2026-11-13.22"></script>
-<script src="js/jurisdicao/modulo.js?v=2026-11-13.22"></script>
-<script src="js/jurisdicao/tracado.js?v=2026-11-13.22"></script>
-<script src="js/jurisdicao/painel.js?v=2026-11-13.22"></script>
-<script src="js/obras/config.js?v=2026-11-13.22"></script>
-<script src="js/obras/store.js?v=2026-11-13.22"></script>
-<script src="js/obras/tracado.js?v=2026-11-13.22"></script>
-<script src="js/obras/painel.js?v=2026-11-13.22"></script>
-<script src="js/linha_tempo.js?v=2026-11-13.22"></script>
-<script src="js/camadas_edicao.js?v=2026-11-13.22"></script>
-<script src="js/impressao.js?v=2026-11-13.22"></script>
-<script src="js/paineis.js?v=2026-11-13.22"></script>
+<script src="js/acesso.js?v=2026-11-13.23"></script>
+<script src="js/dados_banco.js?v=2026-11-13.23"></script>
+<script src="js/estilos.js?v=2026-11-13.23"></script>
+<script src="js/tabela_camadas.js?v=2026-11-13.23"></script>
+<script src="js/historico_export.js?v=2026-11-13.23"></script>
+<script src="js/regioes.js?v=2026-11-13.23"></script>
+<script src="js/hidrografia.js?v=2026-11-13.23"></script>
+<script src="js/mapa.js?v=2026-11-13.23"></script>
+<script src="js/unidades_saude.js?v=2026-11-13.23"></script>
+<script src="js/filtro_cabecalho.js?v=2026-11-13.23"></script>
+<script src="js/jurisdicao/config.js?v=2026-11-13.23"></script>
+<script src="js/jurisdicao/indicadores.js?v=2026-11-13.23"></script>
+<script src="js/jurisdicao/store.js?v=2026-11-13.23"></script>
+<script src="js/jurisdicao/tabela.js?v=2026-11-13.23"></script>
+<script src="js/jurisdicao/modulo.js?v=2026-11-13.23"></script>
+<script src="js/jurisdicao/tracado.js?v=2026-11-13.23"></script>
+<script src="js/jurisdicao/painel.js?v=2026-11-13.23"></script>
+<script src="js/obras/config.js?v=2026-11-13.23"></script>
+<script src="js/obras/store.js?v=2026-11-13.23"></script>
+<script src="js/obras/tracado.js?v=2026-11-13.23"></script>
+<script src="js/obras/painel.js?v=2026-11-13.23"></script>
+<script src="js/linha_tempo.js?v=2026-11-13.23"></script>
+<script src="js/camadas_edicao.js?v=2026-11-13.23"></script>
+<script src="js/impressao.js?v=2026-11-13.23"></script>
+<script src="js/paineis.js?v=2026-11-13.23"></script>
 
 </body>
 </html>

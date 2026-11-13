@@ -2833,3 +2833,7 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 #sidebar-right-content .legenda-filtravel.legenda-apagada:hover { opacity: .75; }
 .legenda-mostrar-todos { margin-top: 6px; padding: 3px 10px; font-size: 12px; border: 1px solid #93b4e8; background: #fff; color: #1d4ed8; border-radius: 4px; cursor: pointer; }
 .legenda-mostrar-todos:hover { background: #e0ecff; }
+
+/* Polo Goiânia: nota do total sob a legenda (13/11/2026) */
+.legenda-nota-polo { font-size: 11px; color: #64748b; margin: 4px 0 2px 2px; }
+#legendaPoloGoiania .legenda-item svg { flex: 0 0 auto; margin-right: 8px; }
