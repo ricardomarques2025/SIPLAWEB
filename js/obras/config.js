@@ -6,31 +6,36 @@
 //        (o usuario pode ligar/desligar qualquer coluna em "Colunas").
 // lista: os valores vem de siplaweb.listas (campo etapa | status | intervencao | modalidade | fonte | fase).
 
+// Ordem e nomes como na planilha de obras da DOR (13/11/2026): ID, Proposta, Fase, Rodovia, Intervenção, Trecho,
+// Extensão (km), Status, Valor aprovado, Valor do contrato, Fonte, Processo, Contrato, Previsão de conclusão; os demais depois.
+// moeda: número em R$ (tabela, ficha, exportação).
 var CAMPOS_OBRA = [
   { campo: 'codigo', titulo: 'Código', tipo: 'texto', largura: 112, fixa: true, somenteLeitura: true, comum: true, grupo: 'Identificação' },
   { campo: 'grupo_codigo', titulo: 'Grupo', tipo: 'texto', largura: 96, somenteLeitura: true, grupo: 'Identificação' },
   { campo: 'tipo', titulo: 'Tipo', tipo: 'texto', largura: 74, somenteLeitura: true, comum: true, grupo: 'Identificação' },
-  { campo: 'ref', titulo: 'Nº na origem', tipo: 'texto', largura: 96, grupo: 'Identificação' },
-  { campo: 'rodovia', titulo: 'Rodovia', tipo: 'texto', largura: 110, grupo: 'Localização' },
-  { campo: 'descricao', titulo: 'Descrição', tipo: 'longo', largura: 320, comum: true, grupo: 'Identificação' },
-  { campo: 'sre', titulo: 'SRE', tipo: 'texto', largura: 110, grupo: 'Localização' },
-  { campo: 'intervencao', titulo: 'Intervenção', tipo: 'lista', largura: 150, comum: true, grupo: 'Identificação' },
+  { campo: 'ref', titulo: 'ID', tipo: 'texto', largura: 70, grupo: 'Identificação' },
   { campo: 'proposta', titulo: 'Proposta', tipo: 'texto', largura: 90, grupo: 'Identificação' },
-  { campo: 'fase', titulo: 'Fase', tipo: 'lista', largura: 140, grupo: 'Situação' },
-  { campo: 'fonte', titulo: 'Fonte do recurso', tipo: 'lista', largura: 150, grupo: 'Contratação' },
+  { campo: 'fase', titulo: 'Fase', tipo: 'lista', largura: 110, grupo: 'Situação' },
+  { campo: 'rodovia', titulo: 'Rodovia', tipo: 'texto', largura: 110, grupo: 'Localização' },
+  { campo: 'intervencao', titulo: 'Intervenção', tipo: 'lista', largura: 150, comum: true, grupo: 'Identificação' },
+  { campo: 'descricao', titulo: 'Trecho', tipo: 'longo', largura: 320, comum: true, grupo: 'Identificação' },
+  { campo: 'ext_contrato_km', titulo: 'Extensão (km)', tipo: 'numero', largura: 110, grupo: 'Contratação' },
   { campo: 'etapa', titulo: 'Etapa', tipo: 'lista', largura: 120, comum: true, grupo: 'Situação' },
   { campo: 'status', titulo: 'Status', tipo: 'lista', largura: 170, comum: true, grupo: 'Situação' },
+  { campo: 'valor_aprovado', titulo: 'Valor aprovado', tipo: 'numero', moeda: true, largura: 150, grupo: 'Contratação' },
+  { campo: 'valor_contrato', titulo: 'Valor do contrato', tipo: 'numero', moeda: true, largura: 150, grupo: 'Contratação' },
+  { campo: 'fonte', titulo: 'Fonte', tipo: 'lista', largura: 150, grupo: 'Contratação' },
+  { campo: 'sei', titulo: 'Processo', tipo: 'sei', largura: 150, comum: true, grupo: 'Contratação' },
+  { campo: 'contrato', titulo: 'Contrato', tipo: 'texto', largura: 110, grupo: 'Contratação' },
+  { campo: 'conclusao', titulo: 'Previsão de conclusão', tipo: 'texto', largura: 120, grupo: 'Situação' },
+  { campo: 'modalidade', titulo: 'Modalidade', tipo: 'lista', largura: 160, grupo: 'Contratação' },
   { campo: 'data_referencia', titulo: 'Data de referência', tipo: 'data', largura: 130, comum: true, grupo: 'Situação' },
-  { campo: 'conclusao', titulo: 'Conclusão prevista', tipo: 'texto', largura: 120, grupo: 'Situação' },
   { campo: 'municipio', titulo: 'Município', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'localidade', titulo: 'Localidade', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'populacao', titulo: 'População', tipo: 'numero', largura: 100, grupo: 'Localização' },
-  { campo: 'sei', titulo: 'SEI', tipo: 'sei', largura: 150, comum: true, grupo: 'Contratação' },
-  { campo: 'sei_obra_contrato', titulo: 'SEI contratação', tipo: 'texto', largura: 150, grupo: 'Contratação' },
-  { campo: 'contrato', titulo: 'Contrato', tipo: 'texto', largura: 110, grupo: 'Contratação' },
+  { campo: 'sre', titulo: 'SRE', tipo: 'texto', largura: 110, grupo: 'Localização' },
+  { campo: 'sei_obra_contrato', titulo: 'Processo de contratação', tipo: 'texto', largura: 150, grupo: 'Contratação' },
   { campo: 'empresa', titulo: 'Empresa', tipo: 'texto', largura: 200, grupo: 'Contratação' },
-  { campo: 'modalidade', titulo: 'Modalidade', tipo: 'lista', largura: 160, grupo: 'Contratação' },
-  { campo: 'ext_contrato_km', titulo: 'Ext. contrato (km)', tipo: 'numero', largura: 120, grupo: 'Contratação' },
   { campo: 'lote', titulo: 'Lote', tipo: 'texto', largura: 90, grupo: 'Contratação' },
   { campo: 'area_contratada_m2', titulo: 'Área contratada (m²)', tipo: 'numero', largura: 140, grupo: 'Execução' },
   { campo: 'area_executada_m2', titulo: 'Área executada (m²)', tipo: 'numero', largura: 140, grupo: 'Execução' },
@@ -55,7 +60,7 @@ var CORES_ETAPA_OBRA = {
 function validarCampoObra(campo, valor, listas) {
   var c = CAMPOS_OBRA.find(function(x) { return x.campo === campo; });
   if (!c || valor === null || valor === undefined || valor === '') return '';
-  if (c.tipo === 'sei' && !/^\d{15}$/.test(String(valor).replace(/\D/g, ''))) return 'SEI deve ter 15 dígitos';
+  if (c.tipo === 'sei' && !/^\d{15}$/.test(String(valor).replace(/\D/g, ''))) return 'Processo SEI deve ter 15 dígitos';
   if (c.tipo === 'numero' && (!isFinite(Number(valor)) || Number(valor) < 0)) return 'Número inválido (não pode ser negativo)';
   if (c.tipo === 'data') {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(valor))) return 'Data inválida';

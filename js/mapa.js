@@ -5752,11 +5752,12 @@ map.addControl(new LogoMapaControl());
     var intervencao = valorIntervencaoDados(dados).toLowerCase();
     // Licitação usa o mesmo ícone de obra (por enquanto não há ícone próprio).
     if (etapa.indexOf('licita') >= 0) etapa = 'obra';
-    if (intervencao.indexOf('bueiro') >= 0) {
+    // Bueiro = OAC; Ponte e Viaduto = OAE (13/11/2026, script 019): mesmas placas de antes.
+    if (/bueiro|\boac\b/.test(intervencao)) {
       if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.BueiroProjeto;
       if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.BueiroObra;
     }
-    if (intervencao.indexOf('ponte') >= 0) {
+    if (/ponte|viaduto|\boae\b/.test(intervencao)) {
       if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.PonteProjeto;
       if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.PonteObra;
     }
@@ -6184,13 +6185,15 @@ map.addControl(new LogoMapaControl());
   };
   var CAMPOS_CARTAO_OBRA = [
     { chave: 'FASE', rotulo: 'Fase' },
-    { chave: 'SEI', rotulo: 'SEI' },
-    { chave: 'PROCESSO_SEI_CONTRATACAO', rotulo: 'SEI contratação' },
+    { chave: 'SEI', rotulo: 'Processo' },
+    { chave: 'PROCESSO_SEI_CONTRATACAO', rotulo: 'Processo de contratação' },
     { chave: 'CONTRATO', rotulo: 'Contrato' },
     { chave: 'EMPRESA', rotulo: 'Empresa' },
     { chave: 'MODALIDADE', rotulo: 'Modalidade' },
-    { chave: 'FONTE', rotulo: 'Fonte do recurso' },
-    { chave: 'CONCLUSAO', rotulo: 'Conclusão prevista' },
+    { chave: 'FONTE', rotulo: 'Fonte' },
+    { chave: 'VALOR_APROVADO', rotulo: 'Valor aprovado', moeda: true },
+    { chave: 'VALOR_CONTRATO', rotulo: 'Valor do contrato', moeda: true },
+    { chave: 'CONCLUSAO', rotulo: 'Previsão de conclusão' },
     { chave: 'RODOVIA', rotulo: 'Rodovia' },
     { chave: 'MUNICIPIO', rotulo: 'Município' },
     { chave: 'LOCALIDADE', rotulo: 'Localidade' },
@@ -6209,6 +6212,7 @@ map.addControl(new LogoMapaControl());
     if (campo.chave === 'ATUALIZACAO' && /^\d{4}-\d{2}/.test(String(v))) {
       return MESES_POPUP[Number(String(v).slice(5, 7)) - 1] + '/' + String(v).slice(0, 4);
     }
+    if (campo.moeda && isFinite(Number(v))) return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     if (typeof v === 'number') v = v.toLocaleString('pt-BR');
     return String(v) + (campo.sufixo || '');
   }
@@ -6328,16 +6332,16 @@ map.addControl(new LogoMapaControl());
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
     { chave: 'STATUS', rotulo: 'Status' },
-    { chave: 'SEI', rotulo: 'SEI' },
-    { chave: 'CONCLUSAO', rotulo: 'Conclusão' },
+    { chave: 'SEI', rotulo: 'Processo' },
+    { chave: 'CONCLUSAO', rotulo: 'Previsão de conclusão' },
     { chave: 'MODALIDADE', rotulo: 'Modalidade' },
     { chave: 'EMPRESA', rotulo: 'Empresa' },
     { chave: 'CONTRATO', rotulo: 'Contrato' },
-    { chave: 'PROCESSO_SEI_CONTRATACAO', rotulo: 'Processo SEI Contratação' }
+    { chave: 'PROCESSO_SEI_CONTRATACAO', rotulo: 'Processo de contratação' }
   ];
 
   var CAMPOS_LINHA_FUNDEINFRA_TABELA = CAMPOS_LINHA_FUNDEINFRA.concat([
-    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'DESCRICAO', rotulo: 'Trecho' },
     { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
   ]);
 
@@ -6346,12 +6350,12 @@ map.addControl(new LogoMapaControl());
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
     { chave: 'STATUS', rotulo: 'Status' },
-    { chave: 'SEI', rotulo: 'SEI' },
-    { chave: 'CONCLUSAO', rotulo: 'Conclusão' }
+    { chave: 'SEI', rotulo: 'Processo' },
+    { chave: 'CONCLUSAO', rotulo: 'Previsão de conclusão' }
   ];
 
   var CAMPOS_LINHA_UNIDADE_TABELA = CAMPOS_LINHA_UNIDADE.concat([
-    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'DESCRICAO', rotulo: 'Trecho' },
     { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
   ]);
 
@@ -6362,7 +6366,7 @@ map.addControl(new LogoMapaControl());
     { chave: 'INTERVENCAO', rotulo: 'Interven\u00e7\u00e3o' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
     { chave: 'STATUS', rotulo: 'Status' },
-    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'SEI', rotulo: 'Processo' },
     { chave: 'DESCRICAO', rotulo: 'Descri\u00e7\u00e3o' },
     { chave: 'ATUALIZACAO', rotulo: 'Atualiza\u00e7\u00e3o' }
   ];
@@ -6373,7 +6377,7 @@ map.addControl(new LogoMapaControl());
     { chave: 'PROPOSTA', rotulo: 'Proposta' },
     { chave: 'LOCALIDADE', rotulo: 'Localidade' },
     { chave: 'INTERVENCAO', rotulo: 'Interven\u00e7\u00e3o' },
-    { chave: 'SEI', rotulo: 'SEI' },
+    { chave: 'SEI', rotulo: 'Processo' },
     { chave: 'CONTRATO', rotulo: 'Contrato' },
     { chave: 'RODOVIA', rotulo: 'Rodovia' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
@@ -7476,8 +7480,8 @@ map.addControl(new LogoMapaControl());
     { chave: 'PROPOSTA', rotulo: 'Proposta' },
     { chave: 'LOCALIDADE', rotulo: 'Localidade' },
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
-    { chave: 'SEI', rotulo: 'SEI' },
-    { chave: 'SEI_OBRA', rotulo: 'SEI Obra' },
+    { chave: 'SEI', rotulo: 'Processo' },
+    { chave: 'SEI_OBRA', rotulo: 'Processo da obra' },
     { chave: 'CONTRATO', rotulo: 'Contrato' },
     { chave: 'RODOVIA', rotulo: 'Rodovia' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
@@ -7486,7 +7490,7 @@ map.addControl(new LogoMapaControl());
   ];
 
   var CAMPOS_OBRA_PONTO_TABELA = CAMPOS_OBRA_PONTO_POPUP.concat([
-    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'DESCRICAO', rotulo: 'Trecho' },
     { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
   ]);
 
@@ -7546,8 +7550,8 @@ map.addControl(new LogoMapaControl());
     { chave: 'IDCOD', rotulo: 'Código' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
     { chave: 'STATUS', rotulo: 'Status' },
-    { chave: 'SEI', rotulo: 'SEI' },
-    { chave: 'CONCLUSAO', rotulo: 'Conclusão' },
+    { chave: 'SEI', rotulo: 'Processo' },
+    { chave: 'CONCLUSAO', rotulo: 'Previsão de conclusão' },
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' }
   ];
 
@@ -7557,10 +7561,10 @@ map.addControl(new LogoMapaControl());
     { chave: '__IDENTIFICADOR', rotulo: 'Proposta' },
     { chave: 'ETAPA', rotulo: 'Etapa' },
     { chave: 'STATUS', rotulo: 'Status' },
-    { chave: 'SEI', rotulo: 'SEI' },
-    { chave: 'CONCLUSAO', rotulo: 'Conclusão' },
+    { chave: 'SEI', rotulo: 'Processo' },
+    { chave: 'CONCLUSAO', rotulo: 'Previsão de conclusão' },
     { chave: 'INTERVENCAO', rotulo: 'Intervenção' },
-    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'DESCRICAO', rotulo: 'Trecho' },
     { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
   ];
   function construirPopupObraAero(feature, dadosSelecionado) {
@@ -7912,8 +7916,8 @@ map.addControl(new LogoMapaControl());
     { chave: 'HORAS_PAGAS', rotulo: 'Horas pagas' },
     { chave: 'LOTE', rotulo: 'Lote' },
     { chave: 'CONTRATO', rotulo: 'Contrato' },
-    { chave: 'SEI', rotulo: 'SEI' },
-    { chave: 'DESCRICAO', rotulo: 'Descrição' },
+    { chave: 'SEI', rotulo: 'Processo' },
+    { chave: 'DESCRICAO', rotulo: 'Trecho' },
     { chave: 'ATUALIZACAO', rotulo: 'Atualização' }
   ];
 

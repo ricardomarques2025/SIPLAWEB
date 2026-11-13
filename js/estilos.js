@@ -340,28 +340,28 @@ const REGRAS_ESTILO = [
       icone: 'data/placaobra.svg'
     },
     BueiroProjeto: {
-      label: 'Bueiro em projeto',
+      label: 'OAC em projeto',
       classe: 'obra-ponto-projeto',
       cor: '#00ffff',
       formato: 'quadrado',
       icone: 'data/placabueiroprojeto.svg'
     },
     BueiroObra: {
-      label: 'Bueiro em obra',
+      label: 'OAC em obra',
       classe: 'obra-ponto-obra',
       cor: '#fffb00',
       formato: 'losango',
       icone: 'data/placabueiroobra.svg'
     },
     PonteProjeto: {
-      label: 'Ponte em projeto',
+      label: 'OAE em projeto',
       classe: 'obra-ponto-oae-projeto',
       cor: '#00ffff',
       formato: 'quadrado',
       icone: 'data/placaoaeprojeto.svg'
     },
     PonteObra: {
-      label: 'Ponte em obra',
+      label: 'OAE em obra',
       classe: 'obra-ponto-oae-obra',
       cor: '#fffb00',
       formato: 'losango',
@@ -383,14 +383,14 @@ const REGRAS_ESTILO = [
       icone: 'data/gmeplacaoaeobra.svg'
     },
     GmeBueiroProjeto: {
-      label: 'Bueiro em projeto',
+      label: 'OAC em projeto',
       classe: 'obra-ponto-projeto',
       cor: '#00ffff',
       formato: 'quadrado',
       icone: 'data/gmeplacabueiroprojeto.svg'
     },
     GmeBueiroObra: {
-      label: 'Bueiro em obra',
+      label: 'OAC em obra',
       classe: 'obra-ponto-obra',
       cor: '#fffb00',
       formato: 'losango',
@@ -411,42 +411,42 @@ const REGRAS_ESTILO = [
       icone: 'data/gmkplacaoaeobra.svg'
     },
     GmkBueiroProjeto: {
-      label: 'Bueiro em projeto',
+      label: 'OAC em projeto',
       classe: 'obra-ponto-projeto',
       cor: '#00ffff',
       formato: 'quadrado',
       icone: 'data/gmkplacabueiroprojeto.svg'
     },
     GmkBueiroObra: {
-      label: 'Bueiro em obra',
+      label: 'OAC em obra',
       classe: 'obra-ponto-obra',
       cor: '#fffb00',
       formato: 'losango',
       icone: 'data/gmkplacabueiroobra.svg'
     },
     GmePonteProjeto: {
-      label: 'Ponte em projeto',
+      label: 'OAE em projeto',
       classe: 'obra-ponto-oae-projeto',
       cor: '#00ffff',
       formato: 'quadrado',
       icone: 'data/gmeplacaoaeprojeto.svg'
     },
     GmePonteObra: {
-      label: 'Ponte em obra',
+      label: 'OAE em obra',
       classe: 'obra-ponto-oae-obra',
       cor: '#fffb00',
       formato: 'losango',
       icone: 'data/gmeplacaoaeobra.svg'
     },
     GmkPonteProjeto: {
-      label: 'Ponte em projeto',
+      label: 'OAE em projeto',
       classe: 'obra-ponto-oae-projeto',
       cor: '#00ffff',
       formato: 'quadrado',
       icone: 'data/gmkplacaoaeprojeto.svg'
     },
     GmkPonteObra: {
-      label: 'Ponte em obra',
+      label: 'OAE em obra',
       classe: 'obra-ponto-oae-obra',
       cor: '#fffb00',
       formato: 'losango',
@@ -461,14 +461,14 @@ const REGRAS_ESTILO = [
       icone: 'data/gmeplacaoaeconcluido.svg'
     },
     GmePonteConcluido: {
-      label: 'Ponte concluída',
+      label: 'OAE concluída',
       classe: 'obra-ponto-oae-obra',
       cor: '#16a34a',
       formato: 'losango',
       icone: 'data/gmeplacaoaeconcluido.svg'
     },
     GmeBueiroConcluido: {
-      label: 'Bueiro concluído',
+      label: 'OAC concluída',
       classe: 'obra-ponto-obra',
       cor: '#16a34a',
       formato: 'losango',
@@ -482,14 +482,14 @@ const REGRAS_ESTILO = [
       icone: 'data/gmkplacaoaeconcluido.svg'
     },
     GmkPonteConcluido: {
-      label: 'Ponte concluída',
+      label: 'OAE concluída',
       classe: 'obra-ponto-oae-obra',
       cor: '#16a34a',
       formato: 'losango',
       icone: 'data/gmkplacaoaeconcluido.svg'
     },
     GmkBueiroConcluido: {
-      label: 'Bueiro concluído',
+      label: 'OAC concluída',
       classe: 'obra-ponto-obra',
       cor: '#16a34a',
       formato: 'losango',

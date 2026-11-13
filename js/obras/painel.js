@@ -50,6 +50,7 @@ var ObrasPainel = (function() {
   function exibir(c, v) {
     if (v === null || v === undefined || v === '') return '';
     if (c.tipo === 'data') return fmtData(v);
+    if (c.moeda) return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     if (c.tipo === 'numero') return Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 3 });
     return String(v);
   }

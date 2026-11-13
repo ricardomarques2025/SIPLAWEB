@@ -11,7 +11,7 @@ var DadosBanco = (function() {
     'codigo', 'idcod_legado', 'origem', 'tipo', 'natureza', 'ref', 'proposta', 'sre', 'localidade', 'municipio',
     'populacao', 'rodovia', 'descricao', 'intervencao', 'etapa', 'status', 'modalidade', 'sei', 'sei_obra_contrato',
     'contrato', 'empresa', 'ext_contrato_km', 'conclusao', 'area_contratada_m2', 'area_executada_m2', 'horas_pagas',
-    'lote', 'fonte', 'fase', 'data_referencia', 'vinculos', 'geom', 'grupo:grupos(codigo)'
+    'lote', 'fonte', 'fase', 'valor_aprovado', 'valor_contrato', 'data_referencia', 'vinculos', 'geom', 'grupo:grupos(codigo)'
   ].join(',');
   var POR_PAGINA = 1000;   // limite de linhas por consulta da API
   var carga = null;
@@ -114,6 +114,8 @@ var DadosBanco = (function() {
       FASE: o.fase,
       EMPRESA: o.empresa,
       CONCLUSAO: o.conclusao,
+      VALOR_APROVADO: o.valor_aprovado,
+      VALOR_CONTRATO: o.valor_contrato,
       AREA_CONTRATADA_M2: o.area_contratada_m2,
       AREA_EXECUTADA_M2: o.area_executada_m2,
       HORAS_PAGAS: o.horas_pagas,

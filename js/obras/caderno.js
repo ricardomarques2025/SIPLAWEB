@@ -13,7 +13,8 @@
   const PRANCHAS_SIMULTANEAS = 3;
   const POR_PAGINA = 1000;     // limite de linhas por consulta da API
   const COLUNAS = ['codigo', 'origem', 'tipo', 'ref', 'proposta', 'rodovia', 'descricao', 'intervencao', 'etapa', 'status',
-    'modalidade', 'fonte', 'fase', 'sei', 'contrato', 'ext_contrato_km', 'conclusao', 'municipio', 'vinculos', 'geom'].join(',');
+    'modalidade', 'fonte', 'fase', 'sei', 'contrato', 'ext_contrato_km', 'conclusao', 'municipio', 'vinculos', 'geom',
+    'valor_aprovado', 'valor_contrato'].join(',');
 
   // ---------- Secoes por origem ----------
   const fonte = re => o => re.test(o.fonte || '');
@@ -21,7 +22,7 @@
   const CONFIG_ORIGEM = {
     DOR: {
       titulo: 'OBRAS RODOVIÁRIAS',
-      fase: { titulo: 'FASE', valor: o => String(o.modalidade || '').replace(/^Obra Integrada$/, 'Integrada') },
+      fase: { titulo: 'FASE', valor: o => o.fase || String(o.modalidade || '').replace(/^Obra Integrada$/, 'Integrada') },
       trecho: 'TRECHO',
       capitulos: [
         { titulo: 'OBRAS RODOVIÁRIAS EM ANDAMENTO', filtro: o => o.etapa === 'Obra', secoes: [
@@ -78,11 +79,11 @@
   // Obra pontual sem icone fica com a bolinha nas cores padrao ("Outras" na legenda).
   const ICONES = [
     [/aer[oó]dromo/i, 'aerodromo', 'Aeródromo'],
-    [/bueiro|\boac\b/i, 'bueiro', 'Bueiro'],
+    // Bueiro = OAC; Ponte e Viaduto = OAE (13/11/2026)
+    [/bueiro|\boac\b/i, 'bueiro', 'OAC'],
     [/duplica/i, 'duplicacao', 'Duplicação'],
     [/paviment/i, 'pavimentacao', 'Pavimentação'],
-    [/viaduto/i, 'viaduto', 'Viaduto'],
-    [/ponte|\boae\b/i, 'ponte', 'Ponte']
+    [/ponte|viaduto|\boae\b/i, 'ponte', 'OAE']
   ];
   const urlIcone = arq => 'img/obras/icones/' + arq + '.svg?v=cor1-20261105';   // ?v: troca de cor dos ícones (05/11/2026)
   const soPontos = geos => geos.length > 0 && geos.every(g => /Point/.test(g.type));
@@ -92,6 +93,7 @@
     return i ? urlIcone(i[1]) : null;
   }
 
+  const fmtReais = n => n == null || n === '' ? '-' : Number(n).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   const fmtKmTabela = n => n == null || n === '' ? '-' : Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const vazio = v => v == null || v === '';
   const cmp = (a, b) => String(a || '').localeCompare(String(b || ''), 'pt-BR', { sensitivity: 'base', numeric: true });
@@ -292,6 +294,8 @@
     if (!CONFIG_ORIGEM[org.codigo] && tem('municipio')) cols.push({ t: 'MUNICÍPIO', v: o => o.municipio, w: 11 });
     if (tem('ext_contrato_km')) cols.push({ t: 'EXTENSÃO (km)', v: o => fmtKmTabela(o.ext_contrato_km), w: 6.5, ext: true });
     cols.push({ t: 'STATUS', v: o => o.status, w: 9 });
+    if (tem('valor_aprovado')) cols.push({ t: 'VALOR APROVADO', v: o => fmtReais(o.valor_aprovado), w: 9 });
+    if (tem('valor_contrato')) cols.push({ t: 'VALOR DO CONTRATO', v: o => fmtReais(o.valor_contrato), w: 9 });
     if (tem('fonte')) cols.push({ t: 'FONTE', v: o => o.fonte, w: 7.5 });
     cols.push({ t: 'PROCESSO', v: o => o.sei, w: 10.5 });
     if (tem('contrato')) cols.push({ t: 'CONTRATO', v: o => o.contrato, w: 7.5 });
