@@ -1,0 +1,123 @@
+/* Quadros da Gerência (gerencia.html). Cabeçalho, cores, botões e toasts vêm de css/inicio_painel.css e css/usuarios.css. */
+.ger { padding: 14px clamp(16px, 2.5vw, 32px) 28px; }
+.ger .espaco { flex: 1; }
+
+/* Abas dos quadros */
+.ger-quadros { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.ger-quadros button { font: inherit; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--linha);
+  background: #fff; color: var(--texto); cursor: pointer; }
+.ger-quadros button.ativo { background: var(--tinta); border-color: var(--tinta); color: #fff; }
+.ger-quadros button small { font-weight: 500; opacity: .7; margin-left: 4px; }
+
+/* Barra de filtros */
+.ger-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.ger-barra input[type=search], .ger-barra select { height: 34px; border: 1px solid var(--linha); border-radius: 8px; padding: 0 10px; font: inherit; font-size: 13px; background: #fff; }
+.ger-barra input[type=search] { width: min(280px, 100%); }
+.ger-barra .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+
+/* Colunas */
+.ger-colunas { display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; padding-bottom: 8px; min-height: 60vh; }
+.ger-coluna { flex: 0 0 280px; background: #eef2ef; border: 1px solid var(--linha); border-top: 4px solid var(--c, #94a3b8); border-radius: 12px;
+  padding: 10px; display: flex; flex-direction: column; max-height: calc(100vh - 230px); }
+.ger-coluna h3 { margin: 2px 2px 10px; font-size: 13px; color: var(--tinta); display: flex; justify-content: space-between; gap: 8px; }
+.ger-coluna h3 span { color: var(--suave); font-weight: 600; }
+.ger-coluna h3 em { font-style: normal; font-size: 10.5px; font-weight: 700; color: #166534; background: #dcfce7; border-radius: 6px; padding: 1px 6px; }
+.ger-lista { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; min-height: 40px; padding: 2px; border-radius: 8px; }
+.ger-lista.alvo { background: #dcefe2; outline: 2px dashed #86c79a; }
+.ger-rapido { margin-top: 8px; display: flex; gap: 6px; }
+.ger-rapido input { flex: 1; min-width: 0; height: 32px; border: 1px solid var(--linha); border-radius: 8px; padding: 0 8px; font: inherit; font-size: 13px; background: #fff; }
+
+/* Cartões */
+.ger-cartao { background: #fff; border: 1px solid var(--linha); border-radius: 10px; padding: 9px 10px; cursor: pointer; display: flex; flex-direction: column; gap: 5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+.ger-cartao:hover, .ger-cartao:focus-visible { border-color: #9ca3af; box-shadow: 0 4px 14px rgba(0,0,0,.08); outline: none; }
+.ger-cartao[draggable=true] { cursor: grab; }
+.ger-cartao.arrastando { opacity: .45; }
+.ger-cartao b { font-size: 13px; line-height: 1.3; color: var(--tinta); }
+.ger-cartao-sup { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--suave); }
+.ger-cartao-sup .prio { margin-left: auto; font-weight: 700; border-radius: 6px; padding: 0 6px; }
+.prio-alta { background: #fee2e2; color: #b91c1c; } .prio-media { background: #fef3c7; color: #92400e; } .prio-baixa { background: #e0f2fe; color: #075985; }
+.ger-etiquetas { display: flex; flex-wrap: wrap; gap: 4px; }
+.ger-etiqueta { font-size: 10.5px; font-weight: 700; background: #eef2f7; color: #475569; border-radius: 6px; padding: 1px 6px; }
+.ger-cartao-inf { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--suave); }
+.ger-cartao-inf .resp { margin-left: auto; width: 24px; height: 24px; border-radius: 50%; background: var(--tinta); color: #fff; font-size: 10px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center; }
+.ger-cartao-inf .atrasado { color: #b91c1c; font-weight: 700; }
+.ger-nota { font-size: 12px; color: var(--suave); margin: 10px 2px 0; }
+
+/* Diálogos */
+.ger-dlg { border: 0; border-radius: 14px; padding: 0; width: min(1100px, calc(100vw - 24px)); max-height: calc(100vh - 24px); box-shadow: 0 20px 50px rgba(0,0,0,.3);
+  font-family: Inter, Arial, sans-serif; color: var(--texto); }
+.ger-dlg::backdrop { background: rgba(15, 42, 26, .4); }
+.ger-dlg-topo { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--linha); margin: 0;
+  position: sticky; top: 0; background: #fff; z-index: 2; }
+.ger-dlg-topo b { color: var(--tinta); font-size: 15px; }
+.ger-fechar { border: 0; background: none; font-size: 24px; cursor: pointer; color: #64748b; line-height: 1; }
+.ger-dlg-corpo { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 0; }
+@media (max-width: 860px) { .ger-dlg-corpo { grid-template-columns: 1fr; } }
+.ger-dados { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.ger-lado { padding: 14px 18px; background: #f7f9f8; border-left: 1px solid var(--linha); }
+.ger-lado h4 { margin: 14px 0 8px; font-size: 13px; color: var(--tinta); }
+.ger-lado h4:first-child { margin-top: 2px; }
+.ger-lado h4 small { font-weight: 500; color: var(--suave); font-size: 11.5px; margin-left: 4px; }
+.ger-campo { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--suave); }
+.ger-campo input, .ger-campo select, .ger-campo textarea, .ger-lado textarea { font: inherit; font-size: 13px; padding: 7px 10px; border: 1px solid var(--linha);
+  border-radius: 8px; background: #fff; color: var(--texto); min-width: 0; }
+.ger-campo textarea { min-height: 110px; resize: vertical; }
+.ger-campo input:disabled, .ger-campo select:disabled, .ger-campo textarea:disabled { background: #f8faf9; color: var(--texto); }
+.ger-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.ger-acoes { display: flex; gap: 8px; justify-content: flex-end; align-items: center; margin-top: 6px; }
+.ger-acoes .info { margin-right: auto; font-size: 12px; color: var(--suave); }
+
+/* Links */
+.ger-links { display: flex; flex-direction: column; gap: 6px; }
+.ger-link { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto auto; gap: 6px; align-items: center; }
+.ger-link input { font: inherit; font-size: 12.5px; padding: 6px 8px; border: 1px solid var(--linha); border-radius: 8px; min-width: 0; }
+.ger-link-ver { display: flex; gap: 8px; align-items: center; font-size: 13px; padding: 6px 8px; background: #fff; border: 1px solid var(--linha); border-radius: 8px; }
+.ger-link-ver span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ger-link-ver code { font-size: 12px; color: var(--suave); }
+.mini { font: inherit; font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 7px; border: 1px solid var(--linha); background: #fff; cursor: pointer; color: var(--texto); }
+.mini:hover { border-color: #9ca3af; }
+.mini-perigo { color: #b91c1c; border-color: #fecaca; }
+
+/* Prints */
+.ger-anexos { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+.ger-anexo { position: relative; border: 1px solid var(--linha); border-radius: 8px; overflow: hidden; background: #fff; aspect-ratio: 4 / 3; }
+.ger-anexo img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+.ger-anexo button { position: absolute; top: 4px; right: 4px; border: 0; border-radius: 6px; background: rgba(15,23,42,.7); color: #fff; font-size: 12px; cursor: pointer; padding: 1px 6px; }
+.ger-anexo-acoes { display: flex; gap: 8px; margin-top: 8px; }
+.ger-anexo-acoes label.btn { display: inline-flex; align-items: center; }
+.ger-vazio { font-size: 12.5px; color: var(--suave); }
+
+/* Comentários e histórico */
+.ger-comentarios { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
+.ger-comentario { background: #fff; border: 1px solid var(--linha); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+.ger-comentario small { display: flex; gap: 6px; color: var(--suave); font-size: 11.5px; margin-bottom: 3px; }
+.ger-comentario small button { margin-left: auto; border: 0; background: none; color: #b91c1c; cursor: pointer; font-size: 11.5px; }
+.ger-comentario p { margin: 0; white-space: pre-wrap; }
+.ger-comentar { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.ger-comentar .btn { align-self: flex-end; }
+.ger-eventos { margin: 0; padding-left: 18px; font-size: 12px; color: var(--suave); display: flex; flex-direction: column; gap: 3px; max-height: 180px; overflow-y: auto; }
+
+/* Editor de print */
+.ger-dlg-print { width: min(1400px, calc(100vw - 24px)); }
+.ger-print-ferramentas { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 18px; border-bottom: 1px solid var(--linha); }
+.ger-print-ferramentas button:not(.btn) { font: inherit; font-size: 12.5px; font-weight: 600; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--linha); background: #fff; cursor: pointer; }
+.ger-print-ferramentas button.ativo:not(.cor) { background: var(--tinta); border-color: var(--tinta); color: #fff; }
+.ger-print-ferramentas .cor { width: 26px; height: 26px; padding: 0 !important; border-radius: 50% !important; background: var(--c) !important; }
+.ger-print-ferramentas .cor.ativo { outline: 3px solid #0f2a1a; outline-offset: 1px; }
+.ger-print-ferramentas .sep { width: 1px; height: 22px; background: var(--linha); margin: 0 4px; }
+.ger-print-ferramentas .espaco { flex: 1; }
+.ger-print-info { font-size: 12px; color: var(--suave); }
+.ger-print-area { padding: 12px; overflow: auto; max-height: calc(100vh - 160px); background: #e5e7eb; text-align: center; }
+.ger-print-area canvas { max-width: 100%; height: auto; cursor: crosshair; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.15); }
+
+/* Configurar quadros */
+.ger-dlg-config { width: min(760px, calc(100vw - 24px)); }
+.ger-config { padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+.ger-config h4 { margin: 4px 0 6px; font-size: 13px; color: var(--tinta); }
+.ger-config-linha { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; padding: 4px 0; border-bottom: 1px solid #eef2ef; }
+.ger-config-linha input[type=text] { flex: 1 1 200px; font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--linha); border-radius: 8px; min-width: 0; }
+.ger-config-linha input[type=color] { width: 34px; height: 30px; padding: 0; border: 1px solid var(--linha); border-radius: 6px; background: #fff; }
+.ger-config-linha label { font-size: 12px; display: inline-flex; gap: 4px; align-items: center; }
+.ger-config-linha small { color: var(--suave); font-size: 11.5px; }

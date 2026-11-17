@@ -15,7 +15,8 @@
     { nome: 'Mapa geral', desc: 'Todas as suas origens juntas', mosaico: true, href: 'mapa.html?perfil=geral' },
     { nome: 'Mapa rodoviário', desc: 'Malha estadual e federal', img: 'data/MAPA.jpg', href: 'mapa.html?perfil=rodoviario&sidebar=fechada' },
     { nome: 'Jurisdição', desc: 'Alterações de jurisdição das rodovias', img: 'data/JURISDICAO.jpg',
-      href: 'mapa.html?modulo=jurisdicao', area: 'JURISDICAO' }
+      href: 'mapa.html?modulo=jurisdicao', area: 'JURISDICAO' },
+    { nome: 'Gerência', desc: 'Quadros de demandas e assuntos da gerência', classe: 'atalho-gerencia', href: 'gerencia.html', area: 'GERENCIA' }
   ];
   var ETAPAS = [['Planejamento', 'var(--plan)'], ['Projeto', 'var(--projeto)'], ['Obra', 'var(--obra)'], ['outros', 'var(--outros)']];
   var MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
@@ -32,7 +33,7 @@
       '<div class="total"><b>—</b><span>' + ROTULO.varios + '</span></div><div class="barra"></div></div></a>';
   }).join('');
   $('atalhos').innerHTML = ATALHOS.map(function(a) {
-    return '<a class="atalho" href="' + a.href + '"' + (a.img ? ' style="background-image:url(' + a.img + ')"' : '') +
+    return '<a class="atalho' + (a.classe ? ' ' + a.classe : '') + '" href="' + a.href + '"' + (a.img ? ' style="background-image:url(' + a.img + ')"' : '') +
       (a.area ? ' data-area="' + a.area + '"' : '') + (a.mosaico ? ' id="atalhoGeral"' : '') + '>' +
       (a.mosaico ? '<span class="mosaico" id="mosaicoGeral"></span>' : '') +
       (a.externo ? '<span class="externo">' + a.externo + '</span>' : '') +

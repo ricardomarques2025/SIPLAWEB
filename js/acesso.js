@@ -353,13 +353,20 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-17.03';
+  var VERSAO_SITE = '2026-11-17.04';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.14', '17/11/2026', [
+      'Quadros da Gerência (gerencia.html, atalho na página inicial): quadros no estilo Trello para as demandas do SIPLAWEB e outros assuntos da gerência. Cartões com responsável, prazo, prioridade, etiquetas, descrição, links (pastas da rede com botão "Copiar"), vínculo opcional com obra, versão e processo SEI, comentários e histórico. Arraste o cartão entre as colunas para movê-lo.',
+      'Prints no cartão: tire o print (Win+Shift+S), cole com Ctrl+V, anote com caneta, retângulo, seta ou texto e salve; a imagem é reduzida antes de ir para o banco.',
+      'Quem vê: quem tem a área Gerência e os administradores. Quem criou o cartão e os administradores editam e movem; todos comentam e anexam prints. Quadros e colunas: só administradores (script 024).'
+    ], [
+      'Novo: quadros da Gerência para organizar demandas e assuntos da equipe, com prints anotados e comentários.'
+    ]],
     ['3.13', '17/11/2026', [
       'FUNDEINFRA mostra só as obras da DOR e da DPJ com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra) em todo o site: mapa, cartão da página inicial, tabela de obras, caderno e Painel. As obras antigas cadastradas na origem FUNDEINFRA ficam no banco só como cópia de segurança e não aparecem em nenhuma tela.',
       'TARE passa a ser um filtro do mesmo jeito: mostra as obras da DOR e da DPJ com fonte TARE (o valor da lista "Tare" passou a se chamar "TARE", também nas obras já cadastradas). A obra antiga cadastrada na origem TARE (repetia uma obra da DOR) fica só como cópia de segurança. Com TARE e DOR (ou DPJ) ligadas, o trecho aparece uma vez só, no estilo TARE.',

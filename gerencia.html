@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Gerência · Plano GOINFRA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/inicio_painel.css?v=2026-11-17.04" />
+  <link rel="stylesheet" href="css/usuarios.css?v=2026-11-17.04" />
+  <link rel="stylesheet" href="css/gerencia.css?v=2026-11-17.04" />
+</head>
+<body>
+  <header class="topo">
+    <a href="index.html"><img src="data/Logo_GOINFRA_DPL_2025.png" alt="GOINFRA"></a>
+    <div class="marca">Gerência<small>Quadros de demandas e assuntos da gerência</small></div>
+    <div class="espaco"></div>
+    <a class="voltar" href="index.html">← Início</a>
+    <span id="acessoUsuario"></span>
+  </header>
+
+  <main class="ger" id="ger" hidden>
+    <nav class="ger-quadros" id="quadros" aria-label="Quadros"></nav>
+    <div class="ger-barra">
+      <input type="search" id="busca" placeholder="Buscar título, código, etiqueta…" aria-label="Buscar cartões" />
+      <select id="filtroResp" aria-label="Filtrar por responsável"><option value="">Todos os responsáveis</option></select>
+      <label class="chk"><input type="checkbox" id="soMeus" /> Só os que criei ou sou responsável</label>
+      <label class="chk"><input type="checkbox" id="mostrarConcluidos" checked /> Mostrar concluídos</label>
+      <span class="espaco"></span>
+      <button type="button" class="btn" id="btnAtualizar" title="Buscar de novo no banco">Atualizar</button>
+      <button type="button" class="btn" id="btnConfig" hidden>Configurar quadros</button>
+      <button type="button" class="btn btn-primario" id="btnNovo">+ Novo cartão</button>
+    </div>
+    <div class="ger-colunas" id="colunas"></div>
+    <p class="ger-nota">Arraste um cartão para outra coluna para movê-lo. Só quem criou o cartão e os administradores podem
+      editar, mover e excluir; todos os membros podem comentar e anexar prints.</p>
+  </main>
+  <p class="restrito" id="restrito" hidden>Os quadros da Gerência são liberados para quem tem a área <b>Gerência</b>. Peça ao administrador.</p>
+
+  <!-- Cartão -->
+  <dialog class="ger-dlg" id="dlgCartao">
+    <form method="dialog" class="ger-dlg-topo">
+      <b id="cartaoTitulo">Cartão</b>
+      <button class="ger-fechar" value="fechar" title="Fechar">×</button>
+    </form>
+    <div class="ger-dlg-corpo">
+      <section class="ger-dados" id="cartaoDados"></section>
+      <aside class="ger-lado">
+        <h4>Prints <small>cole com Ctrl+V ou escolha uma imagem</small></h4>
+        <div class="ger-anexos" id="anexos"></div>
+        <div class="ger-anexo-acoes">
+          <button type="button" class="btn" id="btnColar">Colar print</button>
+          <label class="btn"><input type="file" id="arquivoPrint" accept="image/*" hidden />Escolher imagem</label>
+        </div>
+        <h4>Comentários</h4>
+        <div class="ger-comentarios" id="comentarios"></div>
+        <div class="ger-comentar">
+          <textarea id="novoComentario" rows="2" placeholder="Escreva um comentário…"></textarea>
+          <button type="button" class="btn btn-primario" id="btnComentar">Comentar</button>
+        </div>
+        <h4>Histórico</h4>
+        <ol class="ger-eventos" id="eventos"></ol>
+      </aside>
+    </div>
+  </dialog>
+
+  <!-- Editor de print -->
+  <dialog class="ger-dlg ger-dlg-print" id="dlgPrint">
+    <div class="ger-dlg-topo"><b>Anotar o print</b><button type="button" class="ger-fechar" data-fechar-print title="Fechar">×</button></div>
+    <div class="ger-print-ferramentas" id="ferramentas">
+      <button type="button" data-ferramenta="caneta" class="ativo" title="Desenho livre">✎ Caneta</button>
+      <button type="button" data-ferramenta="retangulo" title="Retângulo">▭ Retângulo</button>
+      <button type="button" data-ferramenta="seta" title="Seta">➜ Seta</button>
+      <button type="button" data-ferramenta="texto" title="Clique na imagem para escrever">T Texto</button>
+      <span class="sep"></span>
+      <button type="button" data-cor="#e11d48" class="cor ativo" style="--c:#e11d48" title="Vermelho"></button>
+      <button type="button" data-cor="#f59e0b" class="cor" style="--c:#f59e0b" title="Amarelo"></button>
+      <button type="button" data-cor="#2563eb" class="cor" style="--c:#2563eb" title="Azul"></button>
+      <span class="sep"></span>
+      <button type="button" id="btnDesfazer" title="Desfazer o último traço">↶ Desfazer</button>
+      <span class="espaco"></span>
+      <span class="ger-print-info" id="printInfo"></span>
+      <button type="button" class="btn btn-primario" id="btnSalvarPrint">Salvar no cartão</button>
+    </div>
+    <div class="ger-print-area"><canvas id="telaPrint"></canvas></div>
+  </dialog>
+
+  <!-- Configurar quadros (administradores) -->
+  <dialog class="ger-dlg ger-dlg-config" id="dlgConfig">
+    <form method="dialog" class="ger-dlg-topo"><b>Configurar quadros</b><button class="ger-fechar" value="fechar" title="Fechar">×</button></form>
+    <div class="ger-config" id="config"></div>
+  </dialog>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/acesso.js?v=2026-11-17.04"></script>
+  <script src="js/gerencia.js?v=2026-11-17.04"></script>
+</body>
+</html>

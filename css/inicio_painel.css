@@ -73,3 +73,6 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: va
   .topo .marca { display: none; }
   .hero .numeros { gap: 18px; }
 }
+
+/* Atalho dos quadros da Gerência (gerencia.html): sem foto, fundo em degradê. */
+.atalho-gerencia { background: linear-gradient(135deg, #0f2a1a 0%, #12662a 55%, #1e9538 100%); }
