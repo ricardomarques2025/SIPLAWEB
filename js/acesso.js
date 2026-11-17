@@ -353,13 +353,19 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-17.03';
+  var VERSAO_SITE = '2026-11-17.06';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.15', '17/11/2026', [
+      'A camada Polo Goiânia passa a se chamar Concessões e mostra a proposta do Relatório Técnico 2026 (GOINFRA/DPL): 3 lotes, 1.728,4 km. Lote 1 Sistema Sudeste Integrado (Goiânia → Catalão 253,462 km; Luziânia → divisa MG 323,159 km), Lote 2 Sistema Oeste Agroindustrial (Goiânia → Piranhas 309,246 km; Iporá → Rio Verde 178,014 km) e Lote 3 Sistema Centro-Norte Estruturante (GO-070 até Itapirapuã 187,423 km; GO-164 até São Miguel do Araguaia 333,818 km; GO-080 até Goianésia 143,267 km).',
+      'O traçado segue a malha SRE atual e as extensões mostradas são as do estudo. Legenda por eixo, agrupada por lote (filtra o mapa); o popup e a tabela de atributos dizem se o trecho é do Polo Goiânia original (Convênio de Delegação nº 08/2023) ou ampliação, e trazem o VMDA ponderado do eixo.'
+    ], [
+      'A camada Polo Goiânia virou Concessões: mostra os 3 lotes da nova proposta de concessão das rodovias estaduais, com o Polo Goiânia dentro deles.'
+    ]],
     ['3.13', '17/11/2026', [
       'FUNDEINFRA mostra só as obras da DOR e da DPJ com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra) em todo o site: mapa, cartão da página inicial, tabela de obras, caderno e Painel. As obras antigas cadastradas na origem FUNDEINFRA ficam no banco só como cópia de segurança e não aparecem em nenhuma tela.',
       'TARE passa a ser um filtro do mesmo jeito: mostra as obras da DOR e da DPJ com fonte TARE (o valor da lista "Tare" passou a se chamar "TARE", também nas obras já cadastradas). A obra antiga cadastrada na origem TARE (repetia uma obra da DOR) fica só como cópia de segurança. Com TARE e DOR (ou DPJ) ligadas, o trecho aparece uma vez só, no estilo TARE.',

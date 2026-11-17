@@ -460,10 +460,12 @@ map.addControl(new LogoMapaControl());
   var ferroviasData = null;
   var ferroviasLayer = null;
   var ferroviasFiltroAtivo = false;
-  // Polo Goiânia (13/11/2026): trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023),
-  // montados da sre_base (SIPLAWEB/DADOS/polo_goiania/gerar_polo_goiania.sql). O arquivo é lido só quando a camada é ligada.
+  // Concessões (camada "polo_goiania"): desde 17/11/2026, os 3 lotes do Relatório Técnico 2026 (GOINFRA/DPL), que contêm o
+  // Polo Goiânia original (Convênio de Delegação nº 08/2023) e o ampliam; desenho da sre_base, extensões do estudo
+  // (SIPLAWEB/DADOS/polo_goiania/gerar_polo_goiania.sql). Uma feição por peça; cor e legenda por eixo (Tabela 23).
+  // O arquivo é lido só quando a camada é ligada.
   var poloGoianiaData = null, poloGoianiaLayer = null, poloGoianiaFiltroAtivo = false, poloGoianiaCarga = null;
-  var CORES_POLO_GOIANIA = { POLO01: '#7c3aed', POLO02: '#0891b2', POLO03: '#db2777', POLO04: '#65a30d', POLO05: '#ca8a04' };
+  var CORES_POLO_GOIANIA = { L1E1: '#ca8a04', L1E2: '#65a30d', L2E1: '#0891b2', L2E2: '#2563eb', L3E1: '#7c3aed', L3E2: '#c026d3', L3E3: '#db2777' };
   var extraBaseLayer = null;
   var extraBaseFiltroAtivo = false;
   var hidrografiaLayer = null;
@@ -3866,22 +3868,35 @@ map.addControl(new LogoMapaControl());
     var feicoes = poloGoianiaData.features || [];
     var leg = document.getElementById('legendaPoloGoiania');
     if (leg && !leg.childElementCount) {
-      var total = feicoes.reduce(function(s, f) { return s + (Number(valorSeguro(f, 'ext_sre')) || 0); }, 0);
-      leg.innerHTML = feicoes.map(function(f) {
-        var cod = valorSeguro(f, 'GEOCOD');
-        return '<div class="legenda-item" data-leg="polo_goiania|' + escapeHtml(cod) + '"><svg width="48" height="16" viewBox="0 0 48 16" aria-hidden="true">' +
-          '<path d="M0 8H48" stroke="' + (CORES_POLO_GOIANIA[cod] || '#7c3aed') + '" stroke-width="9" stroke-opacity="0.5" fill="none"/>' +
+      // Um item por eixo (Tabela 23 do estudo), agrupado por lote; extensões = as do estudo (o desenho é da malha SRE).
+      var eixos = [], porEixo = {};
+      feicoes.forEach(function(f) {
+        var eixo = valorSeguro(f, 'eixo');
+        if (!porEixo[eixo]) { porEixo[eixo] = f; eixos.push(eixo); }
+      });
+      var total = 0, loteAtual = '', html = '';
+      eixos.forEach(function(eixo) {
+        var f = porEixo[eixo], lote = valorSeguro(f, 'lote');
+        total += Number(valorSeguro(f, 'ext_eixo_estudo')) || 0;
+        if (lote !== loteAtual) {
+          loteAtual = lote;
+          html += '<div class="legenda-lote-polo">' + escapeHtml(lote) + ' · ' + escapeHtml(valorSeguro(f, 'sistema')) + '</div>';
+        }
+        html += '<div class="legenda-item" data-leg="polo_goiania|' + escapeHtml(eixo) + '"><svg width="48" height="16" viewBox="0 0 48 16" aria-hidden="true">' +
+          '<path d="M0 8H48" stroke="' + (CORES_POLO_GOIANIA[eixo] || '#7c3aed') + '" stroke-width="9" stroke-opacity="0.5" fill="none"/>' +
           '<path d="M0 8H48" stroke="#cc0000" stroke-width="1.5" fill="none"/></svg>' +
-          '<span>' + escapeHtml(valorSeguro(f, 'trecho')) + ' · ' + formatarNumeroPopup(valorSeguro(f, 'ext_sre'), 2) + ' km</span></div>';
-      }).join('') + '<div class="legenda-nota-polo">Total ' + formatarNumeroPopup(total, 1) + ' km · Convênio de Delegação nº 08/2023</div>';
+          '<span>' + escapeHtml(valorSeguro(f, 'eixo_nome')) + ' · ' + formatarNumeroPopup(valorSeguro(f, 'ext_eixo_estudo'), 3) + ' km</span></div>';
+      });
+      leg.innerHTML = html + '<div class="legenda-nota-polo">Total ' + formatarNumeroPopup(total, 3) + ' km (extensões do estudo) · Relatório Técnico 2026 (GOINFRA/DPL). ' +
+        'Inclui o Polo Goiânia original (GO-020, GO-060, GO-070 e GO-080, Convênio nº 08/2023); o popup diz se o trecho é do Polo ou ampliação.</div>';
     }
     var dados = { type: 'FeatureCollection', features: feicoes.filter(function(f) {
-      return tcPassa('polo_goiania', f) && passaFiltroLegenda('polo_goiania', valorSeguro(f, 'GEOCOD'));
+      return tcPassa('polo_goiania', f) && passaFiltroLegenda('polo_goiania', valorSeguro(f, 'eixo'));
     }) };
     poloGoianiaLayer = L.geoJSON(dados, {
       pane: 'poloGoianiaPane',
       style: function(f) {
-        return { color: CORES_POLO_GOIANIA[valorSeguro(f, 'GEOCOD')] || '#7c3aed', weight: 14, opacity: 0.55, lineCap: 'round', lineJoin: 'round' };
+        return { color: CORES_POLO_GOIANIA[valorSeguro(f, 'eixo')] || '#7c3aed', weight: 14, opacity: 0.55, lineCap: 'round', lineJoin: 'round' };
       },
       onEachFeature: function(feature, layer) {
         vincularPopupComAreaClique(layer, function() { return popupPoloGoiania(feature); });
@@ -3889,14 +3904,18 @@ map.addControl(new LogoMapaControl());
     }).addTo(map);
   }
   function popupPoloGoiania(feature) {
-    return construirPopupAreaBase(feature, 'Polo Goiânia · ' + valorSeguro(feature, 'trecho'), [
+    return construirPopupAreaBase(feature, 'Concessões · ' + valorSeguro(feature, 'lote') + ' · ' + valorSeguro(feature, 'rodovia'), [
+      { rotulo: 'Sistema', nome: 'sistema' },
+      { rotulo: 'Eixo', nome: 'eixo_nome' },
+      { rotulo: 'Trecho', nome: 'origem' },
       { rotulo: 'Início', nome: 'inicio' },
       { rotulo: 'Fim', nome: 'fim' },
-      { rotulo: 'Extensão no convênio (km)', nome: 'ext_convenio', tipo: 'numero' },
-      { rotulo: 'Extensão na malha SRE (km)', nome: 'ext_sre', tipo: 'numero' },
+      { rotulo: 'Extensão no estudo (km)', nome: 'ext_estudo', tipo: 'numero', casas: 3 },
+      { rotulo: 'Extensão do eixo no estudo (km)', nome: 'ext_eixo_estudo', tipo: 'numero', casas: 3 },
+      { rotulo: 'VMDA ponderado do eixo (veíc./dia)', nome: 'vmda_eixo', tipo: 'numero' },
       { rotulo: 'SRE inicial (malha atual)', nome: 'sre_inicio' },
       { rotulo: 'SRE final (malha atual)', nome: 'sre_fim' },
-      { rotulo: 'Instrumento', nome: 'convenio' },
+      { rotulo: 'Documento', nome: 'documento' },
       { rotulo: 'Situação', nome: 'situacao' }
     ], 'polo_goiania');
   }
@@ -10185,11 +10204,12 @@ map.addControl(new LogoMapaControl());
       { rodovia: 'Rodovia', GEOCOD: 'Código', trecho: 'Trecho', situacao: 'Situação', EXT_KM: 'Extensão (km)' }, ['GEOCOD', 'rodovia', 'trecho', 'situacao', 'EXT_KM']);
     reg('ferrovias', 'Ferrovias', function() { return ferroviasData; }, function() { ferroviasFiltroAtivo = true; },
       { nome: 'Nome', sigla: 'Sigla', tip_situac: 'Situação', bitola: 'Bitola', municipio: 'Município' }, ['nome', 'sigla', 'tip_situac', 'bitola', 'municipio']);
-    reg('polo_goiania', 'Polo Goiânia (ANTT)', function() { return poloGoianiaData || carregarPoloGoiania(); }, function() { poloGoianiaFiltroAtivo = true; },
-      { trecho: 'Trecho', rodovia: 'Rodovia', inicio: 'Início', fim: 'Fim', ext_convenio: 'Extensão no convênio (km)', ext_sre: 'Extensão na malha SRE (km)',
-        km_ini: 'Km inicial', km_fim: 'Km final', sre_inicio: 'SRE inicial', sre_fim: 'SRE final', sre_inicio_convenio: 'SRE inicial (convênio, 2023)',
-        sre_fim_convenio: 'SRE final (convênio, 2023)', n_segmentos: 'Segmentos SRE', segmentos: 'Segmentos', convenio: 'Instrumento', situacao: 'Situação' },
-      ['trecho', 'rodovia', 'inicio', 'fim', 'ext_convenio', 'ext_sre', 'sre_inicio', 'sre_fim', 'situacao']);
+    reg('polo_goiania', 'Concessões (Lotes 1 a 3)', function() { return poloGoianiaData || carregarPoloGoiania(); }, function() { poloGoianiaFiltroAtivo = true; },
+      { lote: 'Lote', sistema: 'Sistema', eixo_nome: 'Eixo', rodovias_eixo: 'Rodovias do eixo', rodovia: 'Rodovia', origem: 'Trecho',
+        inicio: 'Início', fim: 'Fim', ext_estudo: 'Extensão no estudo (km)', ext_eixo_estudo: 'Extensão do eixo no estudo (km)',
+        vmda_eixo: 'VMDA ponderado do eixo', ext_sre: 'Extensão na malha SRE (km)', sre_inicio: 'SRE inicial', sre_fim: 'SRE final',
+        n_segmentos: 'Segmentos SRE', segmentos: 'Segmentos', documento: 'Documento', situacao: 'Situação' },
+      ['lote', 'eixo_nome', 'rodovia', 'origem', 'inicio', 'fim', 'ext_estudo', 'ext_eixo_estudo', 'vmda_eixo']);
     reg('pedagios', 'Pedágios', function() { return pedagiosData; }, function() { pedagiosFiltroAtivo = true; },
       { NOME: 'Nome', OPERADOR: 'Operador', RODOVIA: 'Rodovia', KM: 'Km', MUNICIPIO: 'Município', JURISDICAO: 'Jurisdição', TIPO: 'Tipo', CONTRATO: 'Contrato', OBS: 'Observação' },
       ['NOME', 'OPERADOR', 'RODOVIA', 'KM', 'MUNICIPIO', 'JURISDICAO', 'TIPO', 'CONTRATO', 'OBS']);
