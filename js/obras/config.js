@@ -52,7 +52,7 @@ var GRUPOS_FICHA_OBRA = ['Identificação', 'Situação', 'Localização', 'Cont
 
 // Selos coloridos na tabela (Etapa e Fonte do recurso); valor fora da lista fica cinza.
 var CORES_FONTE_OBRA = {
-  'Tesouro': '#0f766e', 'Fundeinfra': '#b45309', 'Associativo-Fundeinfra': '#a16207', 'Convênio': '#6d28d9', 'Tare': '#be185d', 'Doação': '#4d7c0f'
+  'Tesouro': '#0f766e', 'Fundeinfra': '#b45309', 'Associativo-Fundeinfra': '#a16207', 'Convênio': '#6d28d9', 'TARE': '#be185d', 'Doação': '#4d7c0f'
 };
 
 var CORES_ETAPA_OBRA = {

@@ -101,7 +101,7 @@
   // Origem sem configuracao: um capitulo por etapa (nesta ordem) e uma secao por fonte.
   const ETAPAS = [['Estudo Técnico Preliminar', 'ESTUDOS TÉCNICOS PRELIMINARES'], ['Planejamento', 'PLANEJAMENTO'], ['Projeto', 'PROJETOS'], ['Licitação', 'LICITAÇÕES'], ['Obra', 'OBRAS'],
     ['Integrada', 'OBRAS INTEGRADAS'], ['Manutenção', 'MANUTENÇÃO']];
-  const FONTES = ['Tesouro', 'Fundeinfra', 'Associativo-Fundeinfra', 'Convênio', 'Tare', 'Doação'];
+  const FONTES = ['Tesouro', 'Fundeinfra', 'Associativo-Fundeinfra', 'Convênio', 'TARE', 'Doação'];
 
   // Cores por intervencao: destaque no mapa (contorno + miolo, como os tipos da jurisdicao) e fundo da linha na planilha
   // (as cores dos cadernos da GOINFRA). A primeira regra que casa vale. Rotulo = item da legenda das obras lineares

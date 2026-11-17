@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-17.02';
+  var VERSAO_SITE = '2026-11-17.03';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -362,7 +362,7 @@ var Acesso = (function() {
   var NOVIDADES = [
     ['3.13', '17/11/2026', [
       'FUNDEINFRA mostra só as obras da DOR e da DPJ com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra) em todo o site: mapa, cartão da página inicial, tabela de obras, caderno e Painel. As obras antigas cadastradas na origem FUNDEINFRA ficam no banco só como cópia de segurança e não aparecem em nenhuma tela.',
-      'TARE passa a ser um filtro do mesmo jeito: mostra as obras da DOR e da DPJ com fonte Tare. A obra antiga cadastrada na origem TARE (repetia uma obra da DOR) fica só como cópia de segurança. Com TARE e DOR (ou DPJ) ligadas, o trecho aparece uma vez só, no estilo TARE.',
+      'TARE passa a ser um filtro do mesmo jeito: mostra as obras da DOR e da DPJ com fonte TARE (o valor da lista "Tare" passou a se chamar "TARE", também nas obras já cadastradas). A obra antiga cadastrada na origem TARE (repetia uma obra da DOR) fica só como cópia de segurança. Com TARE e DOR (ou DPJ) ligadas, o trecho aparece uma vez só, no estilo TARE.',
       'Tabelas de obras FUNDEINFRA e TARE: listam as obras da DOR e da DPJ do filtro, com a coluna Origem; só consulta e exportação (para editar, abra na origem da obra). Quem tem só a área do filtro abre a obra por "Abrir na tabela" no popup.',
       'Cadernos FUNDEINFRA e TARE: obras em andamento e licitações da DOR e projetos da DPJ daquela fonte, com numeração própria.',
       'Painel: as linhas FUNDEINFRA e TARE contam as obras do filtro, sem somar em dobro no total. No popup do trecho, a mesma obra aparece uma vez só.'
@@ -653,7 +653,8 @@ var Acesso = (function() {
   // Painel, página inicial).
   var FILTROS_FONTE = {
     FUNDEINFRA: { origens: ['DOR', 'DPJ'], fontes: ['Fundeinfra', 'Associativo-Fundeinfra'] },
-    TARE: { origens: ['DOR', 'DPJ'], fontes: ['Tare'] }
+    // "TARE" desde 17/11/2026 (script 023); "Tare" é o nome antigo, aceito só para não quebrar durante a troca.
+    TARE: { origens: ['DOR', 'DPJ'], fontes: ['TARE', 'Tare'] }
   };
   function ehFiltroFonte(area) { return Object.prototype.hasOwnProperty.call(FILTROS_FONTE, area); }
   // Filtros em que a obra (linha de siplaweb.obras: origem + fonte) entra: [] | ['FUNDEINFRA'] | ['TARE'].
