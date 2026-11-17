@@ -2837,4 +2837,4 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 /* Polo Goiânia: nota do total sob a legenda (13/11/2026) */
 .legenda-nota-polo { font-size: 11px; color: #64748b; margin: 4px 0 2px 2px; }
 .legenda-lote-polo { font-size: 11px; font-weight: 600; color: #334155; margin: 6px 0 1px 2px; }
-#legendaPoloGoiania .legenda-item svg { flex: 0 0 auto; margin-right: 8px; }
+#legendaPoloGoiania .legenda-item svg, #legendaConcessoes .legenda-item svg { flex: 0 0 auto; margin-right: 8px; }
