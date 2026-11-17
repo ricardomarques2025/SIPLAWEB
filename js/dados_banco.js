@@ -27,8 +27,8 @@ var DadosBanco = (function() {
     if (!recorte) return c;
     var fora = {};
     var registros = c.registros.filter(function(r) {
-      // Tabela FUNDEINFRA: o recorte vale para as obras do filtro (DOR/DPJ com recurso do Fundeinfra).
-      var daTabela = recorte.origem === 'FUNDEINFRA' ? r.FONTE_FUNDEINFRA : r.UNIDADE === recorte.origem;
+      // Tabelas FUNDEINFRA e TARE: o recorte vale para as obras do filtro (DOR/DPJ com aquela fonte).
+      var daTabela = recorte.origem === 'FUNDEINFRA' ? r.FONTE_FUNDEINFRA : recorte.origem === 'TARE' ? r.FONTE_TARE : r.UNIDADE === recorte.origem;
       var fica = !daTabela || !!recorte.codigos[r.IDCOD];
       if (!fica) fora[r.IDCOD] = true;
       return fica;
@@ -88,6 +88,7 @@ var DadosBanco = (function() {
     var ponto = o.geom && o.geom.type === 'Point' ? o.geom.coordinates : pontoDaBase(o);
     return {
       FONTE_FUNDEINFRA: ehFonteFundeinfra(o),
+      FONTE_TARE: Acesso.ehObraDoFiltro('TARE', o),
       IDCOD: o.codigo,
       IDCOD_LEGADO: o.idcod_legado,
       IDGRUPO: o.grupo ? o.grupo.codigo : null,
@@ -126,11 +127,11 @@ var DadosBanco = (function() {
     };
   }
 
-  // FUNDEINFRA (10/11/2026; regra fechada em 17/11/2026): não é camada própria, é o filtro das obras da DOR e da DPJ
-  // com recurso do Fundeinfra (Acesso.ehObraFundeinfra). As obras de origem FUNDEINFRA ficam no banco só como backup
-  // e não vão para o mapa; o botão FUNDEINFRA mostra as obras marcadas com FONTE_FUNDEINFRA.
-  function ehFonteFundeinfra(o) { return Acesso.ehObraFundeinfra(o); }
-  function vaiParaOMapa(o) { return o.origem !== 'FUNDEINFRA'; }
+  // FUNDEINFRA e TARE (17/11/2026): não são camadas próprias, são filtros das obras da DOR e da DPJ pela fonte do
+  // recurso (Acesso.filtrosDaObra). As obras das origens FUNDEINFRA e TARE ficam no banco só como backup e não vão
+  // para o mapa; os botões FUNDEINFRA e TARE mostram as obras marcadas com FONTE_FUNDEINFRA / FONTE_TARE.
+  function ehFonteFundeinfra(o) { return Acesso.ehObraDoFiltro('FUNDEINFRA', o); }
+  function vaiParaOMapa(o) { return !Acesso.ehFiltroFonte(o.origem); }
 
   function temDesenho(o) { return o.tipo === 'Linha' && o.geom && /LineString/.test(o.geom.type); }
 

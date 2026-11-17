@@ -58,9 +58,9 @@
         ] }
       ]
     },
-    // FUNDEINFRA (17/11/2026) = filtro, nao origem com obras proprias: as obras da DOR e da DPJ com recurso do
-    // Fundeinfra (Acesso.fundeinfra; lerObras as traz como copias com origem 'FUNDEINFRA' e origem_real DOR/DPJ).
-    // As obras antigas de origem FUNDEINFRA ficam no banco so como backup e nao entram.
+    // FUNDEINFRA e TARE (17/11/2026) = filtros, nao origens com obras proprias: as obras da DOR e da DPJ com aquela
+    // fonte (Acesso.filtrosFonte; lerObras as traz como copias com origem 'FUNDEINFRA'/'TARE' e origem_real DOR/DPJ).
+    // As obras antigas dessas origens ficam no banco so como backup e nao entram.
     FUNDEINFRA: {
       titulo: 'FUNDEINFRA',
       fase: { titulo: 'FASE', valor: o => o.fase || String(o.modalidade || '').replace(/^Obra Integrada$/, 'Integrada') },
@@ -77,6 +77,23 @@
           { titulo: 'ETP - FUNDEINFRA', filtro: modalidade('ETP FUNDEINFRA') },
           { titulo: 'FUNDEINFRA', filtro: modalidade('FUNDEINFRA') },
           { titulo: 'LICITAÇÃO - FUNDEINFRA', filtro: modalidade('LICITAÇÃO FUNDEINFRA') }
+        ] }
+      ]
+    },
+    TARE: {
+      titulo: 'TARE',
+      fase: { titulo: 'FASE', valor: o => o.fase || String(o.modalidade || '').replace(/^Obra Integrada$/, 'Integrada') },
+      trecho: 'TRECHO',
+      capitulos: [
+        { titulo: 'OBRAS RODOVIÁRIAS EM ANDAMENTO (DOR)', filtro: o => o.origem_real === 'DOR' && o.etapa === 'Obra', secoes: [
+          { titulo: 'TARE', filtro: fonte(/^tare$/i) }
+        ] },
+        { titulo: 'LICITAÇÃO DE OBRAS RODOVIÁRIAS (DOR)', filtro: o => o.origem_real === 'DOR' && o.etapa === 'Licitação', secoes: [
+          { titulo: 'TARE', filtro: fonte(/^tare$/i) }
+        ] },
+        { titulo: 'PROJETOS RODOVIÁRIOS (DPJ)', filtro: o => o.origem_real === 'DPJ', secoes: [
+          { titulo: 'ETP - TARE', filtro: modalidade('ETP TARE') },
+          { titulo: 'TARE', filtro: fonte(/^tare$/i) }
         ] }
       ]
     }
@@ -152,16 +169,16 @@
       if (res.data.length < POR_PAGINA) return linhas;
     }
   }
-  // FUNDEINFRA nao e lida pela origem (as obras antigas de origem FUNDEINFRA sao backup): vem das obras da DOR e da
-  // DPJ com recurso do Fundeinfra, copiadas com origem 'FUNDEINFRA' (a DOR/DPJ do mesmo caderno continua com as suas).
+  // FUNDEINFRA e TARE nao sao lidas pela origem (as obras antigas dessas origens sao backup): vem das obras da DOR e
+  // da DPJ com aquela fonte, copiadas com origem 'FUNDEINFRA'/'TARE' (a DOR/DPJ do mesmo caderno continua com as suas).
   // Na DPJ o caderno nao tem colunas de valor; a copia tambem nao leva os valores.
   async function lerObras(origens) {
-    const reais = origens.filter(c => c !== 'FUNDEINFRA');
+    const reais = origens.filter(c => !Acesso.ehFiltroFonte(c));
     let linhas = reais.length ? await lerPaginas(() => sb.from('obras').select(COLUNAS).in('origem', reais)) : [];
-    if (origens.includes('FUNDEINFRA')) {
-      const F = Acesso.fundeinfra;
-      const fund = await lerPaginas(() => sb.from('obras').select(COLUNAS).in('origem', F.origens).in('fonte', F.fontes));
-      linhas = linhas.concat(fund.map(o => Object.assign({}, o, { origem: 'FUNDEINFRA', origem_real: o.origem },
+    for (const filtro of origens.filter(c => Acesso.ehFiltroFonte(c))) {
+      const F = Acesso.filtrosFonte[filtro];
+      const doFiltro = await lerPaginas(() => sb.from('obras').select(COLUNAS).in('origem', F.origens).in('fonte', F.fontes));
+      linhas = linhas.concat(doFiltro.map(o => Object.assign({}, o, { origem: filtro, origem_real: o.origem },
         o.origem === 'DPJ' ? { valor_aprovado: null, valor_contrato: null } : {})));
     }
     return linhas;

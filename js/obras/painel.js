@@ -19,8 +19,8 @@ var ObrasPainel = (function() {
     xlsx: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
   };
   var CHAVE_LARGURA = 'siplaweb.obras.larguraTabela';
-  // v2 (13/11/2026): ID, Tipo e valores ocultos por padrão; v3 só na FUNDEINFRA (17/11/2026: obras da DOR e da DPJ, com a coluna Origem)
-  function chaveColunas() { return 'siplaweb.obras.colunas.' + (ORIGEM === 'FUNDEINFRA' ? 'v3.' : 'v2.') + ORIGEM; }
+  // v2 (13/11/2026): ID, Tipo e valores ocultos por padrão; v3 nos filtros FUNDEINFRA e TARE (17/11/2026: obras da DOR e da DPJ, com a coluna Origem)
+  function chaveColunas() { return 'siplaweb.obras.colunas.' + (Acesso.ehFiltroFonte(ORIGEM) ? 'v3.' : 'v2.') + ORIGEM; }
   var LARGURA_MIN = 30, LARGURA_MAX = 80;
   var ACOES = { criado: 'Cadastrou', editado: 'Editou', tracado: 'Alterou o traçado', tramitou_origem: 'Tramitou de origem', excluido: 'Excluiu', restaurado: 'Restaurou' };
   var EVENTOS = { cadastro: 'Cadastro', situacao: 'Situação', origem: 'Mudança de origem', nota: 'Nota' };
@@ -251,7 +251,7 @@ var ObrasPainel = (function() {
   }
 
   function contarAprovacoes() {
-    if (ORIGEM === 'FUNDEINFRA' || !Acesso.aprovaNaArea(ORIGEM)) return;   // FUNDEINFRA: só consulta
+    if (Acesso.ehFiltroFonte(ORIGEM) || !Acesso.aprovaNaArea(ORIGEM)) return;   // FUNDEINFRA/TARE: só consulta
     var origem = ORIGEM;
     Acesso.cliente.from('propostas').select('pid,perfil_autor,criado_por').eq('origem', origem).eq('situacao', 'pendente').then(function(res) {
       var n = res.error ? 0 : res.data.filter(function(p) { return Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }).length;
@@ -342,7 +342,7 @@ var ObrasPainel = (function() {
     }).catch(function(e) { toast('Não foi possível abrir a tabela: ' + e.message, true); });
   }
 
-  // Caderno/mapa A4 de uma obra: o da origem dela; na tabela FUNDEINFRA, o caderno FUNDEINFRA.
+  // Caderno/mapa A4 de uma obra: o da origem dela; nas tabelas FUNDEINFRA e TARE, o caderno do filtro.
   function origemCaderno(r) { return ObrasStore.ehFiltro() ? ORIGEM : (r.origem || ORIGEM); }
 
   // ---------- Grade ----------
@@ -350,7 +350,7 @@ var ObrasPainel = (function() {
     var lista = ObrasStore.lista();
     return CAMPOS_OBRA.filter(function(c) {
       if (c.oculta) return false;
-      if (c.soFiltro) return ObrasStore.ehFiltro();   // coluna Origem: só na tabela FUNDEINFRA (DOR + DPJ)
+      if (c.soFiltro) return ObrasStore.ehFiltro();   // coluna Origem: só nas tabelas FUNDEINFRA e TARE (DOR + DPJ)
       return c.comum || lista.some(function(r) { return r[c.campo] !== null && r[c.campo] !== undefined && r[c.campo] !== ''; });
     }).map(function(c) { return c.campo; });
   }
@@ -1078,7 +1078,7 @@ var ObrasPainel = (function() {
             var linhas = [];
             hist.forEach(function(h) {
               // da origem: obra que está na tabela; excluída (não está mais na tabela): pela origem guardada no histórico
-              // (tabela FUNDEINFRA: só as obras da tabela; as antigas de origem FUNDEINFRA são backup)
+              // (tabelas FUNDEINFRA/TARE: só as obras da tabela; as antigas dessas origens são backup)
               var daOrigem = uids[h.registro_uid] || (!soFiltrados && !ObrasStore.ehFiltro() && h.depois && h.depois.origem === origem && !ObrasStore.obter(h.registro_uid));
               if (!daOrigem) return;
               var r = ObrasStore.obter(h.registro_uid);

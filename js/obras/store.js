@@ -20,10 +20,10 @@ var ObrasStore = (function() {
   var propostas = [];           // da origem: pendentes + decididas nos ultimos 30 dias (mais nova primeiro)
   var ouvintes = [];
 
-  // Tabela FUNDEINFRA (17/11/2026): é o filtro das obras da DOR e da DPJ com recurso do Fundeinfra (Acesso.fundeinfra),
-  // só para consulta; editar, propor e aprovar continuam na origem de cada obra. As obras antigas de origem
-  // FUNDEINFRA (backup) não entram.
-  function ehFiltro() { return origem === 'FUNDEINFRA'; }
+  // Tabelas FUNDEINFRA e TARE (17/11/2026): são filtros das obras da DOR e da DPJ pela fonte do recurso
+  // (Acesso.filtrosFonte), só para consulta; editar, propor e aprovar continuam na origem de cada obra. As obras
+  // antigas das origens FUNDEINFRA e TARE (backup) não entram.
+  function ehFiltro() { return Acesso.ehFiltroFonte(origem); }
   function modoProposta() { return !ehFiltro() && Acesso.podePropor(origem) && !Acesso.podeEditar(origem); }
   // Linha do tempo (js/linha_tempo.js): { codigo: [etapa, status] } da data escolhida; null = hoje.
   // Na data passada a tabela mostra só as obras que existiam, com a etapa/status de então, e fica só leitura.
@@ -61,7 +61,8 @@ var ObrasStore = (function() {
     var linhas = [];
     function pagina(inicio) {
       var q = sb.from('obras').select(COLUNAS);
-      q = ehFiltro() ? q.in('origem', Acesso.fundeinfra.origens).in('fonte', Acesso.fundeinfra.fontes) : q.eq('origem', origem);
+      var F = Acesso.filtrosFonte[origem];
+      q = ehFiltro() ? q.in('origem', F.origens).in('fonte', F.fontes) : q.eq('origem', origem);
       return q.is('excluido_em', null).order('codigo')
         .range(inicio, inicio + POR_PAGINA - 1)
         .then(function(res) {
@@ -103,7 +104,7 @@ var ObrasStore = (function() {
   function recarregarObra(uid) {
     return sb.from('obras').select(COLUNAS + ',excluido_em').eq('uid', uid).maybeSingle().then(function(res) {
       if (res.error) throw erro(res.error);
-      var daTabela = res.data && (ehFiltro() ? Acesso.ehObraFundeinfra(res.data) : res.data.origem === origem);
+      var daTabela = res.data && (ehFiltro() ? Acesso.ehObraDoFiltro(origem, res.data) : res.data.origem === origem);
       if (!res.data || res.data.excluido_em || !daTabela) { registros.delete(uid); pendentes.delete(uid); return null; }
       delete res.data.excluido_em;
       return guardar(res.data);

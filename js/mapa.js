@@ -2230,7 +2230,8 @@ map.addControl(new LogoMapaControl());
 
   // Obra pontual visível com as origens ligadas: a própria origem ou, se for do Fundeinfra, o botão FUNDEINFRA.
   function origemPontoAtiva(item) {
-    return !!(servicosAtivos[origemObraPonto(item)] || (servicosAtivos.FUNDEINFRA && ehObraFundeinfra(item)));
+    return !!(servicosAtivos[origemObraPonto(item)] || (servicosAtivos.FUNDEINFRA && ehObraFundeinfra(item)) ||
+      (servicosAtivos.TARE && item && item.FONTE_TARE));
   }
 
   function registrosDadosPorUnidade(registros, unidade) {
@@ -2538,7 +2539,8 @@ map.addControl(new LogoMapaControl());
     obrasDmaData = registrosDadosPorUnidade(linhas, 'DMA');
     obrasDplData = registrosDadosPorUnidade(linhas, 'DPL');
     obrasDpjData = registrosDadosPorUnidade(linhas, 'DPJ');
-    obrasTareData = registrosDadosPorUnidade(linhas, 'TARE');
+    // TARE = filtro (17/11/2026): obras da DOR e da DPJ com fonte Tare (js/dados_banco.js, FONTE_TARE).
+    obrasTareData = linhas.filter(function(x) { return !!(x && x.FONTE_TARE); });
     Object.keys(ORIGENS_MUNICIPAIS).forEach(function(origem) {
       obrasMunicipaisPorGeocod[origem] = indexarRegistrosPorGeocod(registrosDadosPorUnidade(linhas, origem));
     });
@@ -5249,6 +5251,12 @@ map.addControl(new LogoMapaControl());
     return Array.isArray(dados) ? dados : [dados];
   }
 
+  // TARE ligada: a obra da DOR/DPJ com fonte Tare deste trecho é desenhada (e listada) uma vez só, como TARE.
+  function obraEntraComoTare(feature, link) {
+    var linkTare = valorSeguro(feature, 'LINK_TARE');
+    return !!(servicosAtivos.TARE && link && linkTare && String(linkTare) === String(link) &&
+      dadosTareDaFeatureFiltrados(feature, servicoFiltroAtivo, '').length);
+  }
   function dadosTareDaFeatureFiltrados(feature, servico, proposta) {
     var todos = dadosTareDaFeatureTodos(feature);
     var filtrados = [];
@@ -6323,19 +6331,21 @@ map.addControl(new LogoMapaControl());
       (descricao && descricao !== titulo ? '<div class="po-desc">' + escapeHtml(descricao) + '</div>' : '') +
       selo +
       (campos ? '<dl class="po-campos">' + campos + '</dl>' : '') +
-      botaoAbrirObraPopup(origem, dados.IDCOD, dados.FONTE_FUNDEINFRA) +
+      botaoAbrirObraPopup(origem, dados.IDCOD, dados) +
       '</div>';
   }
 
   // Atalho do cartao para a ficha da obra na tabela (como o "Abrir detalhes" da Jurisdicao). So para obras do
   // banco (codigo OB..) de origens que o usuario pode ver; o clique e tratado em abrirObraDoPopup.
-  // Obra do filtro FUNDEINFRA (DOR/DPJ com recurso do Fundeinfra) e pessoa sem a origem dela: abre na tabela FUNDEINFRA.
-  function botaoAbrirObraPopup(origem, codigo, fundeinfra) {
+  // Obra dos filtros FUNDEINFRA/TARE (DOR/DPJ por fonte do recurso) e pessoa sem a origem dela: abre na tabela do filtro.
+  function botaoAbrirObraPopup(origem, codigo, dados) {
     if (!origem || !/^OB\d/.test(String(codigo || ''))) return '';
     if (!window.Acesso || !Acesso.podeVer) return '';
     if (!Acesso.podeVer(origem)) {
-      if (!fundeinfra || !Acesso.podeVer('FUNDEINFRA')) return '';
-      origem = 'FUNDEINFRA';
+      var filtro = dados && dados.FONTE_FUNDEINFRA && Acesso.podeVer('FUNDEINFRA') ? 'FUNDEINFRA'
+        : dados && dados.FONTE_TARE && Acesso.podeVer('TARE') ? 'TARE' : '';
+      if (!filtro) return '';
+      origem = filtro;
     }
     return '<button type="button" class="po-abrir" data-obra-origem="' + escapeHtml(origem) + '" data-obra-codigo="' + escapeHtml(codigo) + '">Abrir na tabela</button>';
   }
@@ -6650,6 +6660,7 @@ map.addControl(new LogoMapaControl());
         var feature = sreData.features[i];
         if (!valorSeguro(feature, cfg.campo)) continue;
         if (servicosAtivos.FUNDEINFRA && valorSeguro(feature, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(feature, 'LINK_FUND'))]) continue;
+        if (cfg.origem !== 'TARE' && obraEntraComoTare(feature, valorSeguro(feature, cfg.campo))) continue;
         if (!featureAtendeFiltrosLinhaLista(feature, rodoviaSelecionada, sreSelecionado)) continue;
         addAoGrupo(feature, cfg.origem, cfg.fn(feature, servicoFiltroAtivo, ''));
       }
@@ -6778,7 +6789,9 @@ map.addControl(new LogoMapaControl());
         p.RODOVIA || p.rodovia || 'Rodovia',
         [valorTrechoFeature(feature), valorExibicao(ext) !== '' ? Number(ext).toLocaleString('pt-BR') + ' km' : ''].filter(Boolean).join(' · ')
       );
-      var obras = (dadosFund ? [dadosFund] : []).concat(dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos, dadosTareTodos);
+      var vistasPopup = {};
+      var obras = (dadosFund ? [dadosFund] : []).concat(dadosDorTodos, dadosDmaTodos, dadosDplTodos, dadosDpjTodos, dadosTareTodos)
+        .filter(function(d) { var id = d && d.IDCOD; if (!id) return true; if (vistasPopup[id]) return false; vistasPopup[id] = true; return true; });
       var cartoes = obras.map(function(d) { return cartaoObraPopup(d, { ocultar: ['RODOVIA'] }); }).join('');
       return cabecalho + contagemObrasPopup(obras.length, 'neste trecho') + (cartoes || '<div class="po-vazio">Nenhuma obra encontrada com os filtros atuais.</div>');
     }
@@ -8302,6 +8315,7 @@ map.addControl(new LogoMapaControl());
         if (!dadosDFiltrados.length) continue;
         // Se já tem LINK_FUND e FUNDEINFRA está ativo, pula (prioridade FUNDEINFRA)
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fd, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fd, 'LINK_FUND'))]) continue;
+        if (obraEntraComoTare(fd, linkDor)) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fd) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fd) !== sreSelecionado) continue;
         linhasBase.push(featureComOrigemIntervencao(fd, 'DOR'));
@@ -8347,6 +8361,7 @@ map.addControl(new LogoMapaControl());
         var dadosDpjFiltrados = dadosDpjDaFeatureFiltrados(fdj, servicoFiltroAtivo, '');
         if (!dadosDpjFiltrados.length) continue;
         if (servicosAtivos.FUNDEINFRA && valorSeguro(fdj, 'LINK_FUND') && linksFundIncluidos[String(valorSeguro(fdj, 'LINK_FUND'))]) continue;
+        if (obraEntraComoTare(fdj, linkDpj)) continue;
         if (rodoviaSelecionada && nomeRodoviaFeature(fdj) !== rodoviaSelecionada) continue;
         if (sreSelecionado && nomeSREFeature(fdj) !== sreSelecionado) continue;
         linhasBase.push(featureComOrigemIntervencao(fdj, 'DPJ'));
@@ -10029,6 +10044,7 @@ map.addControl(new LogoMapaControl());
       if (registro.MUNICIPIO && !feature.properties.NM_MUN) feature.properties.NM_MUN = registro.MUNICIPIO;
       feature.properties[linkField] = registro.IDCOD;
       if (registro.FONTE_FUNDEINFRA) feature.properties.LINK_FUND = registro.IDCOD;
+      if (registro.FONTE_TARE) feature.properties.LINK_TARE = registro.IDCOD;
     });
     return { type: 'FeatureCollection', features: Object.keys(featuresPorChave).map(function(chave) { return featuresPorChave[chave]; }) };
   }

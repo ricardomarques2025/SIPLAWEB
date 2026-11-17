@@ -70,8 +70,9 @@
     }
     regs.forEach(function(o) {
       contar(o.UNIDADE, o);
-      // FUNDEINFRA é filtro (fonte do recurso): o cartão conta as obras das outras origens com recurso do Fundeinfra.
+      // FUNDEINFRA e TARE são filtros (fonte do recurso): os cartões contam as obras da DOR e da DPJ com aquela fonte.
       if (o.FONTE_FUNDEINFRA) contar('FUNDEINFRA', o);
+      if (o.FONTE_TARE) contar('TARE', o);
       if (o.ETAPA === 'Obra') obra++;
       if (o.ETAPA === 'Projeto') projeto++;
       if (o.ATUALIZACAO && o.ATUALIZACAO > atualizado) atualizado = o.ATUALIZACAO;

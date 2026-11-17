@@ -62,9 +62,9 @@
       sb.rpc('nomes').then(dados)
     ]).then(function(r) {
       origens = r[0].filter(function(o) { return Acesso.podeVer(o.codigo); });
-      // FUNDEINFRA é filtro (DOR + DPJ com recurso do Fundeinfra, Acesso.ehObraFundeinfra): as obras antigas de origem
-      // FUNDEINFRA são backup e não entram em nenhuma conta; a linha FUNDEINFRA conta as do filtro (sem somar em dobro no total).
-      obras = r[1].filter(function(o) { return o.origem !== 'FUNDEINFRA'; });
+      // FUNDEINFRA e TARE são filtros (DOR + DPJ pela fonte do recurso, Acesso.filtrosDaObra): as obras antigas dessas
+      // origens são backup e não entram em nenhuma conta; as linhas FUNDEINFRA e TARE contam as do filtro (sem somar em dobro no total).
+      obras = r[1].filter(function(o) { return !Acesso.ehFiltroFonte(o.origem); });
       historico = r[2].concat(r[4]);
       jur = r[3];
       nomes = {};
@@ -107,9 +107,9 @@
   }
 
   // ---------- Filtro por origem ----------
-  // Obra conta na origem dela e, se for do filtro FUNDEINFRA, também na FUNDEINFRA (só para quem vê essa área).
+  // Obra conta na origem dela e também no filtro em que entrar (FUNDEINFRA, TARE), para quem vê essa área.
   function origensDaObra(o) {
-    return Acesso.ehObraFundeinfra(o) && Acesso.podeVer('FUNDEINFRA') ? [o.origem, 'FUNDEINFRA'] : [o.origem];
+    return [o.origem].concat(Acesso.filtrosDaObra(o).filter(function(f) { return Acesso.podeVer(f); }));
   }
   function renderFiltros() {
     var contagem = {};
