@@ -20,7 +20,11 @@ var ObrasStore = (function() {
   var propostas = [];           // da origem: pendentes + decididas nos ultimos 30 dias (mais nova primeiro)
   var ouvintes = [];
 
-  function modoProposta() { return Acesso.podePropor(origem) && !Acesso.podeEditar(origem); }
+  // Tabela FUNDEINFRA (17/11/2026): é o filtro das obras da DOR e da DPJ com recurso do Fundeinfra (Acesso.fundeinfra),
+  // só para consulta; editar, propor e aprovar continuam na origem de cada obra. As obras antigas de origem
+  // FUNDEINFRA (backup) não entram.
+  function ehFiltro() { return origem === 'FUNDEINFRA'; }
+  function modoProposta() { return !ehFiltro() && Acesso.podePropor(origem) && !Acesso.podeEditar(origem); }
   // Linha do tempo (js/linha_tempo.js): { codigo: [etapa, status] } da data escolhida; null = hoje.
   // Na data passada a tabela mostra só as obras que existiam, com a etapa/status de então, e fica só leitura.
   var visao = null;
@@ -56,7 +60,9 @@ var ObrasStore = (function() {
     origem = codigoOrigem;
     var linhas = [];
     function pagina(inicio) {
-      return sb.from('obras').select(COLUNAS).eq('origem', origem).is('excluido_em', null).order('codigo')
+      var q = sb.from('obras').select(COLUNAS);
+      q = ehFiltro() ? q.in('origem', Acesso.fundeinfra.origens).in('fonte', Acesso.fundeinfra.fontes) : q.eq('origem', origem);
+      return q.is('excluido_em', null).order('codigo')
         .range(inicio, inicio + POR_PAGINA - 1)
         .then(function(res) {
           if (res.error) throw erro(res.error);
@@ -81,6 +87,7 @@ var ObrasStore = (function() {
   }
 
   function carregarPropostas() {
+    if (ehFiltro()) { propostas = []; emitir('propostas'); return Promise.resolve(); }
     var desde = new Date(Date.now() - 30 * 864e5).toISOString();
     return sb.from('propostas').select('*').eq('origem', origem).or('situacao.eq.pendente,decidido_em.gte.' + desde)
       .order('pid', { ascending: false }).limit(300)
@@ -91,12 +98,13 @@ var ObrasStore = (function() {
     return propostas.find(function(p) { return p.obra_uid === uid && p.situacao === 'pendente' && tipos.indexOf(p.tipo) !== -1; }) || null;
   }
   // Quem decide esta proposta: depende do perfil de quem propos (guardado na proposta).
-  function podeDecidir(p) { return !visao && Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }
+  function podeDecidir(p) { return !visao && !ehFiltro() && Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }
 
   function recarregarObra(uid) {
     return sb.from('obras').select(COLUNAS + ',excluido_em').eq('uid', uid).maybeSingle().then(function(res) {
       if (res.error) throw erro(res.error);
-      if (!res.data || res.data.excluido_em || res.data.origem !== origem) { registros.delete(uid); pendentes.delete(uid); return null; }
+      var daTabela = res.data && (ehFiltro() ? Acesso.ehObraFundeinfra(res.data) : res.data.origem === origem);
+      if (!res.data || res.data.excluido_em || !daTabela) { registros.delete(uid); pendentes.delete(uid); return null; }
       delete res.data.excluido_em;
       return guardar(res.data);
     });
@@ -287,9 +295,10 @@ var ObrasStore = (function() {
     // podeAlterar: mexe na tabela/ficha/traçado, exclui, tramita e anota (quem propõe); podeGravar: grava direto,
     // sem aprovação (admin ou perfil com "gravar"); modoProposta: propõe sem gravar (tudo vira proposta);
     // podeAprovarAlgo: decide propostas de alguém nesta origem (pleno, gerenciador...); podeDecidir(p): esta proposta.
-    podeAlterar: function() { return !visao && Acesso.podePropor(origem); },
-    podeGravar: function() { return !visao && Acesso.podeEditar(origem); },
-    podeAprovarAlgo: function() { return !visao && Acesso.aprovaNaArea(origem); },
+    podeAlterar: function() { return !visao && !ehFiltro() && Acesso.podePropor(origem); },
+    podeGravar: function() { return !visao && !ehFiltro() && Acesso.podeEditar(origem); },
+    podeAprovarAlgo: function() { return !visao && !ehFiltro() && Acesso.aprovaNaArea(origem); },
+    ehFiltro: ehFiltro,
     podeDecidir: podeDecidir,
     modoProposta: modoProposta,
     propostas: function() { return propostas; }, propostaPendente: propostaPendente, carregarPropostas: carregarPropostas,

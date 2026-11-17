@@ -55,14 +55,16 @@
     var veJur = Acesso.podeVer('JURISDICAO');
     return Promise.all([
       sb.from('origens').select('codigo,nome,ordem').eq('ativa', true).order('ordem').then(dados),
-      tudo(function() { return sb.from('obras').select('uid,codigo,origem,etapa,status,municipio,ext_contrato_km,data_referencia').is('excluido_em', null).order('codigo'); }),
+      tudo(function() { return sb.from('obras').select('uid,codigo,origem,fonte,etapa,status,municipio,ext_contrato_km,data_referencia').is('excluido_em', null).order('codigo'); }),
       tudo(function() { return sb.from('historico').select('quando,acao').gte('quando', desde).order('hid'); }),
       veJur ? tudo(function() { return sbJur.from('alteracoes').select('uid,codigo,situacao,extensao_km,rodovia,municipios').is('excluido_em', null).order('id'); }) : [],
       veJur ? tudo(function() { return sbJur.from('historico').select('quando,acao').gte('quando', desde).order('hid'); }) : [],
       sb.rpc('nomes').then(dados)
     ]).then(function(r) {
       origens = r[0].filter(function(o) { return Acesso.podeVer(o.codigo); });
-      obras = r[1];
+      // FUNDEINFRA é filtro (DOR + DPJ com recurso do Fundeinfra, Acesso.ehObraFundeinfra): as obras antigas de origem
+      // FUNDEINFRA são backup e não entram em nenhuma conta; a linha FUNDEINFRA conta as do filtro (sem somar em dobro no total).
+      obras = r[1].filter(function(o) { return o.origem !== 'FUNDEINFRA'; });
       historico = r[2].concat(r[4]);
       jur = r[3];
       nomes = {};
@@ -105,9 +107,13 @@
   }
 
   // ---------- Filtro por origem ----------
+  // Obra conta na origem dela e, se for do filtro FUNDEINFRA, também na FUNDEINFRA (só para quem vê essa área).
+  function origensDaObra(o) {
+    return Acesso.ehObraFundeinfra(o) && Acesso.podeVer('FUNDEINFRA') ? [o.origem, 'FUNDEINFRA'] : [o.origem];
+  }
   function renderFiltros() {
     var contagem = {};
-    obras.forEach(function(o) { contagem[o.origem] = (contagem[o.origem] || 0) + 1; });
+    obras.forEach(function(o) { origensDaObra(o).forEach(function(c) { contagem[c] = (contagem[c] || 0) + 1; }); });
     var com = origens.filter(function(o) { return contagem[o.codigo]; });
     $('filtros').innerHTML = '<span class="pn-filtros-rotulo">Origem</span>' +
       '<button type="button" data-origem=""' + (filtro ? '' : ' class="ativo"') + '>Todas</button>' +
@@ -122,7 +128,7 @@
     renderFiltros();
     renderResumo();
   }
-  function obrasFiltradas() { return filtro ? obras.filter(function(o) { return o.origem === filtro; }) : obras; }
+  function obrasFiltradas() { return filtro ? obras.filter(function(o) { return origensDaObra(o).indexOf(filtro) !== -1; }) : obras; }
 
   // ---------- Resumo ----------
   function grupoEtapa(e) { if (e === 'Estudo Técnico Preliminar') return 'Planejamento';   // ETP conta como planejamento
@@ -171,9 +177,11 @@
   function renderEtapas() {
     var por = {};
     obras.forEach(function(o) {
-      var x = por[o.origem] = por[o.origem] || { total: 0, Planejamento: 0, Projeto: 0, Obra: 0, outros: 0, detalhe: {} };
-      x.total++; x[grupoEtapa(o.etapa)]++;
-      var d = o.etapa || 'sem etapa'; x.detalhe[d] = (x.detalhe[d] || 0) + 1;
+      origensDaObra(o).forEach(function(c) {
+        var x = por[c] = por[c] || { total: 0, Planejamento: 0, Projeto: 0, Obra: 0, outros: 0, detalhe: {} };
+        x.total++; x[grupoEtapa(o.etapa)]++;
+        var d = o.etapa || 'sem etapa'; x.detalhe[d] = (x.detalhe[d] || 0) + 1;
+      });
     });
     var linhas = origens.filter(function(o) { return por[o.codigo]; }).sort(function(a, b) { return por[b.codigo].total - por[a.codigo].total; });
     var max = Math.max.apply(null, linhas.map(function(o) { return por[o.codigo].total; }).concat(1));
@@ -212,8 +220,14 @@
   }
   function atualizacaoPorOrigem() {
     var ult = {};
-    obras.forEach(function(o) { if (o.data_referencia && (!ult[o.origem] || o.data_referencia > ult[o.origem])) ult[o.origem] = o.data_referencia; });
-    return origens.filter(function(o) { return obras.some(function(x) { return x.origem === o.codigo; }); }).map(function(o) {
+    var tem = {};
+    obras.forEach(function(o) {
+      origensDaObra(o).forEach(function(c) {
+        tem[c] = true;
+        if (o.data_referencia && (!ult[c] || o.data_referencia > ult[c])) ult[c] = o.data_referencia;
+      });
+    });
+    return origens.filter(function(o) { return tem[o.codigo]; }).map(function(o) {
       var d = ult[o.codigo];
       return { origem: o, data: d, dias: d ? diasDesde(d) : null };
     }).sort(function(a, b) { return (b.dias == null ? 1e9 : b.dias) - (a.dias == null ? 1e9 : a.dias); });

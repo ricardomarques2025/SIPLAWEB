@@ -19,7 +19,8 @@ var ObrasPainel = (function() {
     xlsx: 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
   };
   var CHAVE_LARGURA = 'siplaweb.obras.larguraTabela';
-  function chaveColunas() { return 'siplaweb.obras.colunas.v2.' + ORIGEM; }   // v2 (13/11/2026): ID, Tipo e valores ocultos por padrão
+  // v2 (13/11/2026): ID, Tipo e valores ocultos por padrão; v3 só na FUNDEINFRA (17/11/2026: obras da DOR e da DPJ, com a coluna Origem)
+  function chaveColunas() { return 'siplaweb.obras.colunas.' + (ORIGEM === 'FUNDEINFRA' ? 'v3.' : 'v2.') + ORIGEM; }
   var LARGURA_MIN = 30, LARGURA_MAX = 80;
   var ACOES = { criado: 'Cadastrou', editado: 'Editou', tracado: 'Alterou o traçado', tramitou_origem: 'Tramitou de origem', excluido: 'Excluiu', restaurado: 'Restaurou' };
   var EVENTOS = { cadastro: 'Cadastro', situacao: 'Situação', origem: 'Mudança de origem', nota: 'Nota' };
@@ -250,7 +251,7 @@ var ObrasPainel = (function() {
   }
 
   function contarAprovacoes() {
-    if (!Acesso.aprovaNaArea(ORIGEM)) return;
+    if (ORIGEM === 'FUNDEINFRA' || !Acesso.aprovaNaArea(ORIGEM)) return;   // FUNDEINFRA: só consulta
     var origem = ORIGEM;
     Acesso.cliente.from('propostas').select('pid,perfil_autor,criado_por').eq('origem', origem).eq('situacao', 'pendente').then(function(res) {
       var n = res.error ? 0 : res.data.filter(function(p) { return Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }).length;
@@ -341,11 +342,15 @@ var ObrasPainel = (function() {
     }).catch(function(e) { toast('Não foi possível abrir a tabela: ' + e.message, true); });
   }
 
+  // Caderno/mapa A4 de uma obra: o da origem dela; na tabela FUNDEINFRA, o caderno FUNDEINFRA.
+  function origemCaderno(r) { return ObrasStore.ehFiltro() ? ORIGEM : (r.origem || ORIGEM); }
+
   // ---------- Grade ----------
   function colunasVisiveisPadrao() {
     var lista = ObrasStore.lista();
     return CAMPOS_OBRA.filter(function(c) {
       if (c.oculta) return false;
+      if (c.soFiltro) return ObrasStore.ehFiltro();   // coluna Origem: só na tabela FUNDEINFRA (DOR + DPJ)
       return c.comum || lista.some(function(r) { return r[c.campo] !== null && r[c.campo] !== undefined && r[c.campo] !== ''; });
     }).map(function(c) { return c.campo; });
   }
@@ -1073,7 +1078,8 @@ var ObrasPainel = (function() {
             var linhas = [];
             hist.forEach(function(h) {
               // da origem: obra que está na tabela; excluída (não está mais na tabela): pela origem guardada no histórico
-              var daOrigem = uids[h.registro_uid] || (!soFiltrados && h.depois && h.depois.origem === origem && !ObrasStore.obter(h.registro_uid));
+              // (tabela FUNDEINFRA: só as obras da tabela; as antigas de origem FUNDEINFRA são backup)
+              var daOrigem = uids[h.registro_uid] || (!soFiltrados && !ObrasStore.ehFiltro() && h.depois && h.depois.origem === origem && !ObrasStore.obter(h.registro_uid));
               if (!daOrigem) return;
               var r = ObrasStore.obter(h.registro_uid);
               linhas = linhas.concat(HistoricoExport.expandir(h, {
@@ -1090,7 +1096,7 @@ var ObrasPainel = (function() {
     if (acao === 'mapa-a4') {
       var uid = selecionadoUid || fichaUid, r = uid && ObrasStore.obter(uid);
       if (!r) { toast('Selecione uma obra na tabela (clique na linha) para gerar o mapa A4.', true); return; }
-      window.open('obras_caderno.html?origens=' + encodeURIComponent(r.origem || ORIGEM) + '&codigo=' + encodeURIComponent(r.codigo), '_blank');
+      window.open('obras_caderno.html?origens=' + encodeURIComponent(origemCaderno(r)) + '&codigo=' + encodeURIComponent(r.codigo), '_blank');
       return;
     }
     if (acao === 'geojson') {
@@ -1098,7 +1104,7 @@ var ObrasPainel = (function() {
       var feats = grade.getData().map(function(d) {
         var props = {};
         CAMPOS_OBRA.forEach(function(c) { var v = ObrasStore.valorAtual(d.uid, c.campo); if (c.campo !== 'geom') props[c.campo] = v == null ? null : (typeof v === 'object' ? JSON.stringify(v) : v); });
-        props.origem = ORIGEM;
+        props.origem = d.origem || ORIGEM;
         var g = geometriaUnica(feicoesDaObra(d));
         if (!g) semTracado++;
         return { type: 'Feature', properties: props, geometry: g };
@@ -1208,8 +1214,8 @@ var ObrasPainel = (function() {
     });
     $('obrPrancha').addEventListener('click', function() {
       var r = ObrasStore.obter(fichaUid);
-      if (!Acesso.podeExportar(r.origem || ORIGEM)) { toast('O mapa (PDF) não está liberado para o seu perfil nesta origem.', true); return; }
-      window.open('obras_caderno.html?origens=' + encodeURIComponent(r.origem || ORIGEM) + '&codigo=' + encodeURIComponent(r.codigo), '_blank');
+      if (!Acesso.podeExportar(origemCaderno(r))) { toast('O mapa (PDF) não está liberado para o seu perfil nesta origem.', true); return; }
+      window.open('obras_caderno.html?origens=' + encodeURIComponent(origemCaderno(r)) + '&codigo=' + encodeURIComponent(r.codigo), '_blank');
     });
     $('obrExcluir').addEventListener('click', function() {
       var r = ObrasStore.obter(fichaUid);

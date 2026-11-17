@@ -6323,15 +6323,20 @@ map.addControl(new LogoMapaControl());
       (descricao && descricao !== titulo ? '<div class="po-desc">' + escapeHtml(descricao) + '</div>' : '') +
       selo +
       (campos ? '<dl class="po-campos">' + campos + '</dl>' : '') +
-      botaoAbrirObraPopup(origem, dados.IDCOD) +
+      botaoAbrirObraPopup(origem, dados.IDCOD, dados.FONTE_FUNDEINFRA) +
       '</div>';
   }
 
   // Atalho do cartao para a ficha da obra na tabela (como o "Abrir detalhes" da Jurisdicao). So para obras do
   // banco (codigo OB..) de origens que o usuario pode ver; o clique e tratado em abrirObraDoPopup.
-  function botaoAbrirObraPopup(origem, codigo) {
+  // Obra do filtro FUNDEINFRA (DOR/DPJ com recurso do Fundeinfra) e pessoa sem a origem dela: abre na tabela FUNDEINFRA.
+  function botaoAbrirObraPopup(origem, codigo, fundeinfra) {
     if (!origem || !/^OB\d/.test(String(codigo || ''))) return '';
-    if (!window.Acesso || !Acesso.podeVer || !Acesso.podeVer(origem)) return '';
+    if (!window.Acesso || !Acesso.podeVer) return '';
+    if (!Acesso.podeVer(origem)) {
+      if (!fundeinfra || !Acesso.podeVer('FUNDEINFRA')) return '';
+      origem = 'FUNDEINFRA';
+    }
     return '<button type="button" class="po-abrir" data-obra-origem="' + escapeHtml(origem) + '" data-obra-codigo="' + escapeHtml(codigo) + '">Abrir na tabela</button>';
   }
 

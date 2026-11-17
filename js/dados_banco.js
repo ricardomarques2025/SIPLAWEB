@@ -27,7 +27,9 @@ var DadosBanco = (function() {
     if (!recorte) return c;
     var fora = {};
     var registros = c.registros.filter(function(r) {
-      var fica = r.UNIDADE !== recorte.origem || !!recorte.codigos[r.IDCOD];
+      // Tabela FUNDEINFRA: o recorte vale para as obras do filtro (DOR/DPJ com recurso do Fundeinfra).
+      var daTabela = recorte.origem === 'FUNDEINFRA' ? r.FONTE_FUNDEINFRA : r.UNIDADE === recorte.origem;
+      var fica = !daTabela || !!recorte.codigos[r.IDCOD];
       if (!fica) fora[r.IDCOD] = true;
       return fica;
     });
@@ -124,11 +126,10 @@ var DadosBanco = (function() {
     };
   }
 
-  // FUNDEINFRA (10/11/2026): deixa de ser uma camada própria e vira filtro das obras das demais origens (DOR, DPJ...)
-  // cujo recurso é do Fundeinfra. As obras de origem FUNDEINFRA continuam no banco (tabela de obras), mas não vão
-  // para o mapa; o botão FUNDEINFRA mostra as obras marcadas com FONTE_FUNDEINFRA.
-  var FONTES_FUNDEINFRA = ['Fundeinfra', 'Associativo-Fundeinfra'];
-  function ehFonteFundeinfra(o) { return FONTES_FUNDEINFRA.indexOf(o.fonte) !== -1; }
+  // FUNDEINFRA (10/11/2026; regra fechada em 17/11/2026): não é camada própria, é o filtro das obras da DOR e da DPJ
+  // com recurso do Fundeinfra (Acesso.ehObraFundeinfra). As obras de origem FUNDEINFRA ficam no banco só como backup
+  // e não vão para o mapa; o botão FUNDEINFRA mostra as obras marcadas com FONTE_FUNDEINFRA.
+  function ehFonteFundeinfra(o) { return Acesso.ehObraFundeinfra(o); }
   function vaiParaOMapa(o) { return o.origem !== 'FUNDEINFRA'; }
 
   function temDesenho(o) { return o.tipo === 'Linha' && o.geom && /LineString/.test(o.geom.type); }

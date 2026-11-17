@@ -57,6 +57,28 @@
           { titulo: 'DOAÇÃO', filtro: modalidade('DOAÇÃO') }
         ] }
       ]
+    },
+    // FUNDEINFRA (17/11/2026) = filtro, nao origem com obras proprias: as obras da DOR e da DPJ com recurso do
+    // Fundeinfra (Acesso.fundeinfra; lerObras as traz como copias com origem 'FUNDEINFRA' e origem_real DOR/DPJ).
+    // As obras antigas de origem FUNDEINFRA ficam no banco so como backup e nao entram.
+    FUNDEINFRA: {
+      titulo: 'FUNDEINFRA',
+      fase: { titulo: 'FASE', valor: o => o.fase || String(o.modalidade || '').replace(/^Obra Integrada$/, 'Integrada') },
+      trecho: 'TRECHO',
+      capitulos: [
+        { titulo: 'OBRAS RODOVIÁRIAS EM ANDAMENTO (DOR)', filtro: o => o.origem_real === 'DOR' && o.etapa === 'Obra', secoes: [
+          { titulo: 'FUNDEINFRA', filtro: fonte(/^fundeinfra$/i) },
+          { titulo: 'IFAG', filtro: fonte(/associativo/i) }
+        ] },
+        { titulo: 'LICITAÇÃO DE OBRAS RODOVIÁRIAS (DOR)', filtro: o => o.origem_real === 'DOR' && o.etapa === 'Licitação', secoes: [
+          { titulo: 'FUNDEINFRA', filtro: fonte(/fundeinfra/i) }
+        ] },
+        { titulo: 'PROJETOS RODOVIÁRIOS (DPJ)', filtro: o => o.origem_real === 'DPJ', secoes: [
+          { titulo: 'ETP - FUNDEINFRA', filtro: modalidade('ETP FUNDEINFRA') },
+          { titulo: 'FUNDEINFRA', filtro: modalidade('FUNDEINFRA') },
+          { titulo: 'LICITAÇÃO - FUNDEINFRA', filtro: modalidade('LICITAÇÃO FUNDEINFRA') }
+        ] }
+      ]
     }
   };
   // Origem sem configuracao: um capitulo por etapa (nesta ordem) e uma secao por fonte.
@@ -121,15 +143,28 @@
     return res.data.filter(o => ORIGENS_CADERNO.includes(o.codigo) && Acesso.podeVer(o.codigo) && Acesso.podeExportar(o.codigo));
   }
 
-  async function lerObras(origens) {
+  async function lerPaginas(consulta) {
     let linhas = [];
     for (let inicio = 0; ; inicio += POR_PAGINA) {
-      const res = await sb.from('obras').select(COLUNAS).in('origem', origens).is('excluido_em', null)
-        .order('codigo').range(inicio, inicio + POR_PAGINA - 1);
+      const res = await consulta().is('excluido_em', null).order('codigo').range(inicio, inicio + POR_PAGINA - 1);
       if (res.error) throw new Error('Falha ao ler obras do banco: ' + res.error.message);
       linhas = linhas.concat(res.data);
       if (res.data.length < POR_PAGINA) return linhas;
     }
+  }
+  // FUNDEINFRA nao e lida pela origem (as obras antigas de origem FUNDEINFRA sao backup): vem das obras da DOR e da
+  // DPJ com recurso do Fundeinfra, copiadas com origem 'FUNDEINFRA' (a DOR/DPJ do mesmo caderno continua com as suas).
+  // Na DPJ o caderno nao tem colunas de valor; a copia tambem nao leva os valores.
+  async function lerObras(origens) {
+    const reais = origens.filter(c => c !== 'FUNDEINFRA');
+    let linhas = reais.length ? await lerPaginas(() => sb.from('obras').select(COLUNAS).in('origem', reais)) : [];
+    if (origens.includes('FUNDEINFRA')) {
+      const F = Acesso.fundeinfra;
+      const fund = await lerPaginas(() => sb.from('obras').select(COLUNAS).in('origem', F.origens).in('fonte', F.fontes));
+      linhas = linhas.concat(fund.map(o => Object.assign({}, o, { origem: 'FUNDEINFRA', origem_real: o.origem },
+        o.origem === 'DPJ' ? { valor_aprovado: null, valor_contrato: null } : {})));
+    }
+    return linhas;
   }
 
   // ---------- Desenho de cada obra ----------
@@ -227,8 +262,9 @@
   }
 
   // Numero impresso (ITEM): sequencial em cada origem, na ordem do documento, como nos cadernos da GOINFRA.
+  // Chave = a propria obra: com FUNDEINFRA e DOR/DPJ no mesmo caderno, a mesma obra tem um numero em cada origem.
   let NUMERO = new Map();
-  const num = o => NUMERO.get(o.codigo) || '';
+  const num = o => NUMERO.get(o) || '';
 
   function estruturar(codigos, obras) {
     NUMERO = new Map();
@@ -237,7 +273,7 @@
       const cfg = CONFIG_ORIGEM[cod] || {};
       const caps = capitulosDaOrigem(cod, obras.filter(o => o.origem === cod));
       let n = 0;
-      caps.forEach(c => c.secoes.forEach(s => { s.itens = ordenarItens(s.itens, cfg); s.itens.forEach(o => NUMERO.set(o.codigo, ++n)); }));
+      caps.forEach(c => c.secoes.forEach(s => { s.itens = ordenarItens(s.itens, cfg); s.itens.forEach(o => NUMERO.set(o, ++n)); }));
       return { codigo: cod, titulo: cfg.titulo || ('OBRAS · ' + String(origem.nome).toUpperCase()), cfg: cfg, capitulos: caps,
         obras: caps.flatMap(c => c.secoes.flatMap(s => s.itens)) };
     }).filter(o => o.obras.length);

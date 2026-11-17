@@ -353,13 +353,22 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-13.24';
+  var VERSAO_SITE = '2026-11-17.01';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.13', '17/11/2026', [
+      'FUNDEINFRA mostra só as obras da DOR e da DPJ com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra) em todo o site: mapa, cartão da página inicial, tabela de obras, caderno e Painel. As obras antigas cadastradas na origem FUNDEINFRA ficam no banco só como cópia de segurança e não aparecem em nenhuma tela.',
+      'Tabela de obras FUNDEINFRA: lista as obras da DOR e da DPJ do Fundeinfra, com a coluna Origem; só consulta e exportação (para editar, abra na origem da obra). Quem tem só a área FUNDEINFRA abre a obra por "Abrir na tabela" no popup.',
+      'Caderno FUNDEINFRA: obras em andamento e licitações da DOR e projetos da DPJ do Fundeinfra, com numeração própria.',
+      'Painel: a linha FUNDEINFRA conta as obras do filtro, sem somar em dobro no total.'
+    ], [
+      'FUNDEINFRA agora mostra só as obras da DOR e da DPJ pagas com recurso do Fundeinfra: no mapa, na tabela, no caderno e no Painel.',
+      'As obras antigas da FUNDEINFRA ficam guardadas, mas não aparecem mais.'
+    ]],
     ['3.12', '13/11/2026', [
       'Camada de referência Polo Goiânia: trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023), GO-020, GO-060, GO-070 e GO-080 (dois trechos), 572,9 km, montados a partir da malha SRE atual. Faixa colorida por trecho, legenda que filtra, popup com início, fim, extensões e situação, e tabela de atributos. Clicando na rodovia (ou numa obra) por cima da faixa, o popup também traz o trecho do Polo.'
     ], [
@@ -637,9 +646,19 @@ var Acesso = (function() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
   else iniciar();
 
+  // FUNDEINFRA é um filtro, não uma origem com obras próprias (desde 10/11/2026; regra fechada em 17/11/2026): só as
+  // obras da DOR e da DPJ com recurso do Fundeinfra. As obras antigas da origem FUNDEINFRA ficam no banco só como
+  // backup e não aparecem em nenhuma tela (mapa, tabela, caderno, Painel, página inicial).
+  var FUNDEINFRA = { origens: ['DOR', 'DPJ'], fontes: ['Fundeinfra', 'Associativo-Fundeinfra'] };
+  function ehObraFundeinfra(o) {
+    return !!o && FUNDEINFRA.origens.indexOf(o.origem) !== -1 && FUNDEINFRA.fontes.indexOf(o.fonte) !== -1;
+  }
+
   return {
     pronto: pronto,
     cliente: sb,
+    fundeinfra: FUNDEINFRA,                   // { origens, fontes } do filtro FUNDEINFRA
+    ehObraFundeinfra: ehObraFundeinfra,       // obra (linha de siplaweb.obras) entra no filtro FUNDEINFRA?
     url: SUPABASE.url,                        // funções do servidor (Edge Functions) usam o mesmo projeto
     ambiente: AMBIENTE,                       // 'producao' | 'homologacao'
     versao: VERSAO_SITE,

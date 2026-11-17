@@ -13,6 +13,8 @@
 //   ID (ref) é só referência de ordenação da planilha (muda a cada versão dela); Tipo e valores servem aos cadernos.
 var CAMPOS_OBRA = [
   { campo: 'codigo', titulo: 'Código', tipo: 'texto', largura: 112, fixa: true, somenteLeitura: true, comum: true, grupo: 'Identificação' },
+  // soFiltro: visível por padrão só na tabela FUNDEINFRA (filtro das obras da DOR e da DPJ; 17/11/2026).
+  { campo: 'origem', titulo: 'Origem', tipo: 'texto', largura: 80, somenteLeitura: true, soFiltro: true, grupo: 'Identificação' },
   { campo: 'grupo_codigo', titulo: 'Grupo', tipo: 'texto', largura: 96, somenteLeitura: true, grupo: 'Identificação' },
   { campo: 'tipo', titulo: 'Tipo', tipo: 'texto', largura: 74, somenteLeitura: true, comum: true, oculta: true, grupo: 'Identificação' },
   { campo: 'ref', titulo: 'ID', tipo: 'texto', largura: 70, oculta: true, grupo: 'Identificação' },
