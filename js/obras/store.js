@@ -9,7 +9,7 @@ var ObrasStore = (function() {
   var sb = Acesso.cliente;   // schema siplaweb
   var EDITAVEIS = CAMPOS_OBRA.filter(function(c) { return !c.somenteLeitura; }).map(function(c) { return c.campo; });
   var COLUNAS = ['uid', 'codigo', 'versao', 'atualizado_em', 'atualizado_por', 'origem', 'tipo', 'natureza', 'vinculos', 'geom',
-    'grupo:grupos(codigo)'].concat(EDITAVEIS).join(',');
+    'grupo:grupos(codigo)', 'pge_eixo', 'pge_etapa', 'pge_item'].concat(EDITAVEIS).join(',');   // pge_*: calculados (027)
   var POR_PAGINA = 1000;
 
   var origem = null;

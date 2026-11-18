@@ -51,6 +51,10 @@ var CAMPOS_OBRA = [
   // Base Geral do PGE (Programa de Gestão de Estruturas; GME, GMK e PGE; script 025, 18/11/2026). Só aparecem nas
   // origens que têm valor; as menos usadas ficam ocultas (ligar em "Colunas"). futuro: data que pode ser futura.
   { campo: 'codigo_pge', titulo: 'Código PGE', tipo: 'texto', largura: 100, grupo: 'Identificação' },
+  // Calculados pelo banco a partir do Código PGE (script 027): só leitura.
+  { campo: 'pge_eixo', titulo: 'Eixo PGE', tipo: 'texto', largura: 70, somenteLeitura: true, oculta: true, grupo: 'Identificação' },
+  { campo: 'pge_etapa', titulo: 'Etapa PGE', tipo: 'texto', largura: 70, somenteLeitura: true, oculta: true, grupo: 'Identificação' },
+  { campo: 'pge_item', titulo: 'Item PGE', tipo: 'texto', largura: 70, somenteLeitura: true, oculta: true, grupo: 'Identificação' },
   { campo: 'estrutura', titulo: 'Estrutura prevista', tipo: 'texto', largura: 130, grupo: 'Estrutura' },
   { campo: 'curso_dagua', titulo: "Curso d'água", tipo: 'texto', largura: 200, grupo: 'Estrutura' },
   { campo: 'extensao_m', titulo: 'Extensão (m)', tipo: 'numero', largura: 100, grupo: 'Estrutura' },
@@ -84,7 +88,8 @@ var CAMPOS_OBRA = [
 // fixo à esquerda e os campos só do sistema ficam no fim, ocultos. Nas demais origens nada muda.
 var ORIGENS_PLANILHA_PGE = ['GME', 'GMK', 'PGE1', 'GPP', 'PGE3', 'PGE4'];
 var COLUNAS_PLANILHA_PGE = [
-  ['codigo_pge', 'CÓDIGO'], ['modalidade', 'SUBEIXO', 'soComValor'], ['regional', 'REGIONAL'], ['curso_dagua', "CURSO D'ÁGUA"],
+  ['codigo_pge', 'CÓDIGO'], ['pge_eixo', 'EIXO'], ['pge_etapa', 'ETAPA'], ['modalidade', 'SUBEIXO', 'soComValor'],
+  ['pge_item', 'ITEM'], ['regional', 'REGIONAL'], ['curso_dagua', "CURSO D'ÁGUA"],
   ['sre', 'S.R.E'], ['trecho_inicial', 'TRECHO INICIAL'], ['trecho_final', 'TRECHO FINAL'], ['municipio', 'MUNICÍPIOS'],
   ['descricao', 'DESCRIÇÃO DO OBJETO'], ['estrutura', 'ESTRUTURA PREVISTA'], ['intervencao', 'INTERVENÇÃO (OAE/OAC)'],
   ['superficie', 'SITUAÇÃO SUPERFÍCIE'], ['rodovia', 'RODOVIAS'], ['extensao_m', 'EXT. (m)'], ['altura_m', 'ALTURA (m)'],
