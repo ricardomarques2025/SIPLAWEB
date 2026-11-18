@@ -40,6 +40,10 @@ var CAMPOS_OBRA = [
   { campo: 'municipio', titulo: 'Município', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'localidade', titulo: 'Localidade', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'populacao', titulo: 'População', tipo: 'numero', largura: 100, grupo: 'Localização' },
+  // Coordenadas (18/11/2026): calculadas da geometria da obra no navegador (ObrasStore), só leitura: o ponto se muda
+  // pelo mapa. Linha: o vértice do meio. Servem para busca e filtro.
+  { campo: 'latitude', titulo: 'Latitude', tipo: 'numero', casas: 6, negativo: true, largura: 100, somenteLeitura: true, oculta: true, grupo: 'Localização' },
+  { campo: 'longitude', titulo: 'Longitude', tipo: 'numero', casas: 6, negativo: true, largura: 100, somenteLeitura: true, oculta: true, grupo: 'Localização' },
   { campo: 'sre', titulo: 'SRE', tipo: 'texto', largura: 110, grupo: 'Localização' },
   { campo: 'sei_obra_contrato', titulo: 'Processo de contratação', tipo: 'texto', largura: 150, grupo: 'Contratação' },
   { campo: 'empresa', titulo: 'Empresa', tipo: 'texto', largura: 200, grupo: 'Contratação' },
@@ -93,7 +97,7 @@ var COLUNAS_PLANILHA_PGE = [
   ['pge_item', 'ITEM'], ['regional', 'REGIONAL'], ['curso_dagua', "CURSO D'ÁGUA"],
   ['sre', 'S.R.E'], ['trecho_inicial', 'TRECHO INICIAL'], ['trecho_final', 'TRECHO FINAL'], ['municipio', 'MUNICÍPIOS'],
   ['descricao', 'DESCRIÇÃO DO OBJETO'], ['estrutura', 'ESTRUTURA PREVISTA'], ['intervencao', 'INTERVENÇÃO (OAE/OAC)'],
-  ['superficie', 'SITUAÇÃO SUPERFÍCIE'], ['rodovia', 'RODOVIAS'], ['extensao_m', 'EXT. (m)'], ['altura_m', 'ALTURA (m)'],
+  ['superficie', 'SITUAÇÃO SUPERFÍCIE'], ['rodovia', 'RODOVIAS'], ['latitude', 'LATITUDE'], ['longitude', 'LONGITUDE'], ['extensao_m', 'EXT. (m)'], ['altura_m', 'ALTURA (m)'],
   ['largura_m', 'LARGURA (m)'], ['area_m2', 'ÁREA (m²)'], ['fonte', 'RECURSO'], ['custo_preliminar', 'CUSTO PRELIMINAR'],
   ['lote_projeto', 'LOTE DE PROJETO'], ['etapa', 'FASE'], ['etapa_fase', 'ETAPA DA FASE'], ['status', 'SITUAÇÃO'],
   ['projeto_inicio', 'DATA DE INÍCIO (PROJETO)'], ['projeto_termino', 'DATA DE TÉRMINO (PROJETO)'], ['valor_projeto', 'VALOR DO PROJETO'],

@@ -52,8 +52,23 @@ var ObrasStore = (function() {
     return validarPontoObra(valor.coordinates[1], valor.coordinates[0]);
   }
 
+  // Latitude/longitude da obra (colunas só leitura): ponto = a coordenada; linha = o vértice do meio da 1ª parte.
+  function coordenadas(g) {
+    if (!g || !g.coordinates) return null;
+    var c = g.coordinates;
+    if (g.type === 'Point') return c;
+    if (g.type === 'MultiPoint' || g.type === 'LineString') return c[Math.floor(c.length / 2)];
+    if (g.type === 'MultiLineString' && c[0]) return c[0][Math.floor(c[0].length / 2)];
+    return null;
+  }
+  function comCoordenadas(r) {
+    var c = coordenadas(r.geom);
+    r.latitude = c ? Math.round(c[1] * 1e6) / 1e6 : null;
+    r.longitude = c ? Math.round(c[0] * 1e6) / 1e6 : null;
+    return r;
+  }
   function guardar(linha) {
-    var r = Object.assign({}, linha);
+    var r = comCoordenadas(Object.assign({}, linha));
     r.grupo_codigo = r.grupo ? r.grupo.codigo : null;
     delete r.grupo;
     registros.set(r.uid, r);
@@ -128,7 +143,10 @@ var ObrasStore = (function() {
   function pendente(uid, campo) { var p = pendentes.get(uid); return !!(p && Object.prototype.hasOwnProperty.call(p, campo)); }
   function valorAtual(uid, campo) {
     if (visao && (campo === 'etapa' || campo === 'status')) { var r0 = registros.get(uid), v = r0 && visao[r0.codigo]; if (v) return campo === 'etapa' ? v[0] : v[1]; }
-    var p = pendentes.get(uid); return p && Object.prototype.hasOwnProperty.call(p, campo) ? p[campo] : (registros.get(uid) || {})[campo]; }
+    var p = pendentes.get(uid);
+    // Ponto mudado e ainda não salvo: as coordenadas acompanham o desenho pendente.
+    if ((campo === 'latitude' || campo === 'longitude') && p && Object.prototype.hasOwnProperty.call(p, 'geom')) return comCoordenadas({ geom: p.geom })[campo];
+    return p && Object.prototype.hasOwnProperty.call(p, campo) ? p[campo] : (registros.get(uid) || {})[campo]; }
   function totalPendentes() { var n = 0; pendentes.forEach(function(p) { n += Object.keys(p).length; }); return n; }
   function descartar() { pendentes = new Map(); emitir('pendentes'); }
 

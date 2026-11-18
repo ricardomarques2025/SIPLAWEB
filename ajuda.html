@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Ctext x=%2712%27 y=%2717.5%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-weight=%27700%27 font-size=%2715%27 fill=%27white%27%3E%3F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-18.10" />
+  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-18.11" />
 </head>
 <body>
 <header class="aj-topo">
@@ -220,6 +220,7 @@
     <div><b>Áreas ambientais / urbanas</b><span>Unidades de conservação e manchas urbanas.</span></div>
     <div><b>Área de Estudo / Influência</b><span>Áreas de análise.</span></div>
     <div><b>Ferrovias</b> e <b>Pedágios</b><span>Infraestrutura complementar.</span></div>
+    <div><b>Malha Estadual em obras</b><span>Em obras de duplicação: linha dupla tracejada (= = =), diferente da duplicada, que é dupla contínua. Em obras de pavimentação: linha simples tracejada (- - -). A legenda mostra o mesmo desenho.</span></div>
     <div><b>Polo Goiânia · Concessões (um botão só)</b><span>As duas camadas ficam num botão só, que muda a cada clique: <b>Polo Goiânia</b> (só o Polo) › <b>Concessões</b> (os 3 lotes inteiros) › <b>Concessões − Polo</b> (os 3 lotes sem os trechos do Polo Goiânia original, ou seja, só a ampliação) › desligado. O nome que está ligado aparece em negrito e sublinhado. A legenda e a tabela de atributos acompanham o estado: em "Concessões − Polo" as extensões de cada eixo, de cada lote e o total (1.156,26 km) são recalculados só com os trechos de ampliação, e a nota mostra a conta (Concessões menos Polo). Com a tabela aberta, ela troca junto com o botão.</span></div>
     <div><b>Polo Goiânia</b><span>Trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023): GO-020, GO-060, GO-070 e GO-080 (dois trechos), 572,9 km. Faixa colorida por trecho sob as rodovias; a legenda filtra por trecho; o popup traz início, fim, extensão no convênio e na malha SRE e a situação do projeto. Clicando na rodovia por cima da faixa, o popup da rodovia também mostra o trecho do Polo.</span></div>
     <div><b>Concessões</b><span>Proposta de concessão das rodovias estaduais em 3 lotes (Relatório Técnico 2026, GOINFRA/DPL), 1.728,4 km: Lote 1 Sistema Sudeste Integrado (Goiânia → Catalão e Luziânia → divisa MG), Lote 2 Sistema Oeste Agroindustrial (Goiânia → Piranhas e Iporá → Rio Verde) e Lote 3 Sistema Centro-Norte Estruturante (GO-070 até Itapirapuã, GO-164 até São Miguel do Araguaia e GO-080 até Goianésia). Os lotes incluem o Polo Goiânia original (GO-020, GO-060, GO-070 e GO-080, Convênio de Delegação nº 08/2023, 572,9 km). O traçado segue a malha SRE atual; as extensões mostradas são as do estudo. Faixa colorida por eixo sob as rodovias; a legenda filtra por eixo; o popup traz lote, eixo, se o trecho é do Polo original ou ampliação, início, fim, extensões e VMDA ponderado. Camada separada do Polo Goiânia; clicando na rodovia por cima da faixa, o popup da rodovia também mostra a concessão.</span></div>
@@ -255,7 +256,7 @@
   <ul>
     <li><b>Busca</b> em todas as colunas e <b>filtro em cada coluna</b> (funil, como no Excel); clique no título para ordenar.</li>
     <li><b>Tela cheia</b> ou <b>Dividida com o mapa</b>; o alfinete da linha mostra o item no mapa.</li>
-    <li><b>Filtrar o mapa</b>: o mapa mostra só os itens que passam na busca e nos filtros; um aviso no alto do mapa permite desfazer. Na tabela de obras, se houver filtro na coluna <b>Município</b>, os municípios escolhidos ficam claros, os outros escurecem e o mapa se aproxima deles.</li>
+    <li><b>Filtrar o mapa</b>: o mapa mostra só os itens que passam na busca e nos filtros; um aviso no alto do mapa permite desfazer. Na tabela de obras, as obras das outras origens ligadas também saem do mapa enquanto o filtro estiver ligado (ex.: tabela no PGE1 = só as obras do PGE1 no mapa). Na tabela de obras, se houver filtro na coluna <b>Município</b>, os municípios escolhidos ficam claros, os outros escurecem e o mapa se aproxima deles.</li>
     <li><b>Exportar</b> (só para quem exporta): <b>Excel — todos</b>, <b>Excel — filtrados</b>, <b>CSV</b> e <b>GeoJSON com atributos (QGIS)</b>.</li>
     <li>Ao lado do Exportar, a origem dos dados: <b>Dados do banco</b> (ponto verde: malha complementar, área de estudo e área de influência; clique para buscar de novo) ou <b>Camada de base</b> (ponto cinza: arquivo publicado com o site, atualizado a cada nova versão).</li>
   </ul>
@@ -781,7 +782,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=2026-11-18.10"></script>
-<script src="js/ajuda.js?v=2026-11-18.10"></script>
+<script src="js/acesso.js?v=2026-11-18.11"></script>
+<script src="js/ajuda.js?v=2026-11-18.11"></script>
 </body>
 </html>

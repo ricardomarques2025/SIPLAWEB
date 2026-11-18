@@ -279,8 +279,8 @@ const REGRAS_ESTILO = [
   const ROD_EST_INFO = {
     DUP: { label: 'Duplicada', tipo: 'dup', cor: '#ef2020' },
     PAV: { label: 'Pavimentada', tipo: 'simple', cor: '#ef2020' },
-    EOD: { label: 'Em Obras de Duplicação', tipo: 'dashed-red', cor: '#ef2020' },
-    EOP: { label: 'Em Obras de Pavimentação', tipo: 'dashed-red', cor: '#ef2020' },
+    EOD: { label: 'Em Obras de Duplicação', tipo: 'dup-dashed', cor: '#ef2020' },   // = = = (dupla tracejada)
+    EOP: { label: 'Em Obras de Pavimentação', tipo: 'dashed-red', cor: '#ef2020' },   // - - - (só tracejada)
     IMP: { label: 'Implantada', tipo: 'simple', cor: '#f08a00' },
     LEN: { label: 'Leito Natural', tipo: 'simple', cor: '#f08a00' },
     PLA: { label: 'Planejada', tipo: 'simple', cor: '#000000' }

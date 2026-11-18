@@ -21,7 +21,7 @@ var ObrasPainel = (function() {
   var CHAVE_LARGURA = 'siplaweb.obras.larguraTabela';
   // v2 (13/11/2026): ID, Tipo e valores ocultos por padrão; v3 nos filtros FUNDEINFRA e TARE (17/11/2026: obras da DOR e da DPJ, com a coluna Origem)
   // v4: origens da Base Geral do PGE com as colunas da planilha (18/11/2026); a escolha antiga de colunas não vale mais.
-  function chaveColunas() { return 'siplaweb.obras.colunas.' + (Acesso.ehFiltroFonte(ORIGEM) ? 'v3.' : ehOrigemPlanilhaPge(ORIGEM) ? 'v4.' : 'v2.') + ORIGEM; }
+  function chaveColunas() { return 'siplaweb.obras.colunas.' + (Acesso.ehFiltroFonte(ORIGEM) ? 'v3.' : ehOrigemPlanilhaPge(ORIGEM) ? 'v5.' : 'v2.') + ORIGEM; }
   var LARGURA_MIN = 30, LARGURA_MAX = 80;
   var ACOES = { criado: 'Cadastrou', editado: 'Editou', tracado: 'Alterou o traçado', tramitou_origem: 'Tramitou de origem', excluido: 'Excluiu', restaurado: 'Restaurou' };
   var EVENTOS = { cadastro: 'Cadastro', situacao: 'Situação', origem: 'Mudança de origem', nota: 'Nota' };
@@ -53,7 +53,7 @@ var ObrasPainel = (function() {
     if (v === null || v === undefined || v === '') return '';
     if (c.tipo === 'data') return fmtData(v);
     if (c.moeda) return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    if (c.tipo === 'numero') return Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 3 });
+    if (c.tipo === 'numero') return Number(v).toLocaleString('pt-BR', { maximumFractionDigits: c.casas || 3 });
     return String(v);
   }
   // Traçado considera o que está pendente (o halo e o "Ver no mapa" já mostram a escolha antes de salvar).
@@ -484,7 +484,10 @@ var ObrasPainel = (function() {
   function atende(r) {
     if (filtros.busca) {
       var alvo = semAcento(CAMPOS_OBRA.map(function(c) { return ObrasStore.valorAtual(r.uid, c.campo); }).join(' '));
-      if (!semAcento(filtros.busca).split(/\s+/).every(function(t) { return alvo.indexOf(t) !== -1; })) return false;
+      // Número com vírgula (como a tabela mostra, ex.: -15,9429) acha o valor guardado com ponto.
+      if (!semAcento(filtros.busca).split(/\s+/).every(function(t) {
+        return alvo.indexOf(t) !== -1 || (/^-?\d+,\d+$/.test(t) && alvo.indexOf(t.replace(',', '.')) !== -1);
+      })) return false;
     }
     return true;
   }
@@ -494,7 +497,8 @@ var ObrasPainel = (function() {
     atualizarContador(grade.getDataCount('active'));
   }
   // ---------- Filtrar o mapa pela tabela ----------
-  // Ligado: as obras desta origem que não passam na busca/filtros das colunas saem do mapa (as demais origens ficam).
+  // Ligado: o mapa mostra só as obras que estão na tabela (busca e filtros das colunas); as outras origens ligadas
+  // também saem enquanto o filtro estiver ligado (18/11/2026).
   // Continua valendo com a tabela fechada (o botão "Abrir tabela de obras" avisa); desliga no próprio botão.
   function agendarRecorteMapa(enquadrar) {
     clearTimeout(tempoRecorte);
@@ -542,7 +546,7 @@ var ObrasPainel = (function() {
   }
   function alternarFiltroMapa() {
     filtrarMapa = !filtrarMapa;
-    toast(filtrarMapa ? 'Mapa filtrado pela tabela: ' + (grade ? grade.getDataCount('active') : 0) + ' obra(s) de ' + ORIGEM + '.' : 'Mapa sem o filtro da tabela.');
+    toast(filtrarMapa ? 'Mapa filtrado pela tabela: ' + (grade ? grade.getDataCount('active') : 0) + ' obra(s) de ' + ORIGEM + ' (só elas no mapa).' : 'Mapa sem o filtro da tabela.');
     aplicarRecorteMapa(true);
   }
 

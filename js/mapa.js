@@ -4981,7 +4981,7 @@ map.addControl(new LogoMapaControl());
       }, {
         pane: 'sreBasePane',
         style: function() {
-          return { color:'#ef2020', weight:3, opacity:0.95 };
+          return { color:'#ef2020', weight:4, opacity:0.95, dashArray:'12,7', lineCap:'butt' };
         }
       }));
       grupo.addLayer(L.geoJSON({
@@ -4990,7 +4990,7 @@ map.addControl(new LogoMapaControl());
       }, {
         pane: 'sreBasePane',
         style: function() {
-          return { color:'#ffffff', weight:1.2, opacity:1, dashArray:'6,4' };
+          return { color:'#ffffff', weight:1, opacity:1, dashArray:'12,7', lineCap:'butt' };
         }
       }));
     }
@@ -7153,11 +7153,16 @@ map.addControl(new LogoMapaControl());
         '<span class="legenda-linha-dup-miolo" style="height:2px;"></span>' +
       '</span>';
     }
+    // Rodovia em obras (18/11/2026): duplicação = dupla tracejada (= = =); pavimentação = só tracejada (- - -),
+    // como no mapa (desenharSREBase).
+    if (tipo === 'dup-dashed') {
+      return '<span class="legenda-linha-wrap"><svg width="42" height="14" viewBox="0 0 42 14" aria-hidden="true">' +
+        '<path d="M0 7H42" stroke="' + cor + '" stroke-width="6" stroke-dasharray="9 5" fill="none"/>' +
+        '<path d="M0 7H42" stroke="#ffffff" stroke-width="1.6" stroke-dasharray="9 5" fill="none"/></svg></span>';
+    }
     if (tipo === 'dashed-red') {
-      return '<span class="legenda-linha-wrap">' +
-        '<span class="legenda-linha-eod-base" style="height:5px;background:' + cor + ';"></span>' +
-        '<span class="legenda-linha-eod-miolo" style="border-top:2px dashed ' + cor + '; background:transparent; height:0;"></span>' +
-      '</span>';
+      return '<span class="legenda-linha-wrap"><svg width="42" height="14" viewBox="0 0 42 14" aria-hidden="true">' +
+        '<path d="M0 7H42" stroke="' + cor + '" stroke-width="3.5" stroke-dasharray="9 5" fill="none"/></svg></span>';
     }
     if (tipo === 'dashed-green') {
       return '<span class="legenda-linha-wrap">' +
