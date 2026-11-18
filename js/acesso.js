@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-18.01';
+  var VERSAO_SITE = '2026-11-18.02';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -361,14 +361,17 @@ var Acesso = (function() {
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
     ['3.16', '18/11/2026', [
-      'Base Geral do Programa de Gestão de Estruturas (PGE, planilha de 18/11/2026): nova origem PGE com 457 obras de pontes, viadutos e bueiros dos eixos 1 a 4 (Eixo 1 pontes em rodovias pavimentadas, Eixo 2 Goiás de Ponta a Ponte, Eixo 3 parcerias, Eixo 4 novas obras estaduais: Plano de Obras, Substituição de Balsas, Passagens de Fauna). O eixo fica na Modalidade.',
-      'Placas da PGE como as do GME e do GMK (OAE e OAC em projeto, em obra e concluída), uma cor por eixo; a legenda separa por eixo e filtra o mapa. "Ponte/bueiro" do Eixo 2 entra como intervenção "OAE / OAC", com a placa de OAE.',
+      'Base Geral do Programa de Gestão de Estruturas (PGE, planilha de 18/11/2026): quatro origens novas, uma por eixo, com botão e legenda próprios: PGE1 Manutenção OAE (Eixo 1, 26 pontes em rodovias pavimentadas), GPP Goiás de Ponta a Ponte (Eixo 2, 344 estruturas em rodovias não pavimentadas), PGE3 Obras com Parcerias (Eixo 3) e PGE4 Novas Obras Estaduais (Eixo 4, 86; o subeixo fica na Modalidade: Plano de Obras GOINFRA, Substituição de Balsas, Passagens de Fauna).',
+      'Placas como as do GME e do GMK (OAE e OAC em projeto, em obra e concluída), uma cor por eixo; a legenda de cada origem filtra o mapa. "Ponte/bueiro" do GPP entra como intervenção "OAE / OAC", com a placa de OAE.',
+      'Botões de origem: parando o mouse meio segundo sobre o botão aparece o que é a sigla.',
+      'Tabelas GME, GMK, PGE1, GPP, PGE3 e PGE4 com as colunas na ordem e com os nomes da planilha (CÓDIGO, REGIONAL, CURSO D’ÁGUA, S.R.E ... FASE, ETAPA DA FASE, SITUAÇÃO ... Nº SISLOG, INCLUSÃO PGE), todas visíveis, para facilitar a edição; o Código da obra continua fixo à esquerda e os campos só do sistema ficam em "Colunas".',
       'GME (Eixo 5) e GMK (Eixo 6) atualizados pela mesma planilha: situação com os nomes dela ("A iniciar" no lugar de "Não iniciado"), Processo = SEI da obra (o do projeto ganhou campo próprio), fonte Tesouro, rodovia Vicinal e a descrição do GME mostra o que existe hoje no local (ex.: "Córrego X (hoje: Ponte Madeira)").',
-      'Campos novos nas obras (script 025): Código PGE, Etapa da fase, Estrutura prevista, Curso d\'água, Extensão, Largura, Altura e Área da estrutura, Custo preliminar, Regional, Superfície da rodovia, Trecho inicial e final, Lote, Processo, Contrato, datas e Valor do projeto, datas da obra, Avanço físico, Convênio e Processo do convênio, Nº SISLOG e Inclusão no PGE. Ficha com os blocos Estrutura e Projeto; na tabela, os menos usados ficam ocultos até ligar em "Colunas".',
+      'Campos novos nas obras (script 025): Código PGE, Etapa da fase, Estrutura prevista, Curso d’água, Extensão, Largura, Altura e Área da estrutura, Custo preliminar, Regional, Superfície da rodovia, Trecho inicial e final, Lote, Processo, Contrato, datas e Valor do projeto, datas da obra, Avanço físico, Convênio e Processo do convênio, Nº SISLOG e Inclusão no PGE.',
       'Listas novas: status "A iniciar", "Em revisão" e "Paralisado", etapa "Projeto + Obra", fonte "Federal" e intervenção "OAE / OAC".'
     ], [
-      'Nova origem PGE: as pontes, viadutos e bueiros do Programa de Gestão de Estruturas, com cor por eixo no mapa.',
-      'GME e GMK foram atualizados pela mesma planilha e as obras ganharam campos novos, como curso d\'água, dimensões e datas do projeto e da obra.'
+      'Novas origens do Programa de Gestão de Estruturas: PGE1 (Manutenção OAE), GPP (Goiás de Ponta a Ponte), PGE3 (Obras com Parcerias) e PGE4 (Novas Obras Estaduais), cada uma com sua cor no mapa.',
+      'Pare o mouse sobre um botão de origem para ver o que é a sigla.',
+      'GME e GMK foram atualizados pela mesma planilha, e as tabelas desses programas seguem a ordem das colunas da planilha.'
     ]],
     ['3.15', '17/11/2026', [
       'Nova camada de referência Concessões (botão próprio; a camada Polo Goiânia continua como antes, com os 572,9 km do Convênio 08/2023): proposta do Relatório Técnico 2026 (GOINFRA/DPL), 3 lotes, 1.728,4 km. Lote 1 Sistema Sudeste Integrado (Goiânia → Catalão 253,462 km; Luziânia → divisa MG 323,159 km), Lote 2 Sistema Oeste Agroindustrial (Goiânia → Piranhas 309,246 km; Iporá → Rio Verde 178,014 km) e Lote 3 Sistema Centro-Norte Estruturante (GO-070 até Itapirapuã 187,423 km; GO-164 até São Miguel do Araguaia 333,818 km; GO-080 até Goianésia 143,267 km).',

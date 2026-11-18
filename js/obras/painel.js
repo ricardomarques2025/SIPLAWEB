@@ -20,7 +20,8 @@ var ObrasPainel = (function() {
   };
   var CHAVE_LARGURA = 'siplaweb.obras.larguraTabela';
   // v2 (13/11/2026): ID, Tipo e valores ocultos por padrão; v3 nos filtros FUNDEINFRA e TARE (17/11/2026: obras da DOR e da DPJ, com a coluna Origem)
-  function chaveColunas() { return 'siplaweb.obras.colunas.' + (Acesso.ehFiltroFonte(ORIGEM) ? 'v3.' : 'v2.') + ORIGEM; }
+  // v4: origens da Base Geral do PGE com as colunas da planilha (18/11/2026); a escolha antiga de colunas não vale mais.
+  function chaveColunas() { return 'siplaweb.obras.colunas.' + (Acesso.ehFiltroFonte(ORIGEM) ? 'v3.' : ehOrigemPlanilhaPge(ORIGEM) ? 'v4.' : 'v2.') + ORIGEM; }
   var LARGURA_MIN = 30, LARGURA_MAX = 80;
   var ACOES = { criado: 'Cadastrou', editado: 'Editou', tracado: 'Alterou o traçado', tramitou_origem: 'Tramitou de origem', excluido: 'Excluiu', restaurado: 'Restaurou' };
   var EVENTOS = { cadastro: 'Cadastro', situacao: 'Situação', origem: 'Mudança de origem', nota: 'Nota' };
@@ -346,9 +347,12 @@ var ObrasPainel = (function() {
   function origemCaderno(r) { return ObrasStore.ehFiltro() ? ORIGEM : (r.origem || ORIGEM); }
 
   // ---------- Grade ----------
+  // Campos da origem aberta: nas origens da Base Geral do PGE, ordem e nomes da planilha (js/obras/config.js).
+  function camposTabela() { return camposObraDaOrigem(ORIGEM); }
+
   function colunasVisiveisPadrao() {
     var lista = ObrasStore.lista();
-    return CAMPOS_OBRA.filter(function(c) {
+    return camposTabela().filter(function(c) {
       if (c.oculta) return false;
       if (c.soFiltro) return ObrasStore.ehFiltro();   // coluna Origem: só nas tabelas FUNDEINFRA e TARE (DOR + DPJ)
       return c.comum || lista.some(function(r) { return r[c.campo] !== null && r[c.campo] !== undefined && r[c.campo] !== ''; });
@@ -413,7 +417,7 @@ var ObrasPainel = (function() {
       tooltip: function(e, cell) { return temTracado(cell.getRow().getData()) ? 'Ver no mapa' : 'Sem traçado'; },
       cellClick: function(e, cell) { e.stopPropagation(); verNoMapa(cell.getRow().getData().uid); }
     })];
-    CAMPOS_OBRA.forEach(function(c) {
+    camposTabela().forEach(function(c) {
       cols.push(Object.assign({
         title: c.titulo, field: c.campo, width: c.largura, frozen: !!c.fixa, visible: visiveis.indexOf(c.campo) !== -1,
         formatter: formatador(c), hozAlign: c.tipo === 'numero' ? 'right' : 'left',
@@ -703,13 +707,14 @@ var ObrasPainel = (function() {
     if (abaFicha === 'tempo') return renderLinhaTempo(r);
     if (abaFicha === 'historico') return renderHistorico(r);
     var grupos = GRUPOS_FICHA_OBRA.slice();
-    CAMPOS_OBRA.forEach(function(c) { if (grupos.indexOf(c.grupo) === -1) grupos.push(c.grupo); });
+    var camposFicha = camposTabela();
+    camposFicha.forEach(function(c) { if (grupos.indexOf(c.grupo) === -1) grupos.push(c.grupo); });
     var autor = ObrasStore.nomeUsuario(r.atualizado_por);
     $('obrFichaCorpo').innerHTML = avisoProposta(r) + '<div class="carimbo">Última alteração: ' + fmtDataHora(r.atualizado_em) + (autor ? ' · ' + esc(autor) : '') +
       (r.grupo_codigo ? ' · Grupo ' + esc(r.grupo_codigo) : '') + '</div>' +
       grupos.map(function(g) {
         return '<div class="form-grupo"><h4>' + g + '</h4><div class="form-grade">' +
-          CAMPOS_OBRA.filter(function(c) { return c.grupo === g && c.campo !== 'grupo_codigo'; }).map(function(c) { return campoFicha(c, r); }).join('') + '</div></div>';
+          camposFicha.filter(function(c) { return c.grupo === g && c.campo !== 'grupo_codigo'; }).map(function(c) { return campoFicha(c, r); }).join('') + '</div></div>';
       }).join('');
   }
 
@@ -1103,7 +1108,7 @@ var ObrasPainel = (function() {
       var semTracado = 0;
       var feats = grade.getData().map(function(d) {
         var props = {};
-        CAMPOS_OBRA.forEach(function(c) { var v = ObrasStore.valorAtual(d.uid, c.campo); if (c.campo !== 'geom') props[c.campo] = v == null ? null : (typeof v === 'object' ? JSON.stringify(v) : v); });
+        camposTabela().forEach(function(c) { var v = ObrasStore.valorAtual(d.uid, c.campo); if (c.campo !== 'geom') props[c.campo] = v == null ? null : (typeof v === 'object' ? JSON.stringify(v) : v); });
         props.origem = d.origem || ORIGEM;
         var g = geometriaUnica(feicoesDaObra(d));
         if (!g) semTracado++;
@@ -1117,8 +1122,8 @@ var ObrasPainel = (function() {
     (window.XLSX ? Promise.resolve() : carregarScript(LIBS.xlsx)).then(function() {
       var filtrados = acao === 'xlsx-filtro';
       var campos = filtrados
-        ? CAMPOS_OBRA.filter(function(c) { var col = grade.getColumn(c.campo); return col && col.isVisible(); })
-        : CAMPOS_OBRA.filter(function(c) { return c.campo !== 'geom'; });
+        ? camposTabela().filter(function(c) { var col = grade.getColumn(c.campo); return col && col.isVisible(); })
+        : camposTabela().filter(function(c) { return c.campo !== 'geom'; });
       var linhas = linhasPlanilha(filtrados ? grade.getData('active') : grade.getData(), campos);
       var ws = XLSX.utils.json_to_sheet(linhas);
       if (acao === 'csv') {
@@ -1176,7 +1181,7 @@ var ObrasPainel = (function() {
     $('obrNova').addEventListener('click', abrirNova);
     $('obrFormNova').addEventListener('submit', cadastrarNova);
     $('obrColunas').addEventListener('click', function() {
-      $('obrColunasCorpo').innerHTML = CAMPOS_OBRA.filter(function(c) { return !c.fixa; }).map(function(c) {
+      $('obrColunasCorpo').innerHTML = camposTabela().filter(function(c) { return !c.fixa; }).map(function(c) {
         return '<label class="chk"><input type="checkbox" data-coluna="' + c.campo + '"' + (grade.getColumn(c.campo).isVisible() ? ' checked' : '') + '> ' + c.titulo + '</label>';
       }).join('') + '<p class="nota"><button type="button" class="link" id="obrColunasPadrao">Voltar às colunas desta origem</button></p>';
       $('obrDlgColunas').showModal();
@@ -1184,14 +1189,14 @@ var ObrasPainel = (function() {
     $('obrColunasCorpo').addEventListener('change', function(e) {
       var c = e.target.dataset.coluna; if (!c) return;
       var col = grade.getColumn(c); e.target.checked ? col.show() : col.hide();
-      var visiveis = CAMPOS_OBRA.filter(function(x) { return grade.getColumn(x.campo).isVisible(); }).map(function(x) { return x.campo; });
+      var visiveis = camposTabela().filter(function(x) { return grade.getColumn(x.campo).isVisible(); }).map(function(x) { return x.campo; });
       try { localStorage.setItem(chaveColunas(), JSON.stringify(visiveis)); } catch (x) { /* sem storage */ }
     });
     $('obrColunasCorpo').addEventListener('click', function(e) {
       if (e.target.id !== 'obrColunasPadrao') return;
       try { localStorage.removeItem(chaveColunas()); } catch (x) { /* sem storage */ }
       var padrao = colunasVisiveisPadrao();
-      CAMPOS_OBRA.forEach(function(c) { var col = grade.getColumn(c.campo); padrao.indexOf(c.campo) !== -1 ? col.show() : col.hide(); });
+      camposTabela().forEach(function(c) { var col = grade.getColumn(c.campo); padrao.indexOf(c.campo) !== -1 ? col.show() : col.hide(); });
       $('obrDlgColunas').close();
     });
     document.querySelectorAll('[data-obr-fechar]').forEach(function(b) { b.addEventListener('click', function() { b.closest('dialog').close(); }); });

@@ -507,10 +507,11 @@ const REGRAS_ESTILO = [
     }
   };
 
-  // PGE (Programa de Gestão de Estruturas, 18/11/2026): placas como as do GME/GMK, uma cor por eixo
+  // Eixos 1 a 4 da Base Geral do PGE (18/11/2026), uma origem por eixo: PGE1 Manutenção OAE, GPP Goiás de Ponta a
+  // Ponte, PGE3 Obras com Parcerias, PGE4 Novas Obras Estaduais. Placas como as do GME/GMK, uma cor por eixo
   // (data/pge{eixo}placa{oae|bueiro}{projeto|obra|concluido}.svg, geradas por DADOS/importacao/2026-11-18_PGE/gerar_placas.py).
-  // "OAE / OAC" (Ponte/bueiro do GPP) usa a placa de OAE. Chaves: Pge1OaeProjeto, Pge1BueiroObra, Pge1OaeConcluido...
-  const EIXOS_PGE = { 1: 'Eixo 1', 2: 'Eixo 2', 3: 'Eixo 3', 4: 'Eixo 4' };
+  // "OAE / OAC" (Ponte/bueiro do GPP) usa a placa de OAE. Chaves: Pge1OaeProjeto, Pge2BueiroObra, Pge4OaeConcluido...
+  const EIXOS_PGE = { 1: 'PGE1', 2: 'GPP', 3: 'PGE3', 4: 'PGE4' };
   const ORDEM_LEGENDA_PGE = [];
   Object.keys(EIXOS_PGE).forEach(function(eixo) {
     [['Oae', 'oae', 'OAE'], ['Bueiro', 'bueiro', 'OAC']].forEach(function(t) {
@@ -519,7 +520,7 @@ const REGRAS_ESTILO = [
        ['Concluido', 'concluido', 'concluída', 'obra-ponto-oae-obra', 'losango']].forEach(function(e) {
         const chave = 'Pge' + eixo + t[0] + e[0];
         OBRAS_PONTOS_INFO[chave] = {
-          label: EIXOS_PGE[eixo] + ' · ' + t[2] + ' ' + e[2],
+          label: t[2] + ' ' + e[2],
           classe: e[3],
           cor: '#64748b',
           formato: e[4],
@@ -529,6 +530,28 @@ const REGRAS_ESTILO = [
       });
     });
   });
+
+  // Texto de ajuda dos botões de ORIGEM (aparece ao parar o mouse por meio segundo; js/mapa.js, ajudaBotoesOrigem).
+  // GMM e GMP: falta o nome completo (pedir ao usuário).
+  const DESCRICAO_ORIGENS = {
+    FUNDEINFRA: 'FUNDEINFRA – obras da DOR e da DPJ pagas com recursos do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra)',
+    DOR: 'DOR – Diretoria de Obras Rodoviárias',
+    DMA: 'DMA – Diretoria de Manutenção',
+    DPJ: 'DPJ – Diretoria de Projetos',
+    DPL: 'DPL – Diretoria de Planejamento',
+    TARE: 'TARE – obras da DOR e da DPJ com recurso TARE',
+    DOC: 'DOC – Diretoria de Obras Civis',
+    DSV: 'DSV – Diretoria de Segurança Viária',
+    GME: 'GME – Programa Goiás em Movimento Estruturas: OACs em rodovias municipais não pavimentadas (Eixo 5 do PGE)',
+    GMK: 'GMK – Programa Goiás em Movimento Kalunga: OAEs e OACs em rodovias municipais na Comunidade Kalunga (Eixo 6 do PGE)',
+    GMM: 'GMM – obras por município',
+    GMP: 'GMP – municípios atendidos',
+    PGE1: 'PGE1 – Manutenção OAE: manutenção e restauração de pontes em rodovias pavimentadas (Eixo 1 do PGE)',
+    GPP: 'GPP – Programa Goiás de Ponta a Ponte: construção e manutenção de estruturas em rodovias não pavimentadas (Eixo 2 do PGE)',
+    PGE3: 'PGE3 – Obras com Parcerias: obras firmadas em parcerias com entes externos (Eixo 3 do PGE)',
+    PGE4: 'PGE4 – Novas Obras Estaduais: Plano de Obras GOINFRA, Substituição de Balsas e Passagens de Fauna (Eixo 4 do PGE)'
+  };
+  window.DESCRICAO_ORIGENS = DESCRICAO_ORIGENS;
 
   // Ordem dos simbolos de obras pontuais nas legendas.
   const ORDEM_LEGENDA_PONTOS = [
@@ -577,6 +600,7 @@ const REGRAS_ESTILO = [
   window.ROD_FED_INFO = ROD_FED_INFO;
   window.OBRAS_PONTOS_INFO = OBRAS_PONTOS_INFO;
   window.ORDEM_LEGENDA_PONTOS = ORDEM_LEGENDA_PONTOS;
+  window.EIXOS_PGE = EIXOS_PGE;
   window.ORIGENS_MUNICIPAIS = ORIGENS_MUNICIPAIS;
   window.ESTILO_UNIDADES_SAUDE = ESTILO_UNIDADES_SAUDE;
 

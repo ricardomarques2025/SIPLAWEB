@@ -75,6 +75,47 @@ var CAMPOS_OBRA = [
   { campo: 'inclusao_pge', titulo: 'Inclusão no PGE (SEI)', tipo: 'texto', largura: 140, oculta: true, grupo: 'Contratação' }
 ];
 
+// Origens da Base Geral do PGE (18/11/2026, pedido do usuário: "ordem e campos condizentes com a planilha, para
+// facilitar as edições"): nessas tabelas as colunas seguem a ordem e os nomes da planilha
+// (Base_Geral_NOVA AVALIAÇÃO_OAE.xlsx, aba GERAL) e ficam todas visíveis; o Código da obra (OB26-...) continua
+// fixo à esquerda e os campos só do sistema ficam no fim, ocultos. Nas demais origens nada muda.
+var ORIGENS_PLANILHA_PGE = ['GME', 'GMK', 'PGE1', 'GPP', 'PGE3', 'PGE4'];
+var COLUNAS_PLANILHA_PGE = [
+  ['codigo_pge', 'CÓDIGO'], ['modalidade', 'SUBEIXO', 'soComValor'], ['regional', 'REGIONAL'], ['curso_dagua', "CURSO D'ÁGUA"],
+  ['sre', 'S.R.E'], ['trecho_inicial', 'TRECHO INICIAL'], ['trecho_final', 'TRECHO FINAL'], ['municipio', 'MUNICÍPIOS'],
+  ['descricao', 'DESCRIÇÃO DO OBJETO'], ['estrutura', 'ESTRUTURA PREVISTA'], ['intervencao', 'INTERVENÇÃO (OAE/OAC)'],
+  ['superficie', 'SITUAÇÃO SUPERFÍCIE'], ['rodovia', 'RODOVIAS'], ['extensao_m', 'EXT. (m)'], ['altura_m', 'ALTURA (m)'],
+  ['largura_m', 'LARGURA (m)'], ['area_m2', 'ÁREA (m²)'], ['fonte', 'RECURSO'], ['custo_preliminar', 'CUSTO PRELIMINAR'],
+  ['lote_projeto', 'LOTE DE PROJETO'], ['etapa', 'FASE'], ['etapa_fase', 'ETAPA DA FASE'], ['status', 'SITUAÇÃO'],
+  ['projeto_inicio', 'DATA DE INÍCIO (PROJETO)'], ['projeto_termino', 'DATA DE TÉRMINO (PROJETO)'], ['valor_projeto', 'VALOR DO PROJETO'],
+  ['sei_projeto', 'Nº PROCESSO SEI (PROJETO)'], ['contrato_projeto', 'Nº DO CONTRATO (PROJETO)'], ['convenio', 'Nº CONVÊNIO'],
+  ['sei_convenio', 'Nº PROCESSO SEI CONVÊNIO'], ['lote', 'LOTE DE OBRA'], ['obra_inicio', 'DATA DE INÍCIO (OBRA)'],
+  ['obra_termino', 'DATA DE TÉRMINO (OBRA)'], ['valor_contrato', 'VALOR DA OBRA'],
+  // "sei" = processo principal da obra (o da obra; se ainda não há, o do projeto: importação de 18/11/2026)
+  ['sei', 'Nº PROCESSO SEI (OBRA)'], ['contrato', 'Nº DO CONTRATO (OBRA)'], ['avanco_fisico', 'AVANÇO FÍSICO DA OBRA (%)'],
+  ['sislog', 'Nº SISLOG'], ['inclusao_pge', 'INCLUSÃO PGE']
+];
+
+function ehOrigemPlanilhaPge(origem) { return ORIGENS_PLANILHA_PGE.indexOf(String(origem || '').toUpperCase()) !== -1; }
+
+// Campos da tabela/ficha/exportação da origem: CAMPOS_OBRA (cópias) na ordem e com os títulos da planilha nas origens
+// do PGE; nas demais, o próprio CAMPOS_OBRA. planilha: true = coluna da planilha (visível por padrão);
+// soComValor: só aparece se a origem tem algum valor (SUBEIXO = Modalidade, só no PGE4).
+function camposObraDaOrigem(origem) {
+  if (!ehOrigemPlanilhaPge(origem)) return CAMPOS_OBRA;
+  var porCampo = {};
+  CAMPOS_OBRA.forEach(function(c) { porCampo[c.campo] = c; });
+  var usados = { codigo: true };
+  var lista = [Object.assign({}, porCampo.codigo, { titulo: 'Cód. SIPLAWEB' })];   // "CÓDIGO" é o da planilha
+  COLUNAS_PLANILHA_PGE.forEach(function(p) {
+    var c = porCampo[p[0]]; if (!c) return;
+    usados[p[0]] = true;
+    lista.push(Object.assign({}, c, { titulo: p[1], planilha: true, oculta: false, comum: p[2] !== 'soComValor', soComValor: p[2] === 'soComValor' }));
+  });
+  CAMPOS_OBRA.forEach(function(c) { if (!usados[c.campo]) lista.push(Object.assign({}, c, { oculta: true })); });
+  return lista;
+}
+
 // Ordem dos blocos da ficha da obra (independe da ordem das colunas acima).
 var GRUPOS_FICHA_OBRA = ['Identificação', 'Situação', 'Localização', 'Estrutura', 'Projeto', 'Contratação', 'Execução'];
 
