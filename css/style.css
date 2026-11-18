@@ -2864,3 +2864,8 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   grid-column: 1 / -1; margin: 6px 0 -2px; padding-top: 8px; border-top: 1px solid rgba(0, 0, 0, .12);
   font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #4b5563; text-align: center;
 }
+
+/* Botões do Programa de Gestão de Estruturas (18/11/2026): nome do eixo em letra menor abaixo da sigla */
+.grid-servicos .filtro-btn.servico-btn:has(.nome-eixo) { flex-direction: column; gap: 2px; }
+.servico-btn .sigla-origem { display: block; }
+.servico-btn .nome-eixo { display: block; font-size: 9.5px; font-weight: 500; line-height: 1.15; opacity: .85; }
