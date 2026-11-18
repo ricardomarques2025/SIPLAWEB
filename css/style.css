@@ -2868,4 +2868,4 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 /* Botões do Programa de Gestão de Estruturas (18/11/2026): nome do eixo em letra menor abaixo da sigla */
 .grid-servicos .filtro-btn.servico-btn:has(.nome-eixo) { flex-direction: column; gap: 2px; }
 .servico-btn .sigla-origem { display: block; }
-.servico-btn .nome-eixo { display: block; font-size: 9.5px; font-weight: 500; line-height: 1.15; opacity: .85; }
+.servico-btn .nome-eixo { display: block; font-size: 11px; font-weight: 600; line-height: 1.15; opacity: .85; }
