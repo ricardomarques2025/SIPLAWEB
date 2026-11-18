@@ -11,7 +11,9 @@ var DadosBanco = (function() {
     'codigo', 'idcod_legado', 'origem', 'tipo', 'natureza', 'ref', 'proposta', 'sre', 'localidade', 'municipio',
     'populacao', 'rodovia', 'descricao', 'intervencao', 'etapa', 'status', 'modalidade', 'sei', 'sei_obra_contrato',
     'contrato', 'empresa', 'ext_contrato_km', 'conclusao', 'area_contratada_m2', 'area_executada_m2', 'horas_pagas',
-    'lote', 'fonte', 'fase', 'valor_aprovado', 'valor_contrato', 'data_referencia', 'vinculos', 'geom', 'grupo:grupos(codigo)'
+    'lote', 'fonte', 'fase', 'valor_aprovado', 'valor_contrato', 'data_referencia', 'vinculos', 'geom', 'grupo:grupos(codigo)',
+    // Base Geral do PGE (script 025, 18/11/2026)
+    'codigo_pge', 'estrutura', 'curso_dagua', 'etapa_fase', 'extensao_m', 'regional', 'obras_vinculadas'
   ].join(',');
   var POR_PAGINA = 1000;   // limite de linhas por consulta da API
   var carga = null;
@@ -20,16 +22,17 @@ var DadosBanco = (function() {
   var visao = null;
 
   // Tabela de obras com "Filtrar o mapa" ligado (js/obras/painel.js): { origem, codigos: { OB26-...: true } }.
-  // As obras DESSA origem que não estão no filtro da tabela saem do mapa; as das outras origens ficam como estão.
+  // Desde 18/11/2026 (pedido do usuário): o mapa mostra SÓ as obras que estão na tabela filtrada; as das outras
+  // origens ligadas também saem até desligar o filtro (antes elas ficavam).
   var recorte = null;
 
   function aplicarRecorte(c) {
     if (!recorte) return c;
     var fora = {};
     var registros = c.registros.filter(function(r) {
-      // Tabelas FUNDEINFRA e TARE: o recorte vale para as obras do filtro (DOR/DPJ com aquela fonte).
-      var daTabela = recorte.origem === 'FUNDEINFRA' ? r.FONTE_FUNDEINFRA : recorte.origem === 'TARE' ? r.FONTE_TARE : r.UNIDADE === recorte.origem;
-      var fica = !daTabela || !!recorte.codigos[r.IDCOD];
+      // Os códigos da tabela já trazem o que ela mostra (FUNDEINFRA/TARE: obras da DOR/DPJ daquela fonte; grupo PGE:
+      // as 6 origens). Tudo o que não está nela sai do mapa.
+      var fica = !!recorte.codigos[r.IDCOD];
       if (!fica) fora[r.IDCOD] = true;
       return fica;
     });
@@ -123,6 +126,13 @@ var DadosBanco = (function() {
       AREA_EXECUTADA_M2: o.area_executada_m2,
       HORAS_PAGAS: o.horas_pagas,
       LOTE: o.lote,
+      CODIGO_PGE: o.codigo_pge,
+      ESTRUTURA: o.estrutura,
+      CURSO_DAGUA: o.curso_dagua,
+      ETAPA_FASE: o.etapa_fase,
+      EXTENSAO_M: o.extensao_m,
+      REGIONAL: o.regional,
+      OBRAS_VINCULADAS: o.obras_vinculadas,
       ATUALIZACAO: o.data_referencia ? o.data_referencia + ' 00:00:00' : null
     };
   }

@@ -14,6 +14,9 @@
 var CAMPOS_OBRA = [
   { campo: 'codigo', titulo: 'Código', tipo: 'texto', largura: 112, fixa: true, somenteLeitura: true, comum: true, grupo: 'Identificação' },
   // soFiltro: visível por padrão só na tabela FUNDEINFRA (filtro das obras da DOR e da DPJ; 17/11/2026).
+  // Obras vinculadas (script 026, 18/11/2026): mesma obra em outra origem, ligada à mão; o banco grava o vínculo nos
+  // dois sentidos. Depois se decide qual código fica. tipo 'obras' = códigos OB26-00000 separados por ; ou ,
+  { campo: 'obras_vinculadas', titulo: 'Obras vinculadas', tipo: 'obras', largura: 190, comum: true, grupo: 'Identificação' },
   { campo: 'origem', titulo: 'Origem', tipo: 'texto', largura: 80, somenteLeitura: true, soFiltro: true, grupo: 'Identificação' },
   { campo: 'grupo_codigo', titulo: 'Grupo', tipo: 'texto', largura: 96, somenteLeitura: true, grupo: 'Identificação' },
   { campo: 'tipo', titulo: 'Tipo', tipo: 'texto', largura: 74, somenteLeitura: true, comum: true, oculta: true, grupo: 'Identificação' },
@@ -37,6 +40,10 @@ var CAMPOS_OBRA = [
   { campo: 'municipio', titulo: 'Município', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'localidade', titulo: 'Localidade', tipo: 'texto', largura: 150, grupo: 'Localização' },
   { campo: 'populacao', titulo: 'População', tipo: 'numero', largura: 100, grupo: 'Localização' },
+  // Coordenadas (18/11/2026): calculadas da geometria da obra no navegador (ObrasStore), só leitura: o ponto se muda
+  // pelo mapa. Linha: o vértice do meio. Servem para busca e filtro.
+  { campo: 'latitude', titulo: 'Latitude', tipo: 'numero', casas: 6, negativo: true, largura: 100, somenteLeitura: true, oculta: true, grupo: 'Localização' },
+  { campo: 'longitude', titulo: 'Longitude', tipo: 'numero', casas: 6, negativo: true, largura: 100, somenteLeitura: true, oculta: true, grupo: 'Localização' },
   { campo: 'sre', titulo: 'SRE', tipo: 'texto', largura: 110, grupo: 'Localização' },
   { campo: 'sei_obra_contrato', titulo: 'Processo de contratação', tipo: 'texto', largura: 150, grupo: 'Contratação' },
   { campo: 'empresa', titulo: 'Empresa', tipo: 'texto', largura: 200, grupo: 'Contratação' },
@@ -44,19 +51,100 @@ var CAMPOS_OBRA = [
   { campo: 'area_contratada_m2', titulo: 'Área contratada (m²)', tipo: 'numero', largura: 140, grupo: 'Execução' },
   { campo: 'area_executada_m2', titulo: 'Área executada (m²)', tipo: 'numero', largura: 140, grupo: 'Execução' },
   { campo: 'horas_pagas', titulo: 'Horas pagas', tipo: 'numero', largura: 110, grupo: 'Execução' },
-  { campo: 'observacoes', titulo: 'Observações', tipo: 'longo', largura: 260, grupo: 'Execução' }
+  { campo: 'observacoes', titulo: 'Observações', tipo: 'longo', largura: 260, grupo: 'Execução' },
+  // Base Geral do PGE (Programa de Gestão de Estruturas; GME, GMK e PGE; script 025, 18/11/2026). Só aparecem nas
+  // origens que têm valor; as menos usadas ficam ocultas (ligar em "Colunas"). futuro: data que pode ser futura.
+  { campo: 'codigo_pge', titulo: 'Código PGE', tipo: 'texto', largura: 100, grupo: 'Identificação' },
+  // Calculados pelo banco a partir do Código PGE (script 027): só leitura.
+  { campo: 'pge_eixo', titulo: 'Eixo PGE', tipo: 'texto', largura: 70, somenteLeitura: true, oculta: true, grupo: 'Identificação' },
+  { campo: 'pge_etapa', titulo: 'Etapa PGE', tipo: 'texto', largura: 70, somenteLeitura: true, oculta: true, grupo: 'Identificação' },
+  { campo: 'pge_item', titulo: 'Item PGE', tipo: 'texto', largura: 70, somenteLeitura: true, oculta: true, grupo: 'Identificação' },
+  { campo: 'estrutura', titulo: 'Estrutura prevista', tipo: 'texto', largura: 130, grupo: 'Estrutura' },
+  { campo: 'curso_dagua', titulo: "Curso d'água", tipo: 'texto', largura: 200, grupo: 'Estrutura' },
+  { campo: 'extensao_m', titulo: 'Extensão (m)', tipo: 'numero', largura: 100, grupo: 'Estrutura' },
+  { campo: 'largura_m', titulo: 'Largura (m)', tipo: 'numero', largura: 100, oculta: true, grupo: 'Estrutura' },
+  { campo: 'altura_m', titulo: 'Altura (m)', tipo: 'numero', largura: 100, oculta: true, grupo: 'Estrutura' },
+  { campo: 'area_m2', titulo: 'Área (m²)', tipo: 'numero', largura: 100, oculta: true, grupo: 'Estrutura' },
+  { campo: 'custo_preliminar', titulo: 'Custo preliminar', tipo: 'numero', moeda: true, largura: 150, oculta: true, grupo: 'Estrutura' },
+  { campo: 'etapa_fase', titulo: 'Etapa da fase', tipo: 'texto', largura: 220, grupo: 'Situação' },
+  { campo: 'regional', titulo: 'Regional', tipo: 'texto', largura: 80, oculta: true, grupo: 'Localização' },
+  { campo: 'superficie', titulo: 'Superfície da rodovia', tipo: 'texto', largura: 110, oculta: true, grupo: 'Localização' },
+  { campo: 'trecho_inicial', titulo: 'Trecho inicial', tipo: 'texto', largura: 220, oculta: true, grupo: 'Localização' },
+  { campo: 'trecho_final', titulo: 'Trecho final', tipo: 'texto', largura: 220, oculta: true, grupo: 'Localização' },
+  { campo: 'lote_projeto', titulo: 'Lote de projeto', tipo: 'texto', largura: 120, oculta: true, grupo: 'Projeto' },
+  { campo: 'sei_projeto', titulo: 'Processo do projeto', tipo: 'texto', largura: 150, oculta: true, grupo: 'Projeto' },
+  { campo: 'contrato_projeto', titulo: 'Contrato do projeto', tipo: 'texto', largura: 120, oculta: true, grupo: 'Projeto' },
+  { campo: 'projeto_inicio', titulo: 'Início do projeto', tipo: 'data', futuro: true, largura: 120, oculta: true, grupo: 'Projeto' },
+  { campo: 'projeto_termino', titulo: 'Término do projeto', tipo: 'data', futuro: true, largura: 120, oculta: true, grupo: 'Projeto' },
+  { campo: 'valor_projeto', titulo: 'Valor do projeto', tipo: 'numero', moeda: true, largura: 150, oculta: true, grupo: 'Projeto' },
+  { campo: 'obra_inicio', titulo: 'Início da obra', tipo: 'data', futuro: true, largura: 120, oculta: true, grupo: 'Execução' },
+  { campo: 'obra_termino', titulo: 'Término da obra', tipo: 'data', futuro: true, largura: 120, oculta: true, grupo: 'Execução' },
+  { campo: 'avanco_fisico', titulo: 'Avanço físico (%)', tipo: 'numero', largura: 110, oculta: true, grupo: 'Execução' },
+  { campo: 'convenio', titulo: 'Convênio', tipo: 'texto', largura: 110, oculta: true, grupo: 'Contratação' },
+  { campo: 'sei_convenio', titulo: 'Processo do convênio', tipo: 'texto', largura: 150, oculta: true, grupo: 'Contratação' },
+  { campo: 'sislog', titulo: 'Nº SISLOG', tipo: 'texto', largura: 100, oculta: true, grupo: 'Contratação' },
+  { campo: 'inclusao_pge', titulo: 'Inclusão no PGE (SEI)', tipo: 'texto', largura: 140, oculta: true, grupo: 'Contratação' }
 ];
 
+// Origens da Base Geral do PGE (18/11/2026, pedido do usuário: "ordem e campos condizentes com a planilha, para
+// facilitar as edições"): nessas tabelas as colunas seguem a ordem e os nomes da planilha
+// (Base_Geral_NOVA AVALIAÇÃO_OAE.xlsx, aba GERAL) e ficam todas visíveis; o Código da obra (OB26-...) continua
+// fixo à esquerda e os campos só do sistema ficam no fim, ocultos. Nas demais origens nada muda.
+// PGE = tabela única do Programa de Gestão de Estruturas (as 6 origens juntas; Acesso.gruposOrigens).
+var ORIGENS_PLANILHA_PGE = ['GME', 'GMK', 'PGE1', 'GPP', 'PGE3', 'PGE4', 'PGE'];
+var COLUNAS_PLANILHA_PGE = [
+  ['codigo_pge', 'CÓDIGO'], ['pge_eixo', 'EIXO'], ['pge_etapa', 'ETAPA'], ['modalidade', 'SUBEIXO', 'soComValor'],
+  ['pge_item', 'ITEM'], ['regional', 'REGIONAL'], ['curso_dagua', "CURSO D'ÁGUA"],
+  ['sre', 'S.R.E'], ['trecho_inicial', 'TRECHO INICIAL'], ['trecho_final', 'TRECHO FINAL'], ['municipio', 'MUNICÍPIOS'],
+  ['descricao', 'DESCRIÇÃO DO OBJETO'], ['estrutura', 'ESTRUTURA PREVISTA'], ['intervencao', 'INTERVENÇÃO (OAE/OAC)'],
+  ['superficie', 'SITUAÇÃO SUPERFÍCIE'], ['rodovia', 'RODOVIAS'], ['latitude', 'LATITUDE'], ['longitude', 'LONGITUDE'], ['extensao_m', 'EXT. (m)'], ['altura_m', 'ALTURA (m)'],
+  ['largura_m', 'LARGURA (m)'], ['area_m2', 'ÁREA (m²)'], ['fonte', 'RECURSO'], ['custo_preliminar', 'CUSTO PRELIMINAR'],
+  ['lote_projeto', 'LOTE DE PROJETO'], ['etapa', 'FASE'], ['etapa_fase', 'ETAPA DA FASE'], ['status', 'SITUAÇÃO'],
+  ['projeto_inicio', 'DATA DE INÍCIO (PROJETO)'], ['projeto_termino', 'DATA DE TÉRMINO (PROJETO)'], ['valor_projeto', 'VALOR DO PROJETO'],
+  ['sei_projeto', 'Nº PROCESSO SEI (PROJETO)'], ['contrato_projeto', 'Nº DO CONTRATO (PROJETO)'], ['convenio', 'Nº CONVÊNIO'],
+  ['sei_convenio', 'Nº PROCESSO SEI CONVÊNIO'], ['lote', 'LOTE DE OBRA'], ['obra_inicio', 'DATA DE INÍCIO (OBRA)'],
+  ['obra_termino', 'DATA DE TÉRMINO (OBRA)'], ['valor_contrato', 'VALOR DA OBRA'],
+  // "sei" = processo principal da obra (o da obra; se ainda não há, o do projeto: importação de 18/11/2026)
+  ['sei', 'Nº PROCESSO SEI (OBRA)'], ['contrato', 'Nº DO CONTRATO (OBRA)'], ['avanco_fisico', 'AVANÇO FÍSICO DA OBRA (%)'],
+  ['sislog', 'Nº SISLOG'], ['inclusao_pge', 'INCLUSÃO PGE']
+];
+
+function ehOrigemPlanilhaPge(origem) { return ORIGENS_PLANILHA_PGE.indexOf(String(origem || '').toUpperCase()) !== -1; }
+
+// Campos da tabela/ficha/exportação da origem: CAMPOS_OBRA (cópias) na ordem e com os títulos da planilha nas origens
+// do PGE; nas demais, o próprio CAMPOS_OBRA. planilha: true = coluna da planilha (visível por padrão);
+// soComValor: só aparece se a origem tem algum valor (SUBEIXO = Modalidade, só no PGE4).
+function camposObraDaOrigem(origem) {
+  if (!ehOrigemPlanilhaPge(origem)) return CAMPOS_OBRA;
+  var porCampo = {};
+  CAMPOS_OBRA.forEach(function(c) { porCampo[c.campo] = c; });
+  var usados = { codigo: true, obras_vinculadas: true, origem: true };
+  var lista = [Object.assign({}, porCampo.codigo, { titulo: 'Cód. SIPLAWEB' })];   // "CÓDIGO" é o da planilha
+  // Tabela única (PGE): a origem de cada obra (programa do eixo) logo depois do código
+  if (window.Acesso && Acesso.ehGrupoOrigens && Acesso.ehGrupoOrigens(origem)) lista.push(Object.assign({}, porCampo.origem, { titulo: 'ORIGEM', soFiltro: true }));
+  else lista.push(Object.assign({}, porCampo.origem, { oculta: true }));
+  lista.push(Object.assign({}, porCampo.obras_vinculadas, { titulo: 'OBRAS VINCULADAS', oculta: false }));
+  COLUNAS_PLANILHA_PGE.forEach(function(p) {
+    var c = porCampo[p[0]]; if (!c) return;
+    usados[p[0]] = true;
+    lista.push(Object.assign({}, c, { titulo: p[1], planilha: true, oculta: false, comum: p[2] !== 'soComValor', soComValor: p[2] === 'soComValor' }));
+  });
+  CAMPOS_OBRA.forEach(function(c) { if (!usados[c.campo]) lista.push(Object.assign({}, c, { oculta: true })); });
+  return lista;
+}
+
 // Ordem dos blocos da ficha da obra (independe da ordem das colunas acima).
-var GRUPOS_FICHA_OBRA = ['Identificação', 'Situação', 'Localização', 'Contratação', 'Execução'];
+var GRUPOS_FICHA_OBRA = ['Identificação', 'Situação', 'Localização', 'Estrutura', 'Projeto', 'Contratação', 'Execução'];
 
 // Selos coloridos na tabela (Etapa e Fonte do recurso); valor fora da lista fica cinza.
 var CORES_FONTE_OBRA = {
-  'Tesouro': '#0f766e', 'Fundeinfra': '#b45309', 'Associativo-Fundeinfra': '#a16207', 'Convênio': '#6d28d9', 'TARE': '#be185d', 'Doação': '#4d7c0f'
+  'Tesouro': '#0f766e', 'Fundeinfra': '#b45309', 'Associativo-Fundeinfra': '#a16207', 'Convênio': '#6d28d9', 'TARE': '#be185d', 'Doação': '#4d7c0f',
+  'Federal': '#1d4ed8'
 };
 
 var CORES_ETAPA_OBRA = {
-  'Estudo Técnico Preliminar': '#c98a0c', 'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'
+  'Estudo Técnico Preliminar': '#c98a0c', 'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2',
+  'Projeto + Obra': '#0f766e'
 };
 
 // Regras checadas antes de gravar (as mesmas do gatilho siplaweb.validar_obra no banco).
@@ -64,12 +152,16 @@ var CORES_ETAPA_OBRA = {
 function validarCampoObra(campo, valor, listas) {
   var c = CAMPOS_OBRA.find(function(x) { return x.campo === campo; });
   if (!c || valor === null || valor === undefined || valor === '') return '';
+  if (c.tipo === 'obras') {
+    var resto = String(valor).toUpperCase().replace(/OB\d{2}-\d{5,}/g, '').replace(/[\s,;]/g, '');
+    if (resto) return 'Use só códigos de obra (ex.: OB26-00052; OB26-01431)';
+  }
   if (c.tipo === 'sei' && !/^\d{15}$/.test(String(valor).replace(/\D/g, ''))) return 'Processo SEI deve ter 15 dígitos';
   if (c.tipo === 'numero' && (!isFinite(Number(valor)) || Number(valor) < 0)) return 'Número inválido (não pode ser negativo)';
   if (c.tipo === 'data') {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(valor))) return 'Data inválida';
     var hoje = new Date(); hoje.setMinutes(hoje.getMinutes() - hoje.getTimezoneOffset());
-    if (String(valor) > hoje.toISOString().slice(0, 10)) return 'Data no futuro';
+    if (!c.futuro && String(valor) > hoje.toISOString().slice(0, 10)) return 'Data no futuro';
   }
   if (c.tipo === 'lista' && listas && listas[campo] && listas[campo].indexOf(valor) === -1) return 'Valor fora da lista de ' + c.titulo.toLowerCase();
   return '';

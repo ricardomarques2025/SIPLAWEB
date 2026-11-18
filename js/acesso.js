@@ -353,13 +353,37 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-17.08';
+  var VERSAO_SITE = '2026-11-18.12';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.16', '18/11/2026', [
+      'Base Geral do Programa de Gestão de Estruturas (PGE, planilha de 18/11/2026): quatro origens novas, uma por eixo, com botão e legenda próprios: PGE1 Manutenção OAE (Eixo 1, 26 pontes em rodovias pavimentadas), GPP Goiás de Ponta a Ponte (Eixo 2, 344 estruturas em rodovias não pavimentadas), PGE3 Obras com Parcerias (Eixo 3) e PGE4 Novas Obras Estaduais (Eixo 4, 86; o subeixo fica na Modalidade: Plano de Obras GOINFRA, Substituição de Balsas, Passagens de Fauna).',
+      'Placas como as do GME e do GMK (OAE e OAC em projeto, em obra e concluída), uma cor por eixo; a legenda de cada origem filtra o mapa. "Ponte/bueiro" do GPP entra como intervenção "OAE / OAC", com a placa de OAE.',
+      'Programa de Gestão de Estruturas (cartão novo na página inicial): os 6 programas da Base Geral do PGE (PGE1, GPP, PGE3, PGE4, GME e GMK) numa tabela única, com a coluna ORIGEM, para um colaborador editar, adicionar e excluir sem trocar de origem. Obra nova: escolhe-se o EIXO, que define o programa; mudar o eixo de uma obra é pela ficha (Linha do tempo › Mudar de eixo), com histórico. No mapa, os 6 botões ficam juntos sob o título do programa; a tabela de cada origem continua.',
+      'Área nova "PGE" (Programa de Gestão de Estruturas) para as permissões: quem a tem trabalha nos 6 programas com o perfil dado (script 028); se a pessoa tiver perfil direto numa dessas origens, vale o da origem. Na tela de usuários, fica em "Programas".',
+      'Botões de origem: parando o mouse meio segundo sobre o botão aparece o que é a sigla (ex.: GMM Goiás em Movimento: Municípios, GMP Goiás em Movimento: Patrulhas, TARE Termo de Acordo de Regime Especial).',
+      'Campo "Obras vinculadas" em todas as tabelas de obras (script 026): para ligar à mão a mesma obra cadastrada em duas origens (ex.: uma ponte do PGE que também está na DOR), escrevendo os códigos (OB26-00052; OB26-01431). O vínculo vale nos dois sentidos: vincular A a B grava A também em B, e tirar desfaz dos dois lados. Depois se decide qual código fica. Aparece também no popup.',
+      'Tabelas GME, GMK, PGE1, GPP, PGE3 e PGE4 com as colunas na ordem e com os nomes da planilha (CÓDIGO, REGIONAL, CURSO D’ÁGUA, S.R.E ... FASE, ETAPA DA FASE, SITUAÇÃO ... Nº SISLOG, INCLUSÃO PGE), todas visíveis, para facilitar a edição; o Código da obra continua fixo à esquerda e os campos só do sistema ficam em "Colunas".',
+      'GME (Eixo 5) e GMK (Eixo 6) atualizados pela mesma planilha: situação com os nomes dela ("A iniciar" no lugar de "Não iniciado"), Processo = SEI da obra (o do projeto ganhou campo próprio), fonte Tesouro, rodovia Vicinal e a descrição do GME mostra o que existe hoje no local (ex.: "Córrego X (hoje: Ponte Madeira)").',
+      'Campos novos nas obras (script 025): Código PGE, Etapa da fase, Estrutura prevista, Curso d’água, Extensão, Largura, Altura e Área da estrutura, Custo preliminar, Regional, Superfície da rodovia, Trecho inicial e final, Lote, Processo, Contrato, datas e Valor do projeto, datas da obra, Avanço físico, Convênio e Processo do convênio, Nº SISLOG e Inclusão no PGE.',
+      'Listas novas: status "A iniciar", "Em revisão" e "Paralisado", etapa "Projeto + Obra", fonte "Federal" e intervenção "OAE / OAC".',
+      'Camadas de referência: Polo Goiânia e Concessões num botão só, que muda a cada clique (Polo Goiânia › Concessões › Concessões − Polo › desligado), com o nome ligado em negrito. Em "Concessões − Polo" ficam só os trechos de ampliação (os 3 lotes sem o Polo Goiânia original), com legenda, totais por eixo e lote (1.156,26 km) e tabela de atributos próprios.',
+      '"Filtrar o mapa" da tabela de obras: o mapa passa a mostrar só as obras que estão na tabela (antes as outras origens ligadas continuavam no mapa).',
+      'Tabelas do Programa de Gestão de Estruturas com LATITUDE e LONGITUDE (depois de RODOVIAS, como na planilha), calculadas do ponto da obra, só leitura; a busca acha a coordenada com ponto ou vírgula.',
+      'Malha Estadual: em obras de duplicação = linha dupla tracejada (= = =); em obras de pavimentação = linha tracejada (- - -), no mapa e na legenda (antes as duas apareciam iguais na legenda). Botões do Programa de Gestão de Estruturas com o eixo (Eixo 1 a 6) abaixo da sigla.'
+    ], [
+      'Novas origens do Programa de Gestão de Estruturas: PGE1 (Manutenção OAE), GPP (Goiás de Ponta a Ponte), PGE3 (Obras com Parcerias) e PGE4 (Novas Obras Estaduais), cada uma com sua cor no mapa.',
+      'Novo cartão Programa de Gestão de Estruturas: os 6 programas de pontes e bueiros numa tabela só.',
+      'Pare o mouse sobre um botão de origem para ver o que é a sigla.',
+      'Novo campo Obras vinculadas: ligue a mesma obra que aparece em duas origens; o vínculo aparece nas duas.',
+      'GME e GMK foram atualizados pela mesma planilha, e as tabelas desses programas seguem a ordem das colunas da planilha.',
+      'Polo Goiânia e Concessões agora são um botão só: cada clique mostra o Polo, as Concessões, as Concessões sem o Polo ou desliga.',
+      'Com Filtrar o mapa ligado, o mapa mostra só as obras da tabela. As tabelas do PGE ganharam latitude e longitude.'
+    ]],
     ['3.15', '17/11/2026', [
       'Nova camada de referência Concessões (botão próprio; a camada Polo Goiânia continua como antes, com os 572,9 km do Convênio 08/2023): proposta do Relatório Técnico 2026 (GOINFRA/DPL), 3 lotes, 1.728,4 km. Lote 1 Sistema Sudeste Integrado (Goiânia → Catalão 253,462 km; Luziânia → divisa MG 323,159 km), Lote 2 Sistema Oeste Agroindustrial (Goiânia → Piranhas 309,246 km; Iporá → Rio Verde 178,014 km) e Lote 3 Sistema Centro-Norte Estruturante (GO-070 até Itapirapuã 187,423 km; GO-164 até São Miguel do Araguaia 333,818 km; GO-080 até Goianésia 143,267 km).',
       'O traçado segue a malha SRE atual e as extensões mostradas são as do estudo. Legenda por eixo, agrupada por lote (filtra o mapa); o popup e a tabela de atributos dizem se o trecho é do Polo Goiânia original (Convênio de Delegação nº 08/2023) ou ampliação, e trazem o VMDA ponderado do eixo.'
@@ -674,7 +698,25 @@ var Acesso = (function() {
   function ehObraDoFiltro(area, o) { return filtrosDaObra(o).indexOf(area) !== -1; }
   function ehObraFundeinfra(o) { return ehObraDoFiltro('FUNDEINFRA', o); }
 
+  // Grupos de origens (18/11/2026, script 028): uma área que dá acesso a várias origens e tem tabela única EDITÁVEL
+  // (diferente dos filtros FUNDEINFRA/TARE, que são só consulta). PGE = Programa de Gestão de Estruturas, os 6 eixos da
+  // Base Geral do PGE; eixo = número do eixo na planilha (obra nova escolhe o eixo, que define a origem).
+  var GRUPOS_ORIGENS = {
+    PGE: {
+      nome: 'Programa de Gestão de Estruturas',
+      origens: ['PGE1', 'GPP', 'PGE3', 'PGE4', 'GME', 'GMK'],
+      eixos: { PGE1: 1, GPP: 2, PGE3: 3, PGE4: 4, GME: 5, GMK: 6 }
+    }
+  };
+  function ehGrupoOrigens(area) { return Object.prototype.hasOwnProperty.call(GRUPOS_ORIGENS, area); }
+  function origensDoGrupo(area) { return ehGrupoOrigens(area) ? GRUPOS_ORIGENS[area].origens.slice() : [area]; }
+  function grupoDaOrigem(origem) { return Object.keys(GRUPOS_ORIGENS).find(function(g) { return GRUPOS_ORIGENS[g].origens.indexOf(origem) !== -1; }) || null; }
+
   return {
+    gruposOrigens: GRUPOS_ORIGENS,            // { PGE: { nome, origens, eixos } }
+    ehGrupoOrigens: ehGrupoOrigens,           // a área é um grupo de origens com tabela única (PGE)?
+    origensDoGrupo: origensDoGrupo,           // origensDoGrupo('PGE') -> ['PGE1', ...]; origem comum -> [ela]
+    grupoDaOrigem: grupoDaOrigem,             // grupoDaOrigem('GME') -> 'PGE'
     pronto: pronto,
     cliente: sb,
     filtrosFonte: FILTROS_FONTE,              // { FUNDEINFRA: { origens, fontes }, TARE: {...} }

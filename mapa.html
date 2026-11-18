@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="css/style.css?v=2026-11-17.08" />
-  <link rel="stylesheet" href="css/jurisdicao.css?v=2026-11-17.08" />
+  <link rel="stylesheet" href="css/style.css?v=2026-11-18.12" />
+  <link rel="stylesheet" href="css/jurisdicao.css?v=2026-11-18.12" />
   <!-- Tema do mapa: o novo (css/tema_novo.css) e o padrao. mapa.html?tema=antigo mostra o visual anterior e fica
        lembrado neste navegador; ?tema=novo volta ao padrao. -->
   <script>
@@ -24,12 +24,12 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
-  <link rel="stylesheet" href="css/tema_novo.css?v=2026-11-17.08" />
-  <link rel="stylesheet" href="css/jurisdicao_tabela.css?v=2026-11-17.08" />
-  <link rel="stylesheet" href="css/obras.css?v=2026-11-17.08" />
-  <link rel="stylesheet" href="css/tabela_camadas.css?v=2026-11-17.08" />
-  <link rel="stylesheet" href="css/linha_tempo.css?v=2026-11-17.08" />
-  <link rel="stylesheet" href="css/camadas_edicao.css?v=2026-11-17.08" />
+  <link rel="stylesheet" href="css/tema_novo.css?v=2026-11-18.12" />
+  <link rel="stylesheet" href="css/jurisdicao_tabela.css?v=2026-11-18.12" />
+  <link rel="stylesheet" href="css/obras.css?v=2026-11-18.12" />
+  <link rel="stylesheet" href="css/tabela_camadas.css?v=2026-11-18.12" />
+  <link rel="stylesheet" href="css/linha_tempo.css?v=2026-11-18.12" />
+  <link rel="stylesheet" href="css/camadas_edicao.css?v=2026-11-18.12" />
  </head>
 <body>
 <header id="topbar">
@@ -73,10 +73,16 @@
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="TARE" type="button">TARE</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DOC" type="button">DOC</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="DSV" type="button">DSV</button>
-        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GME" type="button">GME</button>
-        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GMK" type="button">GMK</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="GMM" type="button">GMM</button>
         <button class="filtro-btn servico-btn ativo-filtro" data-servico="GMP" type="button">GMP</button>
+        <!-- Programa de Gestão de Estruturas (Base Geral do PGE): os 6 eixos juntos, na ordem dos eixos -->
+        <div class="grupo-origens-titulo">Programa de Gestão de Estruturas</div>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="PGE1" type="button"><span class="sigla-origem">PGE1</span><span class="nome-eixo">Eixo 1</span></button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GPP" type="button"><span class="sigla-origem">GPP</span><span class="nome-eixo">Eixo 2</span></button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="PGE3" type="button"><span class="sigla-origem">PGE3</span><span class="nome-eixo">Eixo 3</span></button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="PGE4" type="button"><span class="sigla-origem">PGE4</span><span class="nome-eixo">Eixo 4</span></button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GME" type="button"><span class="sigla-origem">GME</span><span class="nome-eixo">Eixo 5</span></button>
+        <button class="filtro-btn servico-btn ativo-filtro" data-servico="GMK" type="button"><span class="sigla-origem">GMK</span><span class="nome-eixo">Eixo 6</span></button>
       </div>
       </div>
     </details>
@@ -238,8 +244,11 @@
           <button class="filtro-btn base-btn" id="toggleAreaInfluencia" type="button" aria-pressed="false">Área de Estudo</button>
           <button class="filtro-btn base-btn" id="toggleBuffer" type="button" aria-pressed="false">Área de Influência</button>
           <button class="filtro-btn base-btn" id="toggleFerrovias" type="button" aria-pressed="false">Ferrovias</button>
-          <button class="filtro-btn base-btn" id="togglePoloGoiania" type="button" aria-pressed="false" title="Trechos estaduais delegados à União para concessão pela ANTT (Convênio de Delegação nº 08/2023): GO-020, GO-060, GO-070 e GO-080, 572,9 km">Polo Goiânia</button>
-          <button class="filtro-btn base-btn" id="toggleConcessoes" type="button" aria-pressed="false" title="Concessões estaduais propostas no Relatório Técnico 2026 (GOINFRA/DPL): Lotes 1, 2 e 3, 1.728,4 km, incluindo o Polo Goiânia">Concessões</button>
+          <!-- Polo Goiânia e Concessões num botão só (18/11/2026): cada clique passa ao próximo estado; o ligado fica em negrito -->
+          <button class="filtro-btn base-btn botao-ciclo" id="toggleConcessoes" type="button" aria-pressed="false" data-modo="desligado"
+            title="Clique para alternar: só Polo Goiânia (ANTT, Convênio nº 08/2023) › Concessões (Lotes 1 a 3 do Relatório Técnico 2026) › Concessões menos o Polo Goiânia (só a ampliação) › desligado">
+            <span class="ciclo-opcao" data-modo="polo">Polo Goiânia</span><span class="ciclo-sep">·</span><span class="ciclo-opcao" data-modo="todas">Concessões</span><span class="ciclo-sep">·</span><span class="ciclo-opcao" data-modo="ampliacao">Concessões − Polo</span>
+          </button>
           <button class="filtro-btn base-btn" id="togglePedagios" type="button" aria-pressed="false">Pedágios</button>
           <button class="filtro-btn base-btn" id="toggleHidrografia" type="button" aria-pressed="false" title="Cursos d’água que cruzam as rodovias (inclusive a malha complementar) ou passam junto a obras pontuais, até 2 km de cada lado">Hidrografia</button>
           <button class="filtro-btn base-btn" id="toggleUnidadesSaude" type="button" aria-pressed="false" data-area="HOSPITAL">Unidades de Saúde</button>
@@ -473,6 +482,26 @@
         <div id="legendaGmp"></div>
       </div>
 
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">PGE1 · Manutenção OAE</div>
+        <div id="legendaPge1"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">GPP · Goiás de Ponta a Ponte</div>
+        <div id="legendaGpp"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">PGE3 · Obras com Parcerias</div>
+        <div id="legendaPge3"></div>
+      </div>
+
+      <div class="bloco legenda-categoria">
+        <div class="subtitulo">PGE4 · Novas Obras Estaduais</div>
+        <div id="legendaPge4"></div>
+      </div>
+
       <div class="bloco legenda-categoria" id="blocoLegendaRegioesManutencao" style="display: none;">
         <div class="subtitulo">Regiões de Manutenção</div>
         <div id="legendaRegioesManutencao"></div>
@@ -538,7 +567,7 @@
       </div>
 
       <div class="bloco legenda-categoria" id="blocoLegendaConcessoes" style="display: none;">
-        <div class="subtitulo">Concessões (Lotes 1 a 3)</div>
+        <div class="subtitulo" id="tituloLegendaConcessoes">Concessões (Lotes 1 a 3)</div>
         <div id="legendaConcessoes"></div>
       </div>
 
@@ -573,31 +602,31 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=2026-11-17.08"></script>
-<script src="js/dados_banco.js?v=2026-11-17.08"></script>
-<script src="js/estilos.js?v=2026-11-17.08"></script>
-<script src="js/tabela_camadas.js?v=2026-11-17.08"></script>
-<script src="js/historico_export.js?v=2026-11-17.08"></script>
-<script src="js/regioes.js?v=2026-11-17.08"></script>
-<script src="js/hidrografia.js?v=2026-11-17.08"></script>
-<script src="js/mapa.js?v=2026-11-17.08"></script>
-<script src="js/unidades_saude.js?v=2026-11-17.08"></script>
-<script src="js/filtro_cabecalho.js?v=2026-11-17.08"></script>
-<script src="js/jurisdicao/config.js?v=2026-11-17.08"></script>
-<script src="js/jurisdicao/indicadores.js?v=2026-11-17.08"></script>
-<script src="js/jurisdicao/store.js?v=2026-11-17.08"></script>
-<script src="js/jurisdicao/tabela.js?v=2026-11-17.08"></script>
-<script src="js/jurisdicao/modulo.js?v=2026-11-17.08"></script>
-<script src="js/jurisdicao/tracado.js?v=2026-11-17.08"></script>
-<script src="js/jurisdicao/painel.js?v=2026-11-17.08"></script>
-<script src="js/obras/config.js?v=2026-11-17.08"></script>
-<script src="js/obras/store.js?v=2026-11-17.08"></script>
-<script src="js/obras/tracado.js?v=2026-11-17.08"></script>
-<script src="js/obras/painel.js?v=2026-11-17.08"></script>
-<script src="js/linha_tempo.js?v=2026-11-17.08"></script>
-<script src="js/camadas_edicao.js?v=2026-11-17.08"></script>
-<script src="js/impressao.js?v=2026-11-17.08"></script>
-<script src="js/paineis.js?v=2026-11-17.08"></script>
+<script src="js/acesso.js?v=2026-11-18.12"></script>
+<script src="js/dados_banco.js?v=2026-11-18.12"></script>
+<script src="js/estilos.js?v=2026-11-18.12"></script>
+<script src="js/tabela_camadas.js?v=2026-11-18.12"></script>
+<script src="js/historico_export.js?v=2026-11-18.12"></script>
+<script src="js/regioes.js?v=2026-11-18.12"></script>
+<script src="js/hidrografia.js?v=2026-11-18.12"></script>
+<script src="js/mapa.js?v=2026-11-18.12"></script>
+<script src="js/unidades_saude.js?v=2026-11-18.12"></script>
+<script src="js/filtro_cabecalho.js?v=2026-11-18.12"></script>
+<script src="js/jurisdicao/config.js?v=2026-11-18.12"></script>
+<script src="js/jurisdicao/indicadores.js?v=2026-11-18.12"></script>
+<script src="js/jurisdicao/store.js?v=2026-11-18.12"></script>
+<script src="js/jurisdicao/tabela.js?v=2026-11-18.12"></script>
+<script src="js/jurisdicao/modulo.js?v=2026-11-18.12"></script>
+<script src="js/jurisdicao/tracado.js?v=2026-11-18.12"></script>
+<script src="js/jurisdicao/painel.js?v=2026-11-18.12"></script>
+<script src="js/obras/config.js?v=2026-11-18.12"></script>
+<script src="js/obras/store.js?v=2026-11-18.12"></script>
+<script src="js/obras/tracado.js?v=2026-11-18.12"></script>
+<script src="js/obras/painel.js?v=2026-11-18.12"></script>
+<script src="js/linha_tempo.js?v=2026-11-18.12"></script>
+<script src="js/camadas_edicao.js?v=2026-11-18.12"></script>
+<script src="js/impressao.js?v=2026-11-18.12"></script>
+<script src="js/paineis.js?v=2026-11-18.12"></script>
 
 </body>
 </html>

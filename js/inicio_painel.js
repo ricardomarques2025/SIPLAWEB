@@ -7,7 +7,9 @@
     { sigla: 'DPJ', nome: 'Projetos', img: 'data/DPJ.jpg' },
     { sigla: 'DPL', nome: 'Planejamento', img: 'data/DPL.jpg' },
     { sigla: 'DOC', nome: 'Obras Civis', img: 'data/DOC.jpg' },
-    { sigla: 'DSV', nome: 'Segurança Viária', img: 'data/DSV.jpg' }
+    { sigla: 'DSV', nome: 'Segurança Viária', img: 'data/DSV.jpg' },
+    // Grupo (18/11/2026): os 6 eixos da Base Geral do PGE (PGE1, GPP, PGE3, PGE4, GME, GMK) numa tabela única editável.
+    { sigla: 'PGE', nome: 'Programa de Gestão de Estruturas', img: 'data/PGE.svg', href: 'mapa.html?origem=PGE&tabela=dividida' }
   ];
   // Como chamar cada registro de DADOS na tela (troque aqui para mudar em toda a pagina).
   var ROTULO = { um: 'empreendimento', varios: 'empreendimentos', acompanhados: 'empreendimentos acompanhados' };
@@ -26,7 +28,7 @@
   function quantos(n) { return n === 1 ? ROTULO.um : ROTULO.varios; }
 
   $('grade').innerHTML = ORIGENS.map(function(o) {
-    return '<a class="cartao" href="mapa.html?origem=' + o.sigla + '" data-sigla="' + o.sigla + '" data-area="' + o.sigla + '">' +
+    return '<a class="cartao" href="' + (o.href || 'mapa.html?origem=' + o.sigla) + '" data-sigla="' + o.sigla + '" data-area="' + o.sigla + '">' +
       '<div class="foto" style="background-image:url(' + o.img + ')"><span class="sigla">' + o.sigla + '</span></div>' +
       '<div class="corpo"><div class="nome">' + o.nome + '</div>' +
       '<div class="total"><b>—</b><span>' + ROTULO.varios + '</span></div><div class="barra"></div></div></a>';
@@ -73,6 +75,8 @@
       // FUNDEINFRA e TARE são filtros (fonte do recurso): os cartões contam as obras da DOR e da DPJ com aquela fonte.
       if (o.FONTE_FUNDEINFRA) contar('FUNDEINFRA', o);
       if (o.FONTE_TARE) contar('TARE', o);
+      var grupo = Acesso.grupoDaOrigem(o.UNIDADE);   // PGE: soma os 6 eixos
+      if (grupo) contar(grupo, o);
       if (o.ETAPA === 'Obra') obra++;
       if (o.ETAPA === 'Projeto') projeto++;
       if (o.ATUALIZACAO && o.ATUALIZACAO > atualizado) atualizado = o.ATUALIZACAO;

@@ -279,8 +279,8 @@ const REGRAS_ESTILO = [
   const ROD_EST_INFO = {
     DUP: { label: 'Duplicada', tipo: 'dup', cor: '#ef2020' },
     PAV: { label: 'Pavimentada', tipo: 'simple', cor: '#ef2020' },
-    EOD: { label: 'Em Obras de Duplicação', tipo: 'dashed-red', cor: '#ef2020' },
-    EOP: { label: 'Em Obras de Pavimentação', tipo: 'dashed-red', cor: '#ef2020' },
+    EOD: { label: 'Em Obras de Duplicação', tipo: 'dup-dashed', cor: '#ef2020' },   // = = = (dupla tracejada)
+    EOP: { label: 'Em Obras de Pavimentação', tipo: 'dashed-red', cor: '#ef2020' },   // - - - (só tracejada)
     IMP: { label: 'Implantada', tipo: 'simple', cor: '#f08a00' },
     LEN: { label: 'Leito Natural', tipo: 'simple', cor: '#f08a00' },
     PLA: { label: 'Planejada', tipo: 'simple', cor: '#000000' }
@@ -507,6 +507,51 @@ const REGRAS_ESTILO = [
     }
   };
 
+  // Eixos 1 a 4 da Base Geral do PGE (18/11/2026), uma origem por eixo: PGE1 Manutenção OAE, GPP Goiás de Ponta a
+  // Ponte, PGE3 Obras com Parcerias, PGE4 Novas Obras Estaduais. Placas como as do GME/GMK, uma cor por eixo
+  // (data/pge{eixo}placa{oae|bueiro}{projeto|obra|concluido}.svg, geradas por DADOS/importacao/2026-11-18_PGE/gerar_placas.py).
+  // "OAE / OAC" (Ponte/bueiro do GPP) usa a placa de OAE. Chaves: Pge1OaeProjeto, Pge2BueiroObra, Pge4OaeConcluido...
+  const EIXOS_PGE = { 1: 'PGE1', 2: 'GPP', 3: 'PGE3', 4: 'PGE4' };
+  const ORDEM_LEGENDA_PGE = [];
+  Object.keys(EIXOS_PGE).forEach(function(eixo) {
+    [['Oae', 'oae', 'OAE'], ['Bueiro', 'bueiro', 'OAC']].forEach(function(t) {
+      [['Projeto', 'projeto', 'em projeto', 'obra-ponto-oae-projeto', 'quadrado'],
+       ['Obra', 'obra', 'em obra', 'obra-ponto-oae-obra', 'losango'],
+       ['Concluido', 'concluido', 'concluída', 'obra-ponto-oae-obra', 'losango']].forEach(function(e) {
+        const chave = 'Pge' + eixo + t[0] + e[0];
+        OBRAS_PONTOS_INFO[chave] = {
+          label: t[2] + ' ' + e[2],
+          classe: e[3],
+          cor: '#64748b',
+          formato: e[4],
+          icone: 'data/pge' + eixo + 'placa' + t[1] + e[1] + '.svg'
+        };
+        ORDEM_LEGENDA_PGE.push(chave);
+      });
+    });
+  });
+
+  // Texto de ajuda dos botões de ORIGEM (aparece ao parar o mouse por meio segundo; js/mapa.js, ajudaBotoesOrigem).
+  const DESCRICAO_ORIGENS = {
+    FUNDEINFRA: 'FUNDEINFRA – obras da DOR e da DPJ pagas com recursos do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra)',
+    DOR: 'DOR – Diretoria de Obras Rodoviárias',
+    DMA: 'DMA – Diretoria de Manutenção',
+    DPJ: 'DPJ – Diretoria de Projetos',
+    DPL: 'DPL – Diretoria de Planejamento',
+    TARE: 'TARE – Termo de Acordo de Regime Especial: obras da DOR e da DPJ com recurso TARE',
+    DOC: 'DOC – Diretoria de Obras Civis',
+    DSV: 'DSV – Diretoria de Segurança Viária',
+    GME: 'GME – Programa Goiás em Movimento Estruturas: OACs em rodovias municipais não pavimentadas (Eixo 5 do PGE)',
+    GMK: 'GMK – Programa Goiás em Movimento Kalunga: OAEs e OACs em rodovias municipais na Comunidade Kalunga (Eixo 6 do PGE)',
+    GMM: 'GMM – Goiás em Movimento: Municípios',
+    GMP: 'GMP – Goiás em Movimento: Patrulhas',
+    PGE1: 'PGE1 – Manutenção OAE: manutenção e restauração de pontes em rodovias pavimentadas (Eixo 1 do PGE)',
+    GPP: 'GPP – Programa Goiás de Ponta a Ponte: construção e manutenção de estruturas em rodovias não pavimentadas (Eixo 2 do PGE)',
+    PGE3: 'PGE3 – Obras com Parcerias: obras firmadas em parcerias com entes externos (Eixo 3 do PGE)',
+    PGE4: 'PGE4 – Novas Obras Estaduais: Plano de Obras GOINFRA, Substituição de Balsas e Passagens de Fauna (Eixo 4 do PGE)'
+  };
+  window.DESCRICAO_ORIGENS = DESCRICAO_ORIGENS;
+
   // Ordem dos simbolos de obras pontuais nas legendas.
   const ORDEM_LEGENDA_PONTOS = [
     'OaePlanejamento', 'OaeProjeto', 'OaeObra',
@@ -514,9 +559,10 @@ const REGRAS_ESTILO = [
     'GmeOaeProjeto', 'GmeOaeObra', 'GmeOaeConcluido', 'GmePonteProjeto', 'GmePonteObra', 'GmePonteConcluido',
     'GmeBueiroProjeto', 'GmeBueiroObra', 'GmeBueiroConcluido',
     'GmkOaeProjeto', 'GmkOaeObra', 'GmkOaeConcluido', 'GmkPonteProjeto', 'GmkPonteObra', 'GmkPonteConcluido',
-    'GmkBueiroProjeto', 'GmkBueiroObra', 'GmkBueiroConcluido',
+    'GmkBueiroProjeto', 'GmkBueiroObra', 'GmkBueiroConcluido'
+  ].concat(ORDEM_LEGENDA_PGE, [
     'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'
-  ];
+  ]);
 
   // Origens vinculadas aos poligonos municipais (obras do banco: REF = GEOCOD do municipio).
   // Quando ligadas, os municipios com registros recebem contorno na cor definida aqui.
@@ -553,6 +599,7 @@ const REGRAS_ESTILO = [
   window.ROD_FED_INFO = ROD_FED_INFO;
   window.OBRAS_PONTOS_INFO = OBRAS_PONTOS_INFO;
   window.ORDEM_LEGENDA_PONTOS = ORDEM_LEGENDA_PONTOS;
+  window.EIXOS_PGE = EIXOS_PGE;
   window.ORIGENS_MUNICIPAIS = ORIGENS_MUNICIPAIS;
   window.ESTILO_UNIDADES_SAUDE = ESTILO_UNIDADES_SAUDE;
 
