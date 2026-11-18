@@ -378,7 +378,7 @@ var ObrasPainel = (function() {
     if (c.tipo === 'lista') return Object.assign(pode, { editor: 'list', editorParams: { values: [''].concat(listas[c.campo] || []), autocomplete: true, listOnEmpty: true } });
     if (c.tipo === 'numero') return Object.assign(pode, { editor: 'number', editorParams: { step: 0.01, min: 0 } });
     if (c.tipo === 'longo') return Object.assign(pode, { editor: 'textarea', editorParams: { verticalNavigation: 'hybrid' } });
-    if (c.tipo === 'data') return Object.assign(pode, { editor: 'date', editorParams: { max: hojeIso() } });
+    if (c.tipo === 'data') return Object.assign(pode, { editor: 'date', editorParams: c.futuro ? {} : { max: hojeIso() } });
     return Object.assign(pode, { editor: 'input' });
   }
 
@@ -740,7 +740,7 @@ var ObrasPainel = (function() {
     } else if (c.tipo === 'longo') {
       entrada = '<textarea data-campo="' + c.campo + '" rows="3"' + bloqueio + '>' + esc(v) + '</textarea>';
     } else {
-      var tipoHtml = c.tipo === 'numero' ? ' type="number" step="any" min="0"' : c.tipo === 'data' ? ' type="date" max="' + hojeIso() + '"' : '';
+      var tipoHtml = c.tipo === 'numero' ? ' type="number" step="any" min="0"' : c.tipo === 'data' ? ' type="date"' + (c.futuro ? '' : ' max="' + hojeIso() + '"') : '';
       entrada = '<input data-campo="' + c.campo + '"' + tipoHtml + bloqueio + ' value="' + esc(v) + '">';
     }
     return '<div class="campo' + largo + editado + '" data-wrap="' + c.campo + '"><label><span class="marcador"></span>' + c.titulo + '</label>' + entrada + '</div>';

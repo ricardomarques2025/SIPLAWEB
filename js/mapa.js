@@ -531,7 +531,8 @@ map.addControl(new LogoMapaControl());
       GME: true,
       GMK: true,
       GMM: true,
-      GMP: true
+      GMP: true,
+      PGE: true
     };
     var servicoFiltroAtivo = '';
 
@@ -5595,7 +5596,7 @@ map.addControl(new LogoMapaControl());
   }
 
   function algumaOrigemObraPontoAtiva() {
-    return !!(servicosAtivos.FUNDEINFRA || servicosAtivos.DOC || servicosAtivos.DSV || servicosAtivos.DOR || servicosAtivos.DMA || servicosAtivos.DPL || servicosAtivos.DPJ || servicosAtivos.GME || servicosAtivos.GMK);
+    return !!(servicosAtivos.FUNDEINFRA || servicosAtivos.DOC || servicosAtivos.DSV || servicosAtivos.DOR || servicosAtivos.DMA || servicosAtivos.DPL || servicosAtivos.DPJ || servicosAtivos.GME || servicosAtivos.GMK || servicosAtivos.PGE);
   }
 
   function algumaOrigemObraAeroAtiva() {
@@ -5898,8 +5899,23 @@ map.addControl(new LogoMapaControl());
     GME: { OaeProjeto: 'GmeOaeProjeto', PonteProjeto: 'GmePonteProjeto', OaeObra: 'GmeOaeObra', PonteObra: 'GmePonteObra', BueiroProjeto: 'GmeBueiroProjeto', BueiroObra: 'GmeBueiroObra' },
     GMK: { OaeProjeto: 'GmkOaeProjeto', PonteProjeto: 'GmkPonteProjeto', OaeObra: 'GmkOaeObra', PonteObra: 'GmkPonteObra', BueiroProjeto: 'GmkBueiroProjeto', BueiroObra: 'GmkBueiroObra' }
   };
+  // PGE (18/11/2026): uma placa por eixo (PGE1..PGE4; eixo = 1º número do código PGE). Ponte/OAE e "OAE / OAC" = Oae.
+  [1, 2, 3, 4].forEach(function(e) {
+    var p = 'Pge' + e;
+    PONTOS_PROGRAMA['PGE' + e] = { OaeProjeto: p + 'OaeProjeto', PonteProjeto: p + 'OaeProjeto', OaeObra: p + 'OaeObra', PonteObra: p + 'OaeObra', BueiroProjeto: p + 'BueiroProjeto', BueiroObra: p + 'BueiroObra' };
+  });
 
-  // Concluída (13/11/2026): etapa "Obra" com status "Concluído" ganha a placa de concluída do programa.
+  function eixoPgeObra(dados) {
+    var m = String((dados && (dados.CODIGO_PGE || dados.MODALIDADE)) || '').match(/^(?:Eixo\s*)?([1-4])\b/);
+    return m ? m[1] : '';
+  }
+
+  function programaObraPonto(dados) {
+    var origem = origemObraPonto(dados);
+    return origem === 'PGE' ? 'PGE' + eixoPgeObra(dados) : origem;
+  }
+
+  // Concluída (13/11/2026): etapa "Obra" (ou "Projeto + Obra") com status "Concluído" ganha a placa de concluída do programa.
   function obraPontoConcluida(dados) {
     var etapa = String((dados && dados.ETAPA) || '').toLowerCase();
     var status = String((dados && dados.STATUS) || '').toLowerCase();
@@ -5908,13 +5924,13 @@ map.addControl(new LogoMapaControl());
 
   function estiloObraPonto(dados) {
     var estilo = estiloObraPontoBase(dados);
-    var mapaPrograma = PONTOS_PROGRAMA[origemObraPonto(dados)];
+    var mapaPrograma = PONTOS_PROGRAMA[programaObraPonto(dados)];
     if (!mapaPrograma) return estilo;
     for (var chave in mapaPrograma) {
       if (OBRAS_PONTOS_INFO[chave] === estilo && OBRAS_PONTOS_INFO[mapaPrograma[chave]]) {
         var programa = mapaPrograma[chave];
-        if (/Obra$/.test(programa) && obraPontoConcluida(dados)) {
-          var concluida = OBRAS_PONTOS_INFO[programa.replace(/Obra$/, 'Concluido')];
+        if (/(Obra|Projeto)$/.test(programa) && obraPontoConcluida(dados)) {
+          var concluida = OBRAS_PONTOS_INFO[programa.replace(/(Obra|Projeto)$/, 'Concluido')];
           if (concluida) return concluida;
         }
         return OBRAS_PONTOS_INFO[programa];
@@ -5936,7 +5952,8 @@ map.addControl(new LogoMapaControl());
     // Licitação usa o mesmo ícone de obra (por enquanto não há ícone próprio).
     if (etapa.indexOf('licita') >= 0) etapa = 'obra';
     // Bueiro = OAC; Ponte e Viaduto = OAE (13/11/2026, script 019): mesmas placas de antes.
-    if (/bueiro|\boac\b/.test(intervencao)) {
+    // "OAE / OAC" (Ponte/bueiro do GPP, 18/11/2026) fica com a placa de OAE.
+    if (/bueiro|\boac\b/.test(intervencao) && !/\boae\b/.test(intervencao)) {
       if (etapa.indexOf('projeto') >= 0) return OBRAS_PONTOS_INFO.BueiroProjeto;
       if (etapa.indexOf('obra') >= 0) return OBRAS_PONTOS_INFO.BueiroObra;
     }
@@ -6364,10 +6381,17 @@ map.addControl(new LogoMapaControl());
   // Linha superior (origem, codigo, proposta), intervencao como titulo, descricao, selo de etapa/status
   // e so os campos preenchidos numa grade rotulo/valor.
   var CORES_ETAPA_POPUP = {
-    'Estudo Técnico Preliminar': '#c98a0c', 'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2'
+    'Estudo Técnico Preliminar': '#c98a0c', 'Planejamento': '#c98a0c', 'Projeto': '#2b7bd6', 'Licitação': '#ea580c', 'Obra': '#1e9538', 'Manutenção': '#7c3aed', 'Integrada': '#0891b2',
+    'Projeto + Obra': '#0f766e'
   };
   var CAMPOS_CARTAO_OBRA = [
     { chave: 'FASE', rotulo: 'Fase' },
+    // Base Geral do PGE (GME, GMK, PGE; 18/11/2026)
+    { chave: 'ETAPA_FASE', rotulo: 'Etapa da fase' },
+    { chave: 'CODIGO_PGE', rotulo: 'Código PGE' },
+    { chave: 'ESTRUTURA', rotulo: 'Estrutura prevista' },
+    { chave: 'CURSO_DAGUA', rotulo: "Curso d'água" },
+    { chave: 'EXTENSAO_M', rotulo: 'Extensão', sufixo: ' m' },
     { chave: 'SEI', rotulo: 'Processo' },
     { chave: 'PROCESSO_SEI_CONTRATACAO', rotulo: 'Processo de contratação' },
     { chave: 'CONTRATO', rotulo: 'Contrato' },
@@ -7123,10 +7147,10 @@ map.addControl(new LogoMapaControl());
   // influência, unidades de saúde). Chave = PREFIXO|item; obras: ORIGEM|nome da legenda (linhas) ou ORIGEM|P:rótulo
   // (pontos); camadas: camada|código (data-leg posto por quem desenha a legenda).
   var filtroLegendaSel = {};
-  var ORIGENS_LEGENDA = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP'];
+  var ORIGENS_LEGENDA = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP', 'PGE'];
   var LEGENDAS_FILTRAVEIS = {
     legendaIntervencaos: 'FUNDEINFRA', legendaDor: 'DOR', legendaDma: 'DMA', legendaDpl: 'DPL', legendaDpj: 'DPJ',
-    legendaTare: 'TARE', legendaDoc: 'DOC', legendaDsv: 'DSV', legendaGme: 'GME', legendaGmk: 'GMK'
+    legendaTare: 'TARE', legendaDoc: 'DOC', legendaDsv: 'DSV', legendaGme: 'GME', legendaGmk: 'GMK', legendaPge: 'PGE'
   };
 
   function grupoLegenda(prefixo) { return ORIGENS_LEGENDA.indexOf(prefixo) >= 0 ? 'obras' : prefixo; }
@@ -7148,7 +7172,7 @@ map.addControl(new LogoMapaControl());
 
   function origemLegendaObraPonto(item) {
     var o = origemObraPonto(item);
-    return ['DOC', 'DSV', 'GME', 'GMK', 'DOR', 'DMA', 'DPL', 'DPJ'].indexOf(o) >= 0 ? o : 'FUNDEINFRA';
+    return ['DOC', 'DSV', 'GME', 'GMK', 'PGE', 'DOR', 'DMA', 'DPL', 'DPJ'].indexOf(o) >= 0 ? o : 'FUNDEINFRA';
   }
 
   function chaveLegendaPontoFiltro(item) {
@@ -7326,6 +7350,10 @@ map.addControl(new LogoMapaControl());
 
   function renderizarLegendaGmk(legendasVisiveis) {
     renderizarLegendaPontos('legendaGmk', legendasVisiveis || {});
+  }
+
+  function renderizarLegendaPge(legendasVisiveis) {
+    renderizarLegendaPontos('legendaPge', legendasVisiveis || {});
   }
 
   function corComOpacidade(hex, opacidade) {
@@ -7843,11 +7871,11 @@ map.addControl(new LogoMapaControl());
     if (!dadosLista || !dadosLista.length) return null;
     for (var i = 0; i < dadosLista.length; i++) {
       var chave = chaveLegendaObraPonto(dadosLista[i]);
-      if (chave === 'OaeObra' || chave === 'PonteObra' || chave === 'BueiroObra' || chave === 'Obra' || /^Gm[ek](Oae|Ponte|Bueiro)Obra$/.test(chave)) return dadosLista[i];
+      if (chave === 'OaeObra' || chave === 'PonteObra' || chave === 'BueiroObra' || chave === 'Obra' || /^(Gm[ek]|Pge\d)(Oae|Ponte|Bueiro)Obra$/.test(chave)) return dadosLista[i];
     }
     for (var j = 0; j < dadosLista.length; j++) {
       var chavePlanejamento = chaveLegendaObraPonto(dadosLista[j]);
-      if (chavePlanejamento === 'OaePlanejamento' || chavePlanejamento === 'OaeProjeto' || chavePlanejamento === 'PonteProjeto' || chavePlanejamento === 'BueiroProjeto' || chavePlanejamento === 'Planejamento' || /^Gm[ek](Oae|Ponte|Bueiro)Projeto$/.test(chavePlanejamento)) return dadosLista[j];
+      if (chavePlanejamento === 'OaePlanejamento' || chavePlanejamento === 'OaeProjeto' || chavePlanejamento === 'PonteProjeto' || chavePlanejamento === 'BueiroProjeto' || chavePlanejamento === 'Planejamento' || /^(Gm[ek]|Pge\d)(Oae|Ponte|Bueiro)Projeto$/.test(chavePlanejamento)) return dadosLista[j];
     }
     return dadosLista[0];
   }
@@ -8011,6 +8039,7 @@ map.addControl(new LogoMapaControl());
     var tiposVisiveisDsv = {};
     var tiposVisiveisGme = {};
     var tiposVisiveisGmk = {};
+    var tiposVisiveisPge = {};
     var total = 0;
 
     obrasPontosLayer = criarCamadaObrasPontos();
@@ -8026,7 +8055,8 @@ map.addControl(new LogoMapaControl());
         legendaDoc: tiposVisiveisDoc,
         legendaDsv: tiposVisiveisDsv,
         legendaGme: tiposVisiveisGme,
-        legendaGmk: tiposVisiveisGmk
+        legendaGmk: tiposVisiveisGmk,
+        legendaPge: tiposVisiveisPge
       };
     }
 
@@ -8050,6 +8080,7 @@ map.addControl(new LogoMapaControl());
         else if (origemLegenda === 'DSV') tiposVisiveisDsv[tipoLegenda] = true;
         else if (origemLegenda === 'GME') tiposVisiveisGme[tipoLegenda] = true;
         else if (origemLegenda === 'GMK') tiposVisiveisGmk[tipoLegenda] = true;
+        else if (origemLegenda === 'PGE') tiposVisiveisPge[tipoLegenda] = true;
         else if (origemLegenda === 'DOR') tiposVisiveisDor[tipoLegenda] = true;
         else if (origemLegenda === 'DMA') tiposVisiveisDma[tipoLegenda] = true;
         else if (origemLegenda === 'DPL') tiposVisiveisDpl[tipoLegenda] = true;
@@ -8093,7 +8124,8 @@ map.addControl(new LogoMapaControl());
       legendaDoc: tiposVisiveisDoc,
         legendaDsv: tiposVisiveisDsv,
         legendaGme: tiposVisiveisGme,
-        legendaGmk: tiposVisiveisGmk
+        legendaGmk: tiposVisiveisGmk,
+        legendaPge: tiposVisiveisPge
     };
   }
 
@@ -8726,6 +8758,7 @@ map.addControl(new LogoMapaControl());
     renderizarLegendaDsv(resultadoObrasPontos.legendaDsv);
     renderizarLegendaGme(resultadoObrasPontos.legendaGme);
     renderizarLegendaGmk(resultadoObrasPontos.legendaGmk);
+    renderizarLegendaPge(resultadoObrasPontos.legendaPge);
     renderizarLegendaOrigemMunicipal('legendaGmm', 'GMM', totaisOrigensMunicipais.GMM);
     renderizarLegendaOrigemMunicipal('legendaGmp', 'GMP', totaisOrigensMunicipais.GMP);
     renderizarLegendaOAE({});
@@ -8792,7 +8825,7 @@ map.addControl(new LogoMapaControl());
       var dpjAtivo = servicosAtivos.DPJ;
       var docAtivo = servicosAtivos.DOC;
       var dsvAtivo = servicosAtivos.DSV;
-      var novasOrigens = ['TARE', 'GME', 'GMK', 'GMM', 'GMP'];
+      var novasOrigens = ['TARE', 'GME', 'GMK', 'GMM', 'GMP', 'PGE'];
       var novasOrigensTodasAtivas = novasOrigens.every(function(o) { return servicosAtivos[o]; });
 
       strong.textContent = 'PLANO GOINFRA';
@@ -9068,7 +9101,7 @@ map.addControl(new LogoMapaControl());
     if (bDpj) bDpj.style.display = 'none';
     if (bDoc) bDoc.style.display = 'none';
     if (bDsv) bDsv.style.display = 'none';
-    ['legendaTare', 'legendaGme', 'legendaGmk', 'legendaGmm', 'legendaGmp'].forEach(function(id) {
+    ['legendaTare', 'legendaGme', 'legendaGmk', 'legendaGmm', 'legendaGmp', 'legendaPge'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.closest('.bloco').style.display = 'none';
     });
@@ -9259,7 +9292,7 @@ map.addControl(new LogoMapaControl());
     var params = parametrosEntradaMapa();
     var origem = String(params.get('origem') || '').toUpperCase();
     var perfil = String(params.get('perfil') || '').toLowerCase();
-    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP'];
+    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP', 'PGE'];
 
     if (origem && origensValidas.indexOf(origem) !== -1) {
       limparCamposFiltroEntrada();

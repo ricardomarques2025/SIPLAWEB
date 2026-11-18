@@ -11,7 +11,9 @@ var DadosBanco = (function() {
     'codigo', 'idcod_legado', 'origem', 'tipo', 'natureza', 'ref', 'proposta', 'sre', 'localidade', 'municipio',
     'populacao', 'rodovia', 'descricao', 'intervencao', 'etapa', 'status', 'modalidade', 'sei', 'sei_obra_contrato',
     'contrato', 'empresa', 'ext_contrato_km', 'conclusao', 'area_contratada_m2', 'area_executada_m2', 'horas_pagas',
-    'lote', 'fonte', 'fase', 'valor_aprovado', 'valor_contrato', 'data_referencia', 'vinculos', 'geom', 'grupo:grupos(codigo)'
+    'lote', 'fonte', 'fase', 'valor_aprovado', 'valor_contrato', 'data_referencia', 'vinculos', 'geom', 'grupo:grupos(codigo)',
+    // Base Geral do PGE (script 025, 18/11/2026)
+    'codigo_pge', 'estrutura', 'curso_dagua', 'etapa_fase', 'extensao_m', 'regional'
   ].join(',');
   var POR_PAGINA = 1000;   // limite de linhas por consulta da API
   var carga = null;
@@ -123,6 +125,12 @@ var DadosBanco = (function() {
       AREA_EXECUTADA_M2: o.area_executada_m2,
       HORAS_PAGAS: o.horas_pagas,
       LOTE: o.lote,
+      CODIGO_PGE: o.codigo_pge,
+      ESTRUTURA: o.estrutura,
+      CURSO_DAGUA: o.curso_dagua,
+      ETAPA_FASE: o.etapa_fase,
+      EXTENSAO_M: o.extensao_m,
+      REGIONAL: o.regional,
       ATUALIZACAO: o.data_referencia ? o.data_referencia + ' 00:00:00' : null
     };
   }

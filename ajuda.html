@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Ctext x=%2712%27 y=%2717.5%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-weight=%27700%27 font-size=%2715%27 fill=%27white%27%3E%3F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-17.07" />
+  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-18.01" />
 </head>
 <body>
 <header class="aj-topo">
@@ -158,9 +158,9 @@
   </table>
 </article>
 
-<article id="mapa-origens" data-cat="Mapa" data-titulo="Origens" data-termos="origem FUNDEINFRA DOR DMA DPJ DPL TARE DOC DSV GME GMK GMM GMP ligar desligar tudo limpar" data-rel="mapa-filtros glossario">
+<article id="mapa-origens" data-cat="Mapa" data-titulo="Origens" data-termos="origem FUNDEINFRA DOR DMA DPJ DPL TARE DOC DSV GME GMK GMM GMP PGE ligar desligar tudo limpar" data-rel="mapa-filtros glossario">
   <h1>Origens</h1>
-  <p>A <b>origem</b> é a área responsável pelo empreendimento: FUNDEINFRA, DOR, DMA, DPJ, DPL, TARE, DOC, DSV, GME, GMK, GMM, GMP. No grupo <b>ORIGEM</b> do menu esquerdo, cada botão liga ou desliga as obras daquela origem; botão verde = ligado.</p>
+  <p>A <b>origem</b> é a área responsável pelo empreendimento: FUNDEINFRA, DOR, DMA, DPJ, DPL, TARE, DOC, DSV, GME, GMK, GMM, GMP, PGE. No grupo <b>ORIGEM</b> do menu esquerdo, cada botão liga ou desliga as obras daquela origem; botão verde = ligado.</p>
   <p>A origem controla também a legenda, a exportação, os rótulos e a impressão.</p>
   <p><b>FUNDEINFRA é um filtro</b> (desde a versão 3.4): mostra só as obras da <b>DOR</b> e da <b>DPJ</b> cujo recurso é do Fundeinfra (fonte <i>Fundeinfra</i> ou <i>Associativo-Fundeinfra</i>). Vale para o mapa, o cartão da página inicial, a tabela de obras, o caderno e o Painel (desde a versão 3.13). A obra continua sendo da sua origem; com FUNDEINFRA e a origem dela ligadas, o trecho aparece uma vez só. A busca <b>Proposta FUNDEINFRA</b> usa o número da proposta dessas obras. As obras antigas cadastradas na origem FUNDEINFRA ficam guardadas no banco como cópia de segurança e não aparecem em nenhuma tela.</p>
   <p><b>TARE também é um filtro</b> (desde a versão 3.13): mostra as obras da <b>DOR</b> e da <b>DPJ</b> com fonte <i>TARE</i>. Com TARE e a origem da obra ligadas, o trecho aparece uma vez só, no estilo da TARE. A obra antiga cadastrada na origem TARE fica guardada como cópia de segurança e não aparece.</p>
@@ -260,11 +260,12 @@
   </ul>
 </article>
 
-<article id="mapa-legenda" data-cat="Mapa" data-titulo="Legenda" data-termos="legenda cores símbolos painel direito filtrar clicar tipo jurisdição placa bueiro ponte viaduto OAC OAE concluído GME GMK" data-rel="mapa-camadas">
+<article id="mapa-legenda" data-cat="Mapa" data-titulo="Legenda" data-termos="legenda cores símbolos painel direito filtrar clicar tipo jurisdição placa bueiro ponte viaduto OAC OAE concluído GME GMK PGE eixo" data-rel="mapa-camadas">
   <h1>Legenda</h1>
   <p>A legenda, à direita, é <b>dinâmica</b>: mostra só as origens, camadas e anotações que estão ligadas. Se algo sumiu da legenda, confira se a origem ou camada está ligada.</p>
   <p><b>Filtrar pela legenda:</b> clique no nome de um item da legenda (por exemplo, <i>Pavimentação - Obra</i> da DOR, <i>OAE em obra</i> ou <i>Pavimentada</i> na rodovia estadual) e o mapa mostra só aquele item. Clique em outros para somar; clique de novo para desmarcar. Os itens não escolhidos ficam apagados e o botão <b>Mostrar todos</b>, abaixo de "LEGENDA", desfaz o filtro. As obras (todas as origens) formam um grupo; cada camada de referência com mais de um item (rodovias estaduais e federais pela situação, aeródromos, regiões, área de influência, unidades de saúde) filtra só a si mesma: escolher <i>Pavimentada</i> não esconde as obras. Camadas com um item só (ferrovia, malha complementar, pedágio, hidrografia) e as anotações não filtram. Vale para o desenho do mapa; a tabela de obras e os contadores continuam com tudo.</p>
   <p><b>Placas do GME e do GMK:</b> OAE (pontes e viadutos) e OAC (bueiros) têm placas próprias para <i>em projeto</i>, <i>em obra</i> e <i>concluído</i>. A placa de concluído (verde-escura no GME, vinho no GMK) aparece quando a obra está com etapa <b>Obra</b> e status <b>Concluído</b>.</p>
+  <p><b>Placas da PGE</b> (Programa de Gestão de Estruturas): as mesmas placas de OAE e OAC, com uma cor por eixo (Eixo 1 ciano, Eixo 2 amarelo, Eixo 3 vermelho, Eixo 4 azul): cor escura = em projeto, clara = em obra, bem escura = concluída (etapa Obra ou Projeto + Obra com status Concluído). "OAE / OAC" (ponte ou bueiro, ainda a definir, do Goiás de Ponta a Ponte) usa a placa de OAE. A legenda da PGE separa por eixo e também filtra o mapa.</p>
   <p>No módulo Jurisdição, a barra da direita mostra o <a href="#jurisdicao-modulo">painel de indicadores</a>; no modo de tabela dividida a legenda recolhe sozinha. Na legenda <b>JURISDIÇÃO</b>, clique num tipo (<i>Estadualização</i>, <i>Federalização</i>, <i>Municipalização</i>) para ver só ele no mapa (clique de novo para desmarcar). No módulo é o mesmo filtro <b>Tipo</b> da barra esquerda; nos outros mapas, com a Jurisdição ligada nas camadas de referência, filtra só o desenho dela.</p>
 </article>
 
@@ -712,7 +713,7 @@
   <dl class="aj-glossario">
     <dt id="g-empreendimento">Empreendimento</dt><dd>Cada obra, projeto ou ação acompanhada no sistema.</dd>
     <dt id="g-codigo">Código OB / GR / AJ</dt><dd><code>OB26-00001</code> identifica a obra, <code>GR26-0001</code> o grupo de obras e <code>AJ26-0001</code> o registro de alteração de jurisdição: ano do cadastro + sequência, gerado pelo sistema. Nunca é reaproveitado nem muda (nem quando a obra tramita de origem). No caderno e nas pranchas da Jurisdição aparece um Nº sequencial próprio, na ordem do documento.</dd>
-    <dt id="g-origem">Origem</dt><dd>Área responsável pelo empreendimento: FUNDEINFRA, DOR (Obras Rodoviárias), DMA (Manutenção), DPJ (Projetos), DPL (Planejamento), DOC (Obras Civis), DSV (Segurança Viária), TARE, GME, GMK, GMM e GMP.</dd>
+    <dt id="g-origem">Origem</dt><dd>Área responsável pelo empreendimento: FUNDEINFRA, DOR (Obras Rodoviárias), DMA (Manutenção), DPJ (Projetos), DPL (Planejamento), DOC (Obras Civis), DSV (Segurança Viária), TARE, GME, GMK, GMM, GMP e PGE (Programa de Gestão de Estruturas: pontes, viadutos e bueiros dos eixos 1 a 4 da Base Geral do PGE; o GME é o Eixo 5 e o GMK o Eixo 6).</dd>
     <dt id="g-area">Área</dt><dd>Unidade de permissão: cada origem, Unidades de Saúde e JURISDICAO.</dd>
     <dt id="g-sre">SRE</dt><dd>Sistema Rodoviário Estadual: a malha estadual, dividida em segmentos com código próprio (ex.: <code>309EGO0185</code>).</dd>
     <dt id="g-snv">SNV</dt><dd>Sistema Nacional de Viação: a malha federal.</dd>
@@ -777,7 +778,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=2026-11-17.07"></script>
-<script src="js/ajuda.js?v=2026-11-17.07"></script>
+<script src="js/acesso.js?v=2026-11-18.01"></script>
+<script src="js/ajuda.js?v=2026-11-18.01"></script>
 </body>
 </html>

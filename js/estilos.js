@@ -507,6 +507,29 @@ const REGRAS_ESTILO = [
     }
   };
 
+  // PGE (Programa de Gestão de Estruturas, 18/11/2026): placas como as do GME/GMK, uma cor por eixo
+  // (data/pge{eixo}placa{oae|bueiro}{projeto|obra|concluido}.svg, geradas por DADOS/importacao/2026-11-18_PGE/gerar_placas.py).
+  // "OAE / OAC" (Ponte/bueiro do GPP) usa a placa de OAE. Chaves: Pge1OaeProjeto, Pge1BueiroObra, Pge1OaeConcluido...
+  const EIXOS_PGE = { 1: 'Eixo 1', 2: 'Eixo 2', 3: 'Eixo 3', 4: 'Eixo 4' };
+  const ORDEM_LEGENDA_PGE = [];
+  Object.keys(EIXOS_PGE).forEach(function(eixo) {
+    [['Oae', 'oae', 'OAE'], ['Bueiro', 'bueiro', 'OAC']].forEach(function(t) {
+      [['Projeto', 'projeto', 'em projeto', 'obra-ponto-oae-projeto', 'quadrado'],
+       ['Obra', 'obra', 'em obra', 'obra-ponto-oae-obra', 'losango'],
+       ['Concluido', 'concluido', 'concluída', 'obra-ponto-oae-obra', 'losango']].forEach(function(e) {
+        const chave = 'Pge' + eixo + t[0] + e[0];
+        OBRAS_PONTOS_INFO[chave] = {
+          label: EIXOS_PGE[eixo] + ' · ' + t[2] + ' ' + e[2],
+          classe: e[3],
+          cor: '#64748b',
+          formato: e[4],
+          icone: 'data/pge' + eixo + 'placa' + t[1] + e[1] + '.svg'
+        };
+        ORDEM_LEGENDA_PGE.push(chave);
+      });
+    });
+  });
+
   // Ordem dos simbolos de obras pontuais nas legendas.
   const ORDEM_LEGENDA_PONTOS = [
     'OaePlanejamento', 'OaeProjeto', 'OaeObra',
@@ -514,9 +537,10 @@ const REGRAS_ESTILO = [
     'GmeOaeProjeto', 'GmeOaeObra', 'GmeOaeConcluido', 'GmePonteProjeto', 'GmePonteObra', 'GmePonteConcluido',
     'GmeBueiroProjeto', 'GmeBueiroObra', 'GmeBueiroConcluido',
     'GmkOaeProjeto', 'GmkOaeObra', 'GmkOaeConcluido', 'GmkPonteProjeto', 'GmkPonteObra', 'GmkPonteConcluido',
-    'GmkBueiroProjeto', 'GmkBueiroObra', 'GmkBueiroConcluido',
+    'GmkBueiroProjeto', 'GmkBueiroObra', 'GmkBueiroConcluido'
+  ].concat(ORDEM_LEGENDA_PGE, [
     'Planejamento', 'Projeto', 'Manutencao', 'Obra', 'Padrao'
-  ];
+  ]);
 
   // Origens vinculadas aos poligonos municipais (obras do banco: REF = GEOCOD do municipio).
   // Quando ligadas, os municipios com registros recebem contorno na cor definida aqui.
