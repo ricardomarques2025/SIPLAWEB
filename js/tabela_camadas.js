@@ -459,5 +459,6 @@ var TabelaCamadas = (function() {
   }
 
   return { registrar: registrar, fonte: fonte, botao: botao, passa: passa, abrir: abrir, fechar: function() { if (montado && modo !== 'fechado') fechar(); },
-    aberta: function() { return montado && modo !== 'fechado'; } };
+    aberta: function() { return montado && modo !== 'fechado'; },
+    atual: function() { return montado && modo !== 'fechado' ? atual : null; } };
 })();

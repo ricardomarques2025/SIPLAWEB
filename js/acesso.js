@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-18.05';
+  var VERSAO_SITE = '2026-11-18.06';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -370,13 +370,15 @@ var Acesso = (function() {
       'Tabelas GME, GMK, PGE1, GPP, PGE3 e PGE4 com as colunas na ordem e com os nomes da planilha (CÓDIGO, REGIONAL, CURSO D’ÁGUA, S.R.E ... FASE, ETAPA DA FASE, SITUAÇÃO ... Nº SISLOG, INCLUSÃO PGE), todas visíveis, para facilitar a edição; o Código da obra continua fixo à esquerda e os campos só do sistema ficam em "Colunas".',
       'GME (Eixo 5) e GMK (Eixo 6) atualizados pela mesma planilha: situação com os nomes dela ("A iniciar" no lugar de "Não iniciado"), Processo = SEI da obra (o do projeto ganhou campo próprio), fonte Tesouro, rodovia Vicinal e a descrição do GME mostra o que existe hoje no local (ex.: "Córrego X (hoje: Ponte Madeira)").',
       'Campos novos nas obras (script 025): Código PGE, Etapa da fase, Estrutura prevista, Curso d’água, Extensão, Largura, Altura e Área da estrutura, Custo preliminar, Regional, Superfície da rodovia, Trecho inicial e final, Lote, Processo, Contrato, datas e Valor do projeto, datas da obra, Avanço físico, Convênio e Processo do convênio, Nº SISLOG e Inclusão no PGE.',
-      'Listas novas: status "A iniciar", "Em revisão" e "Paralisado", etapa "Projeto + Obra", fonte "Federal" e intervenção "OAE / OAC".'
+      'Listas novas: status "A iniciar", "Em revisão" e "Paralisado", etapa "Projeto + Obra", fonte "Federal" e intervenção "OAE / OAC".',
+      'Camadas de referência: Polo Goiânia e Concessões num botão só, que muda a cada clique (Polo Goiânia › Concessões › Concessões − Polo › desligado), com o nome ligado em negrito. Em "Concessões − Polo" ficam só os trechos de ampliação (os 3 lotes sem o Polo Goiânia original), com legenda, totais por eixo e lote (1.156,26 km) e tabela de atributos próprios.'
     ], [
       'Novas origens do Programa de Gestão de Estruturas: PGE1 (Manutenção OAE), GPP (Goiás de Ponta a Ponte), PGE3 (Obras com Parcerias) e PGE4 (Novas Obras Estaduais), cada uma com sua cor no mapa.',
       'Novo cartão Programa de Gestão de Estruturas: os 6 programas de pontes e bueiros numa tabela só.',
       'Pare o mouse sobre um botão de origem para ver o que é a sigla.',
       'Novo campo Obras vinculadas: ligue a mesma obra que aparece em duas origens; o vínculo aparece nas duas.',
-      'GME e GMK foram atualizados pela mesma planilha, e as tabelas desses programas seguem a ordem das colunas da planilha.'
+      'GME e GMK foram atualizados pela mesma planilha, e as tabelas desses programas seguem a ordem das colunas da planilha.',
+      'Polo Goiânia e Concessões agora são um botão só: cada clique mostra o Polo, as Concessões, as Concessões sem o Polo ou desliga.'
     ]],
     ['3.15', '17/11/2026', [
       'Nova camada de referência Concessões (botão próprio; a camada Polo Goiânia continua como antes, com os 572,9 km do Convênio 08/2023): proposta do Relatório Técnico 2026 (GOINFRA/DPL), 3 lotes, 1.728,4 km. Lote 1 Sistema Sudeste Integrado (Goiânia → Catalão 253,462 km; Luziânia → divisa MG 323,159 km), Lote 2 Sistema Oeste Agroindustrial (Goiânia → Piranhas 309,246 km; Iporá → Rio Verde 178,014 km) e Lote 3 Sistema Centro-Norte Estruturante (GO-070 até Itapirapuã 187,423 km; GO-164 até São Miguel do Araguaia 333,818 km; GO-080 até Goianésia 143,267 km).',

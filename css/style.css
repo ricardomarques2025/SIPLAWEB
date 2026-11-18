@@ -2839,6 +2839,16 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
 .legenda-lote-polo { font-size: 11px; font-weight: 600; color: #334155; margin: 6px 0 1px 2px; }
 #legendaPoloGoiania .legenda-item svg, #legendaConcessoes .legenda-item svg { flex: 0 0 auto; margin-right: 8px; }
 
+/* Botão único Polo Goiânia / Concessões (18/11/2026): ocupa a linha toda (os vizinhos sobem com o "dense") e mostra os
+   três estados; o ligado fica em negrito e sublinhado, os demais mais claros. */
+.grid-botoes { grid-auto-flow: row dense; }
+.filtro-btn.botao-ciclo { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+  gap: 2px 6px; line-height: 1.35; }
+.botao-ciclo .ciclo-opcao { font-weight: 400; opacity: .75; white-space: nowrap; }
+.botao-ciclo .ciclo-sep { opacity: .45; }
+.botao-ciclo .ciclo-opcao.ciclo-ativa { font-weight: 800; opacity: 1; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+.botao-ciclo.ativo-filtro .ciclo-opcao:not(.ciclo-ativa) { opacity: .55; }
+
 /* Texto de ajuda dos botões de ORIGEM (18/11/2026): aparece depois de meio segundo com o mouse parado no botão
    (js/mapa.js, ajudaBotoesOrigem; textos em DESCRICAO_ORIGENS, js/estilos.js). */
 .ajuda-origem {
