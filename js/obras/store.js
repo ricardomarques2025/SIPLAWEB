@@ -24,6 +24,10 @@ var ObrasStore = (function() {
   // (Acesso.filtrosFonte), só para consulta; editar, propor e aprovar continuam na origem de cada obra. As obras
   // antigas das origens FUNDEINFRA e TARE (backup) não entram.
   function ehFiltro() { return Acesso.ehFiltroFonte(origem); }
+  // Grupo de origens (PGE, 18/11/2026): tabela única EDITÁVEL com as obras das origens do grupo; cada obra é gravada,
+  // proposta e aprovada pela origem dela (o banco aceita quem tem a área do grupo: script 028).
+  function ehGrupo() { return Acesso.ehGrupoOrigens(origem); }
+  function daTabela(o) { return ehFiltro() ? Acesso.ehObraDoFiltro(origem, o) : Acesso.origensDoGrupo(origem).indexOf(o.origem) !== -1; }
   function modoProposta() { return !ehFiltro() && Acesso.podePropor(origem) && !Acesso.podeEditar(origem); }
   // Linha do tempo (js/linha_tempo.js): { codigo: [etapa, status] } da data escolhida; null = hoje.
   // Na data passada a tabela mostra só as obras que existiam, com a etapa/status de então, e fica só leitura.
@@ -62,7 +66,7 @@ var ObrasStore = (function() {
     function pagina(inicio) {
       var q = sb.from('obras').select(COLUNAS);
       var F = Acesso.filtrosFonte[origem];
-      q = ehFiltro() ? q.in('origem', F.origens).in('fonte', F.fontes) : q.eq('origem', origem);
+      q = ehFiltro() ? q.in('origem', F.origens).in('fonte', F.fontes) : q.in('origem', Acesso.origensDoGrupo(origem));
       return q.is('excluido_em', null).order('codigo')
         .range(inicio, inicio + POR_PAGINA - 1)
         .then(function(res) {
@@ -90,7 +94,7 @@ var ObrasStore = (function() {
   function carregarPropostas() {
     if (ehFiltro()) { propostas = []; emitir('propostas'); return Promise.resolve(); }
     var desde = new Date(Date.now() - 30 * 864e5).toISOString();
-    return sb.from('propostas').select('*').eq('origem', origem).or('situacao.eq.pendente,decidido_em.gte.' + desde)
+    return sb.from('propostas').select('*').in('origem', Acesso.origensDoGrupo(origem)).or('situacao.eq.pendente,decidido_em.gte.' + desde)
       .order('pid', { ascending: false }).limit(300)
       .then(function(res) { if (res.error) throw erro(res.error); propostas = res.data; emitir('propostas'); });
   }
@@ -99,13 +103,12 @@ var ObrasStore = (function() {
     return propostas.find(function(p) { return p.obra_uid === uid && p.situacao === 'pendente' && tipos.indexOf(p.tipo) !== -1; }) || null;
   }
   // Quem decide esta proposta: depende do perfil de quem propos (guardado na proposta).
-  function podeDecidir(p) { return !visao && !ehFiltro() && Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }
+  function podeDecidir(p) { return !visao && !ehFiltro() && Acesso.podeAprovar(p.origem || origem, p.perfil_autor, p.criado_por); }
 
   function recarregarObra(uid) {
     return sb.from('obras').select(COLUNAS + ',excluido_em').eq('uid', uid).maybeSingle().then(function(res) {
       if (res.error) throw erro(res.error);
-      var daTabela = res.data && (ehFiltro() ? Acesso.ehObraDoFiltro(origem, res.data) : res.data.origem === origem);
-      if (!res.data || res.data.excluido_em || !daTabela) { registros.delete(uid); pendentes.delete(uid); return null; }
+      if (!res.data || res.data.excluido_em || !daTabela(res.data)) { registros.delete(uid); pendentes.delete(uid); return null; }
       delete res.data.excluido_em;
       return guardar(res.data);
     });
@@ -195,12 +198,13 @@ var ObrasStore = (function() {
 
   // ---------- Criar / excluir / tramitar ----------
   function criar(dados) {
-    var nova = Object.assign({ origem: origem }, dados);
+    var nova = Object.assign({ origem: origem }, dados);   // grupo (PGE): dados.origem vem do eixo escolhido
     if (nova.sei) nova.sei = String(nova.sei).replace(/\D/g, '');
     if (modoProposta()) {
+      var origemNova = nova.origem;
       delete nova.origem;
       Object.keys(nova).forEach(function(k) { if (nova[k] === null) delete nova[k]; });
-      return sb.rpc('propor_nova', { p_origem: origem, p_dados: nova }).then(function(res) {
+      return sb.rpc('propor_nova', { p_origem: origemNova, p_dados: nova }).then(function(res) {
         if (res.error) throw erro(res.error);
         return carregarPropostas().then(function() { return { proposta: res.data }; });
       });
@@ -239,6 +243,10 @@ var ObrasStore = (function() {
     }
     return sb.rpc('tramitar_origem', { p_obras: uids, p_nova_origem: nova, p_data: data, p_descricao: descricao, p_sei: sei || null }).then(function(res) {
       if (res.error) throw erro(res.error);
+      // Mudou de eixo dentro do grupo (PGE): a obra continua na tabela, com a origem nova.
+      if (Acesso.origensDoGrupo(origem).indexOf(nova) !== -1 && ehGrupo()) {
+        return Promise.all(uids.map(function(uid) { pendentes.delete(uid); return recarregarObra(uid); })).then(function() { emitir('tramitado'); });
+      }
       uids.forEach(function(uid) { registros.delete(uid); pendentes.delete(uid); });
       emitir('tramitado');
     });
@@ -306,6 +314,7 @@ var ObrasStore = (function() {
     // podeAlterar: mexe na tabela/ficha/traçado, exclui, tramita e anota (quem propõe); podeGravar: grava direto,
     // sem aprovação (admin ou perfil com "gravar"); modoProposta: propõe sem gravar (tudo vira proposta);
     // podeAprovarAlgo: decide propostas de alguém nesta origem (pleno, gerenciador...); podeDecidir(p): esta proposta.
+    ehGrupo: ehGrupo,
     podeAlterar: function() { return !visao && !ehFiltro() && Acesso.podePropor(origem); },
     podeGravar: function() { return !visao && !ehFiltro() && Acesso.podeEditar(origem); },
     podeAprovarAlgo: function() { return !visao && !ehFiltro() && Acesso.aprovaNaArea(origem); },

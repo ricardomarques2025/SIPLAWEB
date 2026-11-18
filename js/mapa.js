@@ -9253,7 +9253,7 @@ map.addControl(new LogoMapaControl());
 
   function definirOrigensAtivas(origemAtiva) {
     for (var chave in servicosAtivos) {
-      servicosAtivos[chave] = !origemAtiva || chave === origemAtiva;
+      servicosAtivos[chave] = !origemAtiva || (Array.isArray(origemAtiva) ? origemAtiva.indexOf(chave) !== -1 : chave === origemAtiva);
     }
 
     preencherIntervencaos();
@@ -9295,11 +9295,12 @@ map.addControl(new LogoMapaControl());
     var params = parametrosEntradaMapa();
     var origem = String(params.get('origem') || '').toUpperCase();
     var perfil = String(params.get('perfil') || '').toLowerCase();
-    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP', 'PGE1', 'GPP', 'PGE3', 'PGE4'];
+    var origensValidas = ['FUNDEINFRA', 'DOR', 'DMA', 'DPL', 'DPJ', 'TARE', 'DOC', 'DSV', 'GME', 'GMK', 'GMM', 'GMP', 'PGE1', 'GPP', 'PGE3', 'PGE4', 'PGE'];
 
     if (origem && origensValidas.indexOf(origem) !== -1) {
       limparCamposFiltroEntrada();
-      definirOrigensAtivas(origem);
+      // PGE = Programa de Gestão de Estruturas (grupo): liga as 6 origens dele (a tabela única abre pela mesma URL).
+      definirOrigensAtivas(window.Acesso && Acesso.ehGrupoOrigens(origem) ? Acesso.origensDoGrupo(origem) : origem);
       aplicarFiltros();
     } else if (params.get('modulo') === 'jurisdicao') {
       // Mesma base de uma origem (malhas, localidades, aeródromos), sem obras; os trechos vêm de js/jurisdicao/modulo.js.

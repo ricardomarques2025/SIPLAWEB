@@ -203,11 +203,19 @@ var ObrasPainel = (function() {
       .filter(function(o) { return ligadas.indexOf(o) !== -1 && Acesso.podeVer(o); });
   }
   // Lista do titulo: as ligadas (sem nenhuma ligada, so a origem atual da tabela).
+  // Grupo de origens (PGE, 18/11/2026): entra na lista quando alguma origem dele está ligada e a pessoa vê o grupo.
+  function gruposAtivos(ligadas) {
+    return Object.keys(Acesso.gruposOrigens).filter(function(g) {
+      return Acesso.podeVer(g) && Acesso.origensDoGrupo(g).some(function(o) { return ligadas.indexOf(o) !== -1; });
+    });
+  }
+  function rotuloOrigem(o) { return Acesso.ehGrupoOrigens(o) ? o + ' – ' + Acesso.gruposOrigens[o].nome + ' (todos os eixos)' : o; }
   function preencherSeletorOrigem() {
     var lista = origensAtivas();
-    if (lista.indexOf(ORIGEM) === -1) lista = lista.length ? lista : [ORIGEM];
+    lista = lista.concat(gruposAtivos(lista));
+    if (lista.indexOf(ORIGEM) === -1) lista.unshift(ORIGEM);
     $('obrOrigem').innerHTML = lista.map(function(o) {
-      return '<option value="' + esc(o) + '"' + (o === ORIGEM ? ' selected' : '') + '>' + esc(o) + '</option>';
+      return '<option value="' + esc(o) + '"' + (o === ORIGEM ? ' selected' : '') + '>' + esc(rotuloOrigem(o)) + '</option>';
     }).join('');
     $('obrOrigem').disabled = lista.length < 2;
     $('obrOrigem').title = lista.length < 2 ? 'Ligue mais origens no mapa para alternar entre elas aqui' : 'Alternar entre as origens ligadas no mapa';
@@ -228,7 +236,7 @@ var ObrasPainel = (function() {
     limparHalo();
     ORIGEM = nova;
     preencherSeletorOrigem();
-    $('obrNovaTitulo').textContent = 'Nova obra · ' + nova;
+    $('obrNovaTitulo').textContent = 'Nova obra · ' + rotuloOrigem(nova);
     $('obrAbrirTabela').textContent = 'Abrir tabela de obras';
     filtros = { busca: '', etapa: '', status: '', tracado: '' };
     $('obrBusca').value = '';
@@ -247,15 +255,16 @@ var ObrasPainel = (function() {
   // Botoes de origem do mapa: a lista acompanha; se a origem da tabela foi desligada, vai para a primeira ligada.
   function origensMudaram() {
     var ligadas = origensAtivas();
-    if (ligadas.length && ligadas.indexOf(ORIGEM) === -1) trocarOrigem(ligadas[0]);
+    var grupoLigado = Acesso.ehGrupoOrigens(ORIGEM) && Acesso.origensDoGrupo(ORIGEM).some(function(o) { return ligadas.indexOf(o) !== -1; });
+    if (ligadas.length && ligadas.indexOf(ORIGEM) === -1 && !grupoLigado) trocarOrigem(ligadas[0]);
     preencherSeletorOrigem();
   }
 
   function contarAprovacoes() {
     if (Acesso.ehFiltroFonte(ORIGEM) || !Acesso.aprovaNaArea(ORIGEM)) return;   // FUNDEINFRA/TARE: só consulta
     var origem = ORIGEM;
-    Acesso.cliente.from('propostas').select('pid,perfil_autor,criado_por').eq('origem', origem).eq('situacao', 'pendente').then(function(res) {
-      var n = res.error ? 0 : res.data.filter(function(p) { return Acesso.podeAprovar(origem, p.perfil_autor, p.criado_por); }).length;
+    Acesso.cliente.from('propostas').select('pid,origem,perfil_autor,criado_por').in('origem', Acesso.origensDoGrupo(origem)).eq('situacao', 'pendente').then(function(res) {
+      var n = res.error ? 0 : res.data.filter(function(p) { return Acesso.podeAprovar(p.origem, p.perfil_autor, p.criado_por); }).length;
       if (n && !grade && origem === ORIGEM) $('obrAbrirTabela').textContent = 'Abrir tabela de obras · ' + n + ' para aprovar';
     });
   }
@@ -354,7 +363,7 @@ var ObrasPainel = (function() {
     var lista = ObrasStore.lista();
     return camposTabela().filter(function(c) {
       if (c.oculta) return false;
-      if (c.soFiltro) return ObrasStore.ehFiltro();   // coluna Origem: só nas tabelas FUNDEINFRA e TARE (DOR + DPJ)
+      if (c.soFiltro) return ObrasStore.ehFiltro() || ObrasStore.ehGrupo();   // e na tabela única do grupo (PGE)   // coluna Origem: só nas tabelas FUNDEINFRA e TARE (DOR + DPJ)
       return c.comum || lista.some(function(r) { return r[c.campo] !== null && r[c.campo] !== undefined && r[c.campo] !== ''; });
     }).map(function(c) { return c.campo; });
   }
@@ -799,12 +808,13 @@ var ObrasPainel = (function() {
         '<div class="campo largo"><label>Descrição</label><textarea name="descricao" rows="2" required></textarea></div></div>' +
         '<div class="form-tramite-acoes"><span class="dica-tramite">A nota entra na linha do tempo; os dados da obra não mudam.</span>' +
         '<button class="btn btn-primario" type="submit"><svg><use href="#o-check"/></svg>Registrar</button></div></form>' +
-        '<form class="form-tramite" id="obrFormOrigem"><h4>Tramitar para outra origem</h4><div class="form-grade">' +
-        '<div class="campo"><label>Nova origem</label><select name="origem" required id="obrSelOrigem"><option value="">Carregando…</option></select></div>' +
+        '<form class="form-tramite" id="obrFormOrigem"><h4>' + (ObrasStore.ehGrupo() ? 'Mudar de eixo (programa)' : 'Tramitar para outra origem') + '</h4><div class="form-grade">' +
+        '<div class="campo"><label>' + (ObrasStore.ehGrupo() ? 'Novo eixo' : 'Nova origem') + '</label><select name="origem" required id="obrSelOrigem"><option value="">Carregando…</option></select></div>' +
         '<div class="campo"><label>Data</label><input type="date" name="data" required value="' + hojeIso() + '" max="' + hojeIso() + '"></div>' +
         '<div class="campo largo"><label>Motivo</label><textarea name="descricao" rows="2" required></textarea></div></div>' +
         '<div class="form-tramite-acoes"><span class="dica-tramite">' + (propondo
-          ? 'Vai para aprovação; quando aprovada, a obra sai desta tabela e vai para a origem escolhida (o código ' + esc(r.codigo) + ' não muda).'
+          ? 'Vai para aprovação; quando aprovada, a obra vai para a origem escolhida (o código ' + esc(r.codigo) + ' não muda).'
+          : ObrasStore.ehGrupo() ? 'O código ' + esc(r.codigo) + ' não muda; a obra passa para o programa do eixo escolhido e continua nesta tabela.'
           : 'O código ' + esc(r.codigo) + ' não muda; a obra sai desta tabela e vai para a origem escolhida.') + '</span>' +
         '<button class="btn" type="submit">' + (propondo ? 'Enviar para aprovação' : 'Tramitar') + '</button></div></form>';
     }
@@ -812,8 +822,11 @@ var ObrasPainel = (function() {
     corpo.innerHTML = html;
     if ($('obrSelOrigem')) {
       ObrasStore.origensDisponiveis().then(function(lista) {
-        $('obrSelOrigem').innerHTML = '<option value=""></option>' + lista.filter(function(o) { return o.codigo !== ORIGEM; })
-          .map(function(o) { return '<option value="' + esc(o.codigo) + '">' + esc(o.codigo) + (o.nome !== o.codigo ? ' — ' + esc(o.nome) : '') + '</option>'; }).join('');
+        var G = Acesso.gruposOrigens[ORIGEM];
+        if (G) lista = lista.filter(function(o) { return G.origens.indexOf(o.codigo) !== -1; })   // grupo: só os eixos dele
+          .sort(function(a, b) { return G.eixos[a.codigo] - G.eixos[b.codigo]; });
+        $('obrSelOrigem').innerHTML = '<option value=""></option>' + lista.filter(function(o) { return o.codigo !== (r.origem || ORIGEM); })
+          .map(function(o) { return '<option value="' + esc(o.codigo) + '">' + (G ? 'Eixo ' + G.eixos[o.codigo] + ' – ' : '') + esc(o.codigo) + (o.nome !== o.codigo ? ' — ' + esc(o.nome) : '') + '</option>'; }).join('');
       });
       $('obrFormNota').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -824,10 +837,11 @@ var ObrasPainel = (function() {
       $('obrFormOrigem').addEventListener('submit', function(e) {
         e.preventDefault();
         var d = Object.fromEntries(new FormData(this));
-        if (!confirm((propondo ? 'Propor tramitar ' : 'Tramitar ') + r.codigo + ' de ' + ORIGEM + ' para ' + d.origem + '?')) return;
+        if (!confirm((propondo ? 'Propor tramitar ' : 'Tramitar ') + r.codigo + ' de ' + (r.origem || ORIGEM) + ' para ' + d.origem + '?')) return;
         ObrasStore.tramitarOrigem([r.uid], d.origem, d.data, d.descricao.trim()).then(function(res) {
           if (res && res.proposta) { toast('Tramitação de ' + r.codigo + ' para ' + d.origem + ' enviada para aprovação'); atualizarAprovacoes(); renderFicha(); return; }
           toast(r.codigo + ' tramitada para ' + d.origem);
+          if (ObrasStore.ehGrupo() && ObrasStore.obter(r.uid)) { atualizarLinha(r.uid); renderFicha(); return recarregarMapa(); }
           fecharFicha(); limparHalo(); recarregarGrade(); return recarregarMapa();
         }).catch(function(err) { toast(err.message, true); });
       });
@@ -873,8 +887,14 @@ var ObrasPainel = (function() {
   function abrirNova() {
     var l = ObrasStore.listas();
     function opcoes(lista) { return '<option value=""></option>' + (lista || []).map(function(v) { return '<option>' + esc(v) + '</option>'; }).join(''); }
-    $('obrNovaCorpo').innerHTML = '<div class="form-grade">' +
-      '<div class="campo"><label>Tipo de traçado</label><select name="tipo" required><option>Linha</option><option>Ponto</option><option>Área</option></select></div>' +
+    // Grupo (PGE): o EIXO escolhido define a origem da obra; nas origens da planilha, o CÓDIGO dela vem junto.
+    var G = Acesso.gruposOrigens[ORIGEM];
+    var eixo = G ? '<div class="campo"><label>EIXO</label><select name="eixo" required><option value=""></option>' +
+      G.origens.map(function(o) { return '<option value="' + o + '">' + G.eixos[o] + ' – ' + esc(((window.DESCRICAO_ORIGENS || {})[o] || o).split(':')[0]) + '</option>'; }).join('') + '</select></div>' : '';
+    var planilha = ehOrigemPlanilhaPge(ORIGEM);
+    $('obrNovaCorpo').innerHTML = '<div class="form-grade">' + eixo +
+      (planilha ? '<div class="campo"><label>CÓDIGO (planilha)</label><input name="codigo_pge" placeholder="ex.: 2.1.0.345"></div>' : '') +
+      '<div class="campo"><label>Tipo de traçado</label><select name="tipo" required>' + (planilha ? '<option>Ponto</option><option>Linha</option>' : '<option>Linha</option><option>Ponto</option>') + '<option>Área</option></select></div>' +
       '<div class="campo"><label>Intervenção</label><select name="intervencao">' + opcoes(l.intervencao) + '</select></div>' +
       '<div class="campo largo"><label>Descrição</label><textarea name="descricao" rows="3" required></textarea></div>' +
       '<div class="campo"><label>Etapa</label><select name="etapa">' + opcoes(l.etapa) + '</select></div>' +
@@ -891,6 +911,7 @@ var ObrasPainel = (function() {
     e.preventDefault();
     var d = Object.fromEntries(new FormData($('obrFormNova')));
     Object.keys(d).forEach(function(k) { d[k] = String(d[k]).trim(); if (d[k] === '') d[k] = null; });
+    if (d.eixo !== undefined) { d.origem = d.eixo; delete d.eixo; }   // grupo (PGE): eixo -> origem
     var erro = ['sei', 'data_referencia', 'intervencao', 'etapa', 'status'].map(function(k) { var m = validarCampoObra(k, d[k], ObrasStore.listas()); return m ? campo(k).titulo + ': ' + m : ''; }).filter(Boolean)[0];
     if (erro) { $('obrNovaAviso').textContent = erro; return; }
     ObrasStore.criar(d).then(function(r) {
@@ -1084,7 +1105,7 @@ var ObrasPainel = (function() {
             hist.forEach(function(h) {
               // da origem: obra que está na tabela; excluída (não está mais na tabela): pela origem guardada no histórico
               // (tabelas FUNDEINFRA/TARE: só as obras da tabela; as antigas dessas origens são backup)
-              var daOrigem = uids[h.registro_uid] || (!soFiltrados && !ObrasStore.ehFiltro() && h.depois && h.depois.origem === origem && !ObrasStore.obter(h.registro_uid));
+              var daOrigem = uids[h.registro_uid] || (!soFiltrados && !ObrasStore.ehFiltro() && h.depois && Acesso.origensDoGrupo(origem).indexOf(h.depois.origem) !== -1 && !ObrasStore.obter(h.registro_uid));
               if (!daOrigem) return;
               var r = ObrasStore.obter(h.registro_uid);
               linhas = linhas.concat(HistoricoExport.expandir(h, {

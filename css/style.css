@@ -2847,3 +2847,9 @@ body.modo-impressao.preparando-impressao.print-formato-a0 #printStampBox .print-
   pointer-events: none; opacity: 0; transition: opacity .12s;
 }
 .ajuda-origem.visivel { opacity: 1; }
+
+/* Título do grupo de origens no menu ORIGEM (Programa de Gestão de Estruturas, 18/11/2026): ocupa a linha inteira da grade. */
+.grid-servicos .grupo-origens-titulo {
+  grid-column: 1 / -1; margin: 6px 0 -2px; padding-top: 8px; border-top: 1px solid rgba(0, 0, 0, .12);
+  font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #4b5563; text-align: center;
+}

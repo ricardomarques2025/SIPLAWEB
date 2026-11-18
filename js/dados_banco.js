@@ -30,7 +30,9 @@ var DadosBanco = (function() {
     var fora = {};
     var registros = c.registros.filter(function(r) {
       // Tabelas FUNDEINFRA e TARE: o recorte vale para as obras do filtro (DOR/DPJ com aquela fonte).
-      var daTabela = recorte.origem === 'FUNDEINFRA' ? r.FONTE_FUNDEINFRA : recorte.origem === 'TARE' ? r.FONTE_TARE : r.UNIDADE === recorte.origem;
+      // Grupo (PGE): vale para as obras de todas as origens do grupo.
+      var daTabela = recorte.origem === 'FUNDEINFRA' ? r.FONTE_FUNDEINFRA : recorte.origem === 'TARE' ? r.FONTE_TARE
+        : Acesso.origensDoGrupo(recorte.origem).indexOf(r.UNIDADE) !== -1;
       var fica = !daTabela || !!recorte.codigos[r.IDCOD];
       if (!fica) fora[r.IDCOD] = true;
       return fica;

@@ -86,7 +86,8 @@ var CAMPOS_OBRA = [
 // facilitar as edições"): nessas tabelas as colunas seguem a ordem e os nomes da planilha
 // (Base_Geral_NOVA AVALIAÇÃO_OAE.xlsx, aba GERAL) e ficam todas visíveis; o Código da obra (OB26-...) continua
 // fixo à esquerda e os campos só do sistema ficam no fim, ocultos. Nas demais origens nada muda.
-var ORIGENS_PLANILHA_PGE = ['GME', 'GMK', 'PGE1', 'GPP', 'PGE3', 'PGE4'];
+// PGE = tabela única do Programa de Gestão de Estruturas (as 6 origens juntas; Acesso.gruposOrigens).
+var ORIGENS_PLANILHA_PGE = ['GME', 'GMK', 'PGE1', 'GPP', 'PGE3', 'PGE4', 'PGE'];
 var COLUNAS_PLANILHA_PGE = [
   ['codigo_pge', 'CÓDIGO'], ['pge_eixo', 'EIXO'], ['pge_etapa', 'ETAPA'], ['modalidade', 'SUBEIXO', 'soComValor'],
   ['pge_item', 'ITEM'], ['regional', 'REGIONAL'], ['curso_dagua', "CURSO D'ÁGUA"],
@@ -113,9 +114,12 @@ function camposObraDaOrigem(origem) {
   if (!ehOrigemPlanilhaPge(origem)) return CAMPOS_OBRA;
   var porCampo = {};
   CAMPOS_OBRA.forEach(function(c) { porCampo[c.campo] = c; });
-  var usados = { codigo: true, obras_vinculadas: true };
-  var lista = [Object.assign({}, porCampo.codigo, { titulo: 'Cód. SIPLAWEB' }),    // "CÓDIGO" é o da planilha
-    Object.assign({}, porCampo.obras_vinculadas, { titulo: 'OBRAS VINCULADAS', oculta: false })];
+  var usados = { codigo: true, obras_vinculadas: true, origem: true };
+  var lista = [Object.assign({}, porCampo.codigo, { titulo: 'Cód. SIPLAWEB' })];   // "CÓDIGO" é o da planilha
+  // Tabela única (PGE): a origem de cada obra (programa do eixo) logo depois do código
+  if (window.Acesso && Acesso.ehGrupoOrigens && Acesso.ehGrupoOrigens(origem)) lista.push(Object.assign({}, porCampo.origem, { titulo: 'ORIGEM', soFiltro: true }));
+  else lista.push(Object.assign({}, porCampo.origem, { oculta: true }));
+  lista.push(Object.assign({}, porCampo.obras_vinculadas, { titulo: 'OBRAS VINCULADAS', oculta: false }));
   COLUNAS_PLANILHA_PGE.forEach(function(p) {
     var c = porCampo[p[0]]; if (!c) return;
     usados[p[0]] = true;

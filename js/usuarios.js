@@ -77,7 +77,9 @@
     if (!u) { $('ficha').innerHTML = '<div class="vazio">Escolha um usuário na lista ou crie um novo.</div>'; return; }
     var pode = podeGerenciar(u), bloq = pode ? '' : ' disabled', ehMaster = dados.eu.master;
     var origens = dados.areas.filter(function(a) { return a.tipo === 'origem'; });
-    var sites = dados.areas.filter(function(a) { return a.tipo !== 'origem'; });
+    var sites = dados.areas.filter(function(a) { return a.tipo !== 'origem' && a.tipo !== 'grupo'; });
+    // Grupos de origens (script 028): uma área que libera várias origens de uma vez (PGE = 6 eixos da Base Geral do PGE).
+    var grupos = dados.areas.filter(function(a) { return a.tipo === 'grupo'; });
     function linhaArea(a) {
       var v = (u.areas || {})[a.codigo] || '';
       return '<label class="area"><span>' + esc(a.codigo) + (a.nome && a.nome !== a.codigo ? ' <small>' + esc(a.nome) + '</small>' : '') + '</span>' +
@@ -99,6 +101,9 @@
         (pode ? '<div class="todas">Aplicar a todas as origens: <select id="fTodas"><option value="-">—</option>' +
           niveis().map(function(n) { return '<option value="' + n[0] + '">' + esc(n[1]) + '</option>'; }).join('') + '</select></div>' : '') +
         '<div class="areas"><h4>Origens</h4>' + origens.map(linhaArea).join('') + '</div>' +
+        (grupos.length ? '<div class="areas"><h4>Programas (várias origens de uma vez)</h4>' + grupos.map(linhaArea).join('') +
+          '<p class="nota">PGE libera PGE1, GPP, PGE3, PGE4, GME e GMK com o perfil escolhido, e a tabela única do programa. ' +
+          'Se a pessoa também tiver perfil numa dessas origens acima, vale o da origem.</p></div>' : '') +
         '<div class="areas"><h4>Módulos</h4>' + sites.map(linhaArea).join('') + '</div>' +
       '</div>' +
       '<p class="nota" id="notaAdmin"' + (u.admin ? '' : ' hidden') + '>Administrador acessa todas as áreas com todos os poderes (grava direto e aprova tudo).</p>' +

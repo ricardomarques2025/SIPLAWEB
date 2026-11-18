@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice">
+  <!-- Cartão "Programa de Gestão de Estruturas" da página inicial (18/11/2026): ponte sobre um rio, ilustração simples. -->
+  <defs>
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7cc3e8"/><stop offset="1" stop-color="#d9f0f7"/></linearGradient>
+    <linearGradient id="agua" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f7fb5"/><stop offset="1" stop-color="#1b4f7a"/></linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#ceu)"/>
+  <path d="M0 210 Q120 170 230 200 T470 190 T640 200 V360 H0Z" fill="#6f9e4f"/>
+  <path d="M0 250 Q160 235 320 250 T640 248 V360 H0Z" fill="url(#agua)"/>
+  <g fill="none" stroke="#e8f4fb" stroke-opacity=".55" stroke-width="3" stroke-linecap="round">
+    <path d="M60 290 h60 M200 305 h80 M380 288 h70 M500 310 h70 M120 330 h50 M330 332 h60"/>
+  </g>
+  <!-- tabuleiro e arcos -->
+  <rect x="20" y="178" width="600" height="16" rx="3" fill="#5b6470"/>
+  <rect x="20" y="172" width="600" height="7" fill="#8a939e"/>
+  <g fill="none" stroke="#5b6470" stroke-width="12">
+    <path d="M70 194 Q170 112 270 194"/>
+    <path d="M270 194 Q370 112 470 194"/>
+    <path d="M470 194 Q545 140 610 194"/>
+  </g>
+  <g fill="#5b6470">
+    <rect x="262" y="190" width="16" height="80"/>
+    <rect x="462" y="190" width="16" height="80"/>
+    <rect x="62" y="190" width="16" height="60"/>
+  </g>
+  <g stroke="#5b6470" stroke-width="4">
+    <path d="M110 178 v-22 M150 178 v-40 M190 178 v-42 M230 178 v-24 M310 178 v-22 M350 178 v-40 M390 178 v-42 M430 178 v-24 M510 178 v-20 M545 178 v-30 M580 178 v-18"/>
+  </g>
+</svg>
