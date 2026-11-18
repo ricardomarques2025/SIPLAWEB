@@ -6383,6 +6383,7 @@ map.addControl(new LogoMapaControl());
     { chave: 'FASE', rotulo: 'Fase' },
     // Base Geral do PGE (GME, GMK, PGE; 18/11/2026)
     { chave: 'ETAPA_FASE', rotulo: 'Etapa da fase' },
+    { chave: 'OBRAS_VINCULADAS', rotulo: 'Obras vinculadas' },
     { chave: 'CODIGO_PGE', rotulo: 'Código PGE' },
     { chave: 'ESTRUTURA', rotulo: 'Estrutura prevista' },
     { chave: 'CURSO_DAGUA', rotulo: "Curso d'água" },

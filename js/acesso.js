@@ -353,7 +353,7 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-18.02';
+  var VERSAO_SITE = '2026-11-18.03';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
@@ -363,7 +363,8 @@ var Acesso = (function() {
     ['3.16', '18/11/2026', [
       'Base Geral do Programa de Gestão de Estruturas (PGE, planilha de 18/11/2026): quatro origens novas, uma por eixo, com botão e legenda próprios: PGE1 Manutenção OAE (Eixo 1, 26 pontes em rodovias pavimentadas), GPP Goiás de Ponta a Ponte (Eixo 2, 344 estruturas em rodovias não pavimentadas), PGE3 Obras com Parcerias (Eixo 3) e PGE4 Novas Obras Estaduais (Eixo 4, 86; o subeixo fica na Modalidade: Plano de Obras GOINFRA, Substituição de Balsas, Passagens de Fauna).',
       'Placas como as do GME e do GMK (OAE e OAC em projeto, em obra e concluída), uma cor por eixo; a legenda de cada origem filtra o mapa. "Ponte/bueiro" do GPP entra como intervenção "OAE / OAC", com a placa de OAE.',
-      'Botões de origem: parando o mouse meio segundo sobre o botão aparece o que é a sigla.',
+      'Botões de origem: parando o mouse meio segundo sobre o botão aparece o que é a sigla (ex.: GMM Goiás em Movimento: Municípios, GMP Goiás em Movimento: Patrulhas, TARE Termo de Acordo de Regime Especial).',
+      'Campo "Obras vinculadas" em todas as tabelas de obras (script 026): para ligar à mão a mesma obra cadastrada em duas origens (ex.: uma ponte do PGE que também está na DOR), escrevendo os códigos (OB26-00052; OB26-01431). O vínculo vale nos dois sentidos: vincular A a B grava A também em B, e tirar desfaz dos dois lados. Depois se decide qual código fica. Aparece também no popup.',
       'Tabelas GME, GMK, PGE1, GPP, PGE3 e PGE4 com as colunas na ordem e com os nomes da planilha (CÓDIGO, REGIONAL, CURSO D’ÁGUA, S.R.E ... FASE, ETAPA DA FASE, SITUAÇÃO ... Nº SISLOG, INCLUSÃO PGE), todas visíveis, para facilitar a edição; o Código da obra continua fixo à esquerda e os campos só do sistema ficam em "Colunas".',
       'GME (Eixo 5) e GMK (Eixo 6) atualizados pela mesma planilha: situação com os nomes dela ("A iniciar" no lugar de "Não iniciado"), Processo = SEI da obra (o do projeto ganhou campo próprio), fonte Tesouro, rodovia Vicinal e a descrição do GME mostra o que existe hoje no local (ex.: "Córrego X (hoje: Ponte Madeira)").',
       'Campos novos nas obras (script 025): Código PGE, Etapa da fase, Estrutura prevista, Curso d’água, Extensão, Largura, Altura e Área da estrutura, Custo preliminar, Regional, Superfície da rodovia, Trecho inicial e final, Lote, Processo, Contrato, datas e Valor do projeto, datas da obra, Avanço físico, Convênio e Processo do convênio, Nº SISLOG e Inclusão no PGE.',
@@ -371,6 +372,7 @@ var Acesso = (function() {
     ], [
       'Novas origens do Programa de Gestão de Estruturas: PGE1 (Manutenção OAE), GPP (Goiás de Ponta a Ponte), PGE3 (Obras com Parcerias) e PGE4 (Novas Obras Estaduais), cada uma com sua cor no mapa.',
       'Pare o mouse sobre um botão de origem para ver o que é a sigla.',
+      'Novo campo Obras vinculadas: ligue a mesma obra que aparece em duas origens; o vínculo aparece nas duas.',
       'GME e GMK foram atualizados pela mesma planilha, e as tabelas desses programas seguem a ordem das colunas da planilha.'
     ]],
     ['3.15', '17/11/2026', [

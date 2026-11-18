@@ -13,7 +13,7 @@ var DadosBanco = (function() {
     'contrato', 'empresa', 'ext_contrato_km', 'conclusao', 'area_contratada_m2', 'area_executada_m2', 'horas_pagas',
     'lote', 'fonte', 'fase', 'valor_aprovado', 'valor_contrato', 'data_referencia', 'vinculos', 'geom', 'grupo:grupos(codigo)',
     // Base Geral do PGE (script 025, 18/11/2026)
-    'codigo_pge', 'estrutura', 'curso_dagua', 'etapa_fase', 'extensao_m', 'regional'
+    'codigo_pge', 'estrutura', 'curso_dagua', 'etapa_fase', 'extensao_m', 'regional', 'obras_vinculadas'
   ].join(',');
   var POR_PAGINA = 1000;   // limite de linhas por consulta da API
   var carga = null;
@@ -131,6 +131,7 @@ var DadosBanco = (function() {
       ETAPA_FASE: o.etapa_fase,
       EXTENSAO_M: o.extensao_m,
       REGIONAL: o.regional,
+      OBRAS_VINCULADAS: o.obras_vinculadas,
       ATUALIZACAO: o.data_referencia ? o.data_referencia + ' 00:00:00' : null
     };
   }

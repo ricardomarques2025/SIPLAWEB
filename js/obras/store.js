@@ -148,6 +148,7 @@ var ObrasStore = (function() {
   function salvar(dataFato) {
     var itens = resumoPendentes();
     var resultado = { gravadas: [], recusadas: [], proposta: modoProposta() };
+    var espelhadas = {};   // obras vinculadas/desvinculadas (o banco as altera também: script 026)
     return itens.reduce(function(fila, item) {
       return fila.then(function() {
         var r = registros.get(item.uid);
@@ -173,12 +174,21 @@ var ObrasStore = (function() {
             pendentes.delete(item.uid);
             return recarregarObra(item.uid);
           }
+          if (Object.prototype.hasOwnProperty.call(mudancas, 'obras_vinculadas')) {
+            String((r.obras_vinculadas || '') + ';' + (res.data[0].obras_vinculadas || '')).toUpperCase()
+              .replace(/OB\d{2}-\d{5,}/g, function(c) { espelhadas[c] = true; return c; });
+          }
           guardar(res.data[0]);
           pendentes.delete(item.uid);
           resultado.gravadas.push(item.codigo);
         });
       });
     }, Promise.resolve()).then(function() {
+      // A outra obra do vínculo, se for desta mesma tabela, foi alterada pelo banco: relê para não ficar com a versão velha.
+      var uids = [];
+      registros.forEach(function(o, uid) { if (espelhadas[o.codigo] && !pendentes.has(uid)) uids.push(uid); });
+      return Promise.all(uids.map(recarregarObra));
+    }).then(function() {
       return resultado.proposta ? carregarPropostas() : null;
     }).then(function() { emitir('salvo'); return resultado; });
   }

@@ -532,20 +532,19 @@ const REGRAS_ESTILO = [
   });
 
   // Texto de ajuda dos botões de ORIGEM (aparece ao parar o mouse por meio segundo; js/mapa.js, ajudaBotoesOrigem).
-  // GMM e GMP: falta o nome completo (pedir ao usuário).
   const DESCRICAO_ORIGENS = {
     FUNDEINFRA: 'FUNDEINFRA – obras da DOR e da DPJ pagas com recursos do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra)',
     DOR: 'DOR – Diretoria de Obras Rodoviárias',
     DMA: 'DMA – Diretoria de Manutenção',
     DPJ: 'DPJ – Diretoria de Projetos',
     DPL: 'DPL – Diretoria de Planejamento',
-    TARE: 'TARE – obras da DOR e da DPJ com recurso TARE',
+    TARE: 'TARE – Termo de Acordo de Regime Especial: obras da DOR e da DPJ com recurso TARE',
     DOC: 'DOC – Diretoria de Obras Civis',
     DSV: 'DSV – Diretoria de Segurança Viária',
     GME: 'GME – Programa Goiás em Movimento Estruturas: OACs em rodovias municipais não pavimentadas (Eixo 5 do PGE)',
     GMK: 'GMK – Programa Goiás em Movimento Kalunga: OAEs e OACs em rodovias municipais na Comunidade Kalunga (Eixo 6 do PGE)',
-    GMM: 'GMM – obras por município',
-    GMP: 'GMP – municípios atendidos',
+    GMM: 'GMM – Goiás em Movimento: Municípios',
+    GMP: 'GMP – Goiás em Movimento: Patrulhas',
     PGE1: 'PGE1 – Manutenção OAE: manutenção e restauração de pontes em rodovias pavimentadas (Eixo 1 do PGE)',
     GPP: 'GPP – Programa Goiás de Ponta a Ponte: construção e manutenção de estruturas em rodovias não pavimentadas (Eixo 2 do PGE)',
     PGE3: 'PGE3 – Obras com Parcerias: obras firmadas em parcerias com entes externos (Eixo 3 do PGE)',

@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Ctext x=%2712%27 y=%2717.5%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-weight=%27700%27 font-size=%2715%27 fill=%27white%27%3E%3F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-18.02" />
+  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-18.03" />
 </head>
 <body>
 <header class="aj-topo">
@@ -713,7 +713,8 @@
   <dl class="aj-glossario">
     <dt id="g-empreendimento">Empreendimento</dt><dd>Cada obra, projeto ou ação acompanhada no sistema.</dd>
     <dt id="g-codigo">Código OB / GR / AJ</dt><dd><code>OB26-00001</code> identifica a obra, <code>GR26-0001</code> o grupo de obras e <code>AJ26-0001</code> o registro de alteração de jurisdição: ano do cadastro + sequência, gerado pelo sistema. Nunca é reaproveitado nem muda (nem quando a obra tramita de origem). No caderno e nas pranchas da Jurisdição aparece um Nº sequencial próprio, na ordem do documento.</dd>
-    <dt id="g-origem">Origem</dt><dd>Área responsável pelo empreendimento: FUNDEINFRA, DOR (Obras Rodoviárias), DMA (Manutenção), DPJ (Projetos), DPL (Planejamento), DOC (Obras Civis), DSV (Segurança Viária), TARE, GME, GMK, GMM, GMP e as origens da Base Geral do Programa de Gestão de Estruturas (PGE): PGE1 Manutenção OAE (Eixo 1), GPP Goiás de Ponta a Ponte (Eixo 2), PGE3 Obras com Parcerias (Eixo 3), PGE4 Novas Obras Estaduais (Eixo 4); o GME é o Eixo 5 e o GMK o Eixo 6. Nas tabelas dessas origens as colunas seguem a ordem e os nomes da planilha.</dd>
+    <dt id="g-origem">Origem</dt><dd>Área responsável pelo empreendimento: FUNDEINFRA, DOR (Obras Rodoviárias), DMA (Manutenção), DPJ (Projetos), DPL (Planejamento), DOC (Obras Civis), DSV (Segurança Viária), TARE (Termo de Acordo de Regime Especial), GME (Goiás em Movimento: Estruturas), GMK (Goiás em Movimento: Kalunga), GMM (Goiás em Movimento: Municípios), GMP (Goiás em Movimento: Patrulhas) e as origens da Base Geral do Programa de Gestão de Estruturas (PGE): PGE1 Manutenção OAE (Eixo 1), GPP Goiás de Ponta a Ponte (Eixo 2), PGE3 Obras com Parcerias (Eixo 3), PGE4 Novas Obras Estaduais (Eixo 4); o GME é o Eixo 5 e o GMK o Eixo 6. Nas tabelas dessas origens as colunas seguem a ordem e os nomes da planilha.</dd>
+    <dt id="g-obras-vinculadas">Obras vinculadas</dt><dd>Campo da obra (tabela e ficha) para ligar à mão a mesma obra cadastrada em mais de uma origem, escrevendo os códigos separados por ponto e vírgula (ex.: OB26-00052; OB26-01431). O vínculo vale nos dois sentidos: ao salvar, a outra obra recebe o código desta automaticamente (aparece no histórico dela), e tirar um código desfaz dos dois lados. Só aceita códigos de obras que existem. Serve para decidir depois qual código fica.</dd>
     <dt id="g-area">Área</dt><dd>Unidade de permissão: cada origem, Unidades de Saúde e JURISDICAO.</dd>
     <dt id="g-sre">SRE</dt><dd>Sistema Rodoviário Estadual: a malha estadual, dividida em segmentos com código próprio (ex.: <code>309EGO0185</code>).</dd>
     <dt id="g-snv">SNV</dt><dd>Sistema Nacional de Viação: a malha federal.</dd>
@@ -778,7 +779,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=2026-11-18.02"></script>
-<script src="js/ajuda.js?v=2026-11-18.02"></script>
+<script src="js/acesso.js?v=2026-11-18.03"></script>
+<script src="js/ajuda.js?v=2026-11-18.03"></script>
 </body>
 </html>

@@ -14,6 +14,9 @@
 var CAMPOS_OBRA = [
   { campo: 'codigo', titulo: 'Código', tipo: 'texto', largura: 112, fixa: true, somenteLeitura: true, comum: true, grupo: 'Identificação' },
   // soFiltro: visível por padrão só na tabela FUNDEINFRA (filtro das obras da DOR e da DPJ; 17/11/2026).
+  // Obras vinculadas (script 026, 18/11/2026): mesma obra em outra origem, ligada à mão; o banco grava o vínculo nos
+  // dois sentidos. Depois se decide qual código fica. tipo 'obras' = códigos OB26-00000 separados por ; ou ,
+  { campo: 'obras_vinculadas', titulo: 'Obras vinculadas', tipo: 'obras', largura: 190, comum: true, grupo: 'Identificação' },
   { campo: 'origem', titulo: 'Origem', tipo: 'texto', largura: 80, somenteLeitura: true, soFiltro: true, grupo: 'Identificação' },
   { campo: 'grupo_codigo', titulo: 'Grupo', tipo: 'texto', largura: 96, somenteLeitura: true, grupo: 'Identificação' },
   { campo: 'tipo', titulo: 'Tipo', tipo: 'texto', largura: 74, somenteLeitura: true, comum: true, oculta: true, grupo: 'Identificação' },
@@ -105,8 +108,9 @@ function camposObraDaOrigem(origem) {
   if (!ehOrigemPlanilhaPge(origem)) return CAMPOS_OBRA;
   var porCampo = {};
   CAMPOS_OBRA.forEach(function(c) { porCampo[c.campo] = c; });
-  var usados = { codigo: true };
-  var lista = [Object.assign({}, porCampo.codigo, { titulo: 'Cód. SIPLAWEB' })];   // "CÓDIGO" é o da planilha
+  var usados = { codigo: true, obras_vinculadas: true };
+  var lista = [Object.assign({}, porCampo.codigo, { titulo: 'Cód. SIPLAWEB' }),    // "CÓDIGO" é o da planilha
+    Object.assign({}, porCampo.obras_vinculadas, { titulo: 'OBRAS VINCULADAS', oculta: false })];
   COLUNAS_PLANILHA_PGE.forEach(function(p) {
     var c = porCampo[p[0]]; if (!c) return;
     usados[p[0]] = true;
@@ -135,6 +139,10 @@ var CORES_ETAPA_OBRA = {
 function validarCampoObra(campo, valor, listas) {
   var c = CAMPOS_OBRA.find(function(x) { return x.campo === campo; });
   if (!c || valor === null || valor === undefined || valor === '') return '';
+  if (c.tipo === 'obras') {
+    var resto = String(valor).toUpperCase().replace(/OB\d{2}-\d{5,}/g, '').replace(/[\s,;]/g, '');
+    if (resto) return 'Use só códigos de obra (ex.: OB26-00052; OB26-01431)';
+  }
   if (c.tipo === 'sei' && !/^\d{15}$/.test(String(valor).replace(/\D/g, ''))) return 'Processo SEI deve ter 15 dígitos';
   if (c.tipo === 'numero' && (!isFinite(Number(valor)) || Number(valor) < 0)) return 'Número inválido (não pode ser negativo)';
   if (c.tipo === 'data') {
