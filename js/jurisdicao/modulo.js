@@ -100,10 +100,11 @@ var Jurisdicao = (function() {
         var latlngs = latlngsDe(g);
         camada.addLayer(L.polyline(latlngs, { pane: 'jurisdicaoPane', color: '#fff', weight: 8, opacity: 1, interactive: false }));
         var linha = L.polyline(latlngs, { pane: 'jurisdicaoPane', color: corTipo(r.tipo), weight: 4.5, opacity: 1, lineCap: 'round', lineJoin: 'round' });
+        linha.feature = { properties: { codigo: r.codigo || '' } };   // título do perfil de elevação
         linha.on('click', function(e) {
           if (window.obrasSelecaoTracadoAtiva) return;   // editando um traçado: o clique é da ferramenta
           var atual = Store.obter(r.id) || r;
-          abrirPopupNoPonto(e.latlng, conteudoPopup(atual), null);
+          abrirPopupNoPonto(e.latlng, conteudoPopup(atual), null, linha);
           mostrarNoPainel(atual);
           selecionar(r.id);
           emitir('clique', r.id);

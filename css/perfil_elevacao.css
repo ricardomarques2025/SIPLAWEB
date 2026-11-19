@@ -1,0 +1,39 @@
+/* Perfil de elevação (js/perfil_elevacao.js) */
+.perfil-elev { position: fixed; z-index: 1200; left: 50%; bottom: 16px; transform: translate(-50%, 20px); width: min(980px, calc(100vw - 24px));
+  background: #fff; border-radius: 16px; box-shadow: 0 18px 50px rgba(15,42,26,.32); font: 13px Inter, Arial, sans-serif; color: #334139;
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; overflow: hidden; }
+.perfil-elev.aberto { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+.perfil-topo { display: flex; align-items: center; gap: 10px; padding: 10px 14px; color: #fff; background: linear-gradient(90deg, #0f2a1a 0%, #12662a 60%, #1e9538 100%); }
+.perfil-topo b { font-size: 14px; font-weight: 800; white-space: nowrap; }
+.perfil-elev .perfil-titulo { display: block; flex: 1 1 auto; width: auto; min-width: 0; opacity: .85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.perfil-elev .perfil-csv { flex: 0 0 auto; width: auto; margin: 0; font: inherit; font-size: 12px; font-weight: 700; color: #fff; background: rgba(255,255,255,.16); border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.perfil-csv:hover { background: rgba(255,255,255,.28); }
+.perfil-elev .perfil-fechar { flex: 0 0 28px; padding: 0; margin: 0; border: 0; background: rgba(255,255,255,.16); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 19px; line-height: 1; cursor: pointer; }
+.perfil-nums { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 10px 16px 2px; }
+.perfil-nums div { display: flex; flex-direction: column; }
+.perfil-nums small { font-size: 11px; color: #6b7a70; }
+.perfil-nums b { font-size: 14px; color: #0f2a1a; }
+.perfil-grafico { position: relative; padding: 4px 10px 0; min-height: 60px; }
+.perfil-grafico svg { display: block; }
+.perfil-grafico .g { stroke: #e3e9e5; stroke-width: 1; }
+.perfil-grafico .tx, .perfil-grafico .ty { font-size: 10.5px; fill: #6b7a70; }
+.perfil-grafico .tx { text-anchor: middle; }
+.perfil-grafico .ty { text-anchor: end; }
+.perfil-grafico .un { font-weight: 700; text-anchor: start; }
+.perfil-grafico .tx.un { text-anchor: end; }
+.perfil-grafico .area { fill: rgba(234, 88, 12, .14); }
+.perfil-grafico .linha { fill: none; stroke: #ea580c; stroke-width: 2; stroke-linejoin: round; }
+.perfil-grafico .cursor { stroke: #0f2a1a; stroke-width: 1; stroke-dasharray: 3 3; }
+.perfil-grafico .ponto { fill: #ea580c; stroke: #fff; stroke-width: 2; }
+.perfil-tip { position: absolute; top: 6px; background: #0f2a1a; color: #fff; font-size: 11.5px; padding: 4px 8px; border-radius: 8px; white-space: nowrap; pointer-events: none; }
+.perfil-carregando { margin: 18px 6px; color: #6b7a70; }
+.perfil-nota { padding: 4px 16px 10px; font-size: 11px; color: #6b7a70; }
+.perfil-btn-popup { display: inline-flex; align-items: center; gap: 6px; width: auto; margin: 0 0 8px; font: 700 12px Inter, Arial, sans-serif; color: #fff;
+  background: #ea580c; border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.perfil-btn-popup:hover { background: #c2410c; }
+.perfil-btn-popup svg { width: 14px; height: 14px; fill: rgba(255,255,255,.35); stroke: #fff; stroke-width: 2; stroke-linejoin: round; }
+.perfil-control .medicao-btn.ativo { background: #ea580c; color: #fff; }
+.perfil-cursor, .perfil-cursor .leaflet-interactive { cursor: crosshair !important; }
+.perfil-dica { position: absolute; z-index: 1000; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(15,42,26,.88); color: #fff;
+  font: 12.5px Inter, Arial, sans-serif; padding: 6px 12px; border-radius: 999px; pointer-events: none; }
+@media (max-width: 600px) { .perfil-nums { gap: 4px 14px; } .perfil-nota { display: none; } }

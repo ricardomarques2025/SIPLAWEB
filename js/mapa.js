@@ -3701,18 +3701,20 @@ map.addControl(new LogoMapaControl());
     return conteudos;
   }
 
-  function abrirPopupNoPonto(latlng, principal, layerClicada) {
-    // Escolhendo o traçado de uma obra (js/obras/tracado.js): o clique é da seleção, não abre popup.
-    if (window.obrasSelecaoTracadoAtiva) return;
+  // linha (opcional): a linha clicada; o popup ganha o botão "Perfil de elevação" (js/perfil_elevacao.js).
+  function abrirPopupNoPonto(latlng, principal, layerClicada, linha) {
+    // Escolhendo o traçado de uma obra (js/obras/tracado.js) ou desenhando um perfil: o clique é da ferramenta.
+    if (window.obrasSelecaoTracadoAtiva || window.perfilDesenhando) return;
     var secoes = [];
     function adicionar(html) { if (html && secoes.indexOf(html) === -1) secoes.push(html); }
     adicionar(principal);
     conteudoPopupAreasSobrepostas(layerClicada, latlng).forEach(adicionar);
     fontesPopupNoPonto.forEach(function(fonte) { adicionar(fonte(latlng)); });
     if (!secoes.length) return;
+    var perfil = linha && typeof PerfilElevacao !== 'undefined' ? PerfilElevacao.botaoPopup(linha) : '';
     L.popup({ maxWidth: 380, maxHeight: 360 })
       .setLatLng(latlng)
-      .setContent(secoes.map(function(html) {
+      .setContent(perfil + secoes.map(function(html) {
         return '<section class="popup-area-sobreposta">' + html + '</section>';
       }).join(''))
       .openOn(map);
@@ -3740,7 +3742,7 @@ map.addControl(new LogoMapaControl());
       return;
     }
     layer.on('click', function(e) {
-      abrirPopupNoPonto(e.latlng, typeof conteudo === 'function' ? conteudo(layer) : conteudo, null);
+      abrirPopupNoPonto(e.latlng, typeof conteudo === 'function' ? conteudo(layer) : conteudo, null, layer);
     });
     var areaClique = null;
     layer.on('add', function() {
@@ -4113,7 +4115,7 @@ map.addControl(new LogoMapaControl());
   var ultimoPopupNoPontoEm = 0;
   map.on('popupopen', function() { ultimoPopupNoPontoEm = Date.now(); });
   map.on('click', function(e) {
-    if (window.obrasSelecaoTracadoAtiva || medicaoAtiva || (typeof anotacaoFerramenta !== 'undefined' && anotacaoFerramenta)) return;
+    if (window.obrasSelecaoTracadoAtiva || window.perfilDesenhando || medicaoAtiva || (typeof anotacaoFerramenta !== 'undefined' && anotacaoFerramenta)) return;
     if (map.pm && map.pm.globalDrawModeEnabled && map.pm.globalDrawModeEnabled()) return;
     var alvo = e.originalEvent && e.originalEvent.target;
     if (alvo && alvo.closest && alvo.closest('path.leaflet-interactive, .leaflet-marker-icon, .leaflet-popup, .leaflet-control')) return;

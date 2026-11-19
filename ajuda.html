@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%231e9538%27/%3E%3Ctext x=%2712%27 y=%2717.5%27 text-anchor=%27middle%27 font-family=%27Arial%27 font-weight=%27700%27 font-size=%2715%27 fill=%27white%27%3E%3F%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-19.08" />
+  <link rel="stylesheet" href="css/ajuda.css?v=2026-11-19.09" />
 </head>
 <body>
 <header class="aj-topo">
@@ -318,6 +318,23 @@
   <h2>Estilo</h2>
   <p>Ajuste <b>cor das linhas/formas</b>, <b>espessura</b>, <b>opacidade do preenchimento</b>, <b>formato e tamanho do ponto</b>, <b>cor e tamanho do texto</b>. A linha de status, embaixo, diz qual ferramenta está ativa e como finalizar.</p>
   <div class="aj-nota aj-atencao">As anotações ficam salvas <b>só neste navegador</b>. Para levar a outro computador, use <b>Exportar</b> e depois <b>Importar</b> lá.</div>
+</article>
+
+<article id="ferramentas-perfil" data-cat="Ferramentas do mapa" data-titulo="Perfil de elevação" data-termos="perfil elevação altitude altimetria relevo rampa greide declividade subida descida cota terreno srtm" data-rel="ferramentas-medicao">
+  <h1>Perfil de elevação</h1>
+  <p>Mostra a altitude do terreno ao longo de uma linha: um gráfico com a distância (km) e a altitude (m), e os números do trecho: extensão, altitude mínima e máxima, início → fim, subida e descida totais, rampa média e rampa máxima (com o km).</p>
+  <h2>De um trecho do mapa</h2>
+  <ol>
+    <li>Clique numa linha: trecho do SRE, malha complementar, ferrovia, obra ou registro da Jurisdição.</li>
+    <li>No popup, clique em <b>Perfil de elevação</b> (botão laranja, no alto).</li>
+  </ol>
+  <h2>De uma linha que você desenha</h2>
+  <ol>
+    <li>Clique em <b>Perfil</b>, ao lado da Régua.</li>
+    <li>Clique os pontos da linha no mapa (pode clicar em cima das rodovias). <b>Duplo clique</b> ou <b>Enter</b> conclui; <b>Esc</b> cancela.</li>
+  </ol>
+  <p>Passe o mouse no gráfico: aparecem o km, a altitude e a rampa daquele ponto, e um marcador laranja anda no mapa. <b>Baixar CSV</b> salva os pontos (km, latitude, longitude, altitude).</p>
+  <div class="aj-nota aj-atencao">É a altitude do <b>terreno natural</b> (SRTM/NASA, pontos a cada ~30 m, erro de 5 a 10 m; pode incluir mata e edificações). Serve para planejamento e para comparar alternativas, <b>não</b> para o greide de projeto. As altitudes vêm de um serviço público (Terrain Tiles, AWS); sem internet, o perfil não abre.</div>
 </article>
 
 <article id="ferramentas-medicao" data-cat="Ferramentas do mapa" data-titulo="Medição de distâncias e áreas" data-termos="medir medição régua distância área extensão km comprimento" data-rel="ferramentas-anotacoes ferramentas-km">
@@ -795,7 +812,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="js/acesso.js?v=2026-11-19.08"></script>
-<script src="js/ajuda.js?v=2026-11-19.08"></script>
+<script src="js/acesso.js?v=2026-11-19.09"></script>
+<script src="js/ajuda.js?v=2026-11-19.09"></script>
 </body>
 </html>
