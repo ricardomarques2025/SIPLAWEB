@@ -48,7 +48,8 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: va
 .legenda-etapas span::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; background: var(--c); vertical-align: -1px; }
 
 .atalhos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 14px; margin-top: 30px; }
-@media (min-width: 1000px) { .atalhos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Mapa geral, rodoviário, Jurisdição e Gerência na mesma linha (os que a pessoa não vê somem e os outros dividem a largura). */
+@media (min-width: 1000px) { .atalhos { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); } }
 .atalho { position: relative; border-radius: 14px; overflow: hidden; min-height: 120px; color: #fff; display: flex; align-items: flex-end;
   padding: 18px 20px; background-size: cover; background-position: center; transition: transform .15s; }
 .atalho::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(0,0,0,.8), rgba(0,0,0,.25) 70%, rgba(0,0,0,.05)); }
@@ -76,3 +77,90 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: va
 
 /* Atalho dos quadros da Gerência (gerencia.html): sem foto, fundo em degradê. */
 .atalho-gerencia { background: linear-gradient(135deg, #0f2a1a 0%, #12662a 55%, #1e9538 100%); }
+
+/* Ilustração de quadro (kanban) no atalho da Gerência, no lugar da foto. */
+.atalho-gerencia .mini-quadro { position: absolute; z-index: 0; right: 18px; top: 16px; bottom: 16px; width: 46%; display: flex; gap: 7px; opacity: .55;
+  transform: rotate(-4deg); transition: transform .3s ease; }
+.atalho-gerencia:hover .mini-quadro { transform: rotate(0deg) scale(1.04); }
+.atalho-gerencia .mini-quadro i { flex: 1; display: flex; flex-direction: column; gap: 5px; padding: 6px; border-radius: 8px; background: rgba(255,255,255,.14); }
+.atalho-gerencia .mini-quadro u { display: block; height: 16px; border-radius: 4px; background: rgba(255,255,255,.85); border-left: 3px solid #e0a019; }
+.atalho-gerencia .mini-quadro i:nth-child(2) u { border-left-color: #2b7bd6; }
+.atalho-gerencia .mini-quadro i:nth-child(3) u { border-left-color: #86efac; }
+
+/* Widgets na faixa de boas-vindas (js/inicio_widgets.js) */
+.hero.com-widgets { align-items: stretch; }
+.hero-conteudo { flex: 0 0 auto; width: min(640px, 50%); align-self: flex-end; }
+.widgets { flex: 0 1 1040px; margin-left: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 10px; align-content: center;
+  padding: 18px clamp(16px, 2.5vw, 28px) 18px 0; position: relative; }
+.widgets.vazio { flex: 0 0 auto; align-content: start; }
+.wg { background: rgba(8, 40, 18, .55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.18);
+  border-radius: 14px; padding: 10px 12px 11px; color: #fff; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.wg header { display: flex; align-items: center; gap: 7px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.wg header svg, .wg-personalizar svg, .wg-dlg svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 16px; }
+.wg header b { font-weight: 800; }
+.wg header a { margin-left: auto; font-size: 11px; text-transform: none; letter-spacing: 0; opacity: .8; }
+.wg header a:hover { opacity: 1; text-decoration: underline; }
+.wg-nums { display: flex; gap: 16px; }
+.wg-nums div { font-size: 11px; opacity: .85; line-height: 1.2; }
+.wg-nums b { display: block; font-size: 22px; font-weight: 800; opacity: 1; }
+.wg-nums .alerta b { color: #fecaca; }
+.wg-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; font-size: 12px; }
+.wg-lista li, .wg-lista a { display: flex; gap: 7px; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wg-lista a { flex: 1; }
+.wg-lista a:hover { text-decoration: underline; }
+.wg-lista span { flex: 0 0 auto; font-weight: 700; opacity: .75; font-variant-numeric: tabular-nums; }
+.wg-lista span.atrasado { color: #fecaca; opacity: 1; }
+.wg-lista b { font-weight: 700; }
+.wg-texto li { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.35; }
+.hero .wg-ver { margin: 0; font-size: 11.5px; font-weight: 700; opacity: .8; }
+.hero .wg-vazio { margin: 0; font-size: 12px; opacity: .8; }
+.wg-mais { align-self: flex-start; font: inherit; font-size: 11.5px; font-weight: 700; color: #fff; background: rgba(255,255,255,.14); border: 0; border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.wg-mais:hover { background: rgba(255,255,255,.26); }
+.wg { align-self: stretch; }
+.wg-cal-topo { display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; font-weight: 700; text-transform: capitalize; }
+.wg-cal-topo button { border: 0; background: rgba(255,255,255,.12); color: #fff; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 15px; line-height: 1; }
+.wg-cal-topo button:hover { background: rgba(255,255,255,.26); }
+.wg-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 11.5px; }
+.wg-cal i, .wg-cal a { font-style: normal; height: 21px; line-height: 21px; border-radius: 7px; font-variant-numeric: tabular-nums; }
+.wg-cal i.sem { opacity: .6; font-size: 10px; font-weight: 700; }
+.wg-cal .hoje { outline: 2px solid rgba(255,255,255,.85); outline-offset: -2px; font-weight: 800; }
+.wg-cal a.prazo { background: #e0a019; color: #1f1300; font-weight: 800; }
+.wg-cal a.prazo.vencido { background: #f87171; color: #3b0606; }
+.wg-cal a:hover { filter: brightness(1.12); }
+.wg-personalizar { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 11.5px; font-weight: 700; color: #fff;
+  background: rgba(8, 40, 18, .6); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 5px 11px; cursor: pointer; backdrop-filter: blur(6px); }
+.widgets:not(.vazio) .wg-personalizar { position: absolute; top: 12px; right: clamp(16px, 2.5vw, 28px); }
+.wg-personalizar:hover { background: rgba(8, 40, 18, .85); }
+.hero.com-widgets .widgets:not(.vazio) { padding-top: 48px; }
+.widgets.vazio { padding-top: 18px; }
+
+/* Diálogo "Personalizar" */
+.wg-dlg { border: 0; border-radius: 18px; padding: 0; width: min(480px, calc(100vw - 24px)); box-shadow: 0 24px 60px rgba(15,42,26,.35); font-family: Inter, Arial, sans-serif; color: var(--texto); }
+.wg-dlg::backdrop { background: rgba(10, 40, 20, .45); backdrop-filter: blur(2px); }
+.wg-dlg-topo { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; color: #fff; background: linear-gradient(90deg, #0f2a1a 0%, #12662a 60%, #1e9538 100%); }
+.wg-dlg-topo b { font-size: 15px; font-weight: 800; }
+.wg-dlg-topo button { border: 0; background: rgba(255,255,255,.14); width: 30px; height: 30px; border-radius: 50%; font-size: 20px; color: #fff; cursor: pointer; }
+.wg-dlg-nota { margin: 12px 18px 6px; font-size: 12.5px; color: var(--suave); }
+.wg-dlg ul { list-style: none; margin: 0; padding: 4px 12px; display: flex; flex-direction: column; gap: 6px; }
+.wg-dlg li { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid var(--linha); border-radius: 12px; }
+.wg-dlg li.ligado { border-color: #b7dfc3; background: #f3faf5; }
+.wg-dlg label { flex: 1; display: flex; align-items: center; gap: 10px; cursor: pointer; min-width: 0; }
+.wg-dlg label input { accent-color: var(--verde); width: 16px; height: 16px; }
+.wg-dlg label svg { color: var(--verde-escuro); }
+.wg-dlg label span { display: flex; flex-direction: column; min-width: 0; }
+.wg-dlg label b { font-size: 13.5px; color: var(--tinta); }
+.wg-dlg label small { font-size: 12px; color: var(--suave); }
+.wg-dlg li button { border: 1px solid var(--linha); background: #fff; border-radius: 8px; width: 28px; height: 28px; cursor: pointer; color: var(--texto); }
+.wg-dlg li button:disabled { opacity: .35; cursor: default; }
+.wg-dlg-rodape { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px 16px; }
+.wg-link { border: 0; background: none; color: var(--suave); font: inherit; font-size: 12.5px; cursor: pointer; text-decoration: underline; }
+.wg-ok { font: inherit; font-size: 13px; font-weight: 700; height: 34px; padding: 0 18px; border-radius: 10px; border: 0; background: var(--verde); color: #fff; cursor: pointer; }
+
+@media (max-width: 900px) {
+  .hero, .hero.com-widgets { flex-direction: column; align-items: stretch; }
+  .hero-conteudo { align-self: stretch; width: auto; }
+  .widgets { flex: none; padding: 0 16px 18px; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
+  .hero.com-widgets .widgets:not(.vazio) { padding-top: 44px; }
+  .widgets:not(.vazio) .wg-personalizar { top: 6px; right: 16px; }
+  .wg-calendario { grid-row: auto; }
+}

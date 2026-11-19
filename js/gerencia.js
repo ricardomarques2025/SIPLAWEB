@@ -32,6 +32,10 @@
   function nome(uid) { return uid ? (nomes[uid] || 'Usuário') : ''; }
   function iniciais(uid) { return nome(uid).split(/\s+/).filter(Boolean).map(function(p) { return p[0]; }).slice(0, 2).join('').toUpperCase(); }
   function eu() { return perfil.user_id; }
+  function comigo(c) { return c.responsavel === eu() || (c.corresponsaveis || []).indexOf(eu()) >= 0; }
+  // Cartões ligados: os gravados neste cartão + os que apontam para ele (gravados no outro cartão).
+  function ligadosDe(c) { return (c.ligados || []).map(cartao).filter(Boolean); }
+  function ligadosAEle(c) { return cartoes.filter(function(x) { return (x.ligados || []).indexOf(c.id) >= 0 && (c.ligados || []).indexOf(x.id) < 0; }); }
   function admin() { return !!perfil.admin; }
   function podeAlterar(c) { return !c || admin() || c.criado_por === eu(); }
   function cartao(id) { return cartoes.find(function(c) { return c.id === Number(id); }) || null; }
@@ -86,7 +90,7 @@
     var n = [
       [abertos.length, 'cartões abertos'],
       [abertos.filter(function(c) { return c.prazo && c.prazo < hoje; }).length, 'atrasados'],
-      [abertos.filter(function(c) { return c.responsavel === eu(); }).length, 'comigo'],
+      [abertos.filter(function(c) { return comigo(c); }).length, 'comigo'],
       [doQuadro.length - abertos.length, 'concluídos']
     ];
     $('numeros').innerHTML = n.map(function(x, i) {
@@ -98,7 +102,8 @@
     prazo: '<path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="8.5"/>',
     coment: '<path d="M5 5h14v10H9l-4 4z"/>',
     print: '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="m4 16 5-5 4 4 2-2 5 5"/><circle cx="15.5" cy="9.5" r="1.3"/>',
-    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    ligado: '<rect x="3" y="4" width="9" height="7" rx="1.5"/><rect x="12" y="13" width="9" height="7" rx="1.5"/><path d="M7.5 11v4.5H12"/>'
   };
   function icone(n) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONES[n] + '</svg>'; }
 
@@ -113,8 +118,8 @@
     var b = $('busca').value.trim().toLowerCase(), r = $('filtroResp').value;
     if (b && [c.codigo, c.titulo, c.descricao, (c.etiquetas || []).join(' '), c.obra, c.sei, c.versao].join(' ').toLowerCase().indexOf(b) === -1) return false;
     if (r === '-' && c.responsavel) return false;
-    if (r && r !== '-' && c.responsavel !== r) return false;
-    if ($('soMeus').checked && c.criado_por !== eu() && c.responsavel !== eu()) return false;
+    if (r && r !== '-' && c.responsavel !== r && (c.corresponsaveis || []).indexOf(r) < 0) return false;
+    if ($('soMeus').checked && c.criado_por !== eu() && !comigo(c)) return false;
     return true;
   }
 
@@ -125,13 +130,18 @@
     if (contComent[c.id]) extras.push('<span title="Comentários">' + icone('coment') + contComent[c.id] + '</span>');
     if (contAnexos[c.id]) extras.push('<span title="Prints">' + icone('print') + contAnexos[c.id] + '</span>');
     if ((c.links || []).length) extras.push('<span title="Links">' + icone('link') + c.links.length + '</span>');
+    var nLig = ligadosDe(c).length + ligadosAEle(c).length;
+    if (nLig) extras.push('<span title="Cartões ligados">' + icone('ligado') + nLig + '</span>');
+    var pessoas = (c.responsavel ? [c.responsavel] : []).concat(c.corresponsaveis || []);
     return '<div class="ger-cartao' + (c.prioridade ? ' cartao-' + c.prioridade : '') + (c.concluido_em ? ' concluido' : '') + '" tabindex="0" data-cartao="' + c.id + '"' + (podeAlterar(c) ? ' draggable="true"' : '') + '>' +
       '<div class="ger-cartao-sup"><span>' + esc(c.codigo || '') + '</span>' + (c.obra ? '<span>· ' + esc(c.obra) + '</span>' : '') +
         (c.prioridade ? '<span class="prio prio-' + c.prioridade + '">' + PRIORIDADES[c.prioridade] + '</span>' : '') + '</div>' +
       '<b>' + esc(c.titulo) + '</b>' +
       ((c.etiquetas || []).length ? '<div class="ger-etiquetas">' + c.etiquetas.map(function(e) { return '<span class="ger-etiqueta">' + esc(e) + '</span>'; }).join('') + '</div>' : '') +
       '<div class="ger-cartao-inf">' + extras.join('') +
-        (c.responsavel ? '<span class="resp" title="Responsável: ' + esc(nome(c.responsavel)) + '">' + esc(iniciais(c.responsavel)) + '</span>' : '') + '</div>' +
+        (pessoas.length ? '<span class="pessoas">' + pessoas.slice(0, 3).map(function(u, i) {
+          return '<span class="resp' + (i ? ' co' : '') + '" title="' + (i ? 'Corresponsável: ' : 'Responsável: ') + esc(nome(u)) + '">' + esc(iniciais(u)) + '</span>';
+        }).join('') + (pessoas.length > 3 ? '<span class="resp co mais" title="' + esc(pessoas.slice(3).map(nome).join(', ')) + '">+' + (pessoas.length - 3) + '</span>' : '') + '</span>' : '') + '</div>' +
       '</div>';
   }
 
@@ -235,10 +245,12 @@
         campo('Prazo', '<input type="date" id="cPrazo" value="' + esc(c && c.prazo || '') + '"' + dis + ' />') +
         campo('Prioridade', '<select id="cPrio"' + dis + '><option value="">—</option>' + opcoes([['alta', 'Alta'], ['media', 'Média'], ['baixa', 'Baixa']], c && c.prioridade) + '</select>') +
       '</div>' +
+      '<div class="ger-campo">Corresponsáveis <small>(dividem o cartão com o responsável)</small><div class="ger-chips" id="cCorresp"></div></div>' +
       campo('Etiquetas <small>(separe por vírgula)</small>', '<input id="cEtiquetas" value="' + esc(c ? (c.etiquetas || []).join(', ') : '') + '"' + dis + ' placeholder="ex.: mapa, urgente, DOR" />') +
       campo('Descrição', '<textarea id="cDescricao"' + dis + '>' + esc(c ? c.descricao : '') + '</textarea>') +
       '<div class="ger-campo">Links e pastas <small>(pasta da rede ou do computador: o botão "Copiar" leva o caminho para colar no Explorador)</small>' +
         '<div class="ger-links" id="cLinks"></div>' + (pode ? '<button type="button" class="mini" id="cAddLink" style="align-self:flex-start">+ Adicionar link</button>' : '') + '</div>' +
+      '<div class="ger-campo">Cartões ligados <small>(relacionados, de qualquer quadro; clique para abrir)</small><div class="ger-chips" id="cLigados"></div></div>' +
       '<div class="ger-grade">' +
         campo('Obra (opcional)', '<input id="cObra" value="' + esc(c && c.obra || '') + '"' + dis + ' placeholder="ex.: OB26-00001" />') +
         campo('Versão do site', '<input id="cVersao" value="' + esc(c && c.versao || '') + '"' + dis + ' placeholder="ex.: 3.14" />') +
@@ -250,6 +262,8 @@
         (c && pode ? '<button type="button" class="btn btn-perigo" id="cExcluir">Excluir</button>' : '') +
         (pode ? '<button type="button" class="btn btn-primario" id="cSalvar">' + (c ? 'Salvar' : 'Criar cartão') + '</button>' : '') + '</div>';
     renderLinks(c ? (c.links || []) : [], pode);
+    selCorresp = c ? (c.corresponsaveis || []).slice() : []; selLigados = c ? (c.ligados || []).slice() : [];
+    renderChips(c, pode);
     if (pode) {
       $('cAddLink').onclick = function() { var l = lerLinks(); l.push({ rotulo: '', endereco: '' }); renderLinks(l, true); };
       $('cSalvar').onclick = salvarCartao;
@@ -258,6 +272,40 @@
     renderLado();
     if (!$('dlgCartao').open) $('dlgCartao').showModal();
     if (!c) $('cTitulo').focus();
+  }
+
+  // Corresponsáveis e cartões ligados: etiquetas com × (para quem pode alterar) + campo para acrescentar.
+  var selCorresp = [], selLigados = [];
+  function rotuloCartao(x) { return (x.codigo || '') + ' · ' + x.titulo; }
+  function renderChips(c, pode) {
+    var resp = $('cResp').value;
+    $('cCorresp').innerHTML = selCorresp.map(function(u) {
+      return '<span class="ger-chip"><i>' + esc(iniciais(u)) + '</i>' + esc(nome(u)) + (pode ? '<button type="button" data-tirar-co="' + u + '" title="Tirar">×</button>' : '') + '</span>';
+    }).join('') + (pode ? '<select id="cAddCo" class="ger-chip-add"><option value="">+ Adicionar pessoa</option>' +
+      opcoes(membros.filter(function(m) { return m.user_id !== resp && selCorresp.indexOf(m.user_id) < 0; }).map(function(m) { return [m.user_id, m.nome]; }), '') + '</select>' :
+      (selCorresp.length ? '' : '<span class="ger-vazio">Nenhum.</span>'));
+    var reversos = c ? ligadosAEle(c) : [];
+    $('cLigados').innerHTML = selLigados.map(cartao).filter(Boolean).map(function(x) {
+      return '<span class="ger-chip ger-chip-cartao' + (x.concluido_em ? ' concluido' : '') + '" data-abrir-cartao="' + x.id + '" title="Abrir este cartão">' + esc(rotuloCartao(x)) +
+        (pode ? '<button type="button" data-tirar-ligado="' + x.id + '" title="Desligar">×</button>' : '') + '</span>';
+    }).join('') + reversos.map(function(x) {
+      return '<span class="ger-chip ger-chip-cartao' + (x.concluido_em ? ' concluido' : '') + '" data-abrir-cartao="' + x.id + '" title="Ligado a partir de ' + esc(x.codigo) + ' (desfaça por lá)">' + esc(rotuloCartao(x)) + ' <small>↩</small></span>';
+    }).join('') + (pode ? '<input id="cAddLig" class="ger-chip-add" list="listaCartoes" placeholder="+ Ligar cartão: digite código ou título" />' +
+      '<datalist id="listaCartoes">' + cartoes.filter(function(x) { return (!c || x.id !== c.id) && selLigados.indexOf(x.id) < 0; }).map(function(x) {
+        var q = quadros.find(function(k) { return k.id === x.quadro_id; });
+        return '<option value="' + esc(rotuloCartao(x)) + '">' + esc(q ? q.nome : '') + '</option>';
+      }).join('') + '</datalist>' : (selLigados.length || reversos.length ? '' : '<span class="ger-vazio">Nenhum.</span>'));
+    if (!pode) return;
+    $('cAddCo').onchange = function() { if (this.value) { selCorresp.push(this.value); renderChips(c, pode); } };
+    $('cAddLig').onchange = function() {
+      var v = this.value.trim(), cod = v.split(' · ')[0].toUpperCase();
+      var x = cartoes.find(function(k) { return rotuloCartao(k) === v || (k.codigo || '').toUpperCase() === cod; });
+      if (!x) { toast('Cartão não encontrado: escolha um da lista.', true); return; }
+      if (c && x.id === c.id) { toast('Um cartão não se liga a ele mesmo.', true); return; }
+      if (selLigados.indexOf(x.id) < 0) selLigados.push(x.id);
+      renderChips(c, pode); $('cAddLig').focus();
+    };
+    $('cResp').onchange = function() { selCorresp = selCorresp.filter(function(u) { return u !== $('cResp').value; }); renderChips(c, pode); };
   }
 
   function renderLinks(links, pode) {
@@ -284,7 +332,9 @@
     var c = cartaoId ? cartao(cartaoId) : null;
     var reg = {
       titulo: titulo, coluna_id: colunaId,
-      responsavel: $('cResp').value || null, prazo: $('cPrazo').value || null, prioridade: $('cPrio').value || null,
+      responsavel: $('cResp').value || null,
+      corresponsaveis: selCorresp.filter(function(u) { return u !== $('cResp').value; }), ligados: selLigados.slice(),
+      prazo: $('cPrazo').value || null, prioridade: $('cPrio').value || null,
       etiquetas: $('cEtiquetas').value.split(',').map(function(s) { return s.trim(); }).filter(Boolean),
       descricao: $('cDescricao').value.trim() || null,
       links: lerLinks().filter(function(l) { return l.endereco; }),
@@ -617,6 +667,12 @@
         navigator.clipboard.writeText(cp.dataset.copiar).then(function() { toast('Caminho copiado: cole no Explorador de Arquivos (Ctrl+L, Ctrl+V)'); },
           function() { prompt('Copie o caminho:', cp.dataset.copiar); });
       }
+      var tc = e.target.closest('[data-tirar-co]');
+      if (tc) { selCorresp = selCorresp.filter(function(u) { return u !== tc.dataset.tirarCo; }); renderChips(cartao(cartaoId), true); return; }
+      var tg = e.target.closest('[data-tirar-ligado]');
+      if (tg) { selLigados = selLigados.filter(function(i) { return i !== Number(tg.dataset.tirarLigado); }); renderChips(cartao(cartaoId), true); return; }
+      var ab = e.target.closest('[data-abrir-cartao]');
+      if (ab) { abrirCartao(ab.dataset.abrirCartao); return; }
       var tl = e.target.closest('[data-tirar-link]');
       if (tl) { var l = lerLinks(); l.splice(Number(tl.dataset.tirarLink), 1); renderLinks(l, true); }
     });

@@ -171,3 +171,25 @@
   .ger-quadros { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .ger-quadros button { flex: 0 0 auto; }
 }
+
+/* Corresponsáveis e cartões ligados (029) */
+.ger-cartao-inf .pessoas { margin-left: auto; display: inline-flex; }
+.ger-cartao-inf .pessoas .resp { margin-left: 0; }
+.ger-cartao-inf .pessoas .resp.co { margin-left: -7px; background: linear-gradient(135deg, #1d4f8a, #2b7bd6); }
+.ger-cartao-inf .pessoas .resp.mais { background: #64748b; }
+.ger-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ger-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; font-size: 12.5px; font-weight: 600; color: var(--tinta);
+  background: #e8f5ec; border: 1px solid #cfe8d7; border-radius: 999px; padding: 3px 6px 3px 4px; }
+.ger-chip i { font-style: normal; width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #1d4f8a, #2b7bd6); color: #fff;
+  font-size: 9.5px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.ger-chip button { border: 0; background: none; color: var(--suave); cursor: pointer; font-size: 15px; line-height: 1; padding: 0 2px; }
+.ger-chip button:hover { color: #b91c1c; }
+.ger-chip-cartao { background: #fff; border-color: var(--linha); padding: 4px 8px 4px 10px; cursor: pointer; overflow: hidden; }
+.ger-chip-cartao:hover { border-color: var(--verde); background: #f3faf5; }
+.ger-chip-cartao.concluido { color: var(--suave); text-decoration: line-through; }
+.ger-chip-cartao small { color: var(--suave); }
+.ger-chip-add { font: inherit; font-size: 12.5px; height: 30px; border: 1px dashed #c9d4cd; border-radius: 999px; padding: 0 12px; background: #fff;
+  color: var(--texto); min-width: 0; }
+input.ger-chip-add { flex: 1 1 240px; }
+.ger-chip-add:focus { outline: 2px solid #bfe3c9; border-style: solid; border-color: var(--verde); }
+.ger-chips .ger-chip-add { padding: 0 12px; height: 30px; }

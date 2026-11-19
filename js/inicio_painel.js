@@ -39,6 +39,7 @@
       (a.area ? ' data-area="' + a.area + '"' : '') + (a.mosaico ? ' id="atalhoGeral"' : '') + '>' +
       (a.mosaico ? '<span class="mosaico" id="mosaicoGeral"></span>' : '') +
       (a.externo ? '<span class="externo">' + a.externo + '</span>' : '') +
+      (a.classe === 'atalho-gerencia' ? '<span class="mini-quadro" aria-hidden="true"><i><u></u><u></u><u></u></i><i><u></u><u></u></i><i><u></u></i></span>' : '') +
       '<div><b>' + a.nome + '</b><span>' + a.desc + '</span></div></a>';
   }).join('');
   $('rotuloTotal').textContent = ROTULO.acompanhados;
