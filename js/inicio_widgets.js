@@ -1,11 +1,12 @@
 // Widgets da faixa de boas-vindas da página inicial (19/11/2026): cartões da Gerência, aprovações, calendário de prazos,
 // novidades do site e alterações recentes nas obras. Cada pessoa escolhe quais aparecem e em que ordem (botão
-// "Personalizar"); a escolha fica no navegador (localStorage, por usuário). Os dados vêm do banco com as permissões
-// de sempre (RLS): quem não tem a área Gerência não vê os widgets do kanban.
+// "Personalizar"); a escolha e o bloco de notas ficam no banco, em siplaweb.preferencias (script 030, uma linha por
+// pessoa, só ela lê). Os dados vêm do banco com as permissões de sempre (RLS): quem não tem a área Gerência não vê os
+// widgets do kanban.
 (function() {
   var sb = Acesso.cliente;
   var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-  var perfil = null, chave = '', escolha = [], cache = {}, mesCal = null;
+  var perfil = null, chave = '', escolha = [], cache = {}, mesCal = null, prefs = null, notaTimer = null;
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -23,7 +24,8 @@
     aprovacoes: '<path d="M4 12.5 9 17.5 20 6.5"/>',
     calendario: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
     novidades: '<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
-    alteracoes: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>'
+    alteracoes: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+    notas: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h5"/>'
   };
   // padrao: ligado na primeira vez. pode(): a pessoa tem acesso aos dados do widget.
   var CATALOGO = [
@@ -31,18 +33,29 @@
     { id: 'aprovacoes', nome: 'Aprovações', desc: 'Propostas esperando a sua decisão e as suas que aguardam', padrao: true, pode: function() { return true; }, href: 'painel.html#aprovacoes' },
     { id: 'calendario', nome: 'Calendário', desc: 'Mês com os prazos dos seus cartões', padrao: true, pode: gerencia, href: 'gerencia.html' },
     { id: 'novidades', nome: 'Novidades do site', desc: 'O que mudou na última versão', padrao: true, pode: function() { return true; } },
-    { id: 'alteracoes', nome: 'Alterações recentes', desc: 'Últimas mudanças nas obras que você vê', padrao: false, pode: function() { return true; } }
+    { id: 'alteracoes', nome: 'Alterações recentes', desc: 'Últimas mudanças nas obras que você vê', padrao: false, pode: function() { return true; } },
+    { id: 'notas', nome: 'Bloco de notas', desc: 'Anotações rápidas, só suas, guardadas na sua conta', padrao: false, pode: function() { return true; } }
   ];
   function item(id) { return CATALOGO.find(function(w) { return w.id === id; }); }
 
   // ---------- Preferência ----------
   function ler() {
-    var salvo = null;
-    try { salvo = JSON.parse(localStorage.getItem(chave)); } catch (e) { /* sem storage */ }
+    var salvo = prefs && Array.isArray(prefs.widgets) ? prefs.widgets : null;
+    if (!salvo) try { salvo = JSON.parse(localStorage.getItem(chave)); } catch (e) { /* sem storage (escolha antiga, só deste navegador) */ }
     var lista = Array.isArray(salvo) ? salvo : CATALOGO.filter(function(w) { return w.padrao; }).map(function(w) { return w.id; });
     return lista.filter(function(id) { var w = item(id); return w && w.pode(); });
   }
-  function gravar() { try { localStorage.setItem(chave, JSON.stringify(escolha)); } catch (e) { /* sem storage */ } }
+  function salvarPrefs(campos) {
+    return sb.from('preferencias').upsert(campos, { onConflict: 'user_id' }).select('atualizado_em').then(function(r) {
+      if (r.error) throw r.error;
+      prefs = Object.assign(prefs || {}, campos);
+      return r.data[0];
+    });
+  }
+  function gravar(padrao) {
+    try { localStorage.removeItem(chave); } catch (e) { /* sem storage */ }
+    salvarPrefs({ widgets: padrao ? null : escolha }).catch(function() { /* fica valendo nesta tela */ });
+  }
 
   // ---------- Dados ----------
   function meusCartoes() {
@@ -121,6 +134,22 @@
         '<button type="button" class="wg-mais" data-novidades>Ver todas as novidades</button>';
       return Promise.resolve();
     },
+    notas: function(corpo) {
+      corpo.innerHTML = '<textarea class="wg-nota-texto" maxlength="20000" placeholder="Escreva aqui. Salva sozinho e fica guardado na sua conta (só você vê)."></textarea>' +
+        '<small class="wg-nota-status"></small>';
+      var ta = corpo.querySelector('textarea'), st = corpo.querySelector('small');
+      ta.value = (prefs && prefs.notas) || '';
+      ta.addEventListener('input', function() {
+        st.textContent = 'Salvando…'; prefs = prefs || {}; prefs.notas = ta.value;
+        clearTimeout(notaTimer);
+        notaTimer = setTimeout(function() {
+          salvarPrefs({ notas: ta.value }).then(function(d) {
+            st.textContent = 'Salvo às ' + new Date(d.atualizado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          }).catch(function(e) { st.textContent = 'Não foi possível salvar: ' + e.message; });
+        }, 800);
+      });
+      return Promise.resolve();
+    },
     alteracoes: function(corpo) {
       return sb.from('historico').select('codigo,usuario_nome,acao,quando').order('quando', { ascending: false }).limit(4).then(function(r) {
         if (r.error) throw r.error;
@@ -164,7 +193,7 @@
           var id = b.dataset.id, i = escolha.indexOf(id), j = i + Number(b.dataset.mover);
           if (i >= 0 && j >= 0 && j < escolha.length) { escolha.splice(i, 1); escolha.splice(j, 0, id); gravar(); render(); listar(); }
         }
-        if (e.target.closest('[data-padrao]')) { try { localStorage.removeItem(chave); } catch (er) { /* sem storage */ } escolha = ler(); render(); listar(); }
+        if (e.target.closest('[data-padrao]')) { if (prefs) prefs.widgets = null; gravar(true); escolha = ler(); render(); listar(); }
       });
       dlg.addEventListener('change', function(e) {
         var id = e.target.dataset.id; if (!id) return;
@@ -177,7 +206,7 @@
       var disponiveis = CATALOGO.filter(function(w) { return w.pode(); });
       var ordem = escolha.concat(disponiveis.map(function(w) { return w.id; }).filter(function(id) { return escolha.indexOf(id) < 0; }));
       dlg.innerHTML = '<div class="wg-dlg-topo"><b>Widgets da página inicial</b><button type="button" data-fechar title="Fechar">×</button></div>' +
-        '<p class="wg-dlg-nota">Marque os que quer ver na faixa de boas-vindas e use as setas para mudar a ordem. Vale para este navegador.</p><ul>' +
+        '<p class="wg-dlg-nota">Marque os que quer ver na faixa de boas-vindas e use as setas para mudar a ordem. Fica guardado na sua conta (vale em qualquer computador).</p><ul>' +
         ordem.map(function(id) {
           var w = item(id), on = escolha.indexOf(id) >= 0, pos = escolha.indexOf(id);
           return '<li class="' + (on ? 'ligado' : '') + '"><label><input type="checkbox" data-id="' + id + '"' + (on ? ' checked' : '') + ' />' +
@@ -195,8 +224,18 @@
     if (!p || !$('widgets')) return;
     perfil = p;
     chave = 'siplaweb.widgets.' + p.user_id;
-    escolha = ler();
-    render();
+    sb.from('preferencias').select('widgets,notas').maybeSingle().then(function(r) { prefs = r.error ? null : (r.data || {}); }, function() { prefs = null; })
+      .then(function() {
+        var antiga = null;
+        try { antiga = JSON.parse(localStorage.getItem(chave)); } catch (e) { /* sem storage */ }
+        escolha = ler();
+        if (prefs && !Array.isArray(prefs.widgets) && Array.isArray(antiga)) gravar();   // leva a escolha do navegador para a conta
+        render();
+      });
+    window.addEventListener('pagehide', function() {
+      var ta = document.querySelector('.wg-nota-texto');
+      if (notaTimer && ta) { clearTimeout(notaTimer); salvarPrefs({ notas: ta.value }); }
+    });
     $('widgets').addEventListener('click', function(e) {
       if (e.target.closest('#wgPersonalizar')) return abrirPersonalizar();
       if (e.target.closest('[data-novidades]')) return Acesso.mostrarNovidades();
