@@ -326,7 +326,7 @@
       sub = p.camada === 'extra_base' ? [m.rodovia, m.trecho].filter(Boolean).join(' · ') : (m.NOME || '');
       campos = p.acao === 'excluir' ? [['Feição', null, p.geocod]] : Object.keys(m).filter(function(k) { return m[k]; }).map(function(k) {
         return [{ rodovia: 'Rodovia', trecho: 'Trecho', situacao: 'Situação', NOME: 'Nome', DESCRICAO: 'Descrição' }[k] || k, null, m[k]];
-      }).concat([['Desenho', null, 'ver no mapa (tracejado)']]);
+      }).concat(typeof PreviaTracado === 'undefined' ? [['Desenho', null, 'ver no mapa (tracejado)']] : []);
       return { titulo: titulo, sub: sub, campos: campos, conflito: false };
     }
     if (x.fonte === 'obras') titulo = p.tipo === 'nova' ? (r ? r.codigo + ' · obra nova' : 'Obra nova')
@@ -347,6 +347,36 @@
       : Object.keys(m).map(function(c) { return [tituloCampo(x.fonte, c), comAntes ? textoValor(c, r[c]) || '(vazio)' : null, textoValor(c, m[c]) || '(vazio)']; });
     return { titulo: titulo, sub: sub, campos: campos, conflito: p.situacao === 'pendente' && r && p.versao_base != null && r.versao !== p.versao_base };
   }
+  // ---------- Prévia do traçado (js/previa_tracado.js) ----------
+  // Aparece quando a proposta mexe no traçado (geom/vínculos), em obra ou registro novo com traçado, na exclusão de um
+  // registro que tem traçado e em toda proposta de camada.
+  function temPrevia(x) {
+    if (typeof PreviaTracado === 'undefined') return false;
+    if (x.fonte === 'camadas') return true;
+    var m = x.p.mudancas || {};
+    if (x.p.tipo === 'exclusao') return !!(x.atual && (x.atual.geom || (x.atual.vinculos || []).length));
+    return (x.p.tipo === 'edicao' || x.p.tipo === 'nova') && PreviaTracado.mudaTracado(m);
+  }
+  function cfgPrevia(chave) {
+    var x = propostas.find(function(y) { return y.fonte + ':' + y.p.pid === chave; });
+    if (!x) return null;
+    var p = x.p, r = x.atual, pend = p.situacao === 'pendente';
+    if (x.fonte === 'camadas') {
+      var atual = p.geocod ? [p.camada + ':' + p.geocod] : [];
+      return {
+        antes: { vinculos: p.acao === 'criar' ? [] : atual }, depois: { vinculos: [], mudaGeom: true }, semAntes: !pend && p.acao !== 'excluir',
+        depoisPromise: p.acao === 'excluir' ? Promise.resolve(null)
+          : sb.from('camadas_propostas').select('geojson').eq('pid', p.pid).single().then(function(res) { return res.data && res.data.geojson; })
+      };
+    }
+    var m = p.mudancas || {};
+    var antes = r && p.tipo !== 'nova' ? { vinculos: r.vinculos || [], geom: r.geom } : {};
+    if (p.tipo === 'exclusao') return { antes: antes, depois: { vinculos: [], mudaGeom: true, geom: null }, semAntes: false };
+    return { antes: antes, depois: { vinculos: m.vinculos, geom: m.geom, mudaGeom: Object.prototype.hasOwnProperty.call(m, 'geom') },
+      semAntes: !pend || !r || p.tipo === 'nova' };
+  }
+  function ligarPrevias(el) { if (typeof PreviaTracado !== 'undefined') PreviaTracado.ligar(el, cfgPrevia); }
+
   function linkProposta(x) { return x.fonte === 'camadas' ? 'mapa.html?proposta_camada=' + x.p.pid : linkArea(x.area); }
   // Nomes dos perfis que decidem a proposta (pelo perfil de quem propôs) + administrador.
   function quemDecide(x) {
@@ -375,7 +405,7 @@
       '<div class="pn-campos">' + d.campos.map(function(c) {
         return '<span class="pn-campo">' + esc(c[0]) + '</span>' + (c[1] != null ? '<span class="de">' + esc(c[1]) + '</span><span class="seta">→</span>' : '') +
           '<span class="para' + (c[1] != null ? '' : ' larga') + '">' + esc(c[2]) + '</span>';
-      }).join('') + '</div>' + decisao +
+      }).join('') + '</div>' + (temPrevia(x) ? PreviaTracado.html(chave) : '') + decisao +
       '<div class="pn-recusa" hidden><textarea rows="2" placeholder="Motivo da recusa (o autor vai ver)"></textarea>' +
       '<button type="button" class="btn btn-perigo" data-confirmar-recusa="' + chave + '">Confirmar recusa</button></div>' +
       '<div class="pn-prop-acoes">' + acoes + '</div></div>';
@@ -438,6 +468,7 @@
     $('dlgPropostaTitulo').textContent = FONTE_NOME[x.fonte] + ' · ' + nomeArea(x.area);
     $('dlgPropostaCorpo').innerHTML = cartaoProposta(x);
     if (!$('dlgProposta').open) $('dlgProposta').showModal();
+    ligarPrevias($('dlgPropostaCorpo'));
   }
 
   function aviso(tipo, titulo, texto, link) {
@@ -493,6 +524,7 @@
         senha.map(function(u) { return esc(u.nome); }).join(', ') + ' (ainda não entrou para criar a própria senha).');
     }
     $('listaAvisos').innerHTML = html || aviso('ok', 'Nenhum aviso no momento.');
+    ligarPrevias($('listaAvisos'));
   }
 
   function rpcDe(fonte) { return fonte === 'jurisdicao' ? sbJur : sb; }

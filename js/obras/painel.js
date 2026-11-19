@@ -993,10 +993,26 @@ var ObrasPainel = (function() {
       '<div class="aprov-autor">Proposta de <b>' + esc(ObrasStore.nomeUsuario(p.criado_por) || '—') + '</b>' +
         (p.perfil_autor ? ' (' + esc(Acesso.nomePerfil(p.perfil_autor)) + ')' : '') + ' em ' + fmtDataHora(p.criado_em) + '</div>' +
       (conflito ? '<div class="aprov-conflito">A obra foi alterada depois desta proposta (versão ' + p.versao_base + ' → ' + r.versao + '). Confira os valores atuais antes de aprovar.</div>' : '') +
-      campos + decisao +
+      campos + (temPrevia(p, r) ? PreviaTracado.html('o:' + p.pid) : '') + decisao +
       '<div class="aprov-recusa" hidden><textarea rows="2" placeholder="Motivo da recusa (o autor vai ver)"></textarea>' +
         '<button type="button" class="btn btn-perigo-fantasma" data-confirmar-recusa="' + p.pid + '">Confirmar recusa</button></div>' +
       (acoes ? '<div class="aprov-acoes">' + acoes + '</div>' : '') + '</div>';
+  }
+
+  // Prévia do traçado (js/previa_tracado.js): atual x proposto, quando a proposta mexe no traçado ou exclui uma obra com traçado.
+  function temPrevia(p, r) {
+    if (typeof PreviaTracado === 'undefined') return false;
+    if (p.tipo === 'exclusao') return !!(r && (r.geom || (r.vinculos || []).length));
+    return (p.tipo === 'edicao' || p.tipo === 'nova') && PreviaTracado.mudaTracado(p.mudancas);
+  }
+  function cfgPrevia(chave) {
+    var p = ObrasStore.propostas().find(function(x) { return 'o:' + x.pid === chave; });
+    if (!p) return null;
+    var r = p.obra_uid ? ObrasStore.obter(p.obra_uid) : null, m = p.mudancas || {};
+    var antes = r && p.tipo !== 'nova' ? { vinculos: r.vinculos || [], geom: r.geom } : {};
+    if (p.tipo === 'exclusao') return { antes: antes, depois: { vinculos: [], mudaGeom: true, geom: null } };
+    return { antes: antes, depois: { vinculos: m.vinculos, geom: m.geom, mudaGeom: Object.prototype.hasOwnProperty.call(m, 'geom') },
+      semAntes: p.situacao !== 'pendente' || !r || p.tipo === 'nova' };
   }
 
   // Aparecem as propostas que a pessoa decide e as dela (pendentes e decididas nos últimos 30 dias).
@@ -1014,6 +1030,7 @@ var ObrasPainel = (function() {
       (ObrasStore.podeAlterar() || minhas.length ? '<h4 class="aprov-secao">Minhas propostas aguardando (' + minhas.length + ')</h4>' +
         (minhas.length ? minhas.map(cartaoProposta).join('') : '<div class="vazio">Nenhuma proposta sua aguardando.</div>') : '') +
       (dec.length ? '<h4 class="aprov-secao">Decididas nos últimos 30 dias</h4>' + dec.map(cartaoProposta).join('') : '');
+    if (typeof PreviaTracado !== 'undefined') PreviaTracado.ligar($('obrAprovCorpo'), cfgPrevia);
   }
 
   function ewktParaGeojson(t) {

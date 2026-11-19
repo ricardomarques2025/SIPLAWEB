@@ -756,10 +756,27 @@ var JurisdicaoPainel = (function() {
       '<div class="aprov-autor">Proposta de <b>' + esc(Store.nomeUsuario(p.criado_por) || '—') + '</b>' +
         (p.perfil_autor ? ' (' + esc(Acesso.nomePerfil(p.perfil_autor)) + ')' : '') + ' em ' + fmtDataHora(p.criado_em) + '</div>' +
       (conflito ? '<div class="aprov-conflito">O registro foi alterado depois desta proposta (versão ' + p.versao_base + ' → ' + r.versao + '). Confira os valores atuais antes de aprovar.</div>' : '') +
-      linhas + decisao +
+      linhas + (temPrevia(p, r) ? PreviaTracado.html('j:' + p.pid) : '') + decisao +
       '<div class="aprov-recusa" hidden><textarea rows="2" placeholder="Motivo da recusa (o autor vai ver)"></textarea>' +
         '<button type="button" class="btn btn-perigo-fantasma" data-confirmar-recusa="' + p.pid + '">Confirmar recusa</button></div>' +
       (acoes ? '<div class="aprov-acoes">' + acoes + '</div>' : '') + '</div>';
+  }
+
+  // Prévia do traçado (js/previa_tracado.js): desenho atual x proposto, quando a proposta mexe no traçado ou exclui
+  // um registro com traçado.
+  function temPrevia(p, r) {
+    if (typeof PreviaTracado === 'undefined') return false;
+    if (p.tipo === 'exclusao') return !!(r && Store.geometria(r.id));
+    return (p.tipo === 'edicao' || p.tipo === 'nova') && PreviaTracado.mudaTracado(p.mudancas);
+  }
+  function cfgPrevia(chave) {
+    var p = Store.propostas().find(function(x) { return 'j:' + x.pid === chave; });
+    if (!p) return null;
+    var id = p.registro_uid ? Store.idPorUid(p.registro_uid) : null, r = id != null ? Store.obter(id) : null, m = p.mudancas || {};
+    var antes = r && p.tipo !== 'nova' ? { geom: Store.geometria(r.id) } : {};
+    if (p.tipo === 'exclusao') return { antes: antes, depois: { mudaGeom: true, geom: null } };
+    return { antes: antes, depois: { geom: m.geom, mudaGeom: Object.prototype.hasOwnProperty.call(m, 'geom') },
+      semAntes: p.situacao !== 'pendente' || !r || p.tipo === 'nova' };
   }
 
   // Aparecem as propostas que a pessoa decide e as dela (pendentes e decididas nos últimos 30 dias).
@@ -777,6 +794,7 @@ var JurisdicaoPainel = (function() {
       (Store.podeEditar() || minhas.length ? '<h4 class="aprov-secao">Minhas propostas aguardando (' + minhas.length + ')</h4>' +
         (minhas.length ? minhas.map(cartaoProposta).join('') : '<div class="vazio">Nenhuma proposta sua aguardando.</div>') : '') +
       (dec.length ? '<h4 class="aprov-secao">Decididas nos últimos 30 dias</h4>' + dec.map(cartaoProposta).join('') : '');
+    if (typeof PreviaTracado !== 'undefined') PreviaTracado.ligar($('jurAprovCorpo'), cfgPrevia);
   }
 
   function aprovar(pid, forcar) {
