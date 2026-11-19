@@ -90,7 +90,7 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: va
 /* Widgets na faixa de boas-vindas (js/inicio_widgets.js) */
 .hero.com-widgets { align-items: stretch; }
 .hero-conteudo { flex: 0 0 auto; width: min(640px, 50%); align-self: flex-end; }
-.widgets { flex: 0 1 1040px; margin-left: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 10px; align-content: center;
+.widgets { flex: 0 1 1040px; min-width: 0; margin-left: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 10px; align-content: center;
   padding: 18px clamp(16px, 2.5vw, 28px) 18px 0; position: relative; }
 .widgets.vazio { flex: 0 0 auto; align-content: start; }
 .wg { background: rgba(8, 40, 18, .55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.18);
@@ -159,17 +159,27 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: va
 @media (max-width: 900px) {
   .hero, .hero.com-widgets { flex-direction: column; align-items: stretch; }
   .hero-conteudo { align-self: stretch; width: auto; }
-  .widgets { flex: none; padding: 0 16px 18px; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
+  .widgets { flex: none; margin-left: 0; max-width: none !important; padding: 0 16px 18px; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); }
   .hero.com-widgets .widgets:not(.vazio) { padding-top: 44px; }
   .widgets:not(.vazio) .wg-personalizar { top: 6px; right: 16px; }
   .wg-calendario { grid-row: auto; }
 }
 
-/* Bloco de notas (030) */
-.wg-nota-texto { flex: 1; min-height: 96px; resize: vertical; font: inherit; font-size: 12.5px; line-height: 1.4; color: #fff; background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.18); border-radius: 10px; padding: 7px 9px; }
-.wg-nota-texto::placeholder { color: rgba(255,255,255,.6); }
-.wg-nota-texto:focus { outline: 2px solid rgba(255,255,255,.5); background: rgba(255,255,255,.12); }
-.wg-nota-status { font-size: 10.5px; opacity: .7; min-height: 13px; }
-.wg-corpo { flex: 1; display: flex; flex-direction: column; gap: 7px; min-height: 0; }
-.wg-nota-texto { width: 100%; box-sizing: border-box; }
+/* Bloco de notas (030): 5 notas coloridas; as abas do lado direito levam a cor de cada nota. */
+.wg-corpo { flex: 1; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+.wg-nota { flex: 1; display: flex; min-height: 150px; }
+.wg-nota-texto { flex: 1; min-width: 0; width: 100%; box-sizing: border-box; resize: none; font: inherit; font-size: 12.5px; line-height: 1.45;
+  color: #1f2937; border: 0; border-radius: 10px 0 10px 10px; padding: 8px 10px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.06); transition: background .2s; }
+.wg-nota-texto::placeholder { color: rgba(31,41,55,.55); }
+.wg-nota-texto:focus { outline: 2px solid rgba(255,255,255,.7); outline-offset: 1px; }
+.wg-nota-abas { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; }
+.wg-nota-abas button { position: relative; width: 16px; height: 22px; border: 0; padding: 0; cursor: pointer; background: var(--c);
+  border-radius: 0 7px 7px 0; opacity: .65; transition: width .15s, opacity .15s; }
+.wg-nota-abas button:hover { opacity: .95; }
+.wg-nota-abas button.ativa { width: 22px; opacity: 1; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.wg-nota-abas button.com-texto::after { content: ''; position: absolute; left: 5px; top: 50%; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%; background: rgba(31,41,55,.55); }
+.hero .wg-nota-status { font-size: 10.5px; opacity: .75; min-height: 13px; }
+/* Calendário: resumo dos cartões embaixo */
+.hero .wg-cal-resumo { margin: 2px 0 0; font-size: 11.5px; opacity: .9; line-height: 1.35; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.wg-cal-resumo a { text-decoration: underline; text-decoration-color: rgba(255,255,255,.4); }
+.wg-cal-resumo .atrasado { color: #fecaca; }
