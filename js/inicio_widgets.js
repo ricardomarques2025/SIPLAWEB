@@ -1,7 +1,8 @@
-// Widgets da faixa de boas-vindas da página inicial (19/11/2026): Aprovações, Calendário e Bloco de notas.
+// Widgets da faixa de boas-vindas da página inicial (19/11/2026). Padrão: Aprovações, Calendário e Bloco de notas;
+// opcionais em "Personalizar": Meus cartões (resumo do kanban), Novidades do site e Alterações recentes.
 // Cada widget só aparece para quem precisa dele (ex.: diretor não propõe nem aprova e não tem a área Gerência: vê só o
-// bloco de notas). Cada pessoa escolhe quais aparecem e em que ordem ("Personalizar"); a escolha e as notas ficam no
-// banco, em siplaweb.preferencias (script 030, uma linha por pessoa, só ela lê).
+// bloco de notas por padrão). A escolha (quais e em que ordem) e as notas ficam no banco, em siplaweb.preferencias
+// (script 030, uma linha por pessoa, só ela lê).
 (function() {
   var sb = Acesso.cliente;
   var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
@@ -13,6 +14,11 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function hojeIso() { var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); }
   function ddmm(iso) { return iso.slice(8, 10) + '/' + iso.slice(5, 7); }
+  function maisDias(iso, n) { var d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }
+  function haQuanto(ts) {
+    var m = Math.round((Date.now() - new Date(ts)) / 60000);
+    return m < 60 ? 'há ' + Math.max(m, 1) + ' min' : m < 1440 ? 'há ' + Math.round(m / 60) + ' h' : 'há ' + Math.round(m / 1440) + ' d';
+  }
   function lsLer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsGravar(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* sem storage */ } }
 
@@ -23,21 +29,29 @@
   }
 
   var ICONES = {
+    cartoes: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/>',
+    novidades: '<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+    alteracoes: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
     aprovacoes: '<path d="M4 12.5 9 17.5 20 6.5"/>',
     calendario: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
     notas: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h5"/>'
   };
+  // padrao: ligado para quem ainda não personalizou. pode(): o widget serve ao perfil da pessoa.
+  function todos() { return true; }
   var CATALOGO = [
-    { id: 'aprovacoes', nome: 'Aprovações', desc: 'Propostas esperando a sua decisão e as suas que aguardam', pode: propoeOuAprova, href: 'painel.html#aprovacoes' },
-    { id: 'calendario', nome: 'Calendário', desc: 'Prazos dos seus cartões da Gerência', pode: gerencia, href: 'gerencia.html' },
-    { id: 'notas', nome: 'Bloco de notas', desc: '5 notas coloridas, só suas, guardadas na sua conta', pode: function() { return true; } }
+    { id: 'aprovacoes', nome: 'Aprovações', desc: 'Propostas esperando a sua decisão e as suas que aguardam', padrao: true, pode: propoeOuAprova, href: 'painel.html#aprovacoes' },
+    { id: 'calendario', nome: 'Calendário', desc: 'Prazos dos seus cartões da Gerência', padrao: true, pode: gerencia, href: 'gerencia.html' },
+    { id: 'notas', nome: 'Bloco de notas', desc: '5 notas coloridas, só suas, guardadas na sua conta', padrao: true, pode: todos },
+    { id: 'cartoes', nome: 'Meus cartões', desc: 'Resumo do kanban: seus cartões abertos, atrasados e próximos prazos', padrao: false, pode: gerencia, href: 'gerencia.html' },
+    { id: 'novidades', nome: 'Novidades do site', desc: 'O que mudou na última versão', padrao: false, pode: todos },
+    { id: 'alteracoes', nome: 'Alterações recentes', desc: 'Últimas mudanças nas obras que você vê', padrao: false, pode: todos }
   ];
   function item(id) { return CATALOGO.find(function(w) { return w.id === id; }); }
 
   // ---------- Preferência ----------
   function ler() {
     var salvo = prefs && Array.isArray(prefs.widgets) ? prefs.widgets : null;
-    var lista = salvo || CATALOGO.map(function(w) { return w.id; });   // padrão: todos os que a pessoa pode ver
+    var lista = salvo || CATALOGO.filter(function(w) { return w.padrao; }).map(function(w) { return w.id; });
     return lista.filter(function(id) { var w = item(id); return w && w.pode(); });
   }
   function salvarPrefs(campos) {
@@ -85,6 +99,36 @@
 
   // ---------- Widgets ----------
   var MONTAR = {
+    cartoes: function(corpo) {
+      return meusCartoes().then(function(lista) {
+        var hoje = hojeIso(), em7 = maisDias(hoje, 7);
+        var atras = lista.filter(function(c) { return c.prazo && c.prazo < hoje; }).length;
+        var semana = lista.filter(function(c) { return c.prazo && c.prazo >= hoje && c.prazo <= em7; }).length;
+        var prox = lista.filter(function(c) { return c.prazo; }).slice(0, 3);
+        corpo.innerHTML = '<div class="wg-nums"><div><b>' + lista.length + '</b>abertos</div>' +
+          '<div' + (atras ? ' class="alerta"' : '') + '><b>' + atras + '</b>atrasados</div><div><b>' + semana + '</b>em 7 dias</div></div>' +
+          (prox.length ? '<ul class="wg-lista">' + prox.map(function(c) {
+            return '<li><a href="gerencia.html?cartao=' + encodeURIComponent(c.codigo) + '"><span class="' + (c.prazo < hoje ? 'atrasado' : '') + '">' + ddmm(c.prazo) + '</span>' + esc(c.titulo) + '</a></li>';
+          }).join('') + '</ul>' : '<p class="wg-vazio">' + (lista.length ? 'Nenhum dos seus cartões tem prazo.' : 'Nenhum cartão com você.') + '</p>');
+      });
+    },
+    novidades: function(corpo) {
+      var n = (Acesso.novidades && Acesso.novidades()[0]) || null;
+      if (!n) { corpo.innerHTML = '<p class="wg-vazio">Sem novidades.</p>'; return Promise.resolve(); }
+      var itens = (n[3] && n[3].length ? n[3] : n[2]).slice(0, 2);
+      corpo.innerHTML = '<p class="wg-ver">VER. ' + esc(n[0]) + ' · ' + esc(n[1]) + '</p><ul class="wg-lista wg-texto">' +
+        itens.map(function(t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+        '<button type="button" class="wg-mais" data-novidades>Ver todas as novidades</button>';
+      return Promise.resolve();
+    },
+    alteracoes: function(corpo) {
+      return sb.from('historico').select('codigo,usuario_nome,acao,quando').order('quando', { ascending: false }).limit(4).then(function(r) {
+        if (r.error) throw r.error;
+        corpo.innerHTML = r.data.length ? '<ul class="wg-lista">' + r.data.map(function(h) {
+          return '<li><span>' + esc(haQuanto(h.quando)) + '</span><b>' + esc(h.codigo || '') + '</b> ' + esc((h.usuario_nome || '').split(' ')[0]) + ' · ' + esc(h.acao) + '</li>';
+        }).join('') + '</ul>' : '<p class="wg-vazio">Nenhuma alteração.</p>';
+      });
+    },
     aprovacoes: function(corpo) {
       return pendencias().then(function(n) {
         var aprova = !!perfil.admin || Object.keys(perfil.areas || {}).some(Acesso.aprovaNaArea);
@@ -233,6 +277,7 @@
     });
     $('widgets').addEventListener('click', function(e) {
       if (e.target.closest('#wgPersonalizar')) return abrirPersonalizar();
+      if (e.target.closest('[data-novidades]')) return Acesso.mostrarNovidades();
       var m = e.target.closest('[data-mes]');
       if (m) {
         var base = mesCal || hojeIso().slice(0, 7), d = new Date(Number(base.slice(0, 4)), Number(base.slice(5, 7)) - 1 + Number(m.dataset.mes), 1);
