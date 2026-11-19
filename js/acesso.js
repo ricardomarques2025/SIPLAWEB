@@ -353,13 +353,24 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-19.07';
+  var VERSAO_SITE = '2026-11-19.08';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.17', '19/11/2026', [
+      'Quadros da Gerência (gerencia.html, atalho na página inicial): quadros no estilo Trello para as demandas do SIPLAWEB e outros assuntos da gerência, com o visual da página inicial (faixa com os números do quadro: abertos, atrasados, comigo e concluídos). Cartões com responsável, corresponsáveis, prazo, prioridade (faixa colorida no cartão), etiquetas, descrição, links (pastas da rede com botão "Copiar"), cartões ligados (de qualquer quadro, aparecem nos dois lados), vínculo opcional com obra, versão e processo SEI, comentários e histórico. Arraste o cartão entre as colunas para movê-lo (scripts 024 e 029).',
+      'Prints no cartão: tire o print (Win+Shift+S), cole com Ctrl+V, anote com caneta, retângulo, seta ou texto e salve; a imagem é reduzida antes de ir para o banco.',
+      'Quem vê os quadros: quem tem a área Gerência e os administradores. Quem criou o cartão e os administradores editam e movem; todos comentam e anexam prints. Quadros e colunas: só administradores. O quadro "Gerência – geral" já traz os cartões do antigo Trello GEREF-GOINFRA (com as colunas Arquivos e SEI - Importantes).',
+      'Página inicial: widgets na faixa de boas-vindas. Padrão: Aprovações (para quem propõe ou aprova), Calendário com os prazos dos seus cartões (para quem tem a Gerência) e Bloco de notas com 5 notas coloridas; opcionais em "Personalizar": Meus cartões, Novidades do site e Alterações recentes. A escolha e as notas ficam guardadas na conta (script 030). Mapa geral, Mapa rodoviário, Jurisdição e Gerência na mesma linha.',
+      'Aprovações (Painel e botões Aprovações das obras e da Jurisdição): quando a proposta mexe no traçado, o cartão mostra um mapa com o que entra (laranja), o que continua (verde) e o que sai (vermelho tracejado), também em obra nova, exclusão e camadas (script 031).'
+    ], [
+      'Novo: quadros da Gerência para organizar demandas e assuntos da equipe, com prints, comentários, corresponsáveis e cartões ligados.',
+      'Na página inicial, quadros rápidos ao lado da saudação: aprovações, calendário de prazos e um bloco de notas. Clique em Personalizar para escolher.',
+      'Ao aprovar uma mudança de traçado, agora aparece um mapa mostrando o que entra, o que continua e o que sai.'
+    ]],
     ['3.16', '18/11/2026', [
       'Base Geral do Programa de Gestão de Estruturas (PGE, planilha de 18/11/2026): quatro origens novas, uma por eixo, com botão e legenda próprios: PGE1 Manutenção OAE (Eixo 1, 26 pontes em rodovias pavimentadas), GPP Goiás de Ponta a Ponte (Eixo 2, 344 estruturas em rodovias não pavimentadas), PGE3 Obras com Parcerias (Eixo 3) e PGE4 Novas Obras Estaduais (Eixo 4, 86; o subeixo fica na Modalidade: Plano de Obras GOINFRA, Substituição de Balsas, Passagens de Fauna).',
       'Placas como as do GME e do GMK (OAE e OAC em projeto, em obra e concluída), uma cor por eixo; a legenda de cada origem filtra o mapa. "Ponte/bueiro" do GPP entra como intervenção "OAE / OAC", com a placa de OAE.',
@@ -389,13 +400,6 @@ var Acesso = (function() {
       'O traçado segue a malha SRE atual e as extensões mostradas são as do estudo. Legenda por eixo, agrupada por lote (filtra o mapa); o popup e a tabela de atributos dizem se o trecho é do Polo Goiânia original (Convênio de Delegação nº 08/2023) ou ampliação, e trazem o VMDA ponderado do eixo.'
     ], [
       'Nova camada Concessões: mostra os 3 lotes da nova proposta de concessão das rodovias estaduais. A camada Polo Goiânia continua como antes.'
-    ]],
-    ['3.14', '17/11/2026', [
-      'Quadros da Gerência (gerencia.html, atalho na página inicial): quadros no estilo Trello para as demandas do SIPLAWEB e outros assuntos da gerência. Cartões com responsável, prazo, prioridade, etiquetas, descrição, links (pastas da rede com botão "Copiar"), vínculo opcional com obra, versão e processo SEI, comentários e histórico. Arraste o cartão entre as colunas para movê-lo.',
-      'Prints no cartão: tire o print (Win+Shift+S), cole com Ctrl+V, anote com caneta, retângulo, seta ou texto e salve; a imagem é reduzida antes de ir para o banco.',
-      'Quem vê: quem tem a área Gerência e os administradores. Quem criou o cartão e os administradores editam e movem; todos comentam e anexam prints. Quadros e colunas: só administradores (script 024).'
-    ], [
-      'Novo: quadros da Gerência para organizar demandas e assuntos da equipe, com prints anotados e comentários.'
     ]],
     ['3.13', '17/11/2026', [
       'FUNDEINFRA mostra só as obras da DOR e da DPJ com recurso do Fundeinfra (fonte Fundeinfra ou Associativo-Fundeinfra) em todo o site: mapa, cartão da página inicial, tabela de obras, caderno e Painel. As obras antigas cadastradas na origem FUNDEINFRA ficam no banco só como cópia de segurança e não aparecem em nenhuma tela.',
