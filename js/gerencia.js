@@ -71,9 +71,36 @@
     $('quadros').innerHTML = quadros.map(function(q) {
       var abertos = cartoes.filter(function(c) { return c.quadro_id === q.id && !c.concluido_em; }).length;
       return '<button type="button" data-quadro="' + q.id + '"' + (q.id === quadroId ? ' class="ativo"' : '') + ' title="' + esc(q.descricao || '') + '">' +
-        esc(q.nome) + '<small>' + abertos + '</small></button>';
+        esc(q.nome) + '<small title="Cartões abertos">' + abertos + '</small></button>';
     }).join('') || '<span class="ger-vazio">Nenhum quadro. ' + (admin() ? 'Crie um em "Configurar quadros".' : 'Peça a um administrador.') + '</span>';
+    renderResumo();
   }
+
+  // Faixa do topo (como a página inicial): nome do quadro e números dele, sem os filtros.
+  function renderResumo() {
+    var q = quadros.find(function(x) { return x.id === quadroId; });
+    $('quadroNome').textContent = q ? q.nome : 'Quadros da Gerência';
+    $('quadroDescricao').textContent = (q && q.descricao) || 'Demandas do SIPLAWEB e assuntos da gerência em um só lugar.';
+    var hoje = hojeIso(), doQuadro = cartoes.filter(function(c) { return c.quadro_id === quadroId; });
+    var abertos = doQuadro.filter(function(c) { return !c.concluido_em; });
+    var n = [
+      [abertos.length, 'cartões abertos'],
+      [abertos.filter(function(c) { return c.prazo && c.prazo < hoje; }).length, 'atrasados'],
+      [abertos.filter(function(c) { return c.responsavel === eu(); }).length, 'comigo'],
+      [doQuadro.length - abertos.length, 'concluídos']
+    ];
+    $('numeros').innerHTML = n.map(function(x, i) {
+      return '<div' + (i === 1 && x[0] ? ' class="alerta"' : '') + '><b>' + x[0] + '</b><span>' + x[1] + '</span></div>';
+    }).join('');
+  }
+
+  var ICONES = {
+    prazo: '<path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="8.5"/>',
+    coment: '<path d="M5 5h14v10H9l-4 4z"/>',
+    print: '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="m4 16 5-5 4 4 2-2 5 5"/><circle cx="15.5" cy="9.5" r="1.3"/>',
+    link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'
+  };
+  function icone(n) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONES[n] + '</svg>'; }
 
   function renderFiltros() {
     var atual = $('filtroResp').value;
@@ -94,11 +121,11 @@
   function htmlCartao(c, col) {
     var atrasado = c.prazo && !c.concluido_em && c.prazo < hojeIso();
     var extras = [];
-    if (c.prazo) extras.push('<span class="' + (atrasado ? 'atrasado' : '') + '" title="Prazo">⏱ ' + fmtData(c.prazo) + '</span>');
-    if (contComent[c.id]) extras.push('<span title="Comentários">💬 ' + contComent[c.id] + '</span>');
-    if (contAnexos[c.id]) extras.push('<span title="Prints">🖼 ' + contAnexos[c.id] + '</span>');
-    if ((c.links || []).length) extras.push('<span title="Links">🔗 ' + c.links.length + '</span>');
-    return '<div class="ger-cartao" tabindex="0" data-cartao="' + c.id + '"' + (podeAlterar(c) ? ' draggable="true"' : '') + '>' +
+    if (c.prazo) extras.push('<span class="' + (atrasado ? 'atrasado' : '') + '" title="' + (atrasado ? 'Prazo vencido' : 'Prazo') + '">' + icone('prazo') + fmtData(c.prazo).slice(0, 5) + '</span>');
+    if (contComent[c.id]) extras.push('<span title="Comentários">' + icone('coment') + contComent[c.id] + '</span>');
+    if (contAnexos[c.id]) extras.push('<span title="Prints">' + icone('print') + contAnexos[c.id] + '</span>');
+    if ((c.links || []).length) extras.push('<span title="Links">' + icone('link') + c.links.length + '</span>');
+    return '<div class="ger-cartao' + (c.prioridade ? ' cartao-' + c.prioridade : '') + (c.concluido_em ? ' concluido' : '') + '" tabindex="0" data-cartao="' + c.id + '"' + (podeAlterar(c) ? ' draggable="true"' : '') + '>' +
       '<div class="ger-cartao-sup"><span>' + esc(c.codigo || '') + '</span>' + (c.obra ? '<span>· ' + esc(c.obra) + '</span>' : '') +
         (c.prioridade ? '<span class="prio prio-' + c.prioridade + '">' + PRIORIDADES[c.prioridade] + '</span>' : '') + '</div>' +
       '<b>' + esc(c.titulo) + '</b>' +
@@ -115,7 +142,7 @@
       var todos = cartoesDaColuna(col.id), lista = todos.filter(passaFiltros);
       var oculta = col.finaliza && !mostrarFim;
       return '<section class="ger-coluna" style="--c:' + esc(col.cor || '#94a3b8') + '" data-coluna="' + col.id + '">' +
-        '<h3>' + esc(col.nome) + (col.finaliza ? ' <em>conclui</em>' : '') + '<span>' + (lista.length === todos.length ? lista.length : lista.length + '/' + todos.length) + '</span></h3>' +
+        '<h3><i></i><strong title="' + esc(col.nome) + '">' + esc(col.nome) + '</strong>' + (col.finaliza ? ' <em title="O cartão que entra aqui conta como concluído">conclui</em>' : '') + '<span>' + (lista.length === todos.length ? lista.length : lista.length + '/' + todos.length) + '</span></h3>' +
         '<div class="ger-lista" data-lista="' + col.id + '">' + (oculta ? '<span class="ger-vazio">' + lista.length + ' cartão(ões) ocultos</span>' : lista.map(function(c) { return htmlCartao(c, col); }).join('')) + '</div>' +
         '<form class="ger-rapido" data-rapido="' + col.id + '"><input name="titulo" placeholder="+ Adicionar cartão" maxlength="200" /></form>' +
         '</section>';

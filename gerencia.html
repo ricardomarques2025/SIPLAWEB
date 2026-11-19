@@ -6,23 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/inicio_painel.css?v=2026-11-18.11" />
-  <link rel="stylesheet" href="css/usuarios.css?v=2026-11-18.11" />
-  <link rel="stylesheet" href="css/gerencia.css?v=2026-11-18.11" />
+  <link rel="stylesheet" href="css/inicio_painel.css?v=2026-11-19.01" />
+  <link rel="stylesheet" href="css/usuarios.css?v=2026-11-19.01" />
+  <link rel="stylesheet" href="css/gerencia.css?v=2026-11-19.01" />
 </head>
 <body>
   <header class="topo">
     <a href="index.html"><img src="data/Logo_GOINFRA_DPL_2025.png" alt="GOINFRA"></a>
-    <div class="marca">Gerência<small>Quadros de demandas e assuntos da gerência</small></div>
+    <div class="marca">Plano GOINFRA 2026–2030<small>Quadros da Gerência</small></div>
     <div class="espaco"></div>
     <a class="voltar" href="index.html">← Início</a>
     <span id="acessoUsuario"></span>
   </header>
 
   <main class="ger" id="ger" hidden>
-    <nav class="ger-quadros" id="quadros" aria-label="Quadros"></nav>
+    <section class="ger-hero">
+      <div class="ger-hero-conteudo">
+        <h1 id="quadroNome">Quadros da Gerência</h1>
+        <p id="quadroDescricao">Demandas do SIPLAWEB e assuntos da gerência em um só lugar.</p>
+        <div class="ger-numeros" id="numeros"></div>
+      </div>
+      <nav class="ger-quadros" id="quadros" aria-label="Quadros"></nav>
+    </section>
     <div class="ger-barra">
-      <input type="search" id="busca" placeholder="Buscar título, código, etiqueta…" aria-label="Buscar cartões" />
+      <label class="ger-busca"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="busca" placeholder="Buscar título, código, etiqueta…" aria-label="Buscar cartões" /></label>
       <select id="filtroResp" aria-label="Filtrar por responsável"><option value="">Todos os responsáveis</option></select>
       <label class="chk"><input type="checkbox" id="soMeus" /> Só os que criei ou sou responsável</label>
       <label class="chk"><input type="checkbox" id="mostrarConcluidos" checked /> Mostrar concluídos</label>
@@ -35,6 +43,7 @@
     <p class="ger-nota">Arraste um cartão para outra coluna para movê-lo. Só quem criou o cartão e os administradores podem
       editar, mover e excluir; todos os membros podem comentar e anexar prints.</p>
   </main>
+  <div class="rodape">GOINFRA · Diretoria de Planejamento · GEREF</div>
   <p class="restrito" id="restrito" hidden>Os quadros da Gerência são liberados para quem tem a área <b>Gerência</b>. Peça ao administrador.</p>
 
   <!-- Cartão -->
@@ -94,7 +103,7 @@
   <div class="toasts" id="toasts"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-  <script src="js/acesso.js?v=2026-11-18.11"></script>
-  <script src="js/gerencia.js?v=2026-11-18.11"></script>
+  <script src="js/acesso.js?v=2026-11-19.01"></script>
+  <script src="js/gerencia.js?v=2026-11-19.01"></script>
 </body>
 </html>
