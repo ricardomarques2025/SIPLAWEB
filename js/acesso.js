@@ -353,13 +353,21 @@ var Acesso = (function() {
   // A cada publicação, VERSAO_SITE (aqui) e versao.json (raiz do site) recebem o MESMO valor novo. A página confere
   // versao.json sem cache ao abrir, a cada 5 minutos e quando a aba volta a ficar visível; se o publicado for outro,
   // mostra o aviso "Nova versão" (uma aba esquecida aberta continuava rodando o código antigo por dias).
-  var VERSAO_SITE = '2026-11-19.09';
+  var VERSAO_SITE = '2026-11-19.10';
   var conferidaEm = 0, avisoAdiadoAte = 0;
   // Versão que as pessoas veem (rodapé do mapa e Painel): sobe o número a cada mudança relevante, com a data e o que
   // mudou em NOVIDADES (a mais nova primeiro). Correção pequena troca só VERSAO_SITE.
   // 4º item (opcional) = BOAS-VINDAS: resumo curto, em linguagem simples (sem termos técnicos), mostrado uma vez por
   // navegador ao entrar no mapa ou no Painel depois de cada versão nova (número novo). Toda versão nova deve ter.
   var NOVIDADES = [
+    ['3.18', '19/11/2026', [
+      'Perfil de elevação: no popup de qualquer linha (malha estadual, malha complementar, ferrovias, obras, Jurisdição e camadas editáveis) o botão "Perfil de elevação" abre, embaixo do mapa, o gráfico distância × altitude do trecho clicado, com extensão, altitude mínima e máxima, início e fim, subida e descida totais, rampa média e rampa máxima (com o km). Passando o mouse no gráfico aparecem o km, a altitude e a rampa, e um marcador anda no mapa. "Baixar CSV" leva km, latitude, longitude e altitude.',
+      'Ferramenta "Perfil" (ao lado da Régua): marque os pontos no mapa (pode clicar em cima das estradas); duplo clique ou Enter conclui, Esc cancela.',
+      'As altitudes são do terreno natural (modelo SRTM da NASA, um ponto a cada ~30 m, erro típico de 5 a 10 m), lidas na hora de um serviço público da Amazon: servem para planejamento, não para greide de projeto. Sem internet o perfil não abre; nada é gravado no banco.'
+    ], [
+      'Novo: perfil de elevação. Clique numa rodovia, obra ou trecho e escolha "Perfil de elevação" para ver as subidas, descidas e rampas.',
+      'Também dá para desenhar uma linha qualquer com a ferramenta Perfil, ao lado da Régua.'
+    ]],
     ['3.17', '19/11/2026', [
       'Quadros da Gerência (gerencia.html, atalho na página inicial): quadros no estilo Trello para as demandas do SIPLAWEB e outros assuntos da gerência, com o visual da página inicial (faixa com os números do quadro: abertos, atrasados, comigo e concluídos). Cartões com responsável, corresponsáveis, prazo, prioridade (faixa colorida no cartão), etiquetas, descrição, links (pastas da rede com botão "Copiar"), cartões ligados (de qualquer quadro, aparecem nos dois lados), vínculo opcional com obra, versão e processo SEI, comentários e histórico. Arraste o cartão entre as colunas para movê-lo (scripts 024 e 029).',
       'Prints no cartão: tire o print (Win+Shift+S), cole com Ctrl+V, anote com caneta, retângulo, seta ou texto e salve; a imagem é reduzida antes de ir para o banco.',

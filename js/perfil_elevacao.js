@@ -1,4 +1,4 @@
-// Perfil de elevação (19/11/2026, homologação): gráfico distância × altitude de uma linha do mapa.
+// Perfil de elevação (VER. 3.18, 19/11/2026): gráfico distância × altitude de uma linha do mapa.
 // Entradas: botão "Perfil de elevação" no popup de qualquer linha (abrirPopupNoPonto recebe a linha clicada) e a
 // ferramenta "Perfil" (desenhar uma linha à mão; duplo clique conclui, Esc cancela).
 // Altitude: Terrain Tiles públicos (AWS Open Data, formato Terrarium; no Brasil vêm do SRTM da NASA, ~30 m), lidos no
